@@ -621,7 +621,7 @@ namespace OpenCNCPilot.Communication
 			}
 		}
 
-		private static Regex StatusEx = new Regex(@"<(?'State'Idle|Run|Hold|Home|Alarm|Check|Door)(?:,MPos:(?'MX'-?[0-9\.]*),(?'MY'-?[0-9\.]*),(?'MZ'-?[0-9\.]*))?(?:,WPos:(?'WX'-?[0-9\.]*),(?'WY'-?[0-9\.]*),(?'WZ'-?[0-9\.]*))?(?:,Buf:(?'Buf'[0-9]*))?(?:,RX:(?'RX'[0-9]*))?(?:,Ln:(?'L'[0-9]*))?(?:,F:(?'F'[0-9\.]*))?(?:,Lim:(?'Lim'[0-1]*))?(?:,Ctl:(?'Ctl'[0-1]*))?>", RegexOptions.Compiled);
+		private static Regex StatusEx = new Regex(@"<(?'State'Idle|Run|Hold|Home|Alarm|Check|Door)(?:.MPos:(?'MX'-?[0-9\.]*),(?'MY'-?[0-9\.]*),(?'MZ'-?[0-9\.]*))?(?:,WPos:(?'WX'-?[0-9\.]*),(?'WY'-?[0-9\.]*),(?'WZ'-?[0-9\.]*))?(?:,Buf:(?'Buf'[0-9]*))?(?:,RX:(?'RX'[0-9]*))?(?:,Ln:(?'L'[0-9]*))?(?:,F:(?'F'[0-9\.]*))?(?:,Lim:(?'Lim'[0-1]*))?(?:,Ctl:(?'Ctl'[0-1]*))?(?:.FS:(?'FSX'-?[0-9\.]*),(?'FSY'-?[0-9\.]*))?(?:.WCO:(?'WCOX'-?[0-9\.]*),(?'WCOY'-?[0-9\.]*),(?'WCOZ'-?[0-9\.]*))?(?:.Ov:(?'OVX'-?[0-9\.]*),(?'OVY'-?[0-9\.]*),(?'OVZ'-?[0-9\.]*))?>", RegexOptions.Compiled);
 
 		/// <summary>
 		/// Parses a recevied status report (answer to '?')
@@ -659,8 +659,9 @@ namespace OpenCNCPilot.Communication
 			}
 
 			Group wx = statusMatch.Groups["WX"], wy = statusMatch.Groups["WY"], wz = statusMatch.Groups["WZ"];
+            Group wcox = statusMatch.Groups["WCOX"], wcoy = statusMatch.Groups["WCOY"], wcoz = statusMatch.Groups["WCOZ"];
 
-			if (wx.Success)
+            if (wx.Success)
 			{
 				NewWorkPosition = new Vector3(double.Parse(wx.Value, Constants.DecimalParseFormat), double.Parse(wy.Value, Constants.DecimalParseFormat), double.Parse(wz.Value, Constants.DecimalParseFormat));
 
@@ -669,8 +670,17 @@ namespace OpenCNCPilot.Communication
 
 				WorkPosition = NewWorkPosition;
 			}
+            else if (wcox.Success)
+            {
+                NewWorkPosition = new Vector3(double.Parse(wcox.Value, Constants.DecimalParseFormat), double.Parse(wcoy.Value, Constants.DecimalParseFormat), double.Parse(wcoz.Value, Constants.DecimalParseFormat));
 
-			if (update && Connected && PositionUpdateReceived != null)
+                if (WorkPosition != NewWorkPosition)
+                    update = true;
+
+                WorkPosition = NewWorkPosition;
+            }
+
+            if (update && Connected && PositionUpdateReceived != null)
 				PositionUpdateReceived.Invoke();
 		}
 
