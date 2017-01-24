@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 		xmlns:h="http://helix-toolkit.org/wpf"
         xmlns:local="clr-namespace:OpenCNCPilot"
+        xmlns:ctls="clr-namespace:OpenCNCPilot.Controls"
 		xmlns:util="clr-namespace:OpenCNCPilot.Util"
         mc:Ignorable="d"
 		AllowDrop="True"
@@ -17,7 +18,7 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="120" />
+            <ColumnDefinition Width="200" />
         </Grid.ColumnDefinitions>
         <Grid Panel.ZIndex="1">
             <Border Style="{StaticResource stylePanelOut}" VerticalAlignment="Top" HorizontalAlignment="Center">
@@ -206,8 +207,6 @@
             <h:LinesVisual3D x:Name="ModelHeightMapBoundary" Thickness="2" Color="Lime"/>
             <h:PointsVisual3D x:Name="ModelHeightMapPoints" Color="Red" Size="4"/>
         </h:HelixViewport3D>
-        <Grid Grid.Column="1">
-            
-        </Grid>
+        <ctls:MachineControl Grid.Column="2" />
     </Grid>
 </Window>

@@ -13,7 +13,7 @@ namespace OpenCNCPilot
 	{
 		private void ButtonSettings_Click(object sender, RoutedEventArgs e)
 		{
-			if (machine.Mode != Machine.OperatingMode.Disconnected)
+			if (App.Current.Machine.Mode != Machine.OperatingMode.Disconnected)
 				return;
 
 			new SettingsWindow().ShowDialog();
@@ -25,7 +25,7 @@ namespace OpenCNCPilot
 			{
                 var serialPort = new SerialPort(App.Current.Settings.SerialPortName, App.Current.Settings.SerialPortBaud);
                 serialPort.Open();
-				machine.Connect(serialPort.BaseStream);
+                App.Current.Machine.Connect(serialPort.BaseStream);
 			}
 			catch (Exception ex)
 			{
@@ -37,7 +37,7 @@ namespace OpenCNCPilot
 		{
 			try
 			{
-				machine.Disconnect();
+                App.Current.Machine.Disconnect();
 			}
 			catch (Exception ex)
 			{
@@ -47,8 +47,8 @@ namespace OpenCNCPilot
 
 		private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
 		{
-			if (machine.Connected)
-				machine.Disconnect();
+			if (App.Current.Machine.Connected)
+                App.Current.Machine.Disconnect();
 
             App.Current.Settings.Save(App.Current.StorageService);
 		}

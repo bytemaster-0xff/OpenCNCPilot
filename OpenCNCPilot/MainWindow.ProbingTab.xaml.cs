@@ -15,15 +15,15 @@ namespace OpenCNCPilot
 		{
 			ButtonHeightMapCreateNew.IsEnabled = Map == null;
 			ButtonHeightMapLoad.IsEnabled = Map == null;
-			ButtonHeightMapSave.IsEnabled = machine.Mode != Machine.OperatingMode.Probe && Map != null;
-			ButtonHeightMapClear.IsEnabled = machine.Mode != Machine.OperatingMode.Probe && Map != null;
+			ButtonHeightMapSave.IsEnabled = App.Current.Machine.Mode != Machine.OperatingMode.Probe && Map != null;
+			ButtonHeightMapClear.IsEnabled = App.Current.Machine.Mode != Machine.OperatingMode.Probe && Map != null;
 
 			GridProbingControls.Visibility = Map != null ? Visibility.Visible : Visibility.Collapsed;
 
-			ButtonHeightMapStart.IsEnabled = machine.Mode != Machine.OperatingMode.Probe && Map != null && Map.NotProbed.Count > 0;
-			ButtonHeightMapPause.IsEnabled = machine.Mode == Machine.OperatingMode.Probe;
+			ButtonHeightMapStart.IsEnabled = App.Current.Machine.Mode != Machine.OperatingMode.Probe && Map != null && Map.NotProbed.Count > 0;
+			ButtonHeightMapPause.IsEnabled = App.Current.Machine.Mode == Machine.OperatingMode.Probe;
 
-			ButtonEditApplyHeightMap.IsEnabled = machine.Mode != Machine.OperatingMode.SendFile && Map != null && Map.NotProbed.Count == 0;
+			ButtonEditApplyHeightMap.IsEnabled = App.Current.Machine.Mode != Machine.OperatingMode.SendFile && Map != null && Map.NotProbed.Count == 0;
 		}
 
 		NewHeightMapWindow NewHeightMapDialog;
@@ -36,7 +36,7 @@ namespace OpenCNCPilot
 
 		private void ButtonHeightmapCreateNew_Click(object sender, RoutedEventArgs e)
 		{
-			if (machine.Mode == Machine.OperatingMode.Probe || Map != null)
+			if (App.Current.Machine.Mode == Machine.OperatingMode.Probe || Map != null)
 				return;
 
 			NewHeightMapDialog = new NewHeightMapWindow();
@@ -67,7 +67,7 @@ namespace OpenCNCPilot
 
 		private void NewHeightMapDialog_Size_Ok()
 		{
-			if (machine.Mode == Machine.OperatingMode.Probe || Map != null)
+			if (App.Current.Machine.Mode == Machine.OperatingMode.Probe || Map != null)
 				return;
 
 			Map = new HeightMap(App.Current.Settings, App.Current.LoggerService, NewHeightMapDialog.GridSize, NewHeightMapDialog.Min, NewHeightMapDialog.Max);
@@ -89,7 +89,7 @@ namespace OpenCNCPilot
 
 		private void SaveFileDialogHeightMap_FileOk(object sender, System.ComponentModel.CancelEventArgs e)
 		{
-			if (machine.Mode == Machine.OperatingMode.Probe || Map == null)
+			if (App.Current.Machine.Mode == Machine.OperatingMode.Probe || Map == null)
 				return;
 
 			try
@@ -110,7 +110,7 @@ namespace OpenCNCPilot
 
 		private void OpenHeightMap(string filepath)
 		{
-			if (machine.Mode == Machine.OperatingMode.Probe || Map != null)
+			if (App.Current.Machine.Mode == Machine.OperatingMode.Probe || Map != null)
 				return;
 
 			try
@@ -132,7 +132,7 @@ namespace OpenCNCPilot
 
 		private void ButtonHeightmapLoad_Click(object sender, RoutedEventArgs e)
 		{
-			if (machine.Mode == Machine.OperatingMode.Probe || Map != null)
+			if (App.Current.Machine.Mode == Machine.OperatingMode.Probe || Map != null)
 				return;
 
 			openFileDialogHeightMap.ShowDialog();
@@ -140,7 +140,7 @@ namespace OpenCNCPilot
 
 		private void ButtonHeightmapSave_Click(object sender, RoutedEventArgs e)
 		{
-			if (machine.Mode == Machine.OperatingMode.Probe || Map == null)
+			if (App.Current.Machine.Mode == Machine.OperatingMode.Probe || Map == null)
 				return;
 
 			saveFileDialogHeightMap.FileName = $"map{(int)Map.Delta.X}x{(int)Map.Delta.Y}.hmap";
@@ -149,7 +149,7 @@ namespace OpenCNCPilot
 
 		private void ButtonHeightmapClear_Click(object sender, RoutedEventArgs e)
 		{
-			if (machine.Mode == Machine.OperatingMode.Probe || Map == null)
+			if (App.Current.Machine.Mode == Machine.OperatingMode.Probe || Map == null)
 				return;
 
 			Map = null;
@@ -165,34 +165,34 @@ namespace OpenCNCPilot
 
 		private void HeightMapProbeNextPoint()
 		{
-			if (machine.Mode != Machine.OperatingMode.Probe)
+			if (App.Current.Machine.Mode != Machine.OperatingMode.Probe)
 				return;
 
-			if (!machine.Connected || Map == null || Map.NotProbed.Count == 0)
+			if (!App.Current.Machine.Connected || Map == null || Map.NotProbed.Count == 0)
 			{
-				machine.ProbeStop();
+                App.Current.Machine.ProbeStop();
 				return;
 			}
 
 			Vector2 nextPoint = Map.GetCoordinates(Map.NotProbed.Peek().Item1, Map.NotProbed.Peek().Item2);
 
-			machine.SendLine($"G0X{nextPoint.X.ToString("0.###", Constants.DecimalOutputFormat)}Y{nextPoint.Y.ToString("0.###", Constants.DecimalOutputFormat)}");
+            App.Current.Machine.SendLine($"G0X{nextPoint.X.ToString("0.###", Constants.DecimalOutputFormat)}Y{nextPoint.Y.ToString("0.###", Constants.DecimalOutputFormat)}");
 
-			machine.SendLine($"G38.3Z-{App.Current.Settings.ProbeMaxDepth.ToString("0.###", Constants.DecimalOutputFormat)}F{App.Current.Settings.ProbeFeed.ToString("0.#", Constants.DecimalOutputFormat)}");
+            App.Current.Machine.SendLine($"G38.3Z-{App.Current.Settings.ProbeMaxDepth.ToString("0.###", Constants.DecimalOutputFormat)}F{App.Current.Settings.ProbeFeed.ToString("0.#", Constants.DecimalOutputFormat)}");
 
-			machine.SendLine("G91");
-			machine.SendLine($"G0Z{App.Current.Settings.ProbeMinimumHeight.ToString("0.###", Constants.DecimalOutputFormat)}");
-			machine.SendLine("G90");
+            App.Current.Machine.SendLine("G91");
+            App.Current.Machine.SendLine($"G0Z{App.Current.Settings.ProbeMinimumHeight.ToString("0.###", Constants.DecimalOutputFormat)}");
+            App.Current.Machine.SendLine("G90");
 		}
 
 		private void Machine_ProbeFinished(Vector3 position, bool success)
 		{
-			if (machine.Mode != Machine.OperatingMode.Probe)
+			if (App.Current.Machine.Mode != Machine.OperatingMode.Probe)
 				return;
 
-			if (!machine.Connected || Map == null || Map.NotProbed.Count == 0)
+			if (!App.Current.Machine.Connected || Map == null || Map.NotProbed.Count == 0)
 			{
-				machine.ProbeStop();
+                App.Current.Machine.ProbeStop();
 				return;
 			}
 
@@ -200,7 +200,7 @@ namespace OpenCNCPilot
 			{
 				MessageBox.Show("Probe Failed! aborting");
 
-				machine.ProbeStop();
+                App.Current.Machine.ProbeStop();
 				return;
 			}
 
@@ -210,8 +210,8 @@ namespace OpenCNCPilot
 
 			if (Map.NotProbed.Count == 0)
 			{
-				machine.SendLine($"G0Z{App.Current.Settings.ProbeSafeHeight.ToString(Constants.DecimalOutputFormat)}");
-				machine.ProbeStop();
+                App.Current.Machine.SendLine($"G0Z{App.Current.Settings.ProbeSafeHeight.ToString(Constants.DecimalOutputFormat)}");
+                App.Current.Machine.ProbeStop();
 				return;
 			}
 
@@ -220,29 +220,29 @@ namespace OpenCNCPilot
 
 		private void ButtonHeightMapStart_Click(object sender, RoutedEventArgs e)
 		{
-			if (!machine.Connected || machine.Mode != Machine.OperatingMode.Manual || Map == null)
+			if (!App.Current.Machine.Connected || App.Current.Machine.Mode != Machine.OperatingMode.Manual || Map == null)
 				return;
 
 			if (Map.Progress == Map.TotalPoints)
 				return;
 
-			machine.ProbeStart();
+			App.Current.Machine.ProbeStart();
 
-			if (machine.Mode != Machine.OperatingMode.Probe)
+			if (App.Current.Machine.Mode != Machine.OperatingMode.Probe)
 				return;
 
-			machine.SendLine("G90");
-			machine.SendLine($"G0Z{App.Current.Settings.ProbeSafeHeight.ToString("0.###", Constants.DecimalOutputFormat)}");
+            App.Current.Machine.SendLine("G90");
+            App.Current.Machine.SendLine($"G0Z{App.Current.Settings.ProbeSafeHeight.ToString("0.###", Constants.DecimalOutputFormat)}");
 
 			HeightMapProbeNextPoint();
 		}
 
 		private void ButtonHeightMapPause_Click(object sender, RoutedEventArgs e)
 		{
-			if (machine.Mode != Machine.OperatingMode.Probe)
+			if (App.Current.Machine.Mode != Machine.OperatingMode.Probe)
 				return;
 
-			machine.ProbeStop();
+            App.Current.Machine.ProbeStop();
 		}
 	}
 }

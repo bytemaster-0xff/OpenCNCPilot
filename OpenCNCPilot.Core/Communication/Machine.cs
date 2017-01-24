@@ -11,6 +11,8 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace OpenCNCPilot.Core.Communication
 {
@@ -19,7 +21,7 @@ namespace OpenCNCPilot.Core.Communication
         Serial
     }
 
-    public class Machine
+    public class Machine : IMachine
     {
         public enum OperatingMode
         {
@@ -44,6 +46,20 @@ namespace OpenCNCPilot.Core.Communication
         public event Action OperatingModeChanged;
         public event Action FileChanged;
         public event Action FilePositionChanged;
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public Machine(Settings settings, IDispatcher dispatcher, ILogger logger)
+        {
+            _settings = settings;
+            _dispatcher = dispatcher;
+            _logger = logger;
+        }
+
+        public void RaisePropertyChanged([CallerMemberName]string propertyName = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
 
         IDispatcher _dispatcher;
         ILogger _logger;
@@ -88,6 +104,8 @@ namespace OpenCNCPilot.Core.Communication
 
                 _mode = value;
                 RaiseEvent(OperatingModeChanged);
+
+                RaisePropertyChanged();
             }
         }
 
@@ -103,6 +121,8 @@ namespace OpenCNCPilot.Core.Communication
                 _status = value;
 
                 RaiseEvent(StatusChanged);
+
+                RaisePropertyChanged();
             }
         }
 
@@ -163,6 +183,8 @@ namespace OpenCNCPilot.Core.Communication
                     Mode = OperatingMode.Disconnected;
 
                 RaiseEvent(ConnectionStateChanged);
+
+                RaisePropertyChanged();
             }
         }
 
@@ -182,13 +204,6 @@ namespace OpenCNCPilot.Core.Communication
         }
         #endregion Status
 
-
-        public Machine(Settings settings, IDispatcher dispatcher, ILogger logger)
-        {
-            _settings = settings;
-            _dispatcher = dispatcher;
-            _logger = logger;
-        }
 
         Queue<string> _sentQueue = new Queue<string>();
         Queue<string> _toSend = new Queue<string>();

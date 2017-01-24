@@ -24,6 +24,11 @@ namespace OpenCNCPilot.Core
         public bool AbortOnProbeFail { get; set; }
         public double ProbeFeed { get; set; }
 
+        public double MicroStepSize { get; set; }
+        public double SmallStepSize { get; set; }
+        public double MediumStepSize { get; set; }
+        public double LargeStepSize { get; set; }
+
         public static Settings Load(IStorage storage)
         {
             var json = storage.ReadAllText("Settings.json");
@@ -58,7 +63,11 @@ namespace OpenCNCPilot.Core
                     AbortOnProbeFail = false,
                     ProbeFeed = 20,
                     ArcToLineSegmentLength = 1,
-                    SplitSegmentLength = 5
+                    SplitSegmentLength = 5,
+                    MicroStepSize = 0.1,
+                    SmallStepSize = 1,
+                    MediumStepSize = 5,
+                    LargeStepSize = 10
                 };
             }
         }

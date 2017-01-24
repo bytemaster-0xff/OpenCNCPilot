@@ -16,10 +16,10 @@ namespace OpenCNCPilot
 
 		void ManualSend()
 		{
-			if (machine.Mode != Machine.OperatingMode.Manual)
+			if (App.Current.Machine.Mode != Machine.OperatingMode.Manual)
 				return;
 
-			machine.SendLine(TextBoxManual.Text);
+            App.Current.Machine.SendLine(TextBoxManual.Text);
 
 			ManualCommands.Insert(0, TextBoxManual.Text);
 			ManualCommandIndex = -1;
@@ -70,15 +70,15 @@ namespace OpenCNCPilot
 
 		private void ButtonManualSetG10Zero_Click(object sender, RoutedEventArgs e)
 		{
-			if (machine.Mode != Machine.OperatingMode.Manual)
+			if (App.Current.Machine.Mode != Machine.OperatingMode.Manual)
 				return;
 
-			TextBoxManual.Text = $"G10 L2 P0 X{machine.WorkPosition.X.ToString(Constants.DecimalOutputFormat)} Y{machine.WorkPosition.Y.ToString(Constants.DecimalOutputFormat)} Z{machine.WorkPosition.Z.ToString(Constants.DecimalOutputFormat)}";
+			TextBoxManual.Text = $"G10 L2 P0 X{App.Current.Machine.WorkPosition.X.ToString(Constants.DecimalOutputFormat)} Y{App.Current.Machine.WorkPosition.Y.ToString(Constants.DecimalOutputFormat)} Z{App.Current.Machine.WorkPosition.Z.ToString(Constants.DecimalOutputFormat)}";
 		}
 
 		private void ButtonManualSetG92Zero_Click(object sender, RoutedEventArgs e)
 		{
-			if (machine.Mode != Machine.OperatingMode.Manual)
+			if (App.Current.Machine.Mode != Machine.OperatingMode.Manual)
 				return;
 
 			TextBoxManual.Text = "G92 X0 Y0 Z0";
@@ -86,7 +86,7 @@ namespace OpenCNCPilot
 
 		private void ButtonManualResetG10_Click(object sender, RoutedEventArgs e)
 		{
-			if (machine.Mode != Machine.OperatingMode.Manual)
+			if (App.Current.Machine.Mode != Machine.OperatingMode.Manual)
 				return;
 
 			TextBoxManual.Text = "G10 L2 P0 X0 Y0 Z0";

@@ -1,4 +1,6 @@
-﻿using OpenCNCPilot.Core.Platform;
+﻿using OpenCNCPilot.Core;
+using OpenCNCPilot.Core.Communication;
+using OpenCNCPilot.Core.Platform;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -19,6 +21,8 @@ namespace OpenCNCPilot
         IDispatcher _dispatcher;
         IStorage _storage;
         ILogger _logger;
+        IMachine _machine;
+        Settings _settings;
 
         public App()
         {
@@ -26,10 +30,13 @@ namespace OpenCNCPilot
             _dispatcher = new Platform.WPFDispatcher();
             _storage = new Platform.WPFStorage();
             _logger = new Platform.WPFLogger();
+            _settings = Settings.Load(App.Current.StorageService);
+
+            _machine = new Machine(_settings, _dispatcher, _logger);            
         }
 
 
-        public OpenCNCPilot.Core.Settings Settings { get; set; }
+        public OpenCNCPilot.Core.Settings Settings { get { return _settings; } }
 
         public new static App Current { get { return _app; } }
 
@@ -37,6 +44,8 @@ namespace OpenCNCPilot
         public IStorage StorageService { get { return _storage; } }
 
         public ILogger LoggerService { get { return _logger; } }
+
+        public IMachine Machine { get { return _machine; } }
 
     }
 }

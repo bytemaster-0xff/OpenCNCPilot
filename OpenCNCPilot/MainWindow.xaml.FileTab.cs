@@ -12,12 +12,12 @@ namespace OpenCNCPilot
 	{
 		private void OpenFileDialogGCode_FileOk(object sender, System.ComponentModel.CancelEventArgs e)
 		{
-			if (machine.Mode == Machine.OperatingMode.SendFile)
+			if (App.Current.Machine.Mode == Machine.OperatingMode.SendFile)
 				return;
 
 			try
 			{
-				machine.SetFile(System.IO.File.ReadAllLines(openFileDialogGCode.FileName));
+                App.Current.Machine.SetFile(System.IO.File.ReadAllLines(openFileDialogGCode.FileName));
 			}
 			catch(Exception ex)
 			{
@@ -27,7 +27,7 @@ namespace OpenCNCPilot
 
 		private void ButtonOpen_Click(object sender, RoutedEventArgs e)
 		{
-			if (machine.Mode == Machine.OperatingMode.SendFile)
+			if (App.Current.Machine.Mode == Machine.OperatingMode.SendFile)
 				return;
 
 			openFileDialogGCode.ShowDialog();
@@ -35,28 +35,28 @@ namespace OpenCNCPilot
 
 		private void ButtonClear_Click(object sender, RoutedEventArgs e)
 		{
-			if (machine.Mode == Machine.OperatingMode.SendFile)
+			if (App.Current.Machine.Mode == Machine.OperatingMode.SendFile)
 				return;
 
-			machine.ClearFile();
+            App.Current.Machine.ClearFile();
 		}
 
 		private void ButtonFileStart_Click(object sender, RoutedEventArgs e)
 		{
-			machine.FileStart();
+            App.Current.Machine.FileStart();
 		}
 
 		private void ButtonFilePause_Click(object sender, RoutedEventArgs e)
 		{
-			machine.FilePause();
+            App.Current.Machine.FilePause();
 		}
 
 		private void ButtonFileGoto_Click(object sender, RoutedEventArgs e)
 		{
-			if (machine.Mode == Machine.OperatingMode.SendFile)
+			if (App.Current.Machine.Mode == Machine.OperatingMode.SendFile)
 				return;
 
-			EnterNumberWindow enw = new EnterNumberWindow(machine.FilePosition + 1);
+			EnterNumberWindow enw = new EnterNumberWindow(App.Current.Machine.FilePosition + 1);
 			enw.Title = "Enter new line number";
 			enw.Owner = this;
 			enw.User_Ok += Enw_User_Ok_Goto;
@@ -65,10 +65,10 @@ namespace OpenCNCPilot
 
 		private void Enw_User_Ok_Goto(double value)
 		{
-			if (machine.Mode == Machine.OperatingMode.SendFile)
+			if (App.Current.Machine.Mode == Machine.OperatingMode.SendFile)
 				return;
 
-			machine.FileGoto((int)value - 1);
+            App.Current.Machine.FileGoto((int)value - 1);
 		}
 	}
 }

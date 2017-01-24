@@ -8,15 +8,15 @@ namespace OpenCNCPilot
 	{
 		private void ButtonEditSimplify_Click(object sender, RoutedEventArgs e)
 		{
-			if (machine.Mode == Machine.OperatingMode.SendFile)
+			if (App.Current.Machine.Mode == Machine.OperatingMode.SendFile)
 				return;
 
-			machine.SetFile(ToolPath.GetGCode().ToArray());
+            App.Current.Machine.SetFile(ToolPath.GetGCode().ToArray());
 		}
 
 		private void ButtonEditApplyHeightMap_Click(object sender, RoutedEventArgs e)
 		{
-			if (machine.Mode == Machine.OperatingMode.SendFile)
+			if (App.Current.Machine.Mode == Machine.OperatingMode.SendFile)
 				return;
 
 			if(Map == null || Map.NotProbed.Count > 0)
@@ -27,7 +27,7 @@ namespace OpenCNCPilot
 
 			try
 			{
-				machine.SetFile(ToolPath.ApplyHeightMap(Map).GetGCode());
+                App.Current.Machine.SetFile(ToolPath.ApplyHeightMap(Map).GetGCode());
 				UpdateAllButtons();
 			}
 			catch(IndexOutOfRangeException)
@@ -42,7 +42,7 @@ namespace OpenCNCPilot
 
 		private void ButtonEditArcToLines_Click(object sender, RoutedEventArgs e)
 		{
-			if (machine.Mode == Machine.OperatingMode.SendFile)
+			if (App.Current.Machine.Mode == Machine.OperatingMode.SendFile)
 				return;
 
 			EnterNumberWindow enw = new EnterNumberWindow(App.Current.Settings.ArcToLineSegmentLength);
@@ -56,15 +56,15 @@ namespace OpenCNCPilot
 		{
             App.Current.Settings.ArcToLineSegmentLength = value;
 
-			if (machine.Mode == Machine.OperatingMode.SendFile)
+			if (App.Current.Machine.Mode == Machine.OperatingMode.SendFile)
 				return;
 
-			machine.SetFile(ToolPath.ArcsToLines(value).GetGCode());
+            App.Current.Machine.SetFile(ToolPath.ArcsToLines(value).GetGCode());
 		}
 
 		private void ButtonEditSplit_Click(object sender, RoutedEventArgs e)
 		{
-			if (machine.Mode == Machine.OperatingMode.SendFile)
+			if (App.Current.Machine.Mode == Machine.OperatingMode.SendFile)
 				return;
 
 			EnterNumberWindow enw = new EnterNumberWindow(App.Current.Settings.SplitSegmentLength);
@@ -78,10 +78,10 @@ namespace OpenCNCPilot
 		{
             App.Current.Settings.SplitSegmentLength = value;
 
-			if (machine.Mode == Machine.OperatingMode.SendFile)
+			if (App.Current.Machine.Mode == Machine.OperatingMode.SendFile)
 				return;
 
-			machine.SetFile(ToolPath.Split(value).GetGCode());
+            App.Current.Machine.SetFile(ToolPath.Split(value).GetGCode());
 		}
 	}
 }

@@ -13,28 +13,28 @@ namespace OpenCNCPilot
     {
         private void Machine_PlaneChanged()
         {
-            ButtonArcPlane.Content = machine.Plane.ToString() + "-Plane";
+            ButtonArcPlane.Content = App.Current.Machine.Plane.ToString() + "-Plane";
         }
 
         private void Machine_UnitChanged()
         {
-            ButtonUnit.Content = machine.Unit.ToString();
+            ButtonUnit.Content = App.Current.Machine.Unit.ToString();
         }
 
         private void Machine_DistanceModeChanged()
         {
-            ButtonDistanceMode.Content = machine.DistanceMode.ToString();
+            ButtonDistanceMode.Content = App.Current.Machine.DistanceMode.ToString();
         }
 
         private void Machine_StatusChanged()
         {
-            ButtonStatus.Content = machine.Status;
+            ButtonStatus.Content = App.Current.Machine.Status;
 
-            if (machine.Status == "Alarm")
+            if (App.Current.Machine.Status == "Alarm")
                 ButtonStatus.Foreground = Brushes.Red;
-            else if (machine.Status == "Hold")
+            else if (App.Current.Machine.Status == "Hold")
                 ButtonStatus.Foreground = Brushes.Yellow;
-            else if (machine.Status == "Run")
+            else if (App.Current.Machine.Status == "Run")
                 ButtonStatus.Foreground = Brushes.Green;
             else
                 ButtonStatus.Foreground = Brushes.Black;
@@ -44,64 +44,64 @@ namespace OpenCNCPilot
         {
             App.Current.DispatcherService.RunOnUIThread(() =>
             {
-                ModelTool.Point1 = (machine.WorkPosition + new Vector3(0, 0, 10)).ToPoint3D().ToMedia3D();
-                ModelTool.Point2 = machine.WorkPosition.ToPoint3D().ToMedia3D();
+                ModelTool.Point1 = (App.Current.Machine.WorkPosition + new Vector3(0, 0, 10)).ToPoint3D().ToMedia3D();
+                ModelTool.Point2 = App.Current.Machine.WorkPosition.ToPoint3D().ToMedia3D();
 
                 var nfi = Constants.DecimalOutputFormat;
 
-                LabelPosX.Content = machine.WorkPosition.X.ToString(nfi);
-                LabelPosY.Content = machine.WorkPosition.Y.ToString(nfi);
-                LabelPosZ.Content = machine.WorkPosition.Z.ToString(nfi);
+                LabelPosX.Content = App.Current.Machine.WorkPosition.X.ToString(nfi);
+                LabelPosY.Content = App.Current.Machine.WorkPosition.Y.ToString(nfi);
+                LabelPosZ.Content = App.Current.Machine.WorkPosition.Z.ToString(nfi);
 
-                LabelPosMX.Content = machine.MachinePosition.X.ToString(nfi);
-                LabelPosMY.Content = machine.MachinePosition.Y.ToString(nfi);
-                LabelPosMZ.Content = machine.MachinePosition.Z.ToString(nfi);
+                LabelPosMX.Content = App.Current.Machine.MachinePosition.X.ToString(nfi);
+                LabelPosMY.Content = App.Current.Machine.MachinePosition.Y.ToString(nfi);
+                LabelPosMZ.Content = App.Current.Machine.MachinePosition.Z.ToString(nfi);
             });
         }
 
         private void Machine_BufferStateChanged()
         {
-            ProgressBarBufferCapacity.Value = machine.BufferState;
-            LabelBufferState.Content = machine.BufferState;
+            ProgressBarBufferCapacity.Value = App.Current.Machine.BufferState;
+            LabelBufferState.Content = App.Current.Machine.BufferState;
         }
 
         private void ButtonDistanceMode_Click(object sender, RoutedEventArgs e)
         {
-            if (machine.Mode != Machine.OperatingMode.Manual)
+            if (App.Current.Machine.Mode != Machine.OperatingMode.Manual)
                 return;
 
-            if (machine.DistanceMode == Core.GCode.ParseDistanceMode.Absolute)
-                machine.SendLine("G91");
+            if (App.Current.Machine.DistanceMode == Core.GCode.ParseDistanceMode.Absolute)
+                App.Current.Machine.SendLine("G91");
             else
-                machine.SendLine("G90");
+                App.Current.Machine.SendLine("G90");
         }
 
         private void ButtonArcPlane_Click(object sender, RoutedEventArgs e)
         {
-            if (machine.Mode != Machine.OperatingMode.Manual)
+            if (App.Current.Machine.Mode != Machine.OperatingMode.Manual)
                 return;
 
-            if (machine.Plane != Core.GCode.GCodeCommands.ArcPlane.XY)
-                machine.SendLine("G17");
+            if (App.Current.Machine.Plane != Core.GCode.GCodeCommands.ArcPlane.XY)
+                App.Current.Machine.SendLine("G17");
         }
 
         private void ButtonUnit_Click(object sender, RoutedEventArgs e)
         {
-            if (machine.Mode != Machine.OperatingMode.Manual)
+            if (App.Current.Machine.Mode != Machine.OperatingMode.Manual)
                 return;
 
-            if (machine.Unit == Core.GCode.ParseUnit.Metric)
-                machine.SendLine("G20");
+            if (App.Current.Machine.Unit == Core.GCode.ParseUnit.Metric)
+                App.Current.Machine.SendLine("G20");
             else
-                machine.SendLine("G21");
+                App.Current.Machine.SendLine("G21");
         }
 
         private void ButtonStatus_Click(object sender, RoutedEventArgs e)
         {
-            if (machine.Mode != Machine.OperatingMode.Manual)
+            if (App.Current.Machine.Mode != Machine.OperatingMode.Manual)
                 return;
 
-            machine.SendLine("$X");
+            App.Current.Machine.SendLine("$X");
         }
 
         private void AddHistoryItem(ListBoxItem item)
@@ -158,12 +158,12 @@ namespace OpenCNCPilot
 
         private void Machine_FilePositionChanged()
         {
-            LabelFilePosition.Content = machine.FilePosition;
+            LabelFilePosition.Content = App.Current.Machine.FilePosition;
 
             if (ListViewFile.SelectedItem is TextBlock)
                 ((TextBlock)ListViewFile.SelectedItem).Background = Brushes.Transparent;
 
-            ListViewFile.SelectedIndex = machine.FilePosition;
+            ListViewFile.SelectedIndex = App.Current.Machine.FilePosition;
 
             if (ListViewFile.SelectedItem is TextBlock)
                 ((TextBlock)ListViewFile.SelectedItem).Background = Brushes.Gray;
@@ -175,7 +175,7 @@ namespace OpenCNCPilot
         {
             try
             {
-                ToolPath = GCodeFile.FromList(machine.File, App.Current.StorageService, App.Current.LoggerService);
+                ToolPath = GCodeFile.FromList(App.Current.Machine.File, App.Current.StorageService, App.Current.LoggerService);
                 GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced); // prevents considerable increase in memory usage
             }
             catch (Exception ex)
@@ -188,16 +188,16 @@ namespace OpenCNCPilot
                 HeightMap.GetModel(ToolPath.Commands, App.Current.Settings, App.Current.LoggerService, ModelLine, ModelRapid, ModelArc);
             }
 
-            LabelFileLength.Content = machine.File.Count;
+            LabelFileLength.Content = App.Current.Machine.File.Count;
 
-            int digits = (int)Math.Ceiling(Math.Log10(machine.File.Count));
+            int digits = (int)Math.Ceiling(Math.Log10(App.Current.Machine.File.Count));
 
             string format = "D" + digits;
 
             int i = 1;
 
             ListViewFile.Items.Clear();
-            foreach (string line in machine.File)
+            foreach (string line in App.Current.Machine.File)
             {
                 ListViewFile.Items.Add(new TextBlock() { Text = $"{i++.ToString(format)} : {line}" });
             }
@@ -206,43 +206,43 @@ namespace OpenCNCPilot
 
         private void UpdateAllButtons()
         {
-            ButtonDistanceMode.IsEnabled = machine.Mode == Machine.OperatingMode.Manual;
-            ButtonUnit.IsEnabled = machine.Mode == Machine.OperatingMode.Manual;
-            ButtonArcPlane.IsEnabled = machine.Mode == Machine.OperatingMode.Manual;
-            ButtonStatus.IsEnabled = machine.Mode == Machine.OperatingMode.Manual;
+            ButtonDistanceMode.IsEnabled = App.Current.Machine.Mode == Machine.OperatingMode.Manual;
+            ButtonUnit.IsEnabled = App.Current.Machine.Mode == Machine.OperatingMode.Manual;
+            ButtonArcPlane.IsEnabled = App.Current.Machine.Mode == Machine.OperatingMode.Manual;
+            ButtonStatus.IsEnabled = App.Current.Machine.Mode == Machine.OperatingMode.Manual;
 
-            ButtonFeedHold.IsEnabled = machine.Mode != Machine.OperatingMode.Disconnected;
-            ButtonCycleStart.IsEnabled = machine.Mode != Machine.OperatingMode.Disconnected;
-            ButtonSoftReset.IsEnabled = machine.Mode == Machine.OperatingMode.Manual;
+            ButtonFeedHold.IsEnabled = App.Current.Machine.Mode != Machine.OperatingMode.Disconnected;
+            ButtonCycleStart.IsEnabled = App.Current.Machine.Mode != Machine.OperatingMode.Disconnected;
+            ButtonSoftReset.IsEnabled = App.Current.Machine.Mode == Machine.OperatingMode.Manual;
 
-            ButtonSettings.IsEnabled = machine.Mode == Machine.OperatingMode.Disconnected;
+            ButtonSettings.IsEnabled = App.Current.Machine.Mode == Machine.OperatingMode.Disconnected;
 
-            ButtonFileOpen.IsEnabled = machine.Mode != Machine.OperatingMode.SendFile;
-            ButtonFileStart.IsEnabled = machine.Mode == Machine.OperatingMode.Manual;
-            ButtonFilePause.IsEnabled = machine.Mode == Machine.OperatingMode.SendFile;
-            ButtonFileGoto.IsEnabled = machine.Mode != Machine.OperatingMode.SendFile;
-            ButtonFileClear.IsEnabled = machine.Mode != Machine.OperatingMode.SendFile;
+            ButtonFileOpen.IsEnabled = App.Current.Machine.Mode != Machine.OperatingMode.SendFile;
+            ButtonFileStart.IsEnabled = App.Current.Machine.Mode == Machine.OperatingMode.Manual;
+            ButtonFilePause.IsEnabled = App.Current.Machine.Mode == Machine.OperatingMode.SendFile;
+            ButtonFileGoto.IsEnabled = App.Current.Machine.Mode != Machine.OperatingMode.SendFile;
+            ButtonFileClear.IsEnabled = App.Current.Machine.Mode != Machine.OperatingMode.SendFile;
 
-            ButtonManualSend.IsEnabled = machine.Mode == Machine.OperatingMode.Manual;
-            ButtonManualSetG10Zero.IsEnabled = machine.Mode == Machine.OperatingMode.Manual;
-            ButtonManualSetG92Zero.IsEnabled = machine.Mode == Machine.OperatingMode.Manual;
-            ButtonManualResetG10.IsEnabled = machine.Mode == Machine.OperatingMode.Manual;
+            ButtonManualSend.IsEnabled = App.Current.Machine.Mode == Machine.OperatingMode.Manual;
+            ButtonManualSetG10Zero.IsEnabled = App.Current.Machine.Mode == Machine.OperatingMode.Manual;
+            ButtonManualSetG92Zero.IsEnabled = App.Current.Machine.Mode == Machine.OperatingMode.Manual;
+            ButtonManualResetG10.IsEnabled = App.Current.Machine.Mode == Machine.OperatingMode.Manual;
 
-            ButtonEditSimplify.IsEnabled = machine.Mode != Machine.OperatingMode.SendFile;
-            ButtonEditArcToLines.IsEnabled = machine.Mode != Machine.OperatingMode.SendFile;
-            ButtonEditSplit.IsEnabled = machine.Mode != Machine.OperatingMode.SendFile;
+            ButtonEditSimplify.IsEnabled = App.Current.Machine.Mode != Machine.OperatingMode.SendFile;
+            ButtonEditArcToLines.IsEnabled = App.Current.Machine.Mode != Machine.OperatingMode.SendFile;
+            ButtonEditSplit.IsEnabled = App.Current.Machine.Mode != Machine.OperatingMode.SendFile;
 
-            ModelTool.Visible = machine.Connected;
+            ModelTool.Visible = App.Current.Machine.Connected;
 
             UpdateProbeTabButtons();
         }
 
         private void Machine_ConnectionStateChanged()
         {
-            ButtonConnect.Visibility = machine.Connected ? Visibility.Collapsed : Visibility.Visible;
-            ButtonDisconnect.Visibility = machine.Connected ? Visibility.Visible : Visibility.Collapsed;
+            ButtonConnect.Visibility = App.Current.Machine.Connected ? Visibility.Collapsed : Visibility.Visible;
+            ButtonDisconnect.Visibility = App.Current.Machine.Connected ? Visibility.Visible : Visibility.Collapsed;
 
-            ButtonSettings.IsEnabled = !machine.Connected;
+            ButtonSettings.IsEnabled = !App.Current.Machine.Connected;
         }
     }
 }

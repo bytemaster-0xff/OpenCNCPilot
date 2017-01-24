@@ -7,17 +7,17 @@ namespace OpenCNCPilot
 	{
 		private void ButtonFeedHold_Click(object sender, RoutedEventArgs e)
 		{
-			machine.FeedHold();
+            App.Current.Machine.FeedHold();
 		}
 
 		private void ButtonCycleStart_Click(object sender, RoutedEventArgs e)
 		{
-			machine.CycleStart();
+            App.Current.Machine.CycleStart();
 		}
 
 		private void ButtonSoftReset_Click(object sender, RoutedEventArgs e)
 		{
-			machine.SoftReset();
+            App.Current.Machine.SoftReset();
 		}
 	}
 }

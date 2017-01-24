@@ -10,9 +10,7 @@ using OpenCNCPilot.Core;
 namespace OpenCNCPilot
 {
 	public partial class MainWindow : Window
-	{
-        Machine machine;
-
+	{        
 		OpenFileDialog openFileDialogGCode = new OpenFileDialog() { InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory), Filter = Constants.FileFilterGCode };
 		OpenFileDialog openFileDialogHeightMap = new OpenFileDialog() { InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory), Filter = Constants.FileFilterHeightMap };
 		SaveFileDialog saveFileDialogHeightMap = new SaveFileDialog() { InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory), Filter = Constants.FileFilterHeightMap };
@@ -28,28 +26,26 @@ namespace OpenCNCPilot
 			openFileDialogHeightMap.FileOk += OpenFileDialogHeightMap_FileOk;
 			saveFileDialogHeightMap.FileOk += SaveFileDialogHeightMap_FileOk;
 
-            App.Current.Settings = Settings.Load(App.Current.StorageService);
-            machine = new Machine(App.Current.Settings, App.Current.DispatcherService, App.Current.LoggerService);
 
-            machine.ConnectionStateChanged += Machine_ConnectionStateChanged;
+            App.Current.Machine.ConnectionStateChanged += Machine_ConnectionStateChanged;
 
             ToolPath = GCodeFile.GetEmpty(App.Current.StorageService, App.Current.LoggerService);
 
-			machine.NonFatalException += Machine_NonFatalException;
-			machine.Info += Machine_Info;
-			machine.LineReceived += Machine_LineReceived;
-			machine.LineSent += Machine_LineSent;
+            App.Current.Machine.NonFatalException += Machine_NonFatalException;
+            App.Current.Machine.Info += Machine_Info;
+            App.Current.Machine.LineReceived += Machine_LineReceived;
+            App.Current.Machine.LineSent += Machine_LineSent;
 
-			machine.PositionUpdateReceived += Machine_PositionUpdateReceived;
-			machine.StatusChanged += Machine_StatusChanged;
-			machine.DistanceModeChanged += Machine_DistanceModeChanged;
-			machine.UnitChanged += Machine_UnitChanged;
-			machine.PlaneChanged += Machine_PlaneChanged;
-			machine.BufferStateChanged += Machine_BufferStateChanged;
-			machine.OperatingModeChanged += UpdateAllButtons;
-			machine.FileChanged += Machine_FileChanged;
-			machine.FilePositionChanged += Machine_FilePositionChanged;
-			machine.ProbeFinished += Machine_ProbeFinished;
+            App.Current.Machine.PositionUpdateReceived += Machine_PositionUpdateReceived;
+            App.Current.Machine.StatusChanged += Machine_StatusChanged;
+            App.Current.Machine.DistanceModeChanged += Machine_DistanceModeChanged;
+            App.Current.Machine.UnitChanged += Machine_UnitChanged;
+            App.Current.Machine.PlaneChanged += Machine_PlaneChanged;
+            App.Current.Machine.BufferStateChanged += Machine_BufferStateChanged;
+            App.Current.Machine.OperatingModeChanged += UpdateAllButtons;
+            App.Current.Machine.FileChanged += Machine_FileChanged;
+            App.Current.Machine.FilePositionChanged += Machine_FilePositionChanged;
+            App.Current.Machine.ProbeFinished += Machine_ProbeFinished;
 
 			UpdateAllButtons();
 		}
@@ -71,19 +67,19 @@ namespace OpenCNCPilot
 
 					if(file.EndsWith(".hmap"))
 					{
-						if (machine.Mode == Machine.OperatingMode.Probe || Map != null)
+						if (App.Current.Machine.Mode == Machine.OperatingMode.Probe || Map != null)
 							return;
 
 						OpenHeightMap(file);
 					}
 					else
 					{
-						if (machine.Mode == Machine.OperatingMode.SendFile)
+						if (App.Current.Machine.Mode == Machine.OperatingMode.SendFile)
 							return;
 
 						try
 						{
-							machine.SetFile(System.IO.File.ReadAllLines(file));
+                            App.Current.Machine.SetFile(System.IO.File.ReadAllLines(file));
 						}
 						catch (Exception ex)
 						{
@@ -106,7 +102,7 @@ namespace OpenCNCPilot
 
 					if (file.EndsWith(".hmap"))
 					{
-						if (machine.Mode != Machine.OperatingMode.Probe && Map == null)
+						if (App.Current.Machine.Mode != Machine.OperatingMode.Probe && Map == null)
 						{
 							e.Effects = DragDropEffects.Copy;
 							return;
@@ -114,7 +110,7 @@ namespace OpenCNCPilot
 					}
 					else
 					{
-						if (machine.Mode != Machine.OperatingMode.SendFile)
+						if (App.Current.Machine.Mode != Machine.OperatingMode.SendFile)
 						{
 							e.Effects = DragDropEffects.Copy;
 							return;
