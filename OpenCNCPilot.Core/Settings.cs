@@ -1,9 +1,6 @@
-﻿using OpenCNCPilot.Core.Platform;
+﻿using Newtonsoft.Json;
+using OpenCNCPilot.Core.Platform;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OpenCNCPilot.Core
 {
@@ -27,15 +24,20 @@ namespace OpenCNCPilot.Core
         public bool AbortOnProbeFail { get; set; }
         public double ProbeFeed { get; set; }
 
-
-        public void Load(IStorage storage)
+        public static Settings Load(IStorage storage)
         {
+            var json = storage.ReadAllText("Settings.json");
+            if (String.IsNullOrEmpty(json))
+                return Settings.Default;
 
+            return JsonConvert.DeserializeObject<Settings>(json);
         }
 
         public void Save(IStorage storage)
         {
+            var json = JsonConvert.SerializeObject(this);
 
+            storage.WriteAllText("Settings.json", json);
         }
 
         public static Settings Default

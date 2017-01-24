@@ -42,18 +42,21 @@ namespace OpenCNCPilot
 
         private void Machine_PositionUpdateReceived()
         {
-            ModelTool.Point1 = (machine.WorkPosition + new Vector3(0, 0, 10)).ToPoint3D().ToMedia3D();
-            ModelTool.Point2 = machine.WorkPosition.ToPoint3D().ToMedia3D();
+            App.Current.DispatcherService.RunOnUIThread(() =>
+            {
+                ModelTool.Point1 = (machine.WorkPosition + new Vector3(0, 0, 10)).ToPoint3D().ToMedia3D();
+                ModelTool.Point2 = machine.WorkPosition.ToPoint3D().ToMedia3D();
 
-            var nfi = Constants.DecimalOutputFormat;
+                var nfi = Constants.DecimalOutputFormat;
 
-            LabelPosX.Content = machine.WorkPosition.X.ToString(nfi);
-            LabelPosY.Content = machine.WorkPosition.Y.ToString(nfi);
-            LabelPosZ.Content = machine.WorkPosition.Z.ToString(nfi);
+                LabelPosX.Content = machine.WorkPosition.X.ToString(nfi);
+                LabelPosY.Content = machine.WorkPosition.Y.ToString(nfi);
+                LabelPosZ.Content = machine.WorkPosition.Z.ToString(nfi);
 
-            LabelPosMX.Content = machine.MachinePosition.X.ToString(nfi);
-            LabelPosMY.Content = machine.MachinePosition.Y.ToString(nfi);
-            LabelPosMZ.Content = machine.MachinePosition.Z.ToString(nfi);
+                LabelPosMX.Content = machine.MachinePosition.X.ToString(nfi);
+                LabelPosMY.Content = machine.MachinePosition.Y.ToString(nfi);
+                LabelPosMZ.Content = machine.MachinePosition.Z.ToString(nfi);
+            });
         }
 
         private void Machine_BufferStateChanged()

@@ -15,6 +15,10 @@
         <ResourceDictionary Source="MainWindow.Resources.xaml"/>
     </Window.Resources>
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="120" />
+        </Grid.ColumnDefinitions>
         <Grid Panel.ZIndex="1">
             <Border Style="{StaticResource stylePanelOut}" VerticalAlignment="Top" HorizontalAlignment="Center">
                 <StackPanel>
@@ -202,5 +206,8 @@
             <h:LinesVisual3D x:Name="ModelHeightMapBoundary" Thickness="2" Color="Lime"/>
             <h:PointsVisual3D x:Name="ModelHeightMapPoints" Color="Red" Size="4"/>
         </h:HelixViewport3D>
+        <Grid Grid.Column="1">
+            
+        </Grid>
     </Grid>
 </Window>

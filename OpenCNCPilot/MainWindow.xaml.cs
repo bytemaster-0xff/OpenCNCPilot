@@ -5,6 +5,7 @@ using Microsoft.Win32;
 using OpenCNCPilot.Core.GCode;
 using OpenCNCPilot.Core.Communication;
 using OpenCNCPilot.Presentation;
+using OpenCNCPilot.Core;
 
 namespace OpenCNCPilot
 {
@@ -27,11 +28,12 @@ namespace OpenCNCPilot
 			openFileDialogHeightMap.FileOk += OpenFileDialogHeightMap_FileOk;
 			saveFileDialogHeightMap.FileOk += SaveFileDialogHeightMap_FileOk;
 
-			machine.ConnectionStateChanged += Machine_ConnectionStateChanged;
+            App.Current.Settings = Settings.Load(App.Current.StorageService);
+            machine = new Machine(App.Current.Settings, App.Current.DispatcherService, App.Current.LoggerService);
+
+            machine.ConnectionStateChanged += Machine_ConnectionStateChanged;
 
             ToolPath = GCodeFile.GetEmpty(App.Current.StorageService, App.Current.LoggerService);
-
-            machine = new Machine(App.Current.Settings, App.Current.DispatcherService, App.Current.LoggerService);
 
 			machine.NonFatalException += Machine_NonFatalException;
 			machine.Info += Machine_Info;
@@ -50,7 +52,6 @@ namespace OpenCNCPilot
 			machine.ProbeFinished += Machine_ProbeFinished;
 
 			UpdateAllButtons();
-
 		}
 
 		private void Hyperlink_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)

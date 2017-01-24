@@ -20,15 +20,16 @@ namespace OpenCNCPilot
         IStorage _storage;
         ILogger _logger;
 
-        protected override void OnActivated(EventArgs e)
+        public App()
         {
-            base.OnActivated(e);
-
             _app = this;
-
+            _dispatcher = new Platform.WPFDispatcher();
+            _storage = new Platform.WPFStorage();
+            _logger = new Platform.WPFLogger();
         }
 
-        public OpenCNCPilot.Core.Settings Settings { get; private set; }
+
+        public OpenCNCPilot.Core.Settings Settings { get; set; }
 
         public new static App Current { get { return _app; } }
 

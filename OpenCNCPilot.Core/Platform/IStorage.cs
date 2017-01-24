@@ -9,7 +9,8 @@ namespace OpenCNCPilot.Core.Platform
     public interface IStorage
     {
         String ReadAllText(String fullFileName);
-        List<string> ReadLines(string lines);
+        void WriteAllText(String fullFileName, String contents);
+        List<string> ReadLines(String lines);
         bool Exists(string fileName);
         void WriteAllLines(String fileName, List<String> contents);
     }

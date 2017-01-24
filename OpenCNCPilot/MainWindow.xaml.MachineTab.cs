@@ -1,6 +1,7 @@
 ﻿using OpenCNCPilot.Core.Communication;
 using System;
 using System.Collections.Generic;
+using System.IO.Ports;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -22,7 +23,9 @@ namespace OpenCNCPilot
 		{
 			try
 			{
-				machine.Connect(null);
+                var serialPort = new SerialPort(App.Current.Settings.SerialPortName, App.Current.Settings.SerialPortBaud);
+                serialPort.Open();
+				machine.Connect(serialPort.BaseStream);
 			}
 			catch (Exception ex)
 			{
