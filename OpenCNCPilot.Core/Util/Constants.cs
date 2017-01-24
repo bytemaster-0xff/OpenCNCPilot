@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 
-namespace OpenCNCPilot.Util
+namespace OpenCNCPilot.Core.Util
 {
 	public class Constants
 	{

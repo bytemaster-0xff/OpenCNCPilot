@@ -1,8 +1,8 @@
-﻿using OpenCNCPilot.Util;
+﻿using OpenCNCPilot.Core.Util;
 using System;
 using System.Collections.Generic;
 
-namespace OpenCNCPilot.GCode.GCodeCommands
+namespace OpenCNCPilot.Core.GCode.GCodeCommands
 {
 	public enum ArcPlane
 	{
@@ -17,7 +17,7 @@ namespace OpenCNCPilot.GCode.GCodeCommands
 		CCW
 	}
 
-	class Arc : Motion
+	public class Arc : Motion
 	{
 		public ArcPlane Plane;
 		public ArcDirection Direction;

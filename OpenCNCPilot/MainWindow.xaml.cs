@@ -1,21 +1,22 @@
 ﻿using System;
 using System.Windows;
-using OpenCNCPilot.Communication;
-using OpenCNCPilot.Util;
+using OpenCNCPilot.Core.Util;
 using Microsoft.Win32;
-using OpenCNCPilot.GCode;
+using OpenCNCPilot.Core.GCode;
+using OpenCNCPilot.Core.Communication;
+using OpenCNCPilot.Presentation;
 
 namespace OpenCNCPilot
 {
 	public partial class MainWindow : Window
 	{
-		Machine machine = new Machine();
+        Machine machine;
 
 		OpenFileDialog openFileDialogGCode = new OpenFileDialog() { InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory), Filter = Constants.FileFilterGCode };
 		OpenFileDialog openFileDialogHeightMap = new OpenFileDialog() { InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory), Filter = Constants.FileFilterHeightMap };
 		SaveFileDialog saveFileDialogHeightMap = new SaveFileDialog() { InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory), Filter = Constants.FileFilterHeightMap };
 
-        GCodeFile ToolPath { get; set; } = GCodeFile.Empty;
+        GCodeFile ToolPath { get; set; } 
 		HeightMap Map { get; set; }
 
 		public MainWindow()
@@ -27,6 +28,10 @@ namespace OpenCNCPilot
 			saveFileDialogHeightMap.FileOk += SaveFileDialogHeightMap_FileOk;
 
 			machine.ConnectionStateChanged += Machine_ConnectionStateChanged;
+
+            ToolPath = GCodeFile.GetEmpty(App.Current.StorageService, App.Current.LoggerService);
+
+            machine = new Machine(App.Current.Settings, App.Current.DispatcherService, App.Current.LoggerService);
 
 			machine.NonFatalException += Machine_NonFatalException;
 			machine.Info += Machine_Info;
@@ -46,7 +51,6 @@ namespace OpenCNCPilot
 
 			UpdateAllButtons();
 
-			UpdateCheck.CheckForUpdate();
 		}
 
 		private void Hyperlink_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)

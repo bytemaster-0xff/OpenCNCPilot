@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OpenCNCPilot.Core.Communication;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,7 +12,7 @@ namespace OpenCNCPilot
 	{
 		private void ButtonSettings_Click(object sender, RoutedEventArgs e)
 		{
-			if (machine.Mode != Communication.Machine.OperatingMode.Disconnected)
+			if (machine.Mode != Machine.OperatingMode.Disconnected)
 				return;
 
 			new SettingsWindow().ShowDialog();
@@ -21,7 +22,7 @@ namespace OpenCNCPilot
 		{
 			try
 			{
-				machine.Connect();
+				machine.Connect(null);
 			}
 			catch (Exception ex)
 			{
@@ -46,7 +47,7 @@ namespace OpenCNCPilot
 			if (machine.Connected)
 				machine.Disconnect();
 
-			Properties.Settings.Default.Save();
+            App.Current.Settings.Save(App.Current.StorageService);
 		}
 	}
 }

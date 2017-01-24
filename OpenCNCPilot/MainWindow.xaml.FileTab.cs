@@ -1,4 +1,4 @@
-﻿using OpenCNCPilot.Communication;
+﻿using OpenCNCPilot.Core.Communication;
 using System;
 using System.Collections.Generic;
 using System.Linq;

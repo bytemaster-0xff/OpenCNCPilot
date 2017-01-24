@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OpenCNCPilot.GCode.GCodeCommands
+namespace OpenCNCPilot.Core.GCode.GCodeCommands
 {
 	class MCode : Command
 	{

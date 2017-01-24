@@ -1,6 +1,8 @@
-﻿using OpenCNCPilot.Communication;
-using OpenCNCPilot.GCode;
-using OpenCNCPilot.Util;
+﻿using OpenCNCPilot.Core.Communication;
+using OpenCNCPilot.Core.Util;
+using OpenCNCPilot.Core.GCode;
+using OpenCNCPilot.Presentation;
+
 using System;
 using System.Data;
 using System.Windows;
@@ -68,7 +70,7 @@ namespace OpenCNCPilot
 			if (machine.Mode == Machine.OperatingMode.Probe || Map != null)
 				return;
 
-			Map = new HeightMap(NewHeightMapDialog.GridSize, NewHeightMapDialog.Min, NewHeightMapDialog.Max);
+			Map = new HeightMap(App.Current.Settings, App.Current.LoggerService, NewHeightMapDialog.GridSize, NewHeightMapDialog.Min, NewHeightMapDialog.Max);
 			
 			if (NewHeightMapDialog.GenerateTestPattern)
 			{
@@ -91,8 +93,9 @@ namespace OpenCNCPilot
 				return;
 
 			try
-			{
-				Map.Save(saveFileDialogHeightMap.FileName);
+			{                
+                //TODO: Need to get the commands and save them
+				//Map.Save(saveFileDialogHeightMap.FileName);
 			}
 			catch (Exception ex)
 			{
@@ -112,7 +115,7 @@ namespace OpenCNCPilot
 
 			try
 			{
-				Map = HeightMap.Load(filepath);
+				Map = HeightMap.Load(filepath, App.Current.Settings, App.Current.LoggerService);
 			}
 			catch (Exception ex)
 			{
@@ -175,10 +178,10 @@ namespace OpenCNCPilot
 
 			machine.SendLine($"G0X{nextPoint.X.ToString("0.###", Constants.DecimalOutputFormat)}Y{nextPoint.Y.ToString("0.###", Constants.DecimalOutputFormat)}");
 
-			machine.SendLine($"G38.3Z-{Properties.Settings.Default.ProbeMaxDepth.ToString("0.###", Constants.DecimalOutputFormat)}F{Properties.Settings.Default.ProbeFeed.ToString("0.#", Constants.DecimalOutputFormat)}");
+			machine.SendLine($"G38.3Z-{App.Current.Settings.ProbeMaxDepth.ToString("0.###", Constants.DecimalOutputFormat)}F{App.Current.Settings.ProbeFeed.ToString("0.#", Constants.DecimalOutputFormat)}");
 
 			machine.SendLine("G91");
-			machine.SendLine($"G0Z{Properties.Settings.Default.ProbeMinimumHeight.ToString("0.###", Constants.DecimalOutputFormat)}");
+			machine.SendLine($"G0Z{App.Current.Settings.ProbeMinimumHeight.ToString("0.###", Constants.DecimalOutputFormat)}");
 			machine.SendLine("G90");
 		}
 
@@ -193,7 +196,7 @@ namespace OpenCNCPilot
 				return;
 			}
 
-			if (!success && Properties.Settings.Default.AbortOnProbeFail)
+			if (!success && App.Current.Settings.AbortOnProbeFail)
 			{
 				MessageBox.Show("Probe Failed! aborting");
 
@@ -207,7 +210,7 @@ namespace OpenCNCPilot
 
 			if (Map.NotProbed.Count == 0)
 			{
-				machine.SendLine($"G0Z{Properties.Settings.Default.ProbeSafeHeight.ToString(Constants.DecimalOutputFormat)}");
+				machine.SendLine($"G0Z{App.Current.Settings.ProbeSafeHeight.ToString(Constants.DecimalOutputFormat)}");
 				machine.ProbeStop();
 				return;
 			}
@@ -229,7 +232,7 @@ namespace OpenCNCPilot
 				return;
 
 			machine.SendLine("G90");
-			machine.SendLine($"G0Z{Properties.Settings.Default.ProbeSafeHeight.ToString("0.###", Constants.DecimalOutputFormat)}");
+			machine.SendLine($"G0Z{App.Current.Settings.ProbeSafeHeight.ToString("0.###", Constants.DecimalOutputFormat)}");
 
 			HeightMapProbeNextPoint();
 		}

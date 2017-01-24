@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OpenCNCPilot.GCode
+namespace OpenCNCPilot.Core.GCode
 {
 	class ParseException : Exception
 	{

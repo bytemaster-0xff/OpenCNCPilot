@@ -1,5 +1,5 @@
-﻿using OpenCNCPilot.Communication;
-using OpenCNCPilot.Util;
+﻿using OpenCNCPilot.Core.Communication;
+using OpenCNCPilot.Core.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;

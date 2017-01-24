@@ -1,9 +1,9 @@
-﻿using OpenCNCPilot.Util;
+﻿using OpenCNCPilot.Core.Util;
 using System.Collections.Generic;
 
-namespace OpenCNCPilot.GCode.GCodeCommands
+namespace OpenCNCPilot.Core.GCode.GCodeCommands
 {
-	abstract class Motion : Command
+	public abstract class Motion : Command
 	{ 
 		public Vector3 Start;
 		public Vector3 End;

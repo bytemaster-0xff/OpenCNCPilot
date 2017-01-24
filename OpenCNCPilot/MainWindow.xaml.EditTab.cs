@@ -1,4 +1,4 @@
-﻿using OpenCNCPilot.Communication;
+﻿using OpenCNCPilot.Core.Communication;
 using System;
 using System.Windows;
 
@@ -45,7 +45,7 @@ namespace OpenCNCPilot
 			if (machine.Mode == Machine.OperatingMode.SendFile)
 				return;
 
-			EnterNumberWindow enw = new EnterNumberWindow(Properties.Settings.Default.ArcToLineSegmentLength);
+			EnterNumberWindow enw = new EnterNumberWindow(App.Current.Settings.ArcToLineSegmentLength);
 			enw.Title = "Arc Segment Length";
 			enw.Owner = this;
 			enw.User_Ok += Enw_User_Ok_ArcToLines;
@@ -54,7 +54,7 @@ namespace OpenCNCPilot
 
 		private void Enw_User_Ok_ArcToLines(double value)
 		{
-			Properties.Settings.Default.ArcToLineSegmentLength = value;
+            App.Current.Settings.ArcToLineSegmentLength = value;
 
 			if (machine.Mode == Machine.OperatingMode.SendFile)
 				return;
@@ -67,7 +67,7 @@ namespace OpenCNCPilot
 			if (machine.Mode == Machine.OperatingMode.SendFile)
 				return;
 
-			EnterNumberWindow enw = new EnterNumberWindow(Properties.Settings.Default.SplitSegmentLength);
+			EnterNumberWindow enw = new EnterNumberWindow(App.Current.Settings.SplitSegmentLength);
 			enw.Title = "Segment Length";
 			enw.Owner = this;
 			enw.User_Ok += Enw_User_Ok_Split;
@@ -76,7 +76,7 @@ namespace OpenCNCPilot
 
 		private void Enw_User_Ok_Split(double value)
 		{
-			Properties.Settings.Default.SplitSegmentLength = value;
+            App.Current.Settings.SplitSegmentLength = value;
 
 			if (machine.Mode == Machine.OperatingMode.SendFile)
 				return;

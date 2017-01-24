@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using OpenCNCPilot.GCode.GCodeCommands;
-using System.IO;
 using System.Text.RegularExpressions;
-using OpenCNCPilot.Util;
+using OpenCNCPilot.Core.Util;
+using OpenCNCPilot.Core.GCode.GCodeCommands;
+using OpenCNCPilot.Core.Platform;
 
-namespace OpenCNCPilot.GCode
+namespace OpenCNCPilot.Core.GCode
 {
 	public enum ParseDistanceMode
 	{
@@ -20,7 +20,7 @@ namespace OpenCNCPilot.GCode
 		Imperial
 	}
 
-	class ParserState
+	public class ParserState
 	{
 		public Vector3 Position;
 		public ArcPlane Plane;
@@ -48,32 +48,39 @@ namespace OpenCNCPilot.GCode
 		public double Parameter;
 	}
 
-	static class GCodeParser
+	public class GCodeParser
 	{
-		public static ParserState State;
+        IStorage _storage;
+        ILogger _logger;
 
-		private static Regex GCodeSplitter = new Regex(@"([A-Z])\s*(\-?\d+\.?\d*)", RegexOptions.Compiled);
-		private static double[] MotionCommands = new double[] { 0, 1, 2, 3 };
-		private static string ValidWords = "GMXYZIJKFR";
-		public static List<Command> Commands;
+		public ParserState State { get; private set; }
 
-		public static void Reset()
+        //TODO: Removed compiled options
+		private Regex GCodeSplitter = new Regex(@"([A-Z])\s*(\-?\d+\.?\d*)");
+		private double[] MotionCommands = new double[] { 0, 1, 2, 3 };
+		private string ValidWords = "GMXYZIJKFR";
+		public  List<Command> Commands;
+
+		public void Reset()
 		{
 			State = new ParserState();
 			Commands = new List<Command>();	//don't reuse, might be used elsewhere
 		}
 
-		static GCodeParser()
+		 public GCodeParser(IStorage storage, ILogger logger)
 		{
 			Reset();
+
+            _logger = logger;
+            _storage = storage;
 		}
 
-		public static void ParseFile(string path)
+		public  void ParseFile(string path)
 		{
-			Parse(File.ReadLines(path));
+			Parse(_storage.ReadLines(path));
 		}
 
-		public static void Parse(IEnumerable<string> file)
+		public  void Parse(IEnumerable<string> file)
 		{
 			int i = 1;
 
@@ -93,10 +100,10 @@ namespace OpenCNCPilot.GCode
 
 			sw.Stop();
 
-			Console.WriteLine("Parsing the GCode File took {0} ms", sw.ElapsedMilliseconds);
+            _logger.WriteLine($"Parsing the GCode File took {sw.ElapsedMilliseconds} ms");
 		}
 
-		static string CleanupLine(string line, int lineNumber)
+		 string CleanupLine(string line, int lineNumber)
 		{
 			int commentIndex = line.IndexOf(';');
 
@@ -118,7 +125,7 @@ namespace OpenCNCPilot.GCode
 			return line;
 		}
 
-		static void Parse(string line, int lineNumber)
+		 void Parse(string line, int lineNumber)
 		{
 			MatchCollection matches = GCodeSplitter.Matches(line);
 
@@ -131,7 +138,7 @@ namespace OpenCNCPilot.GCode
 
 			for (int i = 0; i < Words.Count; i++)
 			{
-				if (!ValidWords.Contains(Words[i].Command))
+				if (!ValidWords.Contains(Words[i].Command.ToString()))
 				{
 					Words.RemoveAt(i);
 					continue;
@@ -286,7 +293,7 @@ namespace OpenCNCPilot.GCode
 				if (Words.Count > 0)
 					throw new ParseException("Motion Command must be last in line (unused Words in Block)", lineNumber);
 
-				Line motion = new Line();
+				var motion = new GCodeLine();
 				motion.Start = State.Position;
 				motion.End = EndPos;
 				motion.Feed = State.Feed;

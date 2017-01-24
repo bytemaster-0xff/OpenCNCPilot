@@ -1,13 +1,10 @@
-﻿using OpenCNCPilot.Util;
+﻿using OpenCNCPilot.Core.Util;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace OpenCNCPilot.GCode.GCodeCommands
+namespace OpenCNCPilot.Core.GCode.GCodeCommands
 {
-	class Line : Motion
+	public class GCodeLine : Motion
 	{
 		public bool Rapid;
 
@@ -43,7 +40,7 @@ namespace OpenCNCPilot.GCode.GCodeCommands
 			{
 				Vector3 end = Interpolate(((double)i) / divisions);
 
-				Line immediate = new Line();
+				var immediate = new GCodeLine();
 				immediate.Start = lastEnd;
 				immediate.End = end;
 				immediate.Feed = Feed;
