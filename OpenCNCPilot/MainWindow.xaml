@@ -165,6 +165,7 @@
                     </Style>
                 </ListBox.Resources>
             </ListBox>
+            <ctls:ImageSensor HorizontalAlignment="Right" VerticalAlignment="Bottom" />
         </Grid>
         <h:HelixViewport3D Name="viewport" ShowViewCube="False" Panel.ZIndex="0">
             <h:HelixViewport3D.Camera>
