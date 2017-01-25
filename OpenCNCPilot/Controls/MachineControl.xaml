@@ -3,55 +3,98 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:fa="http://schemas.fontawesome.io/icons/"
              xmlns:vm="clr-namespace:OpenCNCPilot.Core.ViewModels;assembly=OpenCNCPilot.Core"
              xmlns:local="clr-namespace:OpenCNCPilot.Controls"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="800" d:DesignWidth="300">
     <Grid>
+        <Grid.Resources>
+            <Style TargetType="TextBlock" x:Key="Label">
+                <Setter Property="Width" Value="120" />
+            </Style>
+            <Style TargetType="TextBlock" x:Key="Value">
+                <Setter Property="FontWeight" Value="Bold" />
+            </Style>
+        </Grid.Resources>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
-        <Grid Grid.Row="0" Background="Black">
-            <Grid.Resources>
-                <Style TargetType="TextBlock" >
-                    <Setter Property="FontSize" Value="26" />
-                    <Setter Property="Foreground" Value="LightGreen" />
-                </Style>
-                <Style TargetType="TextBlock" x:Key="Position">
-                    <Setter Property="FontSize" Value="26" />
-                    <Setter Property="Foreground" Value="LightGreen" />
-                    <Setter Property="TextAlignment" Value="Right" />
-                    <Setter Property="FontFamily" Value="Consolas" />
-                </Style>
-            </Grid.Resources>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="auto" />
-                <RowDefinition Height="auto" />
-                <RowDefinition Height="auto" />
-                <RowDefinition Height="auto" />
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="3*" />
-                <ColumnDefinition Width="3*" />
-            </Grid.ColumnDefinitions>
-            <TextBlock Grid.Column="1" Text="Machine" TextAlignment="Center"/>
-            <TextBlock Grid.Column="2" Text="Work" TextAlignment="Center" />
+        <StackPanel Grid.Row="0" Margin="4">
+            <TextBlock Text="Machine Status" FontSize="24" FontWeight="Bold" />
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Connected" Style="{StaticResource Label}" />
+                <TextBlock Text="{Binding Machine.Connected}" Style="{StaticResource Value}"  />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Status" Style="{StaticResource Label}" />
+                <TextBlock Text="{Binding Machine.Status}" Style="{StaticResource Value}"  />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Units" Style="{StaticResource Label}"  />
+                <TextBlock Text="{Binding Machine.Unit}" Style="{StaticResource Value}"  />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Operating Mode" Style="{StaticResource Label}" />
+                <TextBlock Text="{Binding Machine.Mode}" Style="{StaticResource Value}"  />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Distance Mode" Style="{StaticResource Label}" />
+                <TextBlock Text="{Binding Machine.DistanceMode}" Style="{StaticResource Value}" />
+            </StackPanel>
+        </StackPanel>
 
-            <TextBlock Text="X" Grid.Row="1" TextAlignment="Center"  />
-            <TextBlock Text="Y" Grid.Row="2" TextAlignment="Center" />
-            <TextBlock Text="Z" Grid.Row="3" TextAlignment="Center" />
 
-            <TextBlock Text="{Binding Machine.MachinePosition.X, StringFormat=0.000}" Style="{StaticResource Position}" Grid.Row="1" Grid.Column="1" />
-            <TextBlock Text="{Binding Machine.MachinePosition.Y, StringFormat=0.000}" Style="{StaticResource Position}" Grid.Row="2" Grid.Column="1" />
-            <TextBlock Text="{Binding Machine.MachinePosition.Z, StringFormat=0.000}" Style="{StaticResource Position}" Grid.Row="3" Grid.Column="1" />
+        <Grid Grid.Row="1" Background="Black">
+            <Grid Margin="4">
+                <Grid.Resources>
+                    <Style TargetType="TextBlock" >
+                        <Setter Property="FontSize" Value="22" />
+                        <Setter Property="Foreground" Value="LightGreen" />
+                    </Style>
+                    <Style TargetType="TextBlock" x:Key="Position">
+                        <Setter Property="FontSize" Value="22" />
+                        <Setter Property="Foreground" Value="LightGreen" />
+                        <Setter Property="TextAlignment" Value="Right" />
+                        <Setter Property="FontFamily" Value="Consolas" />
+                    </Style>
+                </Grid.Resources>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="28" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="3*" />
+                    <ColumnDefinition Width="3*" />
+                    <ColumnDefinition Width="2*" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="1" Text="Machine" TextAlignment="Center"/>
+                <TextBlock Grid.Column="2" Text="Work" TextAlignment="Center" />
 
-            <TextBlock Text="{Binding Machine.WorkPosition.X, StringFormat=0.000}" Style="{StaticResource Position}" Grid.Row="1" Grid.Column="2" />
-            <TextBlock Text="{Binding Machine.WorkPosition.Y, StringFormat=0.000}" Style="{StaticResource Position}" Grid.Row="2" Grid.Column="2" />
-            <TextBlock Text="{Binding Machine.WorkPosition.Z, StringFormat=0.000}" Style="{StaticResource Position}" Grid.Row="3" Grid.Column="2" />
+                <TextBlock Text="X" Grid.Row="1" TextAlignment="Center"  />
+                <TextBlock Text="Y" Grid.Row="2" TextAlignment="Center" />
+                <TextBlock Text="Z" Grid.Row="3" TextAlignment="Center" />
+
+                <TextBlock Text="{Binding Machine.MachinePosition.X, StringFormat=0.000}" Style="{StaticResource Position}" Grid.Row="1" Grid.Column="1" />
+                <TextBlock Text="{Binding Machine.MachinePosition.Y, StringFormat=0.000}" Style="{StaticResource Position}" Grid.Row="2" Grid.Column="1" />
+                <TextBlock Text="{Binding Machine.MachinePosition.Z, StringFormat=0.000}" Style="{StaticResource Position}" Grid.Row="3" Grid.Column="1" />
+
+                <TextBlock Text="{Binding Machine.WorkPosition.X, StringFormat=0.000}" Style="{StaticResource Position}" Grid.Row="1" Grid.Column="2" />
+                <TextBlock Text="{Binding Machine.WorkPosition.Y, StringFormat=0.000}" Style="{StaticResource Position}" Grid.Row="2" Grid.Column="2" />
+                <TextBlock Text="{Binding Machine.WorkPosition.Z, StringFormat=0.000}" Style="{StaticResource Position}" Grid.Row="3" Grid.Column="2" />
+                <Button Content="Reset X" Grid.Column="4" Grid.Row="1" Command="{Binding ResetCommand}" CommandParameter="{x:Static vm:MachineControlViewModel+Reset.X}" />
+                <Button Content="Reset Y" Grid.Column="4" Grid.Row="2" Command="{Binding ResetCommand}" CommandParameter="{x:Static vm:MachineControlViewModel+Reset.Y}" />
+                <Button Content="Reset Z" Grid.Column="4" Grid.Row="3" Command="{Binding ResetCommand}" CommandParameter="{x:Static vm:MachineControlViewModel+Reset.Z}" />
+                <Button Content="Reset All" Grid.Column="4" Grid.Row="4" Command="{Binding ResetCommand}" CommandParameter="{x:Static vm:MachineControlViewModel+Reset.All}" />
+            </Grid>
         </Grid>
-        <Grid Margin="3" Grid.Row="1">
+        <Grid Margin="3" Grid.Row="2">
             <Grid.Resources>
                 <Style TargetType="Button">
                     <Setter Property="Width" Value="48" />
@@ -72,7 +115,21 @@
                 <RowDefinition Height="auto"  />
                 <RowDefinition Height="auto"  />
             </Grid.RowDefinitions>
+            <fa:ImageAwesome Icon="Flag" VerticalAlignment="Center" HorizontalAlignment="Center" />
+
             <StackPanel Grid.ColumnSpan="3" >
+                <Grid >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Button Content="[-]" Grid.Column="0"  />
+                    <Button Content="[--]" Grid.Column="1"  />
+                    <Button Content="[---]" Grid.Column="2" />
+                    <Button Content="[------]" Grid.Column="3" />
+                </Grid>
                 <Slider Minimum="0.001" Maximum="20" Value="{Binding XYStep, Mode=TwoWay}" />
             </StackPanel>
             <Slider Grid.ColumnSpan="3" Grid.Row="4" />
