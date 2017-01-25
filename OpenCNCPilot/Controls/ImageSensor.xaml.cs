@@ -30,14 +30,17 @@ namespace OpenCNCPilot.Controls
         private bool _captureInProgress;
         public delegate void delUpdateImageCallback(Image<Bgr, Byte> Frame);
 
+        Timer _timer;
+
         public ImageSensor()
         {
             InitializeComponent();
+
         }
 
         Mat _finalOutput = new Mat();
 
-        private void ProcessFrame()
+        private void ProcessFrame2()
         {
             while (_captureInProgress == true)
             {
@@ -53,16 +56,34 @@ namespace OpenCNCPilot.Controls
 
                     outputBitmap = Emgu.CV.WPF.BitmapSourceConvert.ToBitmapSource(_finalOutput);
 
-
                     Dispatcher.BeginInvoke(new Action(() =>
-                        {
-
-                            WebCamImage.Source = outputBitmap;
-
-                        }));
+                    {
+                        WebCamImage.Source = outputBitmap;
+                    }));
                 }
 
             }
+        }
+
+
+        private void ProcessFrame(Object sate)
+        {
+            Dispatcher.BeginInvoke(new Action(() =>
+            {
+                //while (_captureInProgress == true)
+                using (var frame = _capture.QueryFrame())
+                using (var gray = new Image<Gray, byte>(frame.Bitmap))
+                using (var output = new Mat())
+                using (var cannyOutput = new Mat())
+                using (var finalOutput = new Mat())
+                {
+                    CvInvoke.GaussianBlur(gray, output, new System.Drawing.Size(5, 5), 3);
+                    CvInvoke.Canny(output, finalOutput, 15, 45, 3);
+                    var outputBitmap = Emgu.CV.WPF.BitmapSourceConvert.ToBitmapSource(finalOutput);
+                    WebCamImage.Source = outputBitmap;
+                }
+            }));
+
         }
 
 
@@ -88,11 +109,11 @@ namespace OpenCNCPilot.Controls
 
             if (_capture != null)
             {
-                Thread thrdWebcam = new Thread(new ThreadStart(ProcessFrame));
-                _captureInProgress = true;
-                thrdWebcam.Start();
+                //Thread thrdWebcam = new Thread(new ThreadStart(ProcessFrame));
+                //_captureInProgress = true;
+                //thrdWebcam.Start();
 
-
+                _timer = new Timer(ProcessFrame, null, 0, 100);
             }
         }
 

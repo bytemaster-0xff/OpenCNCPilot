@@ -67,8 +67,27 @@ namespace OpenCNCPilot.Core.Communication
 
         CancellationToken _cancelToken;
 
-        public Vector3 MachinePosition { get; private set; } = new Vector3();   //No events here, the parser triggers a single event for both
-        public Vector3 WorkPosition { get; private set; } = new Vector3();
+        private Vector3 _machinePosition = new Vector3();
+        public Vector3 MachinePosition
+        {
+            get { return _machinePosition; }
+            set
+            {
+                _machinePosition = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private Vector3 _workPosition = new Vector3();
+        public Vector3 WorkPosition
+        {
+            get { return _workPosition; }
+            set
+            {
+                _workPosition = value;
+                RaisePropertyChanged();
+            }
+        }
 
         private ReadOnlyCollection<string> _file = new ReadOnlyCollection<string>(new string[0]);
         public ReadOnlyCollection<string> File

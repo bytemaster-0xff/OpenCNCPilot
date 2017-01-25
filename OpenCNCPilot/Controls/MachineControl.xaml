@@ -7,39 +7,84 @@
              xmlns:local="clr-namespace:OpenCNCPilot.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-    <Grid Grid.Column="1" Margin="3">
-        <Grid.Resources>
-            <Style TargetType="Button">
-                <Setter Property="Width" Value="48" />
-                <Setter Property="Height" Value="48" />
-            </Style>
-        </Grid.Resources>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
+    <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="auto"  />
-            <RowDefinition Height="auto"  />
-            <RowDefinition Height="auto"  />
-            <RowDefinition Height="auto"  />
-            <RowDefinition Height="auto"  />
-            <RowDefinition Height="auto"  />
-            <RowDefinition Height="auto"  />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
-        <StackPanel Grid.ColumnSpan="3" >
-            <Slider Minimum="0.001" Maximum="20" Value="{Binding XYStep, Mode=TwoWay}" />
-        </StackPanel>
-        <Slider Grid.ColumnSpan="3" Grid.Row="4" />
-        <Button  Content="^" Grid.Row="1" Grid.Column="1"  Command="{Binding JogCommand}" CommandParameter="{x:Static vm:MachineControlViewModel+JogDirections.YPlus}"/>
-        <Button  Content="&lt;" Grid.Row="2" Grid.Column="0"   Command="{Binding JogCommand}" CommandParameter="{x:Static vm:MachineControlViewModel+JogDirections.XMinus}"/>
-        <Button  Content=">" Grid.Row="2" Grid.Column="2"  Command="{Binding JogCommand}" CommandParameter="{x:Static vm:MachineControlViewModel+JogDirections.XPlus}"/>
-        <Button  Content="v" Grid.Row="3" Grid.Column="1"  Command="{Binding JogCommand}" CommandParameter="{x:Static vm:MachineControlViewModel+JogDirections.YMinus}"/>
-        <StackPanel Grid.ColumnSpan="3" Grid.Row="4" >
-            <Slider Minimum="0.001" Maximum="20" Value="{Binding ZStep, Mode=TwoWay}"/>
-        </StackPanel>
-        <Button  Content="^" Grid.Row="5" Grid.Column="1"/>
-        <Button  Content="v" Grid.Row="6" Grid.Column="1"/>
+        <Grid Grid.Row="0" Background="Black">
+            <Grid.Resources>
+                <Style TargetType="TextBlock" >
+                    <Setter Property="FontSize" Value="26" />
+                    <Setter Property="Foreground" Value="LightGreen" />
+                </Style>
+                <Style TargetType="TextBlock" x:Key="Position">
+                    <Setter Property="FontSize" Value="26" />
+                    <Setter Property="Foreground" Value="LightGreen" />
+                    <Setter Property="TextAlignment" Value="Right" />
+                    <Setter Property="FontFamily" Value="Consolas" />
+                </Style>
+            </Grid.Resources>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="3*" />
+                <ColumnDefinition Width="3*" />
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="1" Text="Machine" TextAlignment="Center"/>
+            <TextBlock Grid.Column="2" Text="Work" TextAlignment="Center" />
+
+            <TextBlock Text="X" Grid.Row="1" TextAlignment="Center"  />
+            <TextBlock Text="Y" Grid.Row="2" TextAlignment="Center" />
+            <TextBlock Text="Z" Grid.Row="3" TextAlignment="Center" />
+
+            <TextBlock Text="{Binding Machine.MachinePosition.X, StringFormat=0.000}" Style="{StaticResource Position}" Grid.Row="1" Grid.Column="1" />
+            <TextBlock Text="{Binding Machine.MachinePosition.Y, StringFormat=0.000}" Style="{StaticResource Position}" Grid.Row="2" Grid.Column="1" />
+            <TextBlock Text="{Binding Machine.MachinePosition.Z, StringFormat=0.000}" Style="{StaticResource Position}" Grid.Row="3" Grid.Column="1" />
+
+            <TextBlock Text="{Binding Machine.WorkPosition.X, StringFormat=0.000}" Style="{StaticResource Position}" Grid.Row="1" Grid.Column="2" />
+            <TextBlock Text="{Binding Machine.WorkPosition.Y, StringFormat=0.000}" Style="{StaticResource Position}" Grid.Row="2" Grid.Column="2" />
+            <TextBlock Text="{Binding Machine.WorkPosition.Z, StringFormat=0.000}" Style="{StaticResource Position}" Grid.Row="3" Grid.Column="2" />
+        </Grid>
+        <Grid Margin="3" Grid.Row="1">
+            <Grid.Resources>
+                <Style TargetType="Button">
+                    <Setter Property="Width" Value="48" />
+                    <Setter Property="Height" Value="48" />
+                </Style>
+            </Grid.Resources>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"  />
+                <RowDefinition Height="auto"  />
+                <RowDefinition Height="auto"  />
+                <RowDefinition Height="auto"  />
+                <RowDefinition Height="auto"  />
+                <RowDefinition Height="auto"  />
+                <RowDefinition Height="auto"  />
+            </Grid.RowDefinitions>
+            <StackPanel Grid.ColumnSpan="3" >
+                <Slider Minimum="0.001" Maximum="20" Value="{Binding XYStep, Mode=TwoWay}" />
+            </StackPanel>
+            <Slider Grid.ColumnSpan="3" Grid.Row="4" />
+            <Button  Content="^" Grid.Row="1" Grid.Column="1"  Command="{Binding JogCommand}" CommandParameter="{x:Static vm:MachineControlViewModel+JogDirections.YPlus}"/>
+            <Button  Content="&lt;" Grid.Row="2" Grid.Column="0"   Command="{Binding JogCommand}" CommandParameter="{x:Static vm:MachineControlViewModel+JogDirections.XMinus}"/>
+            <Button  Content=">" Grid.Row="2" Grid.Column="2"  Command="{Binding JogCommand}" CommandParameter="{x:Static vm:MachineControlViewModel+JogDirections.XPlus}"/>
+            <Button  Content="v" Grid.Row="3" Grid.Column="1"  Command="{Binding JogCommand}" CommandParameter="{x:Static vm:MachineControlViewModel+JogDirections.YMinus}"/>
+            <StackPanel Grid.ColumnSpan="3" Grid.Row="4" >
+                <Slider Minimum="0.001" Maximum="20" Value="{Binding ZStep, Mode=TwoWay}"/>
+            </StackPanel>
+            <Button  Content="^" Grid.Row="5" Grid.Column="1"/>
+            <Button  Content="v" Grid.Row="6" Grid.Column="1"/>
+        </Grid>
     </Grid>
 </UserControl>

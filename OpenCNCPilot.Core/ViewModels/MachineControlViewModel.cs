@@ -42,7 +42,7 @@ namespace OpenCNCPilot.Core.ViewModels
         public MachineControlViewModel(IMachine machine, Settings settings)
         {
             _machine = machine;
-
+            
             XYStep = settings.MediumStepSize;
             ZStep = settings.MediumStepSize;
 
@@ -81,6 +81,8 @@ namespace OpenCNCPilot.Core.ViewModels
         public RelayCommand SetSmallStepSizeCommand { get; private set; }
         public RelayCommand SetMediumSizeStepCommand { get; private set; }
         public RelayCommand SetLargeSizeStepCommand { get; private set; }
+
+        public IMachine Machine { get { return _machine; } }
 
     }
 }
