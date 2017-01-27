@@ -45,12 +45,12 @@ namespace OpenCNCPilot
 			}
 		}
 
-		private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+		private  async void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
 		{
 			if (App.Current.Machine.Connected)
                 App.Current.Machine.Disconnect();
 
-            App.Current.Settings.Save(App.Current.StorageService);
+            App.Current.Settings.Save();
 		}
 	}
 }

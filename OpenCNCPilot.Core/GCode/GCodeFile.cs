@@ -5,15 +5,12 @@ using System.Collections.ObjectModel;
 using System;
 using OpenCNCPilot.Core.Util;
 using OpenCNCPilot.Core.GCode.GCodeCommands;
-using OpenCNCPilot.Core.Platform;
+using LagoVista.Core.PlatformSupport;
 
 namespace OpenCNCPilot.Core.GCode
 {
     public class GCodeFile
     {
-        IStorage _storage;
-        ILogger _logger;
-
         public ReadOnlyCollection<Command> Commands { get; private set; }
         public string FileName = string.Empty;
 
@@ -23,10 +20,8 @@ namespace OpenCNCPilot.Core.GCode
 
         public double TravelDistance { get; private set; } = 0;
 
-        private GCodeFile(List<Command> commands, IStorage storage, ILogger logger)
+        private GCodeFile(List<Command> commands)
         {
-            _storage = storage;
-            _logger = logger;
 
             Commands = new ReadOnlyCollection<Command>(commands);
 
@@ -60,32 +55,32 @@ namespace OpenCNCPilot.Core.GCode
             Size = size;
         }
 
-        public static GCodeFile Load(string path, IStorage storage, ILogger logger)
+        public static GCodeFile Load(string path)
         {
-            var parser = new GCodeParser(storage, logger);
+            var parser = new GCodeParser();
             parser.Reset();
             parser.ParseFile(path);
 
-            return new GCodeFile(parser.Commands, storage, logger) { FileName = path.Substring(path.LastIndexOf('\\') + 1) };
+            return new GCodeFile(parser.Commands) { FileName = path.Substring(path.LastIndexOf('\\') + 1) };
         }
 
-        public static GCodeFile FromList(IEnumerable<string> file, IStorage storage, ILogger logger)
+        public static GCodeFile FromList(IEnumerable<string> file)
         {
-            var parser = new GCodeParser(storage, logger);
+            var parser = new GCodeParser();
             parser.Reset();
             parser.Parse(file);
 
-            return new GCodeFile(parser.Commands, storage, logger) { FileName = "output.nc" };
+            return new GCodeFile(parser.Commands) { FileName = "output.nc" };
         }
 
-        public static GCodeFile GetEmpty(IStorage storage, ILogger logger)
+        public static GCodeFile GetEmpty()
         {
-            return new GCodeFile(new List<Command>(), storage, logger);
+            return new GCodeFile(new List<Command>());
         }
 
-        public void Save(string path)
+        public async void Save(string path)
         {
-            _storage.WriteAllLines(path, GetGCode());
+            await Services.Storage.WriteAllLinesAsync(path, GetGCode());
         }
 
 
@@ -204,7 +199,7 @@ namespace OpenCNCPilot.Core.GCode
                 }
             }
 
-            return new GCodeFile(newFile, _storage, _logger);
+            return new GCodeFile(newFile);
         }
 
         public GCodeFile ArcsToLines(double length)
@@ -231,7 +226,7 @@ namespace OpenCNCPilot.Core.GCode
                 }
             }
 
-            return new GCodeFile(newFile, _storage, _logger);
+            return new GCodeFile(newFile);
         }
 
         public GCodeFile ApplyHeightMap(BaseHeightMap map)
@@ -261,7 +256,7 @@ namespace OpenCNCPilot.Core.GCode
                 }
             }
 
-            return new GCodeFile(newToolPath, _storage, _logger);
+            return new GCodeFile(newToolPath);
         }
     }
 }

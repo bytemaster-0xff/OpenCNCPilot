@@ -70,7 +70,7 @@ namespace OpenCNCPilot
 			if (App.Current.Machine.Mode == Machine.OperatingMode.Probe || Map != null)
 				return;
 
-			Map = new HeightMap(App.Current.Settings, App.Current.LoggerService, NewHeightMapDialog.GridSize, NewHeightMapDialog.Min, NewHeightMapDialog.Max);
+			Map = new HeightMap(App.Current.Settings, NewHeightMapDialog.GridSize, NewHeightMapDialog.Min, NewHeightMapDialog.Max);
 			
 			if (NewHeightMapDialog.GenerateTestPattern)
 			{
@@ -115,7 +115,7 @@ namespace OpenCNCPilot
 
 			try
 			{
-				Map = HeightMap.Load(filepath, App.Current.Settings, App.Current.LoggerService);
+				Map = HeightMap.Load(filepath, App.Current.Settings);
 			}
 			catch (Exception ex)
 			{

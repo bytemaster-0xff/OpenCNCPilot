@@ -13,6 +13,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using LagoVista.Core.PlatformSupport;
 
 namespace OpenCNCPilot.Core.Communication
 {
@@ -48,11 +49,9 @@ namespace OpenCNCPilot.Core.Communication
         public event Action FilePositionChanged;
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public Machine(Settings settings, IDispatcher dispatcher, ILogger logger)
+        public Machine(Settings settings)
         {
             _settings = settings;
-            _dispatcher = dispatcher;
-            _logger = logger;
         }
 
         public void RaisePropertyChanged([CallerMemberName]string propertyName = "")
@@ -61,8 +60,6 @@ namespace OpenCNCPilot.Core.Communication
         }
 
 
-        IDispatcher _dispatcher;
-        ILogger _logger;
         Settings _settings;
 
         CancellationToken _cancelToken;
@@ -331,7 +328,8 @@ namespace OpenCNCPilot.Core.Communication
                         }
                         else
                         {
-                            _logger.WriteLine("Received OK without anything in the Sent Buffer");
+
+                            LagoVista.Core.PlatformSupport.Services.Logger.Log(LagoVista.Core.PlatformSupport.LogLevel.Warning, "Machine_Work", "Received OK without anything in the Sent Buffer");
                             BufferState = 0;
                         }
                     }
@@ -774,7 +772,10 @@ namespace OpenCNCPilot.Core.Communication
             if (action == null)
                 return;
 
-            _dispatcher.RunOnUIThread(action, param);
+            Services.DispatcherServices.Invoke(() =>
+            {
+                action(param);
+            });
         }
 
         private void RaiseEvent(Action action)
@@ -782,7 +783,7 @@ namespace OpenCNCPilot.Core.Communication
             if (action == null)
                 return;
 
-            _dispatcher.RunOnUIThread(action);
+            Services.DispatcherServices.Invoke(action);
         }
     }
 }
