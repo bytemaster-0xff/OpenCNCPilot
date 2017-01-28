@@ -56,7 +56,9 @@
     <Compile Include="Util\Point3D.cs" />
     <Compile Include="Util\Vector2.cs" />
     <Compile Include="Util\Vector3.cs" />
+    <Compile Include="ViewModels\JobViewModel.cs" />
     <Compile Include="ViewModels\MachineControlViewModel.cs" />
+    <Compile Include="ViewModels\ProbingViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="LagoVista.Core, Version=1.1.0.32, Culture=neutral, processorArchitecture=MSIL">
@@ -71,7 +73,9 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Models\" />
+  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

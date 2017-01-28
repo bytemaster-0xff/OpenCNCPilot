@@ -1,4 +1,5 @@
 ﻿using LagoVista.Core.Commanding;
+using LagoVista.Core.PlatformSupport;
 using LagoVista.Core.ViewModels;
 using OpenCNCPilot.Core.Communication;
 using System;
@@ -45,7 +46,7 @@ namespace OpenCNCPilot.Core.ViewModels
             Large
         }
 
-        public MachineControlViewModel(IMachine machine, Settings settings)
+        public MachineControlViewModel(IMachine machine, Settings settings, ILogger logger)
         {
             _machine = machine;
 
