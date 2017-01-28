@@ -22,14 +22,22 @@ namespace OpenCNCPilot
 		public SettingsWindow()
 		{
 			InitializeComponent();
+            Closed += SettingsWindow_Closed;
 		}
 
-		private void ComboBox_DropDownOpened(object sender, EventArgs e)
+        private async void SettingsWindow_Closed(object sender, EventArgs e)
+        {
+            await App.Current.Settings.SaveAsync();
+        }
+
+        private void ComboBox_DropDownOpened(object sender, EventArgs e)
 		{
 			((ComboBox)sender).Items.Clear();
 
 			foreach (string port in System.IO.Ports.SerialPort.GetPortNames())
 				((ComboBox)sender).Items.Add(port);
+
+            ((ComboBox)sender).Items.Add("Simulated");
 		}
 	}
 }

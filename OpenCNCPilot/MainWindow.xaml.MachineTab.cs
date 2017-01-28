@@ -23,9 +23,16 @@ namespace OpenCNCPilot
 		{
 			try
 			{
-                var serialPort = new SerialPort(App.Current.Settings.SerialPortName, App.Current.Settings.SerialPortBaud);
-                serialPort.Open();
-                App.Current.Machine.Connect(serialPort.BaseStream);
+                if (App.Current.Settings.SerialPortName == "Simulated")
+                {
+                    App.Current.Machine.Connect(new SimulatedGCodeMachine());
+                }
+                else
+                {
+                    var serialPort = new SerialPort(App.Current.Settings.SerialPortName, App.Current.Settings.SerialPortBaud);
+                    serialPort.Open();
+                    App.Current.Machine.Connect(serialPort.BaseStream);
+                }
 			}
 			catch (Exception ex)
 			{

@@ -13,7 +13,8 @@ namespace OpenCNCPilot.Core
             Marlin_Laser
         }
 
-        public int StatusPollInterval { get; set; }
+        public int StatusPollIntervalIdle { get; set; }
+        public int StatusPollIntervalRunning { get; set; }
         public int ControllerBufferSize { get; set; }
 
         public double ViewportArcSplit { get; set; }
@@ -65,7 +66,8 @@ namespace OpenCNCPilot.Core
                     SerialPortName = "COM1",
                     SerialPortBaud = 115200,
                     ControllerBufferSize = 120,
-                    StatusPollInterval = 100,
+                    StatusPollIntervalIdle = 1000,
+                    StatusPollIntervalRunning = 100,
                     ViewportArcSplit = 1,
                     EnableCodePreview = true,
                     ProbeSafeHeight = 5,

@@ -24,6 +24,11 @@ namespace OpenCNCPilot.Controls
         public MachineControl()
         {
             InitializeComponent();
+            Loaded += MachineControl_Loaded;
+        }
+
+        private void MachineControl_Loaded(object sender, RoutedEventArgs e)
+        {
             DataContext = new MachineControlViewModel(App.Current.Machine, App.Current.Settings);
         }
     }

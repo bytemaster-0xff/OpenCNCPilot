@@ -56,6 +56,8 @@ namespace OpenCNCPilot.Controls
 
                     outputBitmap = Emgu.CV.WPF.BitmapSourceConvert.ToBitmapSource(_finalOutput);
 
+                  //  Emgu.CV.Aruco.ArucoInvoke.DetectMarkers()
+
                     Dispatcher.BeginInvoke(new Action(() =>
                     {
                         WebCamImage.Source = outputBitmap;

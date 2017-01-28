@@ -46,7 +46,7 @@ namespace OpenCNCPilot.Core.ViewModels
             Large
         }
 
-        public MachineControlViewModel(IMachine machine, Settings settings, ILogger logger)
+        public MachineControlViewModel(IMachine machine, Settings settings)
         {
             _machine = machine;
 
@@ -155,19 +155,11 @@ namespace OpenCNCPilot.Core.ViewModels
             set { Set(ref _zStepMax, value); }
         }
 
-
-
         public RelayCommand JogCommand { get; private set; }
         public RelayCommand ResetCommand { get; private set; }
 
-
         public RelayCommand SetMicroStepSizeCommand { get; private set; }
-        public RelayCommand SetSmallStepSizeCommand { get; private set; }
-        public RelayCommand SetMediumSizeStepCommand { get; private set; }
-        public RelayCommand SetLargeSizeStepCommand { get; private set; }
-
-
-
+     
         public IMachine Machine { get { return _machine; } }
 
     }

@@ -29,8 +29,10 @@
                 <TextBox Margin="10,88,0,0" Text="{util:SettingBinding ControllerBufferSize}"/>
                 <Label Content="Controller Buffer" HorizontalAlignment="Left" Margin="135,87,0,0" VerticalAlignment="Top"/>
 
-                <TextBox Margin="10,116,0,0" Text="{util:SettingBinding StatusPollInterval}"/>
-                <Label Content="Status Poll Interval (ms)" HorizontalAlignment="Left" Margin="135,115,0,0" VerticalAlignment="Top"/>
+                <TextBox Margin="10,116,0,0" Text="{util:SettingBinding StatusPollIntervalIdle}"/>
+                <Label Content="Idle Status Poll Interval (ms)" HorizontalAlignment="Left" Margin="135,115,0,0" VerticalAlignment="Top"/>
+                <TextBox Margin="10,144,0,0" Text="{util:SettingBinding StatusPollIntervalRunning}"/>
+                <Label Content="Running Status Poll Interval (ms)" HorizontalAlignment="Left" Margin="135,142,0,0" VerticalAlignment="Top"/>
             </Grid>
         </TabItem>
 

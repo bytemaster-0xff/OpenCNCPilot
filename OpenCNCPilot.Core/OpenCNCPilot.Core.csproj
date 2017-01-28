@@ -36,6 +36,14 @@
   <ItemGroup>
     <Compile Include="Communication\IMachine.cs" />
     <Compile Include="Communication\Machine.cs" />
+    <Compile Include="Communication\Machine.Defines.cs" />
+    <Compile Include="Communication\Machine.File.cs" />
+    <Compile Include="Communication\Machine.Interface.cs" />
+    <Compile Include="Communication\Machine.Parser.cs" />
+    <Compile Include="Communication\Machine.Settings.cs" />
+    <Compile Include="Communication\Machine.Status.cs" />
+    <Compile Include="Communication\Machine.WorkLoop.cs" />
+    <Compile Include="Communication\SimulatedGCodeMachine.cs" />
     <Compile Include="GCode\GCodeCommands\Arc.cs" />
     <Compile Include="GCode\GCodeCommands\Command.cs" />
     <Compile Include="GCode\GCodeCommands\GCodeLine.cs" />
@@ -45,6 +53,7 @@
     <Compile Include="GCode\GCodeParser.cs" />
     <Compile Include="GCode\HeightMap.cs" />
     <Compile Include="GCode\ParseException.cs" />
+    <Compile Include="Models\Board.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Util\Constants.cs" />
@@ -53,6 +62,7 @@
     <Compile Include="Util\Point3D.cs" />
     <Compile Include="Util\Vector2.cs" />
     <Compile Include="Util\Vector3.cs" />
+    <Compile Include="ViewModels\FileViewModel.cs" />
     <Compile Include="ViewModels\JobViewModel.cs" />
     <Compile Include="ViewModels\MachineControlViewModel.cs" />
     <Compile Include="ViewModels\ProbingViewModel.cs" />
@@ -70,9 +80,7 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Models\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -28,6 +28,8 @@ namespace OpenCNCPilot
         {
             await App.Current.InitAsync();
 
+            await GrblErrorProvider.InitAsync();
+
             ToolPath = GCodeFile.GetEmpty();
 
             openFileDialogGCode.FileOk += OpenFileDialogGCode_FileOk;

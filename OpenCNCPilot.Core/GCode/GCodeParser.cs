@@ -42,7 +42,7 @@ namespace OpenCNCPilot.Core.GCode
         }
     }
 
-    struct Word
+    class Word
     {
         public char Command;
         public double Parameter;
@@ -284,6 +284,27 @@ namespace OpenCNCPilot.Core.GCode
             }
             #endregion
 
+            double? feedRate = null;
+            var feedRateCommand = Words.Where(wrd => wrd.Command == 'F').FirstOrDefault();
+            if (feedRateCommand != null)
+            {
+                feedRate = feedRateCommand.Parameter;
+                Words.Remove(feedRateCommand);
+            }
+
+            /* Ignore for now,  
+               From comment that generates parameter:
+                    #If we're using pronterface, we need to change raster data / and + in the base64 alphabet to letter 9. This loses a little intensity in pure blacks but keeps pronterface happy.
+                if( self.options.pronterface ):
+                    b64 = b64.replace("+", "9").replace("/", "9");
+            */
+            var prontoFaceDCommand = Words.Where(wrd => wrd.Command == 'D').FirstOrDefault();
+            if (prontoFaceDCommand != null)
+            {
+                Words.Remove(prontoFaceDCommand);
+            }
+
+
             if (MotionMode <= 1)
             {
                 if (Words.Count > 0)
@@ -292,7 +313,7 @@ namespace OpenCNCPilot.Core.GCode
                 var motion = new GCodeLine();
                 motion.Start = State.Position;
                 motion.End = EndPos;
-                motion.Feed = State.Feed;
+                motion.Feed = feedRate.HasValue ? feedRate.Value : State.Feed;
                 motion.Rapid = MotionMode == 0;
 
                 Commands.Add(motion);

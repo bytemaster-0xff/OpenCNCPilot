@@ -14,7 +14,7 @@ namespace OpenCNCPilot.Core.Util
 			}
 		}
 
-		public static string FileFilterGCode = "GCode|*.tap;*.nc;*.ngc|All Files|*.*";
+		public static string FileFilterGCode = "GCode|*.g;*.tap;*.nc;*.ngc|All Files|*.*";
 		public static string FileFilterHeightMap = "Height Maps|*.hmap|All Files|*.*";
 
 		public static string FilePathErrors = "Resources\\GrblErrors.txt";

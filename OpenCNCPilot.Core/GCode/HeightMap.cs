@@ -7,6 +7,7 @@ namespace OpenCNCPilot.Core.GCode
 {
 	public abstract class BaseHeightMap
 	{
+        private Settings _settings;
 		public double?[,] Points { get; private set; }
 		public int SizeX { get; private set; }
 		public int SizeY { get; private set; }
@@ -15,8 +16,7 @@ namespace OpenCNCPilot.Core.GCode
 		public int TotalPoints { get { return SizeX * SizeY; } }
 
 		public Queue<Tuple<int, int>> NotProbed { get; private set; } = new Queue<Tuple<int, int>>();
-
-		public Vector2 Min { get; private set; }
+       public Vector2 Min { get; private set; }
 		public Vector2 Max { get; private set; }
 
 		public Vector2 Delta { get { return Max - Min; } }
@@ -30,8 +30,10 @@ namespace OpenCNCPilot.Core.GCode
 		public double GridY { get { return (Max.Y - Min.Y) / (SizeY - 1); } }
 
 
-		public BaseHeightMap(double gridSize, Vector2 min, Vector2 max)
+		public BaseHeightMap(Settings settings, double gridSize, Vector2 min, Vector2 max)
 		{
+            _settings = settings;
+
 			if (min.X == max.X || min.Y == max.Y)
 				throw new Exception("Height map can't be infinitely narrow");
 
@@ -76,9 +78,9 @@ namespace OpenCNCPilot.Core.GCode
 			}
 		}
 
-        public BaseHeightMap()
+        public BaseHeightMap(Settings settings)
         {
-
+            _settings = settings;
         }
 
 		public double InterpolateZ(double x, double y)
@@ -111,9 +113,23 @@ namespace OpenCNCPilot.Core.GCode
 		{
 			return new Vector2(x * (Delta.X / (SizeX - 1)) + Min.X, y * (Delta.Y / (SizeY - 1)) + Min.Y);
 		}
-        
 
-		public void AddPoint(int x, int y, double height)
+        public void FillWithTestPattern(string pattern)
+        {
+            for (int x = 0; x < SizeX; x++)
+            {
+                for (int y = 0; y < SizeY; y++)
+                {
+                    double X = (x * (Max.X - Min.X)) / (SizeX - 1) + Min.X;
+                    double Y = (y * (Max.Y - Min.Y)) / (SizeY - 1) + Min.Y;
+
+                    var d = (X * X + Y * Y) / 1000.0;
+                    AddPoint(x, y, (double)d);
+                }
+            }
+        }
+
+        public void AddPoint(int x, int y, double height)
 		{
 			Points[x, y] = height;
 

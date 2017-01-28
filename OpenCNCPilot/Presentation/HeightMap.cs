@@ -15,19 +15,8 @@ namespace OpenCNCPilot.Presentation
 {
     public class HeightMap : BaseHeightMap
     {
-        Settings _settings;
-
-        public HeightMap(Settings settings,  double gridSize, Vector2 min, Vector2 max) : base(gridSize,  min,  max)
-        {
-            _settings = settings;
-
-        }
-
-        public HeightMap(Settings settings) : base()
-        {
-            _settings = settings;
-        }
-
+        public HeightMap(Settings settings, double gridSize, Vector2 min, Vector2 max) : base(settings, gridSize, min, max) { }
+        public HeightMap(Settings settings) : base(settings) { }
 
         public void GetModel(MeshGeometryVisual3D mesh)
         {
@@ -61,23 +50,6 @@ namespace OpenCNCPilot.Presentation
         public void GetPreviewModel(LinesVisual3D border, PointsVisual3D pointv)
         {
             GetPreviewModel(Min, Max, SizeX, SizeY, border, pointv);
-        }
-
-        public void FillWithTestPattern(string pattern)
-        {
-            DataTable t = new DataTable();
-
-            for (int x = 0; x < SizeX; x++)
-            {
-                for (int y = 0; y < SizeY; y++)
-                {
-                    double X = (x * (Max.X - Min.X)) / (SizeX - 1) + Min.X;
-                    double Y = (y * (Max.Y - Min.Y)) / (SizeY - 1) + Min.Y;
-
-                    decimal d = (decimal)t.Compute(pattern.Replace("x", X.ToString()).Replace("y", Y.ToString()), "");
-                    AddPoint(x, y, (double)d);
-                }
-            }
         }
 
         public static void GetPreviewModel(Vector2 min, Vector2 max, double gridSize, LinesVisual3D border, PointsVisual3D pointv)
@@ -140,9 +112,7 @@ namespace OpenCNCPilot.Presentation
         }
 
         public static void GetModel(IEnumerable<Command> toolPath, Settings settings, LinesVisual3D line, LinesVisual3D rapid, LinesVisual3D arc)
-        {
-            var sw = System.Diagnostics.Stopwatch.StartNew();
-
+        {  
             Point3DCollection linePoints = new Point3DCollection();
             Point3DCollection rapidPoints = new Point3DCollection();
             Point3DCollection arcPoints = new Point3DCollection();
@@ -181,9 +151,6 @@ namespace OpenCNCPilot.Presentation
             line.Points = linePoints;
             rapid.Points = rapidPoints;
             arc.Points = arcPoints;
-
-            sw.Stop();
-            Services.Logger.Log(LogLevel.Message, "HeightMap_GetModel", $"Generating the Toolpath Model took {sw.ElapsedMilliseconds} ms");
         }
 
         public static HeightMap Load(string path, Settings settings)
