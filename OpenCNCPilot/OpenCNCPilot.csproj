@@ -62,7 +62,11 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="LagoVista.Core, Version=1.1.0.32, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\LagoVista.Core.0.8.50-alpha00786\lib\portable46-net451+win81\LagoVista.Core.dll</HintPath>
+      <HintPath>..\packages\LagoVista.Core.0.8.57-alpha01271\lib\portable46-net451+win81\LagoVista.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="LagoVista.Core.WPF, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\LagoVista.Core.WPF.0.8.57-alpha01006\lib\451\LagoVista.Core.WPF.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
@@ -127,9 +131,6 @@
     <Compile Include="NewHeightMapWindow.xaml.cs">
       <DependentUpon>NewHeightMapWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Platform\WPFDispatcher.cs" />
-    <Compile Include="Platform\WPFLogger.cs" />
-    <Compile Include="Platform\WPFStorage.cs" />
     <Compile Include="Presentation\HeightMap.cs" />
     <Compile Include="SettingsWindow.xaml.cs">
       <DependentUpon>SettingsWindow.xaml</DependentUpon>

@@ -2,45 +2,29 @@
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.IO;
+using LagoVista.Core.PlatformSupport;
+using System.Threading.Tasks;
 
 namespace OpenCNCPilot.Core.Util
 {
     public class GrblErrorProvider
     {
-        Platform.IStorage _storage;
-        Platform.ILogger _logger;
         Dictionary<int, string> Errors;
 
-        private GrblErrorProvider(Platform.IStorage storage, Platform.ILogger logger)
+        private GrblErrorProvider()
         {
-            _storage = storage;
-            _logger = logger;
-
-            _logger.WriteLine("Loading GRBL Error Database");
-
             Errors = new Dictionary<int, string>();
+        }
 
-            if (!_storage.Exists(Constants.FilePathErrors))
-            {
-                _logger.WriteLine($"File Missing: Constants.FilePathErrors");
-                return;
-            }
+        private async Task InitAsync()
+        {
+            Services.Logger.Log(LogLevel.Message, "GrblErrorProvider_Init", "Loading GRBL Error Database");
 
-            string ErrorFile;
-
-            try
-            {
-                ErrorFile = _storage.ReadAllText(Constants.FilePathErrors);
-            }
-            catch (Exception ex)
-            {
-                _logger.WriteLine(ex.Message);
-                return;
-            }
+            var errors = await Services.Storage.ReadAllTextAsync(Constants.FilePathErrors);
 
             Regex LineParser = new Regex(@"([0-9]+)\t([^\n^\r]*)");     //test here https://www.regex101.com/r/hO5zI1/2
 
-            MatchCollection mc = LineParser.Matches(ErrorFile);
+            MatchCollection mc = LineParser.Matches(errors);
 
             foreach (Match m in mc)
             {
@@ -49,7 +33,7 @@ namespace OpenCNCPilot.Core.Util
                 Errors.Add(errorNo, m.Groups[2].Value);
             }
 
-            _logger.WriteLine("Loaded GRBL Error Database");
+            Services.Logger.Log(LogLevel.Message, "GrblErrorProvider_Init", "Loaded GRBL Error Database");
         }
 
         public string GetErrorMessage(int errorCode)
@@ -86,9 +70,10 @@ namespace OpenCNCPilot.Core.Util
             }
         }
 
-        public static void Init(Platform.IStorage storage, Platform.ILogger logger)
+        public async static Task InitAsync()
         {
-            _instance = new GrblErrorProvider(storage, logger);
+            _instance = new GrblErrorProvider();
+            await _instance.InitAsync();
         }
 
 

@@ -1,11 +1,18 @@
-﻿using Newtonsoft.Json;
-using OpenCNCPilot.Core.Platform;
+﻿using LagoVista.Core.PlatformSupport;
 using System;
+using System.Threading.Tasks;
 
 namespace OpenCNCPilot.Core
 {
     public class Settings
     {
+        public enum FirmareTypes
+        {
+            GRBL,
+            Marlin,
+            Marlin_Laser
+        }
+
         public int StatusPollInterval { get; set; }
         public int ControllerBufferSize { get; set; }
 
@@ -29,20 +36,24 @@ namespace OpenCNCPilot.Core
         public double MediumStepSize { get; set; }
         public double LargeStepSize { get; set; }
 
-        public static Settings Load(IStorage storage)
+        public async static Task<Settings> LoadAsync()
         {
-            var json = storage.ReadAllText("Settings.json");
-            if (String.IsNullOrEmpty(json))
+            try
+            {
+                var settings = await Services.Storage.GetAsync<Settings>("Settings.json");
+                if (settings == null)
+                    settings = Settings.Default;
+                return settings;
+            }
+            catch(Exception)
+            {
                 return Settings.Default;
-
-            return JsonConvert.DeserializeObject<Settings>(json);
+            }
         }
 
-        public void Save(IStorage storage)
+        public async Task SaveAsync()
         {
-            var json = JsonConvert.SerializeObject(this);
-
-            storage.WriteAllText("Settings.json", json);
+            await Services.Storage.StoreAsync(this, "Settings.json");
         }
 
         public static Settings Default

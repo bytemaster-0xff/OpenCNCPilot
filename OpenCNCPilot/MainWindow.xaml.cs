@@ -21,15 +21,21 @@ namespace OpenCNCPilot
 		public MainWindow()
 		{
 			InitializeComponent();
+            this.Loaded += MainWindow_Loaded;
+		}
 
-			openFileDialogGCode.FileOk += OpenFileDialogGCode_FileOk;
-			openFileDialogHeightMap.FileOk += OpenFileDialogHeightMap_FileOk;
-			saveFileDialogHeightMap.FileOk += SaveFileDialogHeightMap_FileOk;
+        private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            await App.Current.InitAsync();
+
+            ToolPath = GCodeFile.GetEmpty();
+
+            openFileDialogGCode.FileOk += OpenFileDialogGCode_FileOk;
+            openFileDialogHeightMap.FileOk += OpenFileDialogHeightMap_FileOk;
+            saveFileDialogHeightMap.FileOk += SaveFileDialogHeightMap_FileOk;
 
 
             App.Current.Machine.ConnectionStateChanged += Machine_ConnectionStateChanged;
-
-            ToolPath = GCodeFile.GetEmpty(App.Current.StorageService, App.Current.LoggerService);
 
             App.Current.Machine.NonFatalException += Machine_NonFatalException;
             App.Current.Machine.Info += Machine_Info;
@@ -47,10 +53,10 @@ namespace OpenCNCPilot
             App.Current.Machine.FilePositionChanged += Machine_FilePositionChanged;
             App.Current.Machine.ProbeFinished += Machine_ProbeFinished;
 
-			UpdateAllButtons();
-		}
+            UpdateAllButtons();
+        }
 
-		private void Hyperlink_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
+        private void Hyperlink_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
 		{
 			System.Diagnostics.Process.Start(e.Uri.AbsoluteUri);
 		}
