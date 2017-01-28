@@ -1,7 +1,6 @@
 ﻿using OpenCNCPilot.Core.ViewModels;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,22 +17,20 @@ using System.Windows.Shapes;
 namespace OpenCNCPilot.Controls
 {
     /// <summary>
-    /// Interaction logic for MachineControl.xaml
+    /// Interaction logic for JobControl.xaml
     /// </summary>
-    public partial class MachineControl : UserControl
+    public partial class JobControl : UserControl
     {
-        public MachineControl()
+        public JobControl()
         {
             InitializeComponent();
-            Loaded += MachineControl_Loaded;
+
+            this.Loaded += JobControl_Loaded;
         }
 
-        private void MachineControl_Loaded(object sender, RoutedEventArgs e)
+        private void JobControl_Loaded(object sender, RoutedEventArgs e)
         {
-            if (!DesignerProperties.GetIsInDesignMode(this))
-            {
-                DataContext = new MachineControlViewModel(App.Current.Machine, App.Current.Settings);
-            }
+            DataContext = new JobControlViewModel(App.Current.Machine, App.Current.Settings);
         }
     }
 }

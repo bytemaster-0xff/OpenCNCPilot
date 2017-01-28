@@ -1,12 +1,7 @@
 ﻿using LagoVista.Core.Commanding;
-using LagoVista.Core.PlatformSupport;
 using LagoVista.Core.ViewModels;
 using OpenCNCPilot.Core.Communication;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using OpenCNCPilot.Core.Util;
 
 namespace OpenCNCPilot.Core.ViewModels
 {
@@ -110,7 +105,9 @@ namespace OpenCNCPilot.Core.ViewModels
 
         public void ResetAxis(Reset axis)
         {
-
+            /*var command  = $"G10 L2 P0 X{_machine.WorkPosition.X.ToString(Constants.DecimalOutputFormat)} Y{_machine.WorkPosition.Y.ToString(Constants.DecimalOutputFormat)} Z{_machine.WorkPosition.Z.ToString(Constants.DecimalOutputFormat)}";
+            var cmd2  = "G92 X0 Y0 Z0";
+            var cmd3  = "G10 L2 P0 X0 Y0 Z0";*/
         }
 
         private double _xyStep;

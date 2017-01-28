@@ -69,7 +69,7 @@ namespace OpenCNCPilot.Core.Communication
                 return;
             }
 
-            if (Mode != OperatingMode.Manual && Mode != OperatingMode.Probe)
+            if (Mode != OperatingMode.Manual && Mode != OperatingMode.ProbingHeightMap)
             {
                 RaiseEvent(Info, "Not in Manual Mode");
                 return;
@@ -146,7 +146,7 @@ namespace OpenCNCPilot.Core.Communication
                 return;
             }
 
-            Mode = OperatingMode.Probe;
+            Mode = OperatingMode.ProbingHeightMap;
         }
 
         public void ProbeStop()
@@ -157,7 +157,7 @@ namespace OpenCNCPilot.Core.Communication
                 return;
             }
 
-            if (Mode != OperatingMode.Probe)
+            if (Mode != OperatingMode.ProbingHeightMap)
             {
                 RaiseEvent(Info, "Not in Probe mode");
                 return;

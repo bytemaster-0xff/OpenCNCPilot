@@ -8,7 +8,7 @@ namespace OpenCNCPilot
 	{
 		private void ButtonEditSimplify_Click(object sender, RoutedEventArgs e)
 		{
-			if (App.Current.Machine.Mode == Machine.OperatingMode.SendFile)
+			if (App.Current.Machine.Mode == Machine.OperatingMode.SendingJob)
 				return;
 
             App.Current.Machine.SetFile(ToolPath.GetGCode().ToArray());
@@ -16,7 +16,7 @@ namespace OpenCNCPilot
 
 		private void ButtonEditApplyHeightMap_Click(object sender, RoutedEventArgs e)
 		{
-			if (App.Current.Machine.Mode == Machine.OperatingMode.SendFile)
+			if (App.Current.Machine.Mode == Machine.OperatingMode.SendingJob)
 				return;
 
 			if(Map == null || Map.NotProbed.Count > 0)
@@ -42,7 +42,7 @@ namespace OpenCNCPilot
 
 		private void ButtonEditArcToLines_Click(object sender, RoutedEventArgs e)
 		{
-			if (App.Current.Machine.Mode == Machine.OperatingMode.SendFile)
+			if (App.Current.Machine.Mode == Machine.OperatingMode.SendingJob)
 				return;
 
 			EnterNumberWindow enw = new EnterNumberWindow(App.Current.Settings.ArcToLineSegmentLength);
@@ -56,7 +56,7 @@ namespace OpenCNCPilot
 		{
             App.Current.Settings.ArcToLineSegmentLength = value;
 
-			if (App.Current.Machine.Mode == Machine.OperatingMode.SendFile)
+			if (App.Current.Machine.Mode == Machine.OperatingMode.SendingJob)
 				return;
 
             App.Current.Machine.SetFile(ToolPath.ArcsToLines(value).GetGCode());
@@ -64,7 +64,7 @@ namespace OpenCNCPilot
 
 		private void ButtonEditSplit_Click(object sender, RoutedEventArgs e)
 		{
-			if (App.Current.Machine.Mode == Machine.OperatingMode.SendFile)
+			if (App.Current.Machine.Mode == Machine.OperatingMode.SendingJob)
 				return;
 
 			EnterNumberWindow enw = new EnterNumberWindow(App.Current.Settings.SplitSegmentLength);
@@ -78,7 +78,7 @@ namespace OpenCNCPilot
 		{
             App.Current.Settings.SplitSegmentLength = value;
 
-			if (App.Current.Machine.Mode == Machine.OperatingMode.SendFile)
+			if (App.Current.Machine.Mode == Machine.OperatingMode.SendingJob)
 				return;
 
             App.Current.Machine.SetFile(ToolPath.Split(value).GetGCode());

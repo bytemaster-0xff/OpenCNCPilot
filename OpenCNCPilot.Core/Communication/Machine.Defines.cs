@@ -11,8 +11,9 @@ namespace OpenCNCPilot.Core.Communication
         public enum OperatingMode
         {
             Manual,
-            SendFile,
-            Probe,
+            SendingJob,
+            ProbingHeightMap,
+            ProbingHeight,
             Disconnected
         }
 

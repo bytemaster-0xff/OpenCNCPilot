@@ -40,8 +40,11 @@ namespace OpenCNCPilot.Core.Communication
             {
                 _filePosition = value;
                 RaiseEvent(FilePositionChanged);
+
+                RaisePropertyChanged();
             }
         }
+
 
         private OperatingMode _mode = OperatingMode.Disconnected;
         public OperatingMode Mode

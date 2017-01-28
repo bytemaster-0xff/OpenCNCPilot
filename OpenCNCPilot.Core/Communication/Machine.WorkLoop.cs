@@ -166,14 +166,15 @@ namespace OpenCNCPilot.Core.Communication
                             writer.Write(_toSendPriority.Dequeue());
                             writer.Flush();
                         }
-                        if (Mode == OperatingMode.SendFile)
+                        if (Mode == OperatingMode.SendingJob)
                         {
                             SendFile(writer);
                             DateTime Now = DateTime.Now;
 
                             if ((Now - LastStatusPoll).TotalMilliseconds > _settings.StatusPollIntervalRunning)
                             {
-                                writer.Write('?');
+                                var statusRequest = _settings.MachineType == Settings.FirmwareTypes.GRBL1_1 ? "?" : "M114\n";
+                                writer.Write(statusRequest);
                                 writer.Flush();
                                 LastStatusPoll = Now;
                             }
@@ -215,7 +216,11 @@ namespace OpenCNCPilot.Core.Communication
                         }
                     }
 
+                    Debug.WriteLine(lineTask.Result);
+
                     ProcessResponseLine(lineTask.Result);
+
+
                 }
             }
             catch (Exception ex)

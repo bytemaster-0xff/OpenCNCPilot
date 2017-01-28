@@ -11,32 +11,18 @@ namespace OpenCNCPilot
 {
     partial class MainWindow
     {
-		void UpdateProbeTabButtons()
-		{
-			ButtonHeightMapCreateNew.IsEnabled = Map == null;
-			ButtonHeightMapLoad.IsEnabled = Map == null;
-			ButtonHeightMapSave.IsEnabled = App.Current.Machine.Mode != Machine.OperatingMode.Probe && Map != null;
-			ButtonHeightMapClear.IsEnabled = App.Current.Machine.Mode != Machine.OperatingMode.Probe && Map != null;
 
-			GridProbingControls.Visibility = Map != null ? Visibility.Visible : Visibility.Collapsed;
-
-			ButtonHeightMapStart.IsEnabled = App.Current.Machine.Mode != Machine.OperatingMode.Probe && Map != null && Map.NotProbed.Count > 0;
-			ButtonHeightMapPause.IsEnabled = App.Current.Machine.Mode == Machine.OperatingMode.Probe;
-
-			ButtonEditApplyHeightMap.IsEnabled = App.Current.Machine.Mode != Machine.OperatingMode.SendFile && Map != null && Map.NotProbed.Count == 0;
-		}
 
 		NewHeightMapWindow NewHeightMapDialog;
 
 		private void Map_MapUpdated()
 		{
-			Map.GetModel(ModelHeightMap);
-			LabelHeightMapProgress.Content = Map.Progress + "/" + Map.TotalPoints;
+            HeightMap.GetModel(Map);			
 		}
 
 		private void ButtonHeightmapCreateNew_Click(object sender, RoutedEventArgs e)
 		{
-			if (App.Current.Machine.Mode == Machine.OperatingMode.Probe || Map != null)
+			if (App.Current.Machine.Mode == Machine.OperatingMode.ProbingHeightMap || Map != null)
 				return;
 
 			NewHeightMapDialog = new NewHeightMapWindow();
@@ -56,18 +42,17 @@ namespace OpenCNCPilot
 			if (NewHeightMapDialog.Ok)
 				return;
 
-			ModelHeightMapBoundary.Points.Clear();
-			ModelHeightMapPoints.Points.Clear();
+            HeightMap.Clear();
 		}
 
 		private void NewHeightMapDialog_SelectedSizeChanged()
 		{
-			HeightMap.GetPreviewModel(NewHeightMapDialog.Min, NewHeightMapDialog.Max, NewHeightMapDialog.GridSize, ModelHeightMapBoundary, ModelHeightMapPoints);
-		}
+            HeightMap.SetNewModel(NewHeightMapDialog.Min, NewHeightMapDialog.Max, NewHeightMapDialog.GridSize);
+        }
 
 		private void NewHeightMapDialog_Size_Ok()
 		{
-			if (App.Current.Machine.Mode == Machine.OperatingMode.Probe || Map != null)
+			if (App.Current.Machine.Mode == Machine.OperatingMode.ProbingHeightMap || Map != null)
 				return;
 
 			Map = new HeightMap(App.Current.Settings, NewHeightMapDialog.GridSize, NewHeightMapDialog.Min, NewHeightMapDialog.Max);
@@ -83,13 +68,12 @@ namespace OpenCNCPilot
 			}
 
 			Map.MapUpdated += Map_MapUpdated;
-			UpdateProbeTabButtons();
 			Map_MapUpdated();
 		}
 
 		private void SaveFileDialogHeightMap_FileOk(object sender, System.ComponentModel.CancelEventArgs e)
 		{
-			if (App.Current.Machine.Mode == Machine.OperatingMode.Probe || Map == null)
+			if (App.Current.Machine.Mode == Machine.OperatingMode.ProbingHeightMap || Map == null)
 				return;
 
 			try
@@ -110,12 +94,12 @@ namespace OpenCNCPilot
 
 		private void OpenHeightMap(string filepath)
 		{
-			if (App.Current.Machine.Mode == Machine.OperatingMode.Probe || Map != null)
+			if (App.Current.Machine.Mode == Machine.OperatingMode.ProbingHeightMap || Map != null)
 				return;
 
 			try
 			{
-				Map = HeightMap.Load(filepath, App.Current.Settings);
+				Map = Presentation.HeightMap.Load(filepath, App.Current.Settings);
 			}
 			catch (Exception ex)
 			{
@@ -123,16 +107,14 @@ namespace OpenCNCPilot
 			}
 
 			Map.MapUpdated += Map_MapUpdated;
+            HeightMap.SetPreviewModel(Map);
 
-			Map.GetPreviewModel(ModelHeightMapBoundary, ModelHeightMapPoints);
-
-			UpdateProbeTabButtons();
 			Map_MapUpdated();
 		}
 
 		private void ButtonHeightmapLoad_Click(object sender, RoutedEventArgs e)
 		{
-			if (App.Current.Machine.Mode == Machine.OperatingMode.Probe || Map != null)
+			if (App.Current.Machine.Mode == Machine.OperatingMode.ProbingHeightMap || Map != null)
 				return;
 
 			openFileDialogHeightMap.ShowDialog();
@@ -140,7 +122,7 @@ namespace OpenCNCPilot
 
 		private void ButtonHeightmapSave_Click(object sender, RoutedEventArgs e)
 		{
-			if (App.Current.Machine.Mode == Machine.OperatingMode.Probe || Map == null)
+			if (App.Current.Machine.Mode == Machine.OperatingMode.ProbingHeightMap || Map == null)
 				return;
 
 			saveFileDialogHeightMap.FileName = $"map{(int)Map.Delta.X}x{(int)Map.Delta.Y}.hmap";
@@ -149,23 +131,17 @@ namespace OpenCNCPilot
 
 		private void ButtonHeightmapClear_Click(object sender, RoutedEventArgs e)
 		{
-			if (App.Current.Machine.Mode == Machine.OperatingMode.Probe || Map == null)
+			if (App.Current.Machine.Mode == Machine.OperatingMode.ProbingHeightMap || Map == null)
 				return;
 
 			Map = null;
 
-			LabelHeightMapProgress.Content = "0/0";
-
-			ModelHeightMap.MeshGeometry = new System.Windows.Media.Media3D.MeshGeometry3D();
-			ModelHeightMapBoundary.Points.Clear();
-			ModelHeightMapPoints.Points.Clear();
-
-			UpdateProbeTabButtons();
+            HeightMap.Clear();
 		}
 
 		private void HeightMapProbeNextPoint()
 		{
-			if (App.Current.Machine.Mode != Machine.OperatingMode.Probe)
+			if (App.Current.Machine.Mode != Machine.OperatingMode.ProbingHeightMap)
 				return;
 
 			if (!App.Current.Machine.Connected || Map == null || Map.NotProbed.Count == 0)
@@ -187,7 +163,7 @@ namespace OpenCNCPilot
 
 		private void Machine_ProbeFinished(Vector3 position, bool success)
 		{
-			if (App.Current.Machine.Mode != Machine.OperatingMode.Probe)
+			if (App.Current.Machine.Mode != Machine.OperatingMode.ProbingHeightMap)
 				return;
 
 			if (!App.Current.Machine.Connected || Map == null || Map.NotProbed.Count == 0)
@@ -228,7 +204,7 @@ namespace OpenCNCPilot
 
 			App.Current.Machine.ProbeStart();
 
-			if (App.Current.Machine.Mode != Machine.OperatingMode.Probe)
+			if (App.Current.Machine.Mode != Machine.OperatingMode.ProbingHeightMap)
 				return;
 
             App.Current.Machine.SendLine("G90");
@@ -239,7 +215,7 @@ namespace OpenCNCPilot
 
 		private void ButtonHeightMapPause_Click(object sender, RoutedEventArgs e)
 		{
-			if (App.Current.Machine.Mode != Machine.OperatingMode.Probe)
+			if (App.Current.Machine.Mode != Machine.OperatingMode.ProbingHeightMap)
 				return;
 
             App.Current.Machine.ProbeStop();

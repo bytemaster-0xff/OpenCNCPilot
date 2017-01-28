@@ -17,13 +17,14 @@ namespace OpenCNCPilot.Core.Communication
             {
                 _file = value;
                 FilePosition = 0;
+                RaisePropertyChanged();
                 RaiseEvent(FileChanged);
             }
         }
 
         public void SetFile(IList<string> file)
         {
-            if (Mode == OperatingMode.SendFile)
+            if (Mode == OperatingMode.SendingJob)
             {
                 RaiseEvent(Info, "Can't change file while active");
                 return;
@@ -35,7 +36,7 @@ namespace OpenCNCPilot.Core.Communication
 
         public void ClearFile()
         {
-            if (Mode == OperatingMode.SendFile)
+            if (Mode == OperatingMode.SendingJob)
             {
                 RaiseEvent(Info, "Can't change file while active");
                 return;
@@ -59,7 +60,7 @@ namespace OpenCNCPilot.Core.Communication
                 return;
             }
 
-            Mode = OperatingMode.SendFile;
+            Mode = OperatingMode.SendingJob;
         }
 
         public void FilePause()
@@ -70,7 +71,7 @@ namespace OpenCNCPilot.Core.Communication
                 return;
             }
 
-            if (Mode != OperatingMode.SendFile)
+            if (Mode != OperatingMode.SendingJob)
             {
                 RaiseEvent(Info, "Not in SendFile Mode");
                 return;
@@ -81,7 +82,7 @@ namespace OpenCNCPilot.Core.Communication
 
         public void FileGoto(int lineNumber)
         {
-            if (Mode == OperatingMode.SendFile)
+            if (Mode == OperatingMode.SendingJob)
                 return;
 
             if (lineNumber >= File.Count || lineNumber < 0)

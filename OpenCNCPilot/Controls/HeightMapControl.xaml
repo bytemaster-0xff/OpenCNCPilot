@@ -1,0 +1,51 @@
+﻿<UserControl x:Class="OpenCNCPilot.Controls.HeightMapControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:h="http://helix-toolkit.org/wpf"
+             xmlns:local="clr-namespace:OpenCNCPilot.Controls"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <h:HelixViewport3D Name="viewport" ShowViewCube="False" Panel.ZIndex="0">
+        <h:HelixViewport3D.Camera>
+            <PerspectiveCamera
+					Position="50, -150, 250"
+					LookDirection="-50, 150,-250"
+					UpDirection="0,0,1"/>
+        </h:HelixViewport3D.Camera>
+
+        <h:DefaultLights/>
+        <h:CoordinateSystemVisual3D ArrowLengths="5"/>
+        <h:LinesVisual3D Thickness="0.5" Color="Gray" x:Name="ModelRapid"/>
+        <h:LinesVisual3D Thickness="1" Color="Black" x:Name="ModelLine"/>
+        <h:LinesVisual3D Thickness="1" Color="Blue" x:Name="ModelArc"/>
+        <h:ArrowVisual3D x:Name="ModelTool" Direction="0,0,-10"/>
+        <h:GridLinesVisual3D 
+				x:Name="ModelGrid"
+				Width="500" Length="500"/>
+        <h:MeshGeometryVisual3D
+				x:Name="ModelHeightMap">
+            <h:MeshGeometryVisual3D.Material>
+                <MaterialGroup>
+                    <DiffuseMaterial>
+                        <DiffuseMaterial.Brush>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="0, 1">
+                                <LinearGradientBrush.GradientStops>
+                                    <GradientStop Color="Blue" Offset="0"/>
+                                    <GradientStop Color="Cyan" Offset="0.2"/>
+                                    <GradientStop Color="Green" Offset="0.4"/>
+                                    <GradientStop Color="Yellow" Offset="0.6"/>
+                                    <GradientStop Color="Red" Offset="0.8"/>
+                                    <GradientStop Color="Purple" Offset="1"/>
+                                </LinearGradientBrush.GradientStops>
+                            </LinearGradientBrush>
+                        </DiffuseMaterial.Brush>
+                    </DiffuseMaterial>
+                </MaterialGroup>
+            </h:MeshGeometryVisual3D.Material>
+        </h:MeshGeometryVisual3D>
+        <h:LinesVisual3D x:Name="ModelHeightMapBoundary" Thickness="2" Color="Lime"/>
+        <h:PointsVisual3D x:Name="ModelHeightMapPoints" Color="Red" Size="4"/>
+    </h:HelixViewport3D>
+</UserControl>

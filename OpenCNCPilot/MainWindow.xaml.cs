@@ -36,8 +36,7 @@ namespace OpenCNCPilot
             openFileDialogHeightMap.FileOk += OpenFileDialogHeightMap_FileOk;
             saveFileDialogHeightMap.FileOk += SaveFileDialogHeightMap_FileOk;
 
-
-            App.Current.Machine.ConnectionStateChanged += Machine_ConnectionStateChanged;
+            DataContext = new MainViewModel(App.Current.Machine);
 
             App.Current.Machine.NonFatalException += Machine_NonFatalException;
             App.Current.Machine.Info += Machine_Info;
@@ -75,14 +74,14 @@ namespace OpenCNCPilot
 
 					if(file.EndsWith(".hmap"))
 					{
-						if (App.Current.Machine.Mode == Machine.OperatingMode.Probe || Map != null)
+						if (App.Current.Machine.Mode == Machine.OperatingMode.ProbingHeightMap || Map != null)
 							return;
 
 						OpenHeightMap(file);
 					}
 					else
 					{
-						if (App.Current.Machine.Mode == Machine.OperatingMode.SendFile)
+						if (App.Current.Machine.Mode == Machine.OperatingMode.SendingJob)
 							return;
 
 						try
@@ -110,7 +109,7 @@ namespace OpenCNCPilot
 
 					if (file.EndsWith(".hmap"))
 					{
-						if (App.Current.Machine.Mode != Machine.OperatingMode.Probe && Map == null)
+						if (App.Current.Machine.Mode != Machine.OperatingMode.ProbingHeightMap && Map == null)
 						{
 							e.Effects = DragDropEffects.Copy;
 							return;
@@ -118,7 +117,7 @@ namespace OpenCNCPilot
 					}
 					else
 					{
-						if (App.Current.Machine.Mode != Machine.OperatingMode.SendFile)
+						if (App.Current.Machine.Mode != Machine.OperatingMode.SendingJob)
 						{
 							e.Effects = DragDropEffects.Copy;
 							return;

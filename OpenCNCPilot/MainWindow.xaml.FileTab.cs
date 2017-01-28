@@ -12,7 +12,7 @@ namespace OpenCNCPilot
 	{
 		private void OpenFileDialogGCode_FileOk(object sender, System.ComponentModel.CancelEventArgs e)
 		{
-			if (App.Current.Machine.Mode == Machine.OperatingMode.SendFile)
+			if (App.Current.Machine.Mode == Machine.OperatingMode.SendingJob)
 				return;
 
 			try
@@ -27,7 +27,7 @@ namespace OpenCNCPilot
 
 		private void ButtonOpen_Click(object sender, RoutedEventArgs e)
 		{
-			if (App.Current.Machine.Mode == Machine.OperatingMode.SendFile)
+			if (App.Current.Machine.Mode == Machine.OperatingMode.SendingJob)
 				return;
 
 			openFileDialogGCode.ShowDialog();
@@ -35,7 +35,7 @@ namespace OpenCNCPilot
 
 		private void ButtonClear_Click(object sender, RoutedEventArgs e)
 		{
-			if (App.Current.Machine.Mode == Machine.OperatingMode.SendFile)
+			if (App.Current.Machine.Mode == Machine.OperatingMode.SendingJob)
 				return;
 
             App.Current.Machine.ClearFile();
@@ -53,7 +53,7 @@ namespace OpenCNCPilot
 
 		private void ButtonFileGoto_Click(object sender, RoutedEventArgs e)
 		{
-			if (App.Current.Machine.Mode == Machine.OperatingMode.SendFile)
+			if (App.Current.Machine.Mode == Machine.OperatingMode.SendingJob)
 				return;
 
 			EnterNumberWindow enw = new EnterNumberWindow(App.Current.Machine.FilePosition + 1);
@@ -65,7 +65,7 @@ namespace OpenCNCPilot
 
 		private void Enw_User_Ok_Goto(double value)
 		{
-			if (App.Current.Machine.Mode == Machine.OperatingMode.SendFile)
+			if (App.Current.Machine.Mode == Machine.OperatingMode.SendingJob)
 				return;
 
             App.Current.Machine.FileGoto((int)value - 1);
