@@ -6,6 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using OpenCNCPilot.Core.GCode;
 using OpenCNCPilot.Presentation;
+using LagoVista.Core.PlatformSupport;
 
 namespace OpenCNCPilot
 {
@@ -42,7 +43,7 @@ namespace OpenCNCPilot
 
         private void Machine_PositionUpdateReceived()
         {
-            App.Current.DispatcherService.RunOnUIThread(() =>
+            Services.DispatcherServices.Invoke(() =>
             {
                 ModelTool.Point1 = (App.Current.Machine.WorkPosition + new Vector3(0, 0, 10)).ToPoint3D().ToMedia3D();
                 ModelTool.Point2 = App.Current.Machine.WorkPosition.ToPoint3D().ToMedia3D();
@@ -175,7 +176,7 @@ namespace OpenCNCPilot
         {
             try
             {
-                ToolPath = GCodeFile.FromList(App.Current.Machine.File, App.Current.StorageService, App.Current.LoggerService);
+                ToolPath = GCodeFile.FromList(App.Current.Machine.File);
                 GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced); // prevents considerable increase in memory usage
             }
             catch (Exception ex)
@@ -185,7 +186,7 @@ namespace OpenCNCPilot
 
             if (App.Current.Settings.EnableCodePreview)
             {
-                HeightMap.GetModel(ToolPath.Commands, App.Current.Settings, App.Current.LoggerService, ModelLine, ModelRapid, ModelArc);
+                HeightMap.GetModel(ToolPath.Commands, App.Current.Settings, ModelLine, ModelRapid, ModelArc);
             }
 
             LabelFileLength.Content = App.Current.Machine.File.Count;

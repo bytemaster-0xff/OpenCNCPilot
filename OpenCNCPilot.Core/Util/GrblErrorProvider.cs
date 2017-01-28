@@ -16,7 +16,7 @@ namespace OpenCNCPilot.Core.Util
             Errors = new Dictionary<int, string>();
         }
 
-        private async Task InitAsync()
+        private async Task LoadErrorFileAsync()
         {
             Services.Logger.Log(LogLevel.Message, "GrblErrorProvider_Init", "Loading GRBL Error Database");
 
@@ -73,7 +73,7 @@ namespace OpenCNCPilot.Core.Util
         public async static Task InitAsync()
         {
             _instance = new GrblErrorProvider();
-            await _instance.InitAsync();
+            await _instance.LoadErrorFileAsync();
         }
 
 

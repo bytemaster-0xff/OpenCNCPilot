@@ -1,6 +1,5 @@
 ﻿using OpenCNCPilot.Core.GCode;
 using OpenCNCPilot.Core.GCode.GCodeCommands;
-using OpenCNCPilot.Core.Platform;
 using OpenCNCPilot.Core.Util;
 using System;
 using System.Collections.Generic;

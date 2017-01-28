@@ -1,8 +1,8 @@
 ﻿using HelixToolkit.Wpf;
+using LagoVista.Core.PlatformSupport;
 using OpenCNCPilot.Core;
 using OpenCNCPilot.Core.GCode;
 using OpenCNCPilot.Core.GCode.GCodeCommands;
-using OpenCNCPilot.Core.Platform;
 using OpenCNCPilot.Core.Util;
 using System;
 using System.Collections.Generic;
@@ -15,19 +15,17 @@ namespace OpenCNCPilot.Presentation
 {
     public class HeightMap : BaseHeightMap
     {
-        ILogger _logger;
         Settings _settings;
 
-        public HeightMap(Settings settings, ILogger logger,  double gridSize, Vector2 min, Vector2 max) : base(gridSize,  min,  max)
+        public HeightMap(Settings settings,  double gridSize, Vector2 min, Vector2 max) : base(gridSize,  min,  max)
         {
             _settings = settings;
-            _logger = logger;
+
         }
 
-        public HeightMap(Settings settings, ILogger logger) : base()
+        public HeightMap(Settings settings) : base()
         {
             _settings = settings;
-            _logger = logger;
         }
 
 
@@ -141,7 +139,7 @@ namespace OpenCNCPilot.Presentation
             border.Points = b;
         }
 
-        public static void GetModel(IEnumerable<Command> toolPath, Settings settings, ILogger logger, LinesVisual3D line, LinesVisual3D rapid, LinesVisual3D arc)
+        public static void GetModel(IEnumerable<Command> toolPath, Settings settings, LinesVisual3D line, LinesVisual3D rapid, LinesVisual3D arc)
         {
             var sw = System.Diagnostics.Stopwatch.StartNew();
 
@@ -185,12 +183,12 @@ namespace OpenCNCPilot.Presentation
             arc.Points = arcPoints;
 
             sw.Stop();
-            logger.WriteLine($"Generating the Toolpath Model took {sw.ElapsedMilliseconds} ms");
+            Services.Logger.Log(LogLevel.Message, "HeightMap_GetModel", $"Generating the Toolpath Model took {sw.ElapsedMilliseconds} ms");
         }
 
-        public static HeightMap Load(string path, Settings settings, ILogger logger)
+        public static HeightMap Load(string path, Settings settings)
         {
-            var map = new HeightMap(settings, logger);
+            var map = new HeightMap(settings);
 
             var r = XmlReader.Create(path);
             map.Load(r);           
