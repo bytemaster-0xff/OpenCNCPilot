@@ -50,7 +50,7 @@ namespace OpenCNCPilot
 			if (App.Current.Machine.Connected)
                 App.Current.Machine.Disconnect();
 
-            App.Current.Settings.Save();
+            await App.Current.Settings.SaveAsync();
 		}
 	}
 }
