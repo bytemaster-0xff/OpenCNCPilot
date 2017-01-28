@@ -13,21 +13,22 @@ namespace OpenCNCPilot.Core.Communication
     public partial class Machine
     {
         private static Regex StatusEx = new Regex(@"<(?'State'Idle|Run|Hold|Home|Alarm|Check|Door)(?:.MPos:(?'MX'-?[0-9\.]*),(?'MY'-?[0-9\.]*),(?'MZ'-?[0-9\.]*))?(?:,WPos:(?'WX'-?[0-9\.]*),(?'WY'-?[0-9\.]*),(?'WZ'-?[0-9\.]*))?(?:,Buf:(?'Buf'[0-9]*))?(?:,RX:(?'RX'[0-9]*))?(?:,Ln:(?'L'[0-9]*))?(?:,F:(?'F'[0-9\.]*))?(?:,Lim:(?'Lim'[0-1]*))?(?:,Ctl:(?'Ctl'[0-1]*))?(?:.FS:(?'FSX'-?[0-9\.]*),(?'FSY'-?[0-9\.]*))?(?:.WCO:(?'WCOX'-?[0-9\.]*),(?'WCOY'-?[0-9\.]*),(?'WCOZ'-?[0-9\.]*))?(?:.Ov:(?'OVX'-?[0-9\.]*),(?'OVY'-?[0-9\.]*),(?'OVZ'-?[0-9\.]*))?>");
-
+        private static Regex CurrentPositionRegEx = new Regex(@"X:(?'MX'-?[0-9\.]*)Y:(?'MY'-?[0-9\.]*)Z:(?'MZ'-?[0-9\.]*)E:(?'E'-?[0-9\.]*) Count X:(?'WX'.-?[0-9\.]*)Y:(?'WY'.-?[0-9\.]*)Z:(?'WZ'.-?[0-9\.]*)");
         /// <summary>
         /// Parses a recevied status report (answer to '?')
         /// </summary>
         private void ParseStatus(string line)
         {
-            Match statusMatch = StatusEx.Match(line);
+            Match grblStatusMatch = StatusEx.Match(line);
+            bool update = false;
 
-            if (!statusMatch.Success)
+            if (!grblStatusMatch.Success)
             {
                 NonFatalException.Invoke(string.Format("Received Bad Status: '{0}'", line));
                 return;
             }
 
-            Group status = statusMatch.Groups["State"];
+            Group status = grblStatusMatch.Groups["State"];
 
             if (status.Success)
             {
@@ -35,9 +36,9 @@ namespace OpenCNCPilot.Core.Communication
             }
 
             Vector3 NewMachinePosition, NewWorkPosition;
-            bool update = false;
 
-            Group mx = statusMatch.Groups["MX"], my = statusMatch.Groups["MY"], mz = statusMatch.Groups["MZ"];
+
+            Group mx = grblStatusMatch.Groups["MX"], my = grblStatusMatch.Groups["MY"], mz = grblStatusMatch.Groups["MZ"];
 
             if (mx.Success)
             {
@@ -49,8 +50,8 @@ namespace OpenCNCPilot.Core.Communication
                 MachinePosition = NewMachinePosition;
             }
 
-            Group wx = statusMatch.Groups["WX"], wy = statusMatch.Groups["WY"], wz = statusMatch.Groups["WZ"];
-            Group wcox = statusMatch.Groups["WCOX"], wcoy = statusMatch.Groups["WCOY"], wcoz = statusMatch.Groups["WCOZ"];
+            Group wx = grblStatusMatch.Groups["WX"], wy = grblStatusMatch.Groups["WY"], wz = grblStatusMatch.Groups["WZ"];
+            Group wcox = grblStatusMatch.Groups["WCOX"], wcoy = grblStatusMatch.Groups["WCOY"], wcoz = grblStatusMatch.Groups["WCOZ"];
 
             if (wx.Success)
             {
@@ -71,8 +72,50 @@ namespace OpenCNCPilot.Core.Communication
                 WorkPosition = NewWorkPosition;
             }
 
+
             if (update && Connected && PositionUpdateReceived != null)
                 PositionUpdateReceived.Invoke();
+        }
+
+        public bool ParseLine(String line)
+        {
+            var m114PositionMatch = CurrentPositionRegEx.Match(line);
+            if(!m114PositionMatch.Success)
+            {
+                return false;
+            }
+
+            bool update = false;
+
+            Vector3 NewMachinePosition, NewWorkPosition;
+
+            Group mx = m114PositionMatch.Groups["MX"], my = m114PositionMatch.Groups["MY"], mz = m114PositionMatch.Groups["MZ"];
+            Group wx = m114PositionMatch.Groups["WX"], wy = m114PositionMatch.Groups["WY"], wz = m114PositionMatch.Groups["WZ"];
+
+            if (mx.Success)
+            {
+                NewMachinePosition = new Vector3(double.Parse(mx.Value, Constants.DecimalParseFormat), double.Parse(my.Value, Constants.DecimalParseFormat), double.Parse(mz.Value, Constants.DecimalParseFormat));
+
+                if (MachinePosition != NewMachinePosition)
+                    update = true;
+
+                MachinePosition = NewMachinePosition;
+            }
+
+            if (wx.Success)
+            {
+                NewWorkPosition = new Vector3(double.Parse(wx.Value, Constants.DecimalParseFormat), double.Parse(wy.Value, Constants.DecimalParseFormat), double.Parse(wz.Value, Constants.DecimalParseFormat));
+
+                if (WorkPosition != NewWorkPosition)
+                    update = true;
+
+                WorkPosition = NewWorkPosition;
+            }
+
+            if (update && Connected && PositionUpdateReceived != null)
+                PositionUpdateReceived.Invoke();
+
+            return true;
         }
 
 

@@ -1,14 +1,18 @@
-﻿using LagoVista.Core.PlatformSupport;
+﻿using LagoVista.Core.Models;
+using LagoVista.Core.PlatformSupport;
 using System;
+using System.ComponentModel;
 using System.Threading.Tasks;
 
 namespace OpenCNCPilot.Core
 {
-    public class Settings
+    public class Settings : ModelBase, INotifyPropertyChanged
     {
-        public enum FirmareTypes
+
+
+        public enum FirmwareTypes
         {
-            GRBL,
+            GRBL1_1,
             Marlin,
             Marlin_Laser
         }
@@ -21,9 +25,12 @@ namespace OpenCNCPilot.Core
         public double ArcToLineSegmentLength { get; set; }
         public double SplitSegmentLength { get; set; }
 
-        public String SerialPortName { get; set; }
-        public int SerialPortBaud { get; set; }
-
+        SerialPortInfo _currentSerialPort;
+        public SerialPortInfo CurrentSerialPort
+        {
+            get { return _currentSerialPort; }
+            set { Set(ref _currentSerialPort, value); }
+        }
 
         public bool EnableCodePreview { get; set; }
         public double ProbeSafeHeight { get; set; }
@@ -36,6 +43,9 @@ namespace OpenCNCPilot.Core
         public double SmallStepSize { get; set; }
         public double MediumStepSize { get; set; }
         public double LargeStepSize { get; set; }
+
+        public FirmwareTypes MachineType { get; set; }
+        
 
         public async static Task<Settings> LoadAsync()
         {
@@ -62,9 +72,7 @@ namespace OpenCNCPilot.Core
             get
             {
                 return new Settings()
-                {
-                    SerialPortName = "COM1",
-                    SerialPortBaud = 115200,
+                {                
                     ControllerBufferSize = 120,
                     StatusPollIntervalIdle = 1000,
                     StatusPollIntervalRunning = 100,

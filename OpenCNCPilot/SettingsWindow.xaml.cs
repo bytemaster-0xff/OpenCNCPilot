@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OpenCNCPilot.Core.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,6 +23,7 @@ namespace OpenCNCPilot
 		public SettingsWindow()
 		{
 			InitializeComponent();
+            DataContext = new SettingsViewModel(App.Current.Settings);
             Closed += SettingsWindow_Closed;
 		}
 
@@ -29,15 +31,5 @@ namespace OpenCNCPilot
         {
             await App.Current.Settings.SaveAsync();
         }
-
-        private void ComboBox_DropDownOpened(object sender, EventArgs e)
-		{
-			((ComboBox)sender).Items.Clear();
-
-			foreach (string port in System.IO.Ports.SerialPort.GetPortNames())
-				((ComboBox)sender).Items.Add(port);
-
-            ((ComboBox)sender).Items.Add("Simulated");
-		}
 	}
 }

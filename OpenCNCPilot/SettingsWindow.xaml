@@ -4,7 +4,6 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:OpenCNCPilot"
-        xmlns:util="clr-namespace:OpenCNCPilot.Util"
         mc:Ignorable="d"
         Title="SettingsWindow" Height="300" Width="392.161">
     <Window.Resources>
@@ -20,45 +19,87 @@
     <TabControl>
         <TabItem Header="Connection">
             <Grid>
-                <ComboBox VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,10,0,0" Width="120" SelectedValue="{util:SettingBinding SerialPortName}" DropDownOpened="ComboBox_DropDownOpened"/>
-                <Label Content="Serial Port" HorizontalAlignment="Left" Margin="135,10,0,0" VerticalAlignment="Top"/>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="20" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="135" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid.Resources>
+                    <Style TargetType="TextBox">
+                        <Setter Property="Margin" Value="4" />
+                        <Setter Property="Grid.Column" Value="0" />
+                        <Setter Property="TextAlignment" Value="Right" />
+                    </Style>
+                    <Style TargetType="ComboBox">
+                        <Setter Property="Margin" Value="4" />
+                        <Setter Property="Grid.Column" Value="0" />
+                    </Style>
+                    <Style TargetType="Label">
+                        <Setter Property="Margin" Value="4" />
+                        <Setter Property="Grid.Column" Value="1" />
+                    </Style>
 
-                <TextBox Margin="10,37,0,0" Text="{util:SettingBinding SerialPortBaud}"/>
-                <Label Content="BaudRate" HorizontalAlignment="Left" Margin="135,36,0,0" VerticalAlignment="Top"/>
+                </Grid.Resources>
+                <ComboBox Grid.Row="0" Grid.Column="0" 
+                          SelectedValue="{Binding Path=MachineType, Mode=TwoWay}"
+                          ItemsSource="{Binding Path=MachineTypes}"  />
 
-                <TextBox Margin="10,88,0,0" Text="{util:SettingBinding ControllerBufferSize}"/>
-                <Label Content="Controller Buffer" HorizontalAlignment="Left" Margin="135,87,0,0" VerticalAlignment="Top"/>
+                <Label Grid.Row="0" Content="MachineType" />
 
-                <TextBox Margin="10,116,0,0" Text="{util:SettingBinding StatusPollIntervalIdle}"/>
-                <Label Content="Idle Status Poll Interval (ms)" HorizontalAlignment="Left" Margin="135,115,0,0" VerticalAlignment="Top"/>
-                <TextBox Margin="10,144,0,0" Text="{util:SettingBinding StatusPollIntervalRunning}"/>
-                <Label Content="Running Status Poll Interval (ms)" HorizontalAlignment="Left" Margin="135,142,0,0" VerticalAlignment="Top"/>
+                <ComboBox Grid.Row="1" Grid.Column="0" 
+                          SelectedValuePath="Id"
+                          DisplayMemberPath="Name"
+                          SelectedValue="{Binding Path=SelectedPortId, Mode=TwoWay}"
+                          ItemsSource="{Binding Path=SerialPorts}"  />
+
+                <Label Grid.Row="1" Content="Serial Port" HorizontalAlignment="Left"  VerticalAlignment="Top"/>
+
+                <TextBox Grid.Row="2"  Text="{Binding Settings.CurrentSerialPort.BaudRate, Mode=TwoWay}" />
+                <Label Content="BaudRate" Grid.Row="2" />
+
+                <TextBox  Text="{Binding Settings.ControllerBufferSize, Mode=TwoWay}" Grid.Row="4"/>
+                <Label Content="Controller Buffer" Grid.Row="4"  />
+
+                <TextBox Text="{Binding Settings.StatusPollIntervalIdle}" Grid.Row="5"/>
+                <Label Content="Idle Status Poll Interval (ms)" Grid.Row="5" />
+                
+                <TextBox  Text="{Binding Settings.StatusPollIntervalRunning}" Grid.Row="6"/>
+                <Label Content="Running Status Poll Interval (ms)" Grid.Row="6"  />
             </Grid>
         </TabItem>
 
         <TabItem Header="Viewport">
             <Grid>
-                <TextBox Margin="10,10,0,0" Text="{util:SettingBinding ViewportArcSplit}"/>
+                <TextBox Margin="10,10,0,0" Text="{Binding Settings.ViewportArcSplit, Mode=TwoWay}"/>
                 <Label Content="preview arc segment length (mm)" HorizontalAlignment="Left" Margin="135,9,0,0" VerticalAlignment="Top"/>
 
-                <CheckBox Content="Preview Toolpath" HorizontalAlignment="Left" Margin="116,40,0,0" VerticalAlignment="Top" IsChecked="{util:SettingBinding EnableCodePreview}"/>
+                <CheckBox Content="Preview Toolpath" HorizontalAlignment="Left" Margin="116,40,0,0" VerticalAlignment="Top" IsChecked="{Binding Settings.EnableCodePreview, Mode=TwoWay}"/>
             </Grid>
         </TabItem>
 
         <TabItem Header="Probing">
             <Grid>
-                <TextBox Margin="10,10,0,0" Text="{util:SettingBinding ProbeFeed}"/>
+                <TextBox Margin="10,10,0,0" Text="{Binding Settings.ProbeFeed, Mode=TwoWay}"/>
                 <Label Content="Probe Plunge Feedrate (mm/min)" HorizontalAlignment="Left" Margin="135,9,0,0" VerticalAlignment="Top"/>
 
-                <CheckBox Content="Abort on Probe Fail" HorizontalAlignment="Left" Margin="116,40,0,0" VerticalAlignment="Top" IsChecked="{util:SettingBinding AbortOnProbeFail}"/>
+                <CheckBox Content="Abort on Probe Fail" HorizontalAlignment="Left" Margin="116,40,0,0" VerticalAlignment="Top" IsChecked="{Binding Settings.AbortOnProbeFail, Mode=TwoWay}"/>
 
-                <TextBox Margin="10,61,0,0" Text="{util:SettingBinding ProbeSafeHeight}"/>
+                <TextBox Margin="10,61,0,0" Text="{Binding Settings.ProbeSafeHeight, Mode=TwoWay}"/>
                 <Label Content="Safe Height (mm)" HorizontalAlignment="Left" Margin="135,60,0,0" VerticalAlignment="Top"/>
 
-                <TextBox Margin="10,89,0,0" Text="{util:SettingBinding ProbeMinimumHeight}" ToolTip="This height will be added to the height of the last probe point to prevent crashes on highly tilted surfaces"/>
+                <TextBox Margin="10,89,0,0" Text="{Binding Settings.ProbeMinimumHeight, Mode=TwoWay}" ToolTip="This height will be added to the height of the last probe point to prevent crashes on highly tilted surfaces"/>
                 <Label Content="Minimum Height (mm)" HorizontalAlignment="Left" Margin="135,88,0,0" VerticalAlignment="Top"/>
 
-                <TextBox Margin="10,117,0,0" Text="{util:SettingBinding ProbeMaxDepth}"/>
+                <TextBox Margin="10,117,0,0" Text="{Binding Settings.ProbeMaxDepth, Mode=TwoWay}"/>
                 <Label Content="Max Depth (mm)" HorizontalAlignment="Left" Margin="135,116,0,0" VerticalAlignment="Top"/>
             </Grid>
         </TabItem>

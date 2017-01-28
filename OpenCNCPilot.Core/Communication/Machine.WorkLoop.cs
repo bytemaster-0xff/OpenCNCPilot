@@ -117,13 +117,19 @@ namespace OpenCNCPilot.Core.Communication
                     Mode = OperatingMode.Manual;
                 }
                 else if (line.Length > 0)
-                    RaiseEvent(LineReceived, line);
+                {
+                    if (!ParseLine(line))
+                    {
+                        RaiseEvent(LineReceived, line);
+                    }
+                }
             }
             else
             {
                 RaiseEvent(ReportError, $"Empty Response From Machine.");
             }
         }
+
 
         private async void Work(Stream stream)
         {
@@ -138,12 +144,15 @@ namespace OpenCNCPilot.Core.Communication
                 DateTime LastStatusPoll = DateTime.Now + TimeSpan.FromSeconds(0.5);
                 _connectTime = DateTime.Now;
 
-                writer.Write("\n$G\n");
-                writer.Flush();
+                if (_settings.MachineType == Settings.FirmwareTypes.GRBL1_1)
+                {
+                    writer.Write("\n$G\n");
+                    writer.Flush();
+                }
 
                 while (true)
                 {
-                    Task<string> lineTask = reader.ReadLineAsync();
+                    var lineTask = reader.ReadLineAsync();
 
                     while (!lineTask.IsCompleted)
                     {
@@ -196,7 +205,8 @@ namespace OpenCNCPilot.Core.Communication
 
                             if ((Now - LastStatusPoll).TotalMilliseconds > (Mode == OperatingMode.Manual ? _settings.StatusPollIntervalIdle : _settings.StatusPollIntervalRunning))
                             {
-                                writer.Write('?');
+                                var statusRequest = _settings.MachineType == Settings.FirmwareTypes.GRBL1_1 ? "?" : "M114\n";
+                                writer.Write(statusRequest);
                                 writer.Flush();
                                 LastStatusPoll = Now;
                             }

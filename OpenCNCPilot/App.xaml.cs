@@ -1,4 +1,6 @@
-﻿using LagoVista.Core.WPF.PlatformSupport;
+﻿using LagoVista.Core.IOC;
+using LagoVista.Core.PlatformSupport;
+using LagoVista.Core.WPF.PlatformSupport;
 using OpenCNCPilot.Core;
 using OpenCNCPilot.Core.Communication;
 using System.Threading.Tasks;
@@ -21,6 +23,7 @@ namespace OpenCNCPilot
             _app = this;
 
             WPFDeviceServices.Init(Dispatcher);
+            SLWIOC.RegisterSingleton<IDeviceManager>(new DeviceManager());
         }
 
         public async Task InitAsync()

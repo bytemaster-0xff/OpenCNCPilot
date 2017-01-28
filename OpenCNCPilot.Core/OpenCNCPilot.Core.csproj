@@ -66,6 +66,7 @@
     <Compile Include="ViewModels\JobViewModel.cs" />
     <Compile Include="ViewModels\MachineControlViewModel.cs" />
     <Compile Include="ViewModels\ProbingViewModel.cs" />
+    <Compile Include="ViewModels\SettingsViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="LagoVista.Core, Version=1.1.0.32, Culture=neutral, processorArchitecture=MSIL">
