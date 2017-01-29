@@ -48,7 +48,7 @@
         <Button Command="{Binding ConnectCommand}" Grid.Column="0"  >
             <Button.Content>
                 <StackPanel>
-                    <fa:ImageAwesome Icon="PowerOff" Foreground="{Binding Machine.Connected, Converter={StaticResource ColorEnabledConverter}, ConverterParameter=Green}" />
+                    <fa:ImageAwesome Icon="PowerOff" Foreground="{Binding Machine.Connected, Converter={StaticResource ColorEnabledConverter}, ConverterParameter=Green, FallbackValue=LightGray}" />
                     <TextBlock Text="{Binding ConnectText, FallbackValue=On}" />
                 </StackPanel>
             </Button.Content>
@@ -57,7 +57,7 @@
         <Button Command="{Binding StopJobCommand}" Grid.Column="1" >
             <Button.Content>
                 <StackPanel>
-                    <fa:ImageAwesome Icon="Stop" Foreground="Black" />
+                    <fa:ImageAwesome Icon="Stop" Foreground="{Binding IsCreatingHeightMap, Converter={StaticResource ColorEnabledConverter}, ConverterParameter=Black, FallbackValue=LightGray}" />
                     <TextBlock Text="Stop" />
                 </StackPanel>
             </Button.Content>
@@ -66,7 +66,7 @@
         <Button Command="{Binding PauseJobCommand}" Grid.Column="2" >
             <Button.Content>
                 <StackPanel>
-                    <fa:ImageAwesome Icon="Pause" Foreground="Gray"/>
+                    <fa:ImageAwesome Icon="Pause" Foreground="{Binding IsCreatingHeightMap, Converter={StaticResource ColorEnabledConverter}, ConverterParameter=Gray, FallbackValue=LightGray}" />
                     <TextBlock Text="Pause" />
                 </StackPanel>
             </Button.Content>
@@ -75,7 +75,7 @@
             <Button.Content>
                 <StackPanel>
                     <Grid>
-                        <fa:ImageAwesome Icon="Play"  Foreground="{Binding IsRunningJob, Converter={StaticResource ColorEnabledConverter}, ConverterParameter=Green}"  />
+                        <fa:ImageAwesome Icon="Play"  Foreground="{Binding IsRunningJob, Converter={StaticResource ColorEnabledConverter}, ConverterParameter=Green, FallbackValue=LightGray}"  />
                         <fa:ImageAwesome Icon="FileTextOutline" Style="{StaticResource StartType}" />
                     </Grid>
                     <TextBlock Text="Start Job" />
@@ -86,7 +86,7 @@
             <Button.Content>
                 <StackPanel>
                     <Grid>
-                        <fa:ImageAwesome Icon="Play"  Foreground="{Binding IsCreatingHeightMap, Converter={StaticResource ColorEnabledConverter}, ConverterParameter=Green}"  />
+                        <fa:ImageAwesome Icon="Play" Foreground="{Binding IsCreatingHeightMap, Converter={StaticResource ColorEnabledConverter}, ConverterParameter=Green, FallbackValue=LightGray}"  />
                         <fa:ImageAwesome Icon="Arrows" Style="{StaticResource StartType}" />
                     </Grid>
                     <TextBlock Text="Height Map" />
@@ -97,7 +97,7 @@
             <Button.Content>
                 <StackPanel>
                     <Grid>
-                        <fa:ImageAwesome Icon="Play"  Foreground="{Binding IsProbingHeight, Converter={StaticResource ColorEnabledConverter}, ConverterParameter=Green}"  />
+                        <fa:ImageAwesome Icon="Play"  Foreground="{Binding IsProbingHeight, Converter={StaticResource ColorEnabledConverter}, ConverterParameter=Green, FallbackValue=LightGray}"  />
                         <fa:ImageAwesome Icon="LongArrowDown" Style="{StaticResource StartType}" />
                     </Grid>
                     <TextBlock Text="Probe" />
@@ -108,7 +108,7 @@
         <Button Command="{Binding EmergencyStopCommand}" Grid.Column="7" >
             <Button.Content>
                 <StackPanel>
-                        <fa:ImageAwesome Icon="Flash" Foreground="Red" />
+                    <fa:ImageAwesome Icon="Flash" Foreground="{Binding Machine.Connected, Converter={StaticResource ColorEnabledConverter}, ConverterParameter=Red, FallbackValue=LightGray}" />
                     <TextBlock Text="Kill" />
                 </StackPanel>
             </Button.Content>
