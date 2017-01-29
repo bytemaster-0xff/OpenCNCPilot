@@ -24,12 +24,6 @@ namespace LagoVista.Core.GCode.Commands
 
 		public override IEnumerable<Motion> Split(double length)
 		{
-			if (Rapid)	//don't split up rapid motions
-			{
-				yield return this;
-				yield break;
-			}
-
 			int divisions = (int)Math.Ceiling(Length / length);
 
 			if (divisions < 1)

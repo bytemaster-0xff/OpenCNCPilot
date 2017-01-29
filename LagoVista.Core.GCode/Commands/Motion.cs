@@ -17,6 +17,8 @@ namespace LagoVista.Core.GCode.Commands
 			}
 		}
 
+        public DateTime? StartTimeStamp { get; set; }
+
 		/// <summary>
 		/// Total travel distance of tool
 		/// </summary>
@@ -53,7 +55,24 @@ namespace LagoVista.Core.GCode.Commands
 
         public override string ToString()
         {
-            return String.Format("{0}. - {1} Duration:[{2:0}ms]    Length[{3:0.0}mm]   Feed[{4:0}]", LineNumber, Line.Trim('\r','\n'), EstimatedRunTime.TotalMilliseconds, Length, Feed);
+            return String.Format("{0}. - {1}    Duration:[{2:0}ms]    Length[{3:0.0}mm]   Feed[{4:0}]", LineNumber, Line.Trim('\r','\n'), EstimatedRunTime.TotalMilliseconds, Length, Feed);
+        }
+
+        public Vector3 CurrentPosition
+        {
+            get
+            {
+                if(StartTimeStamp.HasValue && EstimatedRunTime.TotalMilliseconds > 0)
+                {
+                    var ms = (DateTime.Now - StartTimeStamp.Value).TotalMilliseconds;
+                    var percentComplete = ms / EstimatedRunTime.TotalMilliseconds;
+                    return Interpolate(percentComplete);
+                }
+                else
+                {
+                    return Start;
+                }
+            }
         }
     }
 }
