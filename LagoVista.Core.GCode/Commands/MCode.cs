@@ -9,5 +9,18 @@ namespace LagoVista.Core.GCode.Commands
     public class MCode : Command
 	{
 		public int Code;
-	}
+
+        public override string ToString()
+        {
+            return $"{LineNumber}. - {Line}";
+        }
+
+        public override TimeSpan EstimatedRunTime
+        {
+            get
+            {
+                return TimeSpan.Zero;
+            }
+        }
+    }
 }

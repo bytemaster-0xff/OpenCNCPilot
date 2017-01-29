@@ -73,9 +73,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\LagoVista.Core.GCode\LagoVista.Core.GCode.csproj">
+    <ProjectReference Include="..\LagoVista.Core.GCode\GCode Core.csproj">
       <Project>{26a18c19-479e-495b-a8f2-1baa591d7df8}</Project>
-      <Name>LagoVista.Core.GCode</Name>
+      <Name>GCode Core</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />

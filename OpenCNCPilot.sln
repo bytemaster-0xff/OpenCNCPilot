@@ -7,9 +7,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "App", "OpenCNCPilot\App.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GCode Sender", "OpenCNCPilot.Core\GCode Sender.csproj", "{A5441C94-A9F8-4577-B2E6-7F50FB7C76F7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LagoVista.GCodeSupport.Tests", "LagoVista.GCodeSupport.Tests\LagoVista.GCodeSupport.Tests.csproj", "{FBBF8FC8-4E82-4E5E-833D-2CEC6F130B18}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GCode Tests", "LagoVista.GCodeSupport.Tests\GCode Tests.csproj", "{FBBF8FC8-4E82-4E5E-833D-2CEC6F130B18}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LagoVista.Core.GCode", "LagoVista.Core.GCode\LagoVista.Core.GCode.csproj", "{26A18C19-479E-495B-A8F2-1BAA591D7DF8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GCode Core", "LagoVista.Core.GCode\GCode Core.csproj", "{26A18C19-479E-495B-A8F2-1BAA591D7DF8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LagoVista.Core.GCode
+namespace LagoVista.Core.GCode.Parser
 {
 	class ParseException : Exception
 	{

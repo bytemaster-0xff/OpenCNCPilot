@@ -224,9 +224,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\LagoVista.Core.GCode\LagoVista.Core.GCode.csproj">
+    <ProjectReference Include="..\LagoVista.Core.GCode\GCode Core.csproj">
       <Project>{26a18c19-479e-495b-a8f2-1baa591d7df8}</Project>
-      <Name>LagoVista.Core.GCode</Name>
+      <Name>GCode Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\OpenCNCPilot.Core\GCode Sender.csproj">
       <Project>{a5441c94-a9f8-4577-b2e6-7f50fb7c76f7}</Project>

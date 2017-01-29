@@ -1,4 +1,5 @@
 ﻿using LagoVista.Core.GCode.Commands;
+using LagoVista.Core.GCode.Parser;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,6 +26,12 @@ namespace LagoVista.Core.GCode
             parser.Parse(file);
 
             return new GCodeFile(parser.Commands) { FileName = "output.nc" };
+        }
+
+        public static GCodeFile FromString(String contents)
+        {
+            var commands = contents.Split('\n');
+            return FromList(commands);
         }
 
         public static GCodeFile FromCommands(List<Command> commands)

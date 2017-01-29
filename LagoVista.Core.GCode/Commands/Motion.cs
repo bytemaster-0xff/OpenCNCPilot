@@ -9,7 +9,6 @@ namespace LagoVista.Core.GCode.Commands
 		public Vector3 Start;
 		public Vector3 End;
 		public double Feed;
-
 		public Vector3 Delta
 		{
 			get
@@ -37,7 +36,7 @@ namespace LagoVista.Core.GCode.Commands
 		/// <returns>collection of smaller motions that together form this motion</returns>
 		public abstract IEnumerable<Motion> Split(double length);
 
-        public TimeSpan EstimatedRunTime
+        public override TimeSpan EstimatedRunTime
         {
             get
             {
@@ -51,5 +50,10 @@ namespace LagoVista.Core.GCode.Commands
                 return TimeSpan.FromSeconds(Length / feedPerSeconds);
             }
         }
-	}
+
+        public override string ToString()
+        {
+            return String.Format("{0}. - {1} Duration:[{2:0}ms]    Length[{3:0.0}mm]   Feed[{4:0}]", LineNumber, Line.Trim('\r','\n'), EstimatedRunTime.TotalMilliseconds, Length, Feed);
+        }
+    }
 }
