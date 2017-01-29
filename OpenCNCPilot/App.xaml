@@ -1,8 +1,8 @@
-﻿<Application x:Class="OpenCNCPilot.App"
+﻿<Application x:Class="LagoVista.GCode.Sender.Application.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:OpenCNCPilot"
-             xmlns:cvtrs="clr-namespace:OpenCNCPilot.Converters"
+             xmlns:local="clr-namespace:LagoVista.GCode.Sender.Application"
+             xmlns:cvtrs="clr-namespace:LagoVista.GCode.Sender.Application.Converters"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
         <cvtrs:ColorEnabledConverter x:Key="ColorEnabledConverter" />

@@ -1,7 +1,7 @@
-﻿using LagoVista.Core.PlatformSupport;
-using OpenCNCPilot.Core.GCode;
-using OpenCNCPilot.Core.GCode.GCodeCommands;
-using OpenCNCPilot.Core.Util;
+﻿using LagoVista.Core.GCode;
+using LagoVista.Core.GCode.Commands;
+using LagoVista.Core.Models.Drawing;
+using LagoVista.Core.PlatformSupport;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -11,7 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OpenCNCPilot.Core.Communication
+namespace LagoVista.GCode.Sender
 {
     public interface IMachine : INotifyPropertyChanged
     {
@@ -40,7 +40,7 @@ namespace OpenCNCPilot.Core.Communication
         Vector3 MachinePosition { get; }
         Vector3 WorkPosition { get; }
 
-        Machine.OperatingMode Mode { get; }
+        OperatingMode Mode { get; }
 
         String Status { get; }
 

@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Windows;
-using OpenCNCPilot.Core.Util;
 using Microsoft.Win32;
-using OpenCNCPilot.Core.GCode;
-using OpenCNCPilot.Core.Communication;
-using OpenCNCPilot.Presentation;
-using OpenCNCPilot.Core;
+using LagoVista.Core.GCode;
+using LagoVista.GCode.Sender;
+using LagoVista.GCode.Sender.Models;
+using LagoVista.GCode.Sender.ViewModels;
+using LagoVista.GCode.Sender.Application.Presentation;
+using LagoVista.GCode.Sender.Util;
 
-namespace OpenCNCPilot
+namespace LagoVista.GCode.Sender.Application
 {
 	public partial class MainWindow : Window
 	{        
@@ -72,14 +73,14 @@ namespace OpenCNCPilot
 
 					if(file.EndsWith(".hmap"))
 					{
-						if (App.Current.Machine.Mode == Machine.OperatingMode.ProbingHeightMap || Map != null)
+						if (App.Current.Machine.Mode == OperatingMode.ProbingHeightMap || Map != null)
 							return;
 
 						OpenHeightMap(file);
 					}
 					else
 					{
-						if (App.Current.Machine.Mode == Machine.OperatingMode.SendingJob)
+						if (App.Current.Machine.Mode == OperatingMode.SendingJob)
 							return;
 
 						try
@@ -107,7 +108,7 @@ namespace OpenCNCPilot
 
 					if (file.EndsWith(".hmap"))
 					{
-						if (App.Current.Machine.Mode != Machine.OperatingMode.ProbingHeightMap && Map == null)
+						if (App.Current.Machine.Mode != OperatingMode.ProbingHeightMap && Map == null)
 						{
 							e.Effects = DragDropEffects.Copy;
 							return;
@@ -115,7 +116,7 @@ namespace OpenCNCPilot
 					}
 					else
 					{
-						if (App.Current.Machine.Mode != Machine.OperatingMode.SendingJob)
+						if (App.Current.Machine.Mode != OperatingMode.SendingJob)
 						{
 							e.Effects = DragDropEffects.Copy;
 							return;

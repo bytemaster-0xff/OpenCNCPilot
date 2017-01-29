@@ -8,8 +8,8 @@
     <ProjectGuid>{A5441C94-A9F8-4577-B2E6-7F50FB7C76F7}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>OpenCNCPilot.Core</RootNamespace>
-    <AssemblyName>OpenCNCPilot.Core</AssemblyName>
+    <RootNamespace>LagoVista.GCode.Sender</RootNamespace>
+    <AssemblyName>LagoVista.GCode.Sender</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -34,36 +34,24 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Communication\IMachine.cs" />
-    <Compile Include="Communication\Machine.cs" />
-    <Compile Include="Communication\Machine.Defines.cs" />
-    <Compile Include="Communication\Machine.File.cs" />
-    <Compile Include="Communication\Machine.Interface.cs" />
-    <Compile Include="Communication\Machine.Parser.cs" />
-    <Compile Include="Communication\Machine.Settings.cs" />
-    <Compile Include="Communication\Machine.Status.cs" />
-    <Compile Include="Communication\Machine.WorkLoop.cs" />
-    <Compile Include="Communication\SimulatedGCodeMachine.cs" />
-    <Compile Include="GCode\GCodeCommands\Arc.cs" />
-    <Compile Include="GCode\GCodeCommands\Command.cs" />
-    <Compile Include="GCode\GCodeCommands\GCodeLine.cs" />
-    <Compile Include="GCode\GCodeCommands\MCode.cs" />
-    <Compile Include="GCode\GCodeCommands\Motion.cs" />
-    <Compile Include="GCode\GCodeFile.cs" />
-    <Compile Include="GCode\GCodeParser.cs" />
-    <Compile Include="GCode\HeightMap.cs" />
-    <Compile Include="GCode\ParseException.cs" />
+    <Compile Include="Machine\IMachine.cs" />
+    <Compile Include="Machine\Machine.cs" />
+    <Compile Include="Machine\Machine.Defines.cs" />
+    <Compile Include="Machine\Machine.File.cs" />
+    <Compile Include="Machine\Machine.Interface.cs" />
+    <Compile Include="Machine\Machine.Parser.cs" />
+    <Compile Include="Machine\Machine.Settings.cs" />
+    <Compile Include="Machine\Machine.Status.cs" />
+    <Compile Include="Machine\Machine.WorkLoop.cs" />
+    <Compile Include="Machine\SimulatedMachine.cs" />
+    <Compile Include="Models\BaseHeightMap.cs" />
+    <Compile Include="Models\PCBoard.cs" />
     <Compile Include="ViewModels\JobControlViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
-    <Compile Include="Models\Board.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Settings.cs" />
-    <Compile Include="Util\Constants.cs" />
+    <Compile Include="Constants.cs" />
     <Compile Include="Util\GrblErrorProvider.cs" />
-    <Compile Include="Util\Point2d.cs" />
-    <Compile Include="Util\Point3D.cs" />
-    <Compile Include="Util\Vector2.cs" />
-    <Compile Include="Util\Vector3.cs" />
     <Compile Include="ViewModels\FileViewModel.cs" />
     <Compile Include="ViewModels\JobViewModel.cs" />
     <Compile Include="ViewModels\MachineControlViewModel.cs" />
@@ -73,7 +61,7 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="LagoVista.Core, Version=1.1.0.32, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\LagoVista.Core.0.8.59-alpha00747\lib\portable46-net451+win81\LagoVista.Core.dll</HintPath>
+      <HintPath>..\packages\LagoVista.Core.0.8.59-alpha00923\lib\portable46-net451+win81\LagoVista.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
@@ -84,7 +72,12 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\LagoVista.Core.GCode\LagoVista.Core.GCode.csproj">
+      <Project>{26a18c19-479e-495b-a8f2-1baa591d7df8}</Project>
+      <Name>LagoVista.Core.GCode</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

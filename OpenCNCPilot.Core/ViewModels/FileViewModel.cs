@@ -1,14 +1,12 @@
 ﻿using LagoVista.Core.Commanding;
 using LagoVista.Core.ViewModels;
-using OpenCNCPilot.Core.Communication;
-using OpenCNCPilot.Core.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OpenCNCPilot.Core.ViewModels
+namespace LagoVista.GCode.Sender.ViewModels
 {
     public class FileViewModel : ViewModelBase
     {

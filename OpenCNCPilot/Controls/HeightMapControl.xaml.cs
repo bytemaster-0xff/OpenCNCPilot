@@ -1,11 +1,11 @@
-﻿using OpenCNCPilot.Core.GCode.GCodeCommands;
-using OpenCNCPilot.Core.Util;
-using OpenCNCPilot.Presentation;
+﻿using LagoVista.Core.GCode.Commands;
+using LagoVista.Core.Models.Drawing;
+using LagoVista.GCode.Sender.Application.Presentation;
 using System.Collections.Generic;
 using System.Windows.Controls;
 
 
-namespace OpenCNCPilot.Controls
+namespace LagoVista.GCode.Sender.Application.Controls
 {
     /// <summary>
     /// Interaction logic for HeightMapRenderer.xaml
@@ -27,6 +27,7 @@ namespace OpenCNCPilot.Controls
             map.GetPreviewModel(ModelHeightMapBoundary, ModelHeightMapPoints);
         }
 
+    
         public void GetModel(HeightMap map)
         {
             map.GetModel(ModelHeightMap);
@@ -39,7 +40,13 @@ namespace OpenCNCPilot.Controls
             ModelHeightMapPoints.Points.Clear();
         }
 
-        public void SetPreviewModel(IEnumerable<Command> commands)
+        public void SetPreviewModel(IReadOnlyList<Command> commands)
+        {
+            HeightMap.GetModel(commands, App.Current.Settings, ModelLine, ModelRapid, ModelArc);
+        }
+
+
+        public void SetPreviewModel(List<Command> commands)
         {
             HeightMap.GetModel(commands, App.Current.Settings, ModelLine, ModelRapid, ModelArc);
         }

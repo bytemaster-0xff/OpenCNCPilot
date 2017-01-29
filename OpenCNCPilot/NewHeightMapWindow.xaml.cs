@@ -1,8 +1,8 @@
-﻿using OpenCNCPilot.Core.Util;
+﻿using LagoVista.Core.Models.Drawing;
 using System;
 using System.Windows;
 
-namespace OpenCNCPilot
+namespace LagoVista.GCode.Sender.Application
 {
 	/// <summary>
 	/// Interaction logic for NewHeightMapWindow.xaml

@@ -1,10 +1,10 @@
-﻿using OpenCNCPilot.Core.Util;
+﻿using LagoVista.Core.Models.Drawing;
 using System;
 using System.Collections.Generic;
 
-namespace OpenCNCPilot.Core.GCode.GCodeCommands
+namespace LagoVista.Core.GCode.Commands
 {
-	public class GCodeLine : Motion
+    public class GCodeLine : Motion
 	{
 		public bool Rapid;
 

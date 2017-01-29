@@ -1,14 +1,14 @@
-﻿using OpenCNCPilot.Core.Communication;
+﻿using LagoVista.GCode.Sender;
 using System;
 using System.Windows;
 
-namespace OpenCNCPilot
+namespace LagoVista.GCode.Sender.Application
 {
 	partial class MainWindow
 	{
 		private void ButtonEditSimplify_Click(object sender, RoutedEventArgs e)
 		{
-			if (App.Current.Machine.Mode == Machine.OperatingMode.SendingJob)
+			if (App.Current.Machine.Mode == OperatingMode.SendingJob)
 				return;
 
             App.Current.Machine.SetFile(ToolPath.GetGCode().ToArray());
@@ -16,7 +16,7 @@ namespace OpenCNCPilot
 
 		private void ButtonEditApplyHeightMap_Click(object sender, RoutedEventArgs e)
 		{
-			if (App.Current.Machine.Mode == Machine.OperatingMode.SendingJob)
+			if (App.Current.Machine.Mode == OperatingMode.SendingJob)
 				return;
 
 			if(Map == null || Map.NotProbed.Count > 0)
@@ -27,7 +27,7 @@ namespace OpenCNCPilot
 
 			try
 			{
-                App.Current.Machine.SetFile(ToolPath.ApplyHeightMap(Map).GetGCode());
+                App.Current.Machine.SetFile(Map.ApplyHeightMap(ToolPath).GetGCode());
 				UpdateAllButtons();
 			}
 			catch(IndexOutOfRangeException)
@@ -42,7 +42,7 @@ namespace OpenCNCPilot
 
 		private void ButtonEditArcToLines_Click(object sender, RoutedEventArgs e)
 		{
-			if (App.Current.Machine.Mode == Machine.OperatingMode.SendingJob)
+			if (App.Current.Machine.Mode == OperatingMode.SendingJob)
 				return;
 
 			EnterNumberWindow enw = new EnterNumberWindow(App.Current.Settings.ArcToLineSegmentLength);
@@ -56,7 +56,7 @@ namespace OpenCNCPilot
 		{
             App.Current.Settings.ArcToLineSegmentLength = value;
 
-			if (App.Current.Machine.Mode == Machine.OperatingMode.SendingJob)
+			if (App.Current.Machine.Mode == OperatingMode.SendingJob)
 				return;
 
             App.Current.Machine.SetFile(ToolPath.ArcsToLines(value).GetGCode());
@@ -64,7 +64,7 @@ namespace OpenCNCPilot
 
 		private void ButtonEditSplit_Click(object sender, RoutedEventArgs e)
 		{
-			if (App.Current.Machine.Mode == Machine.OperatingMode.SendingJob)
+			if (App.Current.Machine.Mode == OperatingMode.SendingJob)
 				return;
 
 			EnterNumberWindow enw = new EnterNumberWindow(App.Current.Settings.SplitSegmentLength);
@@ -78,7 +78,7 @@ namespace OpenCNCPilot
 		{
             App.Current.Settings.SplitSegmentLength = value;
 
-			if (App.Current.Machine.Mode == Machine.OperatingMode.SendingJob)
+			if (App.Current.Machine.Mode == OperatingMode.SendingJob)
 				return;
 
             App.Current.Machine.SetFile(ToolPath.Split(value).GetGCode());

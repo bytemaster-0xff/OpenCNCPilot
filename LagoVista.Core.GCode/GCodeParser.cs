@@ -1,24 +1,14 @@
 ﻿using System;
+using System.Globalization;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using OpenCNCPilot.Core.Util;
-using OpenCNCPilot.Core.GCode.GCodeCommands;
 using LagoVista.Core.PlatformSupport;
+using LagoVista.Core.Models.Drawing;
+using LagoVista.Core.GCode.Commands;
 
-namespace OpenCNCPilot.Core.GCode
+namespace LagoVista.Core.GCode
 {
-    public enum ParseDistanceMode
-    {
-        Absolute,
-        Incremental
-    }
-
-    public enum ParseUnit
-    {
-        Metric,
-        Imperial
-    }
 
     public class ParserState
     {
@@ -127,9 +117,11 @@ namespace OpenCNCPilot.Core.GCode
 
             List<Word> Words = new List<Word>(matches.Count);
 
+            var decimalFormat = new NumberFormatInfo() { NumberDecimalSeparator = "." };
+
             foreach (Match match in matches)
             {
-                Words.Add(new Word() { Command = match.Groups[1].Value[0], Parameter = double.Parse(match.Groups[2].Value, Constants.DecimalParseFormat) });
+                Words.Add(new Word() { Command = match.Groups[1].Value[0], Parameter = double.Parse(match.Groups[2].Value, decimalFormat) });
             }
 
             for (int i = 0; i < Words.Count; i++)
@@ -478,7 +470,7 @@ namespace OpenCNCPilot.Core.GCode
             }
             #endregion
 
-            Arc arc = new Arc();
+            var arc = new GCodeArc();
             arc.Start = State.Position;
             arc.End = EndPos;
             arc.Feed = State.Feed;

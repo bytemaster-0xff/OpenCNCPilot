@@ -1,20 +1,14 @@
-﻿using OpenCNCPilot.Core.GCode;
-using OpenCNCPilot.Core.GCode.GCodeCommands;
-using OpenCNCPilot.Core.Util;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.IO;
-using System.Linq;
-using System.Text;
+﻿using System;
 using System.Text.RegularExpressions;
 using System.Threading;
-using System.Threading.Tasks;
-using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using LagoVista.Core.PlatformSupport;
+using LagoVista.Core.Models.Drawing;
+using LagoVista.Core.GCode;
+using System.ComponentModel;
+using LagoVista.GCode.Sender.Util;
 
-namespace OpenCNCPilot.Core.Communication
+namespace LagoVista.GCode.Sender
 {
     enum ConnectionType
     {

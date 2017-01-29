@@ -2,10 +2,9 @@
 using LagoVista.Core.Commanding;
 using LagoVista.Core.IOC;
 using LagoVista.Core.ViewModels;
-using OpenCNCPilot.Core.Communication;
 using System;
 
-namespace OpenCNCPilot.Core.ViewModels
+namespace LagoVista.GCode.Sender.ViewModels
 {
     public class JobControlViewModel : ViewModelBase
     {
@@ -66,35 +65,35 @@ namespace OpenCNCPilot.Core.ViewModels
         {
             return _machine.File != null && 
                 _machine.Connected && 
-                _machine.Mode == Communication.Machine.OperatingMode.Manual;
+                _machine.Mode == OperatingMode.Manual;
         }
 
         public bool CanPauseJob()
         {
-            return _machine.Mode == Communication.Machine.OperatingMode.SendingJob ||
-                _machine.Mode == Communication.Machine.OperatingMode.ProbingHeightMap ||
-                _machine.Mode == Communication.Machine.OperatingMode.ProbingHeight;
+            return _machine.Mode == OperatingMode.SendingJob ||
+                _machine.Mode == OperatingMode.ProbingHeightMap ||
+                _machine.Mode == OperatingMode.ProbingHeight;
         }
 
         public bool CanProbeHeightMap()
         {
             return _machine.File != null
                 && _machine.Connected
-                && _machine.Mode == Communication.Machine.OperatingMode.Manual;
+                && _machine.Mode == OperatingMode.Manual;
         }
 
         public bool CanStartProbeHeight()
         {
             return _machine.File != null
                 && _machine.Connected
-                && _machine.Mode == Communication.Machine.OperatingMode.Manual;
+                && _machine.Mode == OperatingMode.Manual;
         }
 
         public bool CanStopJob()
         {
-            return _machine.Mode == Communication.Machine.OperatingMode.SendingJob || 
-                _machine.Mode == Communication.Machine.OperatingMode.ProbingHeightMap || 
-                _machine.Mode == Communication.Machine.OperatingMode.ProbingHeight;
+            return _machine.Mode == OperatingMode.SendingJob || 
+                _machine.Mode == OperatingMode.ProbingHeightMap || 
+                _machine.Mode == OperatingMode.ProbingHeight;
         }
 
         public bool CanKill()
@@ -156,15 +155,15 @@ namespace OpenCNCPilot.Core.ViewModels
         {
             switch(_machine.Mode)
             {
-                case Communication.Machine.OperatingMode.SendingJob: _machine.FilePause(); break;
+                case OperatingMode.SendingJob: _machine.FilePause(); break;
             }
            
         }
 
 
-        public bool IsCreatingHeightMap { get { return _machine.Mode == Communication.Machine.OperatingMode.ProbingHeightMap; } }
-        public bool IsProbingHeight { get { return _machine.Mode == Communication.Machine.OperatingMode.ProbingHeight; } }
-        public bool IsRunningJob { get { return _machine.Mode == Communication.Machine.OperatingMode.SendingJob; } }
+        public bool IsCreatingHeightMap { get { return _machine.Mode == OperatingMode.ProbingHeightMap; } }
+        public bool IsProbingHeight { get { return _machine.Mode == OperatingMode.ProbingHeight; } }
+        public bool IsRunningJob { get { return _machine.Mode == OperatingMode.SendingJob; } }
         public RelayCommand StopJobCommand { get; private set; }
 
         public RelayCommand PauseJobCommand { get; private set; }    

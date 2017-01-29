@@ -1,14 +1,13 @@
-﻿using OpenCNCPilot.Core.Communication;
-using OpenCNCPilot.Core.Util;
-using System;
+﻿using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using OpenCNCPilot.Core.GCode;
-using OpenCNCPilot.Presentation;
 using LagoVista.Core.PlatformSupport;
+using LagoVista.Core.GCode;
+using LagoVista.Core.GCode.Commands;
+using LagoVista.GCode.Sender;
 
-namespace OpenCNCPilot
+namespace LagoVista.GCode.Sender.Application
 {
     partial class MainWindow
     {
@@ -57,10 +56,10 @@ namespace OpenCNCPilot
 
         private void ButtonDistanceMode_Click(object sender, RoutedEventArgs e)
         {
-            if (App.Current.Machine.Mode != Machine.OperatingMode.Manual)
+            if (App.Current.Machine.Mode != OperatingMode.Manual)
                 return;
 
-            if (App.Current.Machine.DistanceMode == Core.GCode.ParseDistanceMode.Absolute)
+            if (App.Current.Machine.DistanceMode == ParseDistanceMode.Absolute)
                 App.Current.Machine.SendLine("G91");
             else
                 App.Current.Machine.SendLine("G90");
@@ -68,19 +67,19 @@ namespace OpenCNCPilot
 
         private void ButtonArcPlane_Click(object sender, RoutedEventArgs e)
         {
-            if (App.Current.Machine.Mode != Machine.OperatingMode.Manual)
+            if (App.Current.Machine.Mode != OperatingMode.Manual)
                 return;
 
-            if (App.Current.Machine.Plane != Core.GCode.GCodeCommands.ArcPlane.XY)
+            if (App.Current.Machine.Plane != ArcPlane.XY)
                 App.Current.Machine.SendLine("G17");
         }
 
         private void ButtonUnit_Click(object sender, RoutedEventArgs e)
         {
-            if (App.Current.Machine.Mode != Machine.OperatingMode.Manual)
+            if (App.Current.Machine.Mode != OperatingMode.Manual)
                 return;
 
-            if (App.Current.Machine.Unit == Core.GCode.ParseUnit.Metric)
+            if (App.Current.Machine.Unit == ParseUnit.Metric)
                 App.Current.Machine.SendLine("G20");
             else
                 App.Current.Machine.SendLine("G21");
@@ -88,7 +87,7 @@ namespace OpenCNCPilot
 
         private void ButtonStatus_Click(object sender, RoutedEventArgs e)
         {
-            if (App.Current.Machine.Mode != Machine.OperatingMode.Manual)
+            if (App.Current.Machine.Mode != OperatingMode.Manual)
                 return;
 
             App.Current.Machine.SendLine("$X");
@@ -158,6 +157,7 @@ namespace OpenCNCPilot
 
             if (App.Current.Settings.EnableCodePreview)
             {
+               
                 HeightMap.SetPreviewModel(ToolPath.Commands);
             }
 

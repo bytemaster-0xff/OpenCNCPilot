@@ -7,8 +7,8 @@
     <ProjectGuid>{BA3CA6C1-34A3-4582-9EE3-64DA5F144C3D}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>OpenCNCPilot</RootNamespace>
-    <AssemblyName>OpenCNCPilot</AssemblyName>
+    <RootNamespace>LagoVista.GCode.Sender.Application</RootNamespace>
+    <AssemblyName>LagoVistaGCodeSender</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -62,11 +62,11 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="LagoVista.Core, Version=1.1.0.32, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\LagoVista.Core.0.8.59-alpha00747\lib\portable46-net451+win81\LagoVista.Core.dll</HintPath>
+      <HintPath>..\packages\LagoVista.Core.0.8.59-alpha00923\lib\portable46-net451+win81\LagoVista.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="LagoVista.Core.WPF, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\LagoVista.Core.WPF.0.8.59-alpha00404\lib\451\LagoVista.Core.WPF.dll</HintPath>
+      <HintPath>..\packages\LagoVista.Core.WPF.0.8.59-alpha00595\lib\451\LagoVista.Core.WPF.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
@@ -143,7 +143,6 @@
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Util\BitmapSourceConverter.cs" />
-    <Compile Include="Util\SettingBindingExtension.cs" />
     <Page Include="Controls\CurrentFileControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -225,9 +224,13 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\OpenCNCPilot.Core\OpenCNCPilot.Core.csproj">
+    <ProjectReference Include="..\LagoVista.Core.GCode\LagoVista.Core.GCode.csproj">
+      <Project>{26a18c19-479e-495b-a8f2-1baa591d7df8}</Project>
+      <Name>LagoVista.Core.GCode</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\OpenCNCPilot.Core\GCode Sender.csproj">
       <Project>{a5441c94-a9f8-4577-b2e6-7f50fb7c76f7}</Project>
-      <Name>OpenCNCPilot.Core</Name>
+      <Name>GCode Sender</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

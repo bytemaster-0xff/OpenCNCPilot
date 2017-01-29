@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OpenCNCPilot.Core.Models
+namespace LagoVista.GCode.Sender.Models
 {
-    public class Board
+    public class PCBoard
     {
         public double Width { get; set; }
         public double Height { get; set; }

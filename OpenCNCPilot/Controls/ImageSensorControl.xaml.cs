@@ -6,7 +6,7 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace OpenCNCPilot.Controls
+namespace LagoVista.GCode.Sender.Application.Controls
 {
     /// <summary>
     /// Interaction logic for ImageSensor.xaml

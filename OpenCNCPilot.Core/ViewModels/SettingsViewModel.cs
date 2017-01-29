@@ -3,16 +3,13 @@ using LagoVista.Core.IOC;
 using LagoVista.Core.Models;
 using LagoVista.Core.PlatformSupport;
 using LagoVista.Core.ViewModels;
-using OpenCNCPilot.Core.Communication;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using static OpenCNCPilot.Core.Settings;
 
-namespace OpenCNCPilot.Core.ViewModels
+namespace LagoVista.GCode.Sender.ViewModels
 {
     public class SettingsViewModel : ViewModelBase
     {

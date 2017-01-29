@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OpenCNCPilot.Core.GCode.GCodeCommands
+namespace LagoVista.Core.GCode.Commands
 {
-	class MCode : Command
+    public class MCode : Command
 	{
 		public int Code;
 	}

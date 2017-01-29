@@ -1,7 +1,7 @@
 ﻿
 using System.Windows;
 
-namespace OpenCNCPilot
+namespace LagoVista.GCode.Sender.Application
 {
 	partial class MainWindow
 	{

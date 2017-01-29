@@ -1,10 +1,10 @@
-﻿using OpenCNCPilot.Core.Util;
+﻿using LagoVista.Core.Models.Drawing;
 using System;
 using System.Collections.Generic;
 
-namespace OpenCNCPilot.Core.GCode.GCodeCommands
+namespace LagoVista.Core.GCode.Commands
 {
-	public abstract class Motion : Command
+    public abstract class Motion : Command
 	{ 
 		public Vector3 Start;
 		public Vector3 End;

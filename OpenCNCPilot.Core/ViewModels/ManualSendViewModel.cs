@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OpenCNCPilot.Core.ViewModels
+namespace LagoVista.GCode.Sender.ViewModels
 {
     public class ManualSendViewModel : ViewModelBase
     {

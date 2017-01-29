@@ -1,23 +1,10 @@
-﻿using OpenCNCPilot.Core.Util;
+﻿using LagoVista.Core.Models.Drawing;
 using System;
 using System.Collections.Generic;
 
-namespace OpenCNCPilot.Core.GCode.GCodeCommands
+namespace LagoVista.Core.GCode.Commands
 {
-	public enum ArcPlane
-	{
-		XY = 0,
-		YZ = 1,
-        ZX = 2
-	}
-
-	public enum ArcDirection
-	{
-		CW,
-		CCW
-	}
-
-	public class Arc : Motion
+	public class GCodeArc : Motion
 	{
 		public ArcPlane Plane;
 		public ArcDirection Direction;
@@ -117,7 +104,7 @@ namespace OpenCNCPilot.Core.GCode.GCodeCommands
 			{
 				Vector3 end = Interpolate(((double)i) / divisions);
 
-				Arc immediate = new Arc();
+				var immediate = new GCodeArc();
 				immediate.Start = lastEnd;
 				immediate.End = end;
 				immediate.Feed = Feed;

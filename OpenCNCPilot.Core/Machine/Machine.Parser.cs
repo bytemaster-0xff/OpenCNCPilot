@@ -1,12 +1,8 @@
-﻿using OpenCNCPilot.Core.Util;
+﻿using LagoVista.Core.Models.Drawing;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
-namespace OpenCNCPilot.Core.Communication
+namespace LagoVista.GCode.Sender
 {
     //TODO: Removed compiled option
 

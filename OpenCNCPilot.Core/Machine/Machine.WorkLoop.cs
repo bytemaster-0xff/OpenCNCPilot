@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OpenCNCPilot.Core.Communication
+namespace LagoVista.GCode.Sender
 {
     public partial class Machine
     {
@@ -144,7 +144,7 @@ namespace OpenCNCPilot.Core.Communication
                 DateTime LastStatusPoll = DateTime.Now + TimeSpan.FromSeconds(0.5);
                 _connectTime = DateTime.Now;
 
-                if (_settings.MachineType == Settings.FirmwareTypes.GRBL1_1)
+                if (_settings.MachineType == FirmwareTypes.GRBL1_1)
                 {
                     writer.Write("\n$G\n");
                     writer.Flush();
@@ -173,7 +173,7 @@ namespace OpenCNCPilot.Core.Communication
 
                             if ((Now - LastStatusPoll).TotalMilliseconds > _settings.StatusPollIntervalRunning)
                             {
-                                var statusRequest = _settings.MachineType == Settings.FirmwareTypes.GRBL1_1 ? "?" : "M114\n";
+                                var statusRequest = _settings.MachineType == FirmwareTypes.GRBL1_1 ? "?" : "M114\n";
                                 writer.Write(statusRequest);
                                 writer.Flush();
                                 LastStatusPoll = Now;
@@ -206,7 +206,7 @@ namespace OpenCNCPilot.Core.Communication
 
                             if ((Now - LastStatusPoll).TotalMilliseconds > (Mode == OperatingMode.Manual ? _settings.StatusPollIntervalIdle : _settings.StatusPollIntervalRunning))
                             {
-                                var statusRequest = _settings.MachineType == Settings.FirmwareTypes.GRBL1_1 ? "?" : "M114\n";
+                                var statusRequest = _settings.MachineType == FirmwareTypes.GRBL1_1 ? "?" : "M114\n";
                                 writer.Write(statusRequest);
                                 writer.Flush();
                                 LastStatusPoll = Now;

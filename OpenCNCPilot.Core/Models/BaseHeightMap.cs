@@ -1,9 +1,11 @@
 ﻿using System.Xml;
 using System;
 using System.Collections.Generic;
-using OpenCNCPilot.Core.Util;
+using LagoVista.Core.GCode;
+using LagoVista.Core.GCode.Commands;
+using LagoVista.Core.Models.Drawing;
 
-namespace OpenCNCPilot.Core.GCode
+namespace LagoVista.GCode.Sender.Models
 {
 	public abstract class BaseHeightMap
 	{
@@ -224,5 +226,38 @@ namespace OpenCNCPilot.Core.GCode
             }
         }
 
-	}
+
+        public GCodeFile ApplyHeightMap(GCodeFile file)
+        {
+            double segmentLength = Math.Min(GridX, GridY);
+
+            var newToolPath = new List<Command>();
+
+            foreach (var command in file.Commands)
+            {
+                if (command is MCode)
+                {
+                    newToolPath.Add(command);
+                    continue;
+                }
+                else
+                {
+                    Motion m = (Motion)command;
+
+                    foreach (Motion subMotion in m.Split(segmentLength))
+                    {
+                        subMotion.Start.Z += InterpolateZ(subMotion.Start.X, subMotion.Start.Y);
+                        subMotion.End.Z += InterpolateZ(subMotion.End.X, subMotion.End.Y);
+
+                        newToolPath.Add(subMotion);
+                    }
+                }
+            }
+
+            return GCodeFile.FromCommands(newToolPath);
+        }
+
+    }
+
+
 }

@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace OpenCNCPilot.Controls
+namespace LagoVista.GCode.Sender.Application.Controls
 {
     /// <summary>
     /// Interaction logic for MachineResponse.xaml

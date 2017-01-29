@@ -12,7 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace OpenCNCPilot
+namespace LagoVista.GCode.Sender.Application
 {
 	/// <summary>
 	/// Interaction logic for EnterNumberWindow.xaml

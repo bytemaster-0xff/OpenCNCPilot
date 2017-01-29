@@ -1,13 +1,11 @@
-﻿using OpenCNCPilot.Core.Communication;
-using OpenCNCPilot.Core.Util;
-using OpenCNCPilot.Core.GCode;
-using OpenCNCPilot.Presentation;
-
-using System;
+﻿using System;
 using System.Data;
 using System.Windows;
+using LagoVista.Core.Models.Drawing;
+using LagoVista.GCode.Sender;
+using LagoVista.GCode.Sender.Application.Presentation;
 
-namespace OpenCNCPilot
+namespace LagoVista.GCode.Sender.Application
 {
     partial class MainWindow
     {
@@ -22,7 +20,7 @@ namespace OpenCNCPilot
 
 		private void ButtonHeightmapCreateNew_Click(object sender, RoutedEventArgs e)
 		{
-			if (App.Current.Machine.Mode == Machine.OperatingMode.ProbingHeightMap || Map != null)
+			if (App.Current.Machine.Mode == OperatingMode.ProbingHeightMap || Map != null)
 				return;
 
 			NewHeightMapDialog = new NewHeightMapWindow();
@@ -52,7 +50,7 @@ namespace OpenCNCPilot
 
 		private void NewHeightMapDialog_Size_Ok()
 		{
-			if (App.Current.Machine.Mode == Machine.OperatingMode.ProbingHeightMap || Map != null)
+			if (App.Current.Machine.Mode == OperatingMode.ProbingHeightMap || Map != null)
 				return;
 
 			Map = new HeightMap(App.Current.Settings, NewHeightMapDialog.GridSize, NewHeightMapDialog.Min, NewHeightMapDialog.Max);
@@ -73,7 +71,7 @@ namespace OpenCNCPilot
 
 		private void SaveFileDialogHeightMap_FileOk(object sender, System.ComponentModel.CancelEventArgs e)
 		{
-			if (App.Current.Machine.Mode == Machine.OperatingMode.ProbingHeightMap || Map == null)
+			if (App.Current.Machine.Mode == OperatingMode.ProbingHeightMap || Map == null)
 				return;
 
 			try
@@ -94,7 +92,7 @@ namespace OpenCNCPilot
 
 		private void OpenHeightMap(string filepath)
 		{
-			if (App.Current.Machine.Mode == Machine.OperatingMode.ProbingHeightMap || Map != null)
+			if (App.Current.Machine.Mode == OperatingMode.ProbingHeightMap || Map != null)
 				return;
 
 			try
@@ -114,7 +112,7 @@ namespace OpenCNCPilot
 
 		private void ButtonHeightmapLoad_Click(object sender, RoutedEventArgs e)
 		{
-			if (App.Current.Machine.Mode == Machine.OperatingMode.ProbingHeightMap || Map != null)
+			if (App.Current.Machine.Mode == OperatingMode.ProbingHeightMap || Map != null)
 				return;
 
 			openFileDialogHeightMap.ShowDialog();
@@ -122,7 +120,7 @@ namespace OpenCNCPilot
 
 		private void ButtonHeightmapSave_Click(object sender, RoutedEventArgs e)
 		{
-			if (App.Current.Machine.Mode == Machine.OperatingMode.ProbingHeightMap || Map == null)
+			if (App.Current.Machine.Mode == OperatingMode.ProbingHeightMap || Map == null)
 				return;
 
 			saveFileDialogHeightMap.FileName = $"map{(int)Map.Delta.X}x{(int)Map.Delta.Y}.hmap";
@@ -131,7 +129,7 @@ namespace OpenCNCPilot
 
 		private void ButtonHeightmapClear_Click(object sender, RoutedEventArgs e)
 		{
-			if (App.Current.Machine.Mode == Machine.OperatingMode.ProbingHeightMap || Map == null)
+			if (App.Current.Machine.Mode == OperatingMode.ProbingHeightMap || Map == null)
 				return;
 
 			Map = null;
@@ -141,7 +139,7 @@ namespace OpenCNCPilot
 
 		private void HeightMapProbeNextPoint()
 		{
-			if (App.Current.Machine.Mode != Machine.OperatingMode.ProbingHeightMap)
+			if (App.Current.Machine.Mode != OperatingMode.ProbingHeightMap)
 				return;
 
 			if (!App.Current.Machine.Connected || Map == null || Map.NotProbed.Count == 0)
@@ -163,7 +161,7 @@ namespace OpenCNCPilot
 
 		private void Machine_ProbeFinished(Vector3 position, bool success)
 		{
-			if (App.Current.Machine.Mode != Machine.OperatingMode.ProbingHeightMap)
+			if (App.Current.Machine.Mode != OperatingMode.ProbingHeightMap)
 				return;
 
 			if (!App.Current.Machine.Connected || Map == null || Map.NotProbed.Count == 0)
@@ -196,7 +194,7 @@ namespace OpenCNCPilot
 
 		private void ButtonHeightMapStart_Click(object sender, RoutedEventArgs e)
 		{
-			if (!App.Current.Machine.Connected || App.Current.Machine.Mode != Machine.OperatingMode.Manual || Map == null)
+			if (!App.Current.Machine.Connected || App.Current.Machine.Mode != OperatingMode.Manual || Map == null)
 				return;
 
 			if (Map.Progress == Map.TotalPoints)
@@ -204,7 +202,7 @@ namespace OpenCNCPilot
 
 			App.Current.Machine.ProbeStart();
 
-			if (App.Current.Machine.Mode != Machine.OperatingMode.ProbingHeightMap)
+			if (App.Current.Machine.Mode != OperatingMode.ProbingHeightMap)
 				return;
 
             App.Current.Machine.SendLine("G90");
@@ -215,7 +213,7 @@ namespace OpenCNCPilot
 
 		private void ButtonHeightMapPause_Click(object sender, RoutedEventArgs e)
 		{
-			if (App.Current.Machine.Mode != Machine.OperatingMode.ProbingHeightMap)
+			if (App.Current.Machine.Mode != OperatingMode.ProbingHeightMap)
 				return;
 
             App.Current.Machine.ProbeStop();

@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
 
-namespace OpenCNCPilot.Converters
+namespace LagoVista.GCode.Sender.Application.Converters
 {
     public class ColorEnabledConverter : IValueConverter
     {

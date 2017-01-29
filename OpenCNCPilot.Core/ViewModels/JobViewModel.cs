@@ -1,14 +1,13 @@
 ﻿using LagoVista.Core.Commanding;
 using LagoVista.Core.PlatformSupport;
 using LagoVista.Core.ViewModels;
-using OpenCNCPilot.Core.Communication;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OpenCNCPilot.Core.ViewModels
+namespace LagoVista.GCode.Sender.ViewModels
 {
     public class JobViewModel : ViewModelBase
     {

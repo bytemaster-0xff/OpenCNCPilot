@@ -1,16 +1,8 @@
-﻿using LagoVista.Core;
-using LagoVista.Core.Commanding;
-using LagoVista.Core.IOC;
+﻿using LagoVista.Core.Commanding;
 using LagoVista.Core.ViewModels;
-using OpenCNCPilot.Core.Communication;
-using OpenCNCPilot.Core.Util;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace OpenCNCPilot.Core
+namespace LagoVista.GCode.Sender.ViewModels
 {
     public class MainViewModel : ViewModelBase
     {
@@ -41,7 +33,7 @@ namespace OpenCNCPilot.Core
 
         private bool CanPerformFileOperation(Object instance)
         {
-            return (_machine.Mode != Machine.OperatingMode.SendingJob);
+            return (_machine.Mode != OperatingMode.SendingJob);
         }
 
         public async void OpenGCodeFile(object instance)

@@ -1,5 +1,5 @@
-﻿using LagoVista.Core.PlatformSupport;
-using OpenCNCPilot.Core.Util;
+﻿using LagoVista.Core.Models.Drawing;
+using LagoVista.Core.PlatformSupport;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -8,13 +8,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OpenCNCPilot.Core.Communication
+namespace LagoVista.GCode.Sender
 {
     public class SimulatedMachine : ISerialPort
     {
-        Settings.FirmwareTypes _firmwareType;
+        FirmwareTypes _firmwareType;
 
-        public SimulatedMachine(Settings.FirmwareTypes firmwareType)
+        public SimulatedMachine(FirmwareTypes firmwareType)
         {
             _firmwareType = firmwareType;
         }
@@ -46,9 +46,9 @@ namespace OpenCNCPilot.Core.Communication
     {
         private List<byte> _outputArray = new List<byte>();
 
-        Settings.FirmwareTypes _firmwareType;
+        FirmwareTypes _firmwareType;
 
-        public SimulatedGCodeMachine(Settings.FirmwareTypes firmwareType)
+        public SimulatedGCodeMachine(FirmwareTypes firmwareType)
         {
             _firmwareType = firmwareType;
         }
@@ -166,8 +166,8 @@ namespace OpenCNCPilot.Core.Communication
             AddResponse("ok");
         }
 
-        Vector3 _machine;
-        Vector3 _work;
+        Vector3 _machine = new Vector3();
+        Vector3 _work = new Vector3();
 
         private enum States
         {

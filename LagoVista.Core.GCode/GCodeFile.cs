@@ -3,17 +3,16 @@ using System.Linq;
 using System.Globalization;
 using System.Collections.ObjectModel;
 using System;
-using OpenCNCPilot.Core.Util;
-using OpenCNCPilot.Core.GCode.GCodeCommands;
 using LagoVista.Core.PlatformSupport;
+using LagoVista.Core.Models.Drawing;
+using LagoVista.Core.GCode.Commands;
 
-namespace OpenCNCPilot.Core.GCode
+namespace LagoVista.Core.GCode
 {
-    public class GCodeFile
+    public partial class GCodeFile
     {
         public ReadOnlyCollection<Command> Commands { get; private set; }
         public string FileName = string.Empty;
-
         public Vector3 Min { get; private set; }
         public Vector3 Max { get; private set; }
         public Vector3 Size { get; private set; }
@@ -25,9 +24,10 @@ namespace OpenCNCPilot.Core.GCode
 
             Commands = new ReadOnlyCollection<Command>(commands);
 
+
             Vector3 min = Vector3.MaxValue, max = Vector3.MinValue;
 
-            foreach (Motion m in Enumerable.Concat(Commands.OfType<GCodeLine>(), Commands.OfType<Arc>().SelectMany(a => a.Split(0.1))))
+            foreach (Motion m in Enumerable.Concat(Commands.OfType<GCodeLine>(), Commands.OfType<GCodeArc>().SelectMany(a => a.Split(0.1))))
             {
                 for (int i = 0; i < 3; i++)
                 {
@@ -53,29 +53,6 @@ namespace OpenCNCPilot.Core.GCode
             }
 
             Size = size;
-        }
-
-        public static GCodeFile Load(string path)
-        {
-            var parser = new GCodeParser();
-            parser.Reset();
-            parser.ParseFile(path);
-
-            return new GCodeFile(parser.Commands) { FileName = path.Substring(path.LastIndexOf('\\') + 1) };
-        }
-
-        public static GCodeFile FromList(IEnumerable<string> file)
-        {
-            var parser = new GCodeParser();
-            parser.Reset();
-            parser.Parse(file);
-
-            return new GCodeFile(parser.Commands) { FileName = "output.nc" };
-        }
-
-        public static GCodeFile GetEmpty()
-        {
-            return new GCodeFile(new List<Command>());
         }
 
         public async void Save(string path)
@@ -127,9 +104,9 @@ namespace OpenCNCPilot.Core.GCode
                     continue;
                 }
 
-                if (c is Arc)
+                if (c is GCodeArc)
                 {
-                    Arc a = c as Arc;
+                    var a = c as GCodeArc;
 
                     if (State.Plane != a.Plane)
                     {
@@ -208,9 +185,9 @@ namespace OpenCNCPilot.Core.GCode
 
             foreach (Command c in Commands)
             {
-                if (c is Arc)
+                if (c is GCodeArc)
                 {
-                    foreach (Arc segment in ((Arc)c).Split(length).Cast<Arc>())
+                    foreach (var segment in ((GCodeArc)c).Split(length).Cast<GCodeArc>())
                     {
                         var l = new GCodeLine();
                         l.Start = segment.Start;
@@ -229,34 +206,5 @@ namespace OpenCNCPilot.Core.GCode
             return new GCodeFile(newFile);
         }
 
-        public GCodeFile ApplyHeightMap(BaseHeightMap map)
-        {
-            double segmentLength = Math.Min(map.GridX, map.GridY);
-
-            List<Command> newToolPath = new List<Command>();
-
-            foreach (Command command in Commands)
-            {
-                if (command is MCode)
-                {
-                    newToolPath.Add(command);
-                    continue;
-                }
-                else
-                {
-                    Motion m = (Motion)command;
-
-                    foreach (Motion subMotion in m.Split(segmentLength))
-                    {
-                        subMotion.Start.Z += map.InterpolateZ(subMotion.Start.X, subMotion.Start.Y);
-                        subMotion.End.Z += map.InterpolateZ(subMotion.End.X, subMotion.End.Y);
-
-                        newToolPath.Add(subMotion);
-                    }
-                }
-            }
-
-            return new GCodeFile(newToolPath);
-        }
     }
 }

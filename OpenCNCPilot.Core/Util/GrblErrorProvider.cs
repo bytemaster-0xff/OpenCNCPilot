@@ -5,7 +5,7 @@ using System.IO;
 using LagoVista.Core.PlatformSupport;
 using System.Threading.Tasks;
 
-namespace OpenCNCPilot.Core.Util
+namespace LagoVista.GCode.Sender.Util
 {
     public class GrblErrorProvider
     {

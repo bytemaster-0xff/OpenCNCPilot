@@ -1,17 +1,13 @@
-﻿using LagoVista.Core.IOC;
-using LagoVista.Core.PlatformSupport;
-using LagoVista.Core.WPF.PlatformSupport;
-using OpenCNCPilot.Core;
-using OpenCNCPilot.Core.Communication;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using LagoVista.Core.WPF.PlatformSupport;
 
-namespace OpenCNCPilot
+using System.Threading.Tasks;
+
+namespace LagoVista.GCode.Sender.Application
 {
 	/// <summary>
 	/// Interaction logic for App.xaml
 	/// </summary>
-	public partial class App : Application
+	public partial class App : System.Windows.Application
 	{
         static App _app;
 
@@ -33,7 +29,7 @@ namespace OpenCNCPilot
         }
 
 
-        public OpenCNCPilot.Core.Settings Settings { get { return _settings; } }
+        public Settings Settings { get { return _settings; } }
 
         public new static App Current { get { return _app; } }
 

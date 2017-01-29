@@ -1,11 +1,6 @@
-﻿using OpenCNCPilot.Core.Util;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using LagoVista.Core.Models.Drawing;
 
-namespace OpenCNCPilot.Core.Communication
+namespace LagoVista.GCode.Sender
 {
     public partial class Machine
     {

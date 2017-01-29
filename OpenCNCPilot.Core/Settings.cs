@@ -4,19 +4,10 @@ using System;
 using System.ComponentModel;
 using System.Threading.Tasks;
 
-namespace OpenCNCPilot.Core
+namespace LagoVista.GCode.Sender
 {
     public class Settings : ModelBase, INotifyPropertyChanged
     {
-
-
-        public enum FirmwareTypes
-        {
-            GRBL1_1,
-            Marlin,
-            Marlin_Laser
-        }
-
         public int StatusPollIntervalIdle { get; set; }
         public int StatusPollIntervalRunning { get; set; }
         public int ControllerBufferSize { get; set; }

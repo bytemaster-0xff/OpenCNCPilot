@@ -2,7 +2,7 @@
 using System.Windows.Controls;
 using System.Windows.Media;
 
-namespace OpenCNCPilot.Controls
+namespace LagoVista.GCode.Sender.Application.Controls
 {
     /// <summary>
     /// Interaction logic for CurrentFileStatus.xaml

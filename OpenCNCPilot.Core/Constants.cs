@@ -1,8 +1,26 @@
 ﻿using System.Globalization;
 
-namespace OpenCNCPilot.Core.Util
+namespace LagoVista.GCode.Sender
 {
-	public class Constants
+    public enum FirmwareTypes
+    {
+        GRBL1_1,
+        Marlin,
+        Marlin_Laser
+    }
+
+    public enum OperatingMode
+    {
+        Manual,
+        SendingJob,
+        ProbingHeightMap,
+        ProbingHeight,
+        Disconnected
+    }
+
+
+
+    public class Constants
 	{
 		public static NumberFormatInfo DecimalParseFormat = new NumberFormatInfo() { NumberDecimalSeparator = "."};
 

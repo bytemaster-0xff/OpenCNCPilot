@@ -1,17 +1,13 @@
 ﻿using HelixToolkit.Wpf;
-using LagoVista.Core.PlatformSupport;
-using OpenCNCPilot.Core;
-using OpenCNCPilot.Core.GCode;
-using OpenCNCPilot.Core.GCode.GCodeCommands;
-using OpenCNCPilot.Core.Util;
+using LagoVista.Core.GCode.Commands;
+using LagoVista.Core.Models.Drawing;
+using LagoVista.GCode.Sender.Models;
 using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Drawing;
 using System.Windows.Media.Media3D;
 using System.Xml;
 
-namespace OpenCNCPilot.Presentation
+namespace LagoVista.GCode.Sender.Application.Presentation
 {
     public class HeightMap : BaseHeightMap
     {
@@ -136,7 +132,7 @@ namespace OpenCNCPilot.Presentation
                     continue;
                 }
 
-                var a = c as Arc;
+                var a = c as GCodeArc;
 
                 if (a != null)
                 {

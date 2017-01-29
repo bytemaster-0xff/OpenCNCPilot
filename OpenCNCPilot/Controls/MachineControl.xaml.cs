@@ -1,21 +1,10 @@
-﻿using OpenCNCPilot.Core.ViewModels;
-using System;
-using System.Collections.Generic;
+﻿
+using LagoVista.GCode.Sender.ViewModels;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
-namespace OpenCNCPilot.Controls
+namespace LagoVista.GCode.Sender.Application.Controls
 {
     /// <summary>
     /// Interaction logic for MachineControl.xaml

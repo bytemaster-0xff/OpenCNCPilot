@@ -1,4 +1,4 @@
-﻿namespace OpenCNCPilot.Core.GCode.GCodeCommands
+﻿namespace LagoVista.Core.GCode.Commands
 {
 	public class Command 
 	{
