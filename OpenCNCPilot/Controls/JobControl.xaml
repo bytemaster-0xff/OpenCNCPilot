@@ -76,7 +76,7 @@
                 <StackPanel>
                     <Grid>
                         <fa:ImageAwesome Icon="Play"  Foreground="{Binding IsRunningJob, Converter={StaticResource ColorEnabledConverter}, ConverterParameter=Green, FallbackValue=LightGray}"  />
-                        <fa:ImageAwesome Icon="FileTextOutline" Style="{StaticResource StartType}" />
+                        <fa:ImageAwesome Icon="FileTextOutline" Style="{StaticResource StartType}" Foreground="{Binding IsRunningJob, Converter={StaticResource ColorEnabledConverter}, ConverterParameter=LightGray, FallbackValue=LightGray}"/>
                     </Grid>
                     <TextBlock Text="Start Job" />
                 </StackPanel>
@@ -87,7 +87,7 @@
                 <StackPanel>
                     <Grid>
                         <fa:ImageAwesome Icon="Play" Foreground="{Binding IsCreatingHeightMap, Converter={StaticResource ColorEnabledConverter}, ConverterParameter=Green, FallbackValue=LightGray}"  />
-                        <fa:ImageAwesome Icon="Arrows" Style="{StaticResource StartType}" />
+                        <fa:ImageAwesome Icon="Arrows" Style="{StaticResource StartType}" Foreground="{Binding IsCreatingHeightMap, Converter={StaticResource ColorEnabledConverter}, ConverterParameter=LightGray, FallbackValue=LightGray}"/>
                     </Grid>
                     <TextBlock Text="Height Map" />
                 </StackPanel>
@@ -98,7 +98,7 @@
                 <StackPanel>
                     <Grid>
                         <fa:ImageAwesome Icon="Play"  Foreground="{Binding IsProbingHeight, Converter={StaticResource ColorEnabledConverter}, ConverterParameter=Green, FallbackValue=LightGray}"  />
-                        <fa:ImageAwesome Icon="LongArrowDown" Style="{StaticResource StartType}" />
+                        <fa:ImageAwesome Icon="LongArrowDown" Style="{StaticResource StartType}" Foreground="{Binding IsProbingHeight, Converter={StaticResource ColorEnabledConverter}, ConverterParameter=LightGray, FallbackValue=LightGray}"/>
                     </Grid>
                     <TextBlock Text="Probe" />
                 </StackPanel>
