@@ -3,6 +3,7 @@ using LagoVista.Core.IOC;
 using LagoVista.Core.Models;
 using LagoVista.Core.PlatformSupport;
 using LagoVista.Core.ViewModels;
+using OpenCNCPilot.Core.Communication;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -15,11 +16,12 @@ namespace OpenCNCPilot.Core.ViewModels
 {
     public class SettingsViewModel : ViewModelBase
     {
-        public Settings Settings { get; private set; }        
-
-        public SettingsViewModel(Settings settings)
+        public Settings Settings { get; private set; }
+        private IMachine _machine;
+        public SettingsViewModel(IMachine machine, Settings settings)
         {
             Settings = settings;
+            _machine = machine;
             if(settings.CurrentSerialPort == null)
             {
                 settings.CurrentSerialPort = new SerialPortInfo()
@@ -61,6 +63,9 @@ namespace OpenCNCPilot.Core.ViewModels
         public override async Task InitAsync()
         {
             var ports = await SLWIOC.Get<IDeviceManager>().GetSerialPortsAsync();
+#if DEBUG
+            ports.Insert(0, new SerialPortInfo() { Id = "Simulated", Name = "Simulated" });
+#endif
             ports.Insert(0, new SerialPortInfo() { Id = "empty", Name = "-select-" });
             SerialPorts = ports;
             RaisePropertyChanged(nameof(SerialPorts));
@@ -74,6 +79,11 @@ namespace OpenCNCPilot.Core.ViewModels
 
             MachineTypes = machineTypes;
             RaisePropertyChanged(MachineType);
+        }
+
+        public bool CanChangeMachineConfig
+        {
+            get { return !_machine.Connected; }
         }
 
 

@@ -8,6 +8,7 @@ namespace OpenCNCPilot.Core.GCode.GCodeCommands
 	{
 		public bool Rapid;
 
+
 		public override double Length
 		{
 			get

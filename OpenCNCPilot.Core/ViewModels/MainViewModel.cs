@@ -1,4 +1,6 @@
-﻿using LagoVista.Core.Commanding;
+﻿using LagoVista.Core;
+using LagoVista.Core.Commanding;
+using LagoVista.Core.IOC;
 using LagoVista.Core.ViewModels;
 using OpenCNCPilot.Core.Communication;
 using OpenCNCPilot.Core.Util;
@@ -28,9 +30,12 @@ namespace OpenCNCPilot.Core
         {
             if(e.PropertyName == nameof(_machine.Mode))
             {
-                OpenHeightMapCommand.RaiseCanExecuteChanged();
-                OpenGCodeFileCommand.RaiseCanExecuteChanged();
-                CloseFileCommand.RaiseCanExecuteChanged();
+                DispatcherServices.Invoke(() =>
+                {
+                    OpenHeightMapCommand.RaiseCanExecuteChanged();
+                    OpenGCodeFileCommand.RaiseCanExecuteChanged();
+                    CloseFileCommand.RaiseCanExecuteChanged();
+                });
             }
         }
 

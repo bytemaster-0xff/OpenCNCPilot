@@ -1,4 +1,5 @@
 ﻿using OpenCNCPilot.Core.Util;
+using System;
 using System.Collections.Generic;
 
 namespace OpenCNCPilot.Core.GCode.GCodeCommands
@@ -35,5 +36,20 @@ namespace OpenCNCPilot.Core.GCode.GCodeCommands
 		/// <param name="length">the maximum allowed length per returned segment</param>
 		/// <returns>collection of smaller motions that together form this motion</returns>
 		public abstract IEnumerable<Motion> Split(double length);
+
+        public TimeSpan EstimatedRunTime
+        {
+            get
+            {
+                if(Length == 0 || Feed == 0) 
+                {
+                    return TimeSpan.Zero;
+                }
+
+                /* Feed is units per minute, we care about seconds */
+                var feedPerSeconds = Feed / 60;
+                return TimeSpan.FromSeconds(Length / feedPerSeconds);
+            }
+        }
 	}
 }

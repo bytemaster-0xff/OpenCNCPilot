@@ -24,11 +24,15 @@
         </Grid.RowDefinitions>
         <Menu>
             <MenuItem Header="File"  >
+                <MenuItem Header="New HeightMap" />
+                <Separator />
                 <MenuItem Header="Open HeightMap"  Command="{Binding OpenHeightMapCommand}" />
                 <MenuItem Header="Open GCode File" Command="{Binding OpenGCodeFileCommand}" />
                 <Separator />
                 <MenuItem  Header="Close" Command="{Binding Close}" />
             </MenuItem>
+            <MenuItem Header="Settings" x:Name="SettingsMenu" Click="SettingsMenu_Click" />
+            <MenuItem Header="Machines" x:Name="MachinesMenu" />
         </Menu>
 
         <Grid Grid.Row="2">

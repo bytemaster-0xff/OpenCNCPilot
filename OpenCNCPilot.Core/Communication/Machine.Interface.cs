@@ -1,4 +1,5 @@
-﻿using OpenCNCPilot.Core.GCode;
+﻿using LagoVista.Core.PlatformSupport;
+using OpenCNCPilot.Core.GCode;
 using OpenCNCPilot.Core.GCode.GCodeCommands;
 using OpenCNCPilot.Core.Util;
 using System;
@@ -13,36 +14,57 @@ namespace OpenCNCPilot.Core.Communication
 {
     public partial class Machine
     {
-        public void Connect(Stream outputStream)
+        ISerialPort _port;
+
+        public async Task ConnectAsync(ISerialPort port)
         {
-            if (Connected)
-                throw new Exception("Can't Connect: Already Connected");
-
-            Connected = true;
-
-            _toSend.Clear();
-            _sentQueue.Clear();
-
-            Mode = OperatingMode.Manual;
-
-            if (PositionUpdateReceived != null)
-                PositionUpdateReceived.Invoke();
-
-            _cancelToken = new CancellationToken();
-
-            Task.Run(() =>
+            try
             {
-                Work(outputStream);
-            }, _cancelToken);
+                if (Connected)
+                    throw new Exception("Can't Connect: Already Connected");
+
+                var outputStream = await port.OpenAsync();
+                if (outputStream == null)
+                {
+                    RaiseEvent(ReportError, $"Could not open serial port.");
+                    return;
+                }
+
+                Connected = true;
+
+                _toSend.Clear();
+                _sentQueue.Clear();
+
+                Mode = OperatingMode.Manual;
+
+                if (PositionUpdateReceived != null)
+                    PositionUpdateReceived.Invoke();
+
+                _cancelToken = new CancellationToken();
+                _port = port;
+
+                await Task.Run(() =>
+                {
+                    Work(outputStream);
+                }, _cancelToken);
+            }
+            catch(Exception ex)
+            {
+                _port = null;
+                Connected = false;
+                RaiseEvent(ReportError, $"Could not open serial port: " + ex.Message);
+            }
         }
 
-        public void Disconnect()
+        public async Task DisconnectAsync()
         {
             if (!Connected)
                 throw new Exception("Can't Disconnect: Not Connected");
 
-
             Mode = OperatingMode.Disconnected;
+            Connected = false;
+
+            await _port.CloseAsync();
 
             MachinePosition = new Vector3();
             WorkPosition = new Vector3();

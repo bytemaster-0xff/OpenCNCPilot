@@ -36,6 +36,7 @@ namespace OpenCNCPilot
             openFileDialogHeightMap.FileOk += OpenFileDialogHeightMap_FileOk;
             saveFileDialogHeightMap.FileOk += SaveFileDialogHeightMap_FileOk;
 
+
             DataContext = new MainViewModel(App.Current.Machine);
 
             App.Current.Machine.NonFatalException += Machine_NonFatalException;
@@ -49,12 +50,9 @@ namespace OpenCNCPilot
             App.Current.Machine.UnitChanged += Machine_UnitChanged;
             App.Current.Machine.PlaneChanged += Machine_PlaneChanged;
             App.Current.Machine.BufferStateChanged += Machine_BufferStateChanged;
-            App.Current.Machine.OperatingModeChanged += UpdateAllButtons;
             App.Current.Machine.FileChanged += Machine_FileChanged;
             App.Current.Machine.FilePositionChanged += Machine_FilePositionChanged;
             App.Current.Machine.ProbeFinished += Machine_ProbeFinished;
-
-            UpdateAllButtons();
         }
 
         private void Hyperlink_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
@@ -128,5 +126,18 @@ namespace OpenCNCPilot
 
 			e.Effects = DragDropEffects.None;
 		}
-	}
+
+        private void SettingsMenu_Click(object sender, RoutedEventArgs e)
+        {
+            new SettingsWindow().ShowDialog();
+        }
+
+        private async void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if(App.Current.Machine.Connected)
+            {
+                await App.Current.Machine.DisconnectAsync();
+            }
+        }
+    }
 }

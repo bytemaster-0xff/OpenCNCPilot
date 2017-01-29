@@ -15,6 +15,6 @@
             <Button Content="Start" Click="Button_Click" />
             <Button Content="Stop" Click="Button_Click_1" />
         </StackPanel>
-        <Image x:Name="WebCamImage" Grid.Row="1" Width="300" Height="300" />
+        <Image x:Name="WebCamImage" Grid.Row="1" Width="300" Height="300" Source="/Imgs/TestPattern.jpg" />
     </Grid>
 </UserControl>

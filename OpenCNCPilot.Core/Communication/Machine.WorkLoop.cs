@@ -228,7 +228,7 @@ namespace OpenCNCPilot.Core.Communication
                 Debug.WriteLine(ex.Message);
                 Debug.WriteLine(ex.StackTrace);
                 RaiseEvent(ReportError, $"Fatal Error: {ex.Message}");
-                Disconnect();
+                await DisconnectAsync();
             }
         }
     }

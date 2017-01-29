@@ -23,7 +23,7 @@ namespace OpenCNCPilot
 		public SettingsWindow()
 		{
 			InitializeComponent();
-            DataContext = new SettingsViewModel(App.Current.Settings);
+            DataContext = new SettingsViewModel(App.Current.Machine, App.Current.Settings);
             Closed += SettingsWindow_Closed;
 		}
 

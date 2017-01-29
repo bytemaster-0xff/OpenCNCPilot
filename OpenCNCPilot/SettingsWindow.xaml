@@ -50,6 +50,7 @@
 
                 </Grid.Resources>
                 <ComboBox Grid.Row="0" Grid.Column="0" 
+                          IsEnabled="{Binding CanChangeMachineConfig}"
                           SelectedValue="{Binding Path=MachineType, Mode=TwoWay}"
                           ItemsSource="{Binding Path=MachineTypes}"  />
 
@@ -57,6 +58,7 @@
 
                 <ComboBox Grid.Row="1" Grid.Column="0" 
                           SelectedValuePath="Id"
+                          IsEnabled="{Binding CanChangeMachineConfig}"
                           DisplayMemberPath="Name"
                           SelectedValue="{Binding Path=SelectedPortId, Mode=TwoWay}"
                           ItemsSource="{Binding Path=SerialPorts}"  />
@@ -64,7 +66,8 @@
                 <Label Grid.Row="1" Content="Serial Port" HorizontalAlignment="Left"  VerticalAlignment="Top"/>
 
                 <TextBox Grid.Row="2"  Text="{Binding Settings.CurrentSerialPort.BaudRate, Mode=TwoWay}" />
-                <Label Content="BaudRate" Grid.Row="2" />
+                <Label  IsEnabled="{Binding CanChangeMachineConfig}"
+                        Content="BaudRate" Grid.Row="2" />
 
                 <TextBox  Text="{Binding Settings.ControllerBufferSize, Mode=TwoWay}" Grid.Row="4"/>
                 <Label Content="Controller Buffer" Grid.Row="4"  />

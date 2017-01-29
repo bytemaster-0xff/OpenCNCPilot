@@ -1,4 +1,5 @@
-﻿using OpenCNCPilot.Core.Util;
+﻿using LagoVista.Core.PlatformSupport;
+using OpenCNCPilot.Core.Util;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -9,13 +10,47 @@ using System.Threading.Tasks;
 
 namespace OpenCNCPilot.Core.Communication
 {
+    public class SimulatedMachine : ISerialPort
+    {
+        Settings.FirmwareTypes _firmwareType;
+
+        public SimulatedMachine(Settings.FirmwareTypes firmwareType)
+        {
+            _firmwareType = firmwareType;
+        }
+
+        public bool IsConnected
+        {
+            get; set;
+        }
+
+        public Task CloseAsync()
+        {
+            IsConnected = false;
+            return Task.FromResult(default(object));
+        }
+
+        public void Dispose()
+        {
+            
+        }
+
+        public Task<Stream> OpenAsync()
+        {
+            IsConnected = true;
+            return Task.FromResult((new SimulatedGCodeMachine(_firmwareType) as Stream));
+        }
+    }
+
     public class SimulatedGCodeMachine : Stream
     {
         private List<byte> _outputArray = new List<byte>();
 
-        public SimulatedGCodeMachine()
-        {
+        Settings.FirmwareTypes _firmwareType;
 
+        public SimulatedGCodeMachine(Settings.FirmwareTypes firmwareType)
+        {
+            _firmwareType = firmwareType;
         }
 
         public override bool CanRead { get { return true; } }

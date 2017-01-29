@@ -1,4 +1,5 @@
-﻿using OpenCNCPilot.Core.GCode;
+﻿using LagoVista.Core.PlatformSupport;
+using OpenCNCPilot.Core.GCode;
 using OpenCNCPilot.Core.GCode.GCodeCommands;
 using OpenCNCPilot.Core.Util;
 using System;
@@ -51,9 +52,9 @@ namespace OpenCNCPilot.Core.Communication
 
         bool Connected { get; }
 
-        void Connect(Stream outputStream);
+        Task ConnectAsync(ISerialPort serialPort);
 
-        void Disconnect();
+        Task DisconnectAsync();
 
         void SendLine(string line);
 

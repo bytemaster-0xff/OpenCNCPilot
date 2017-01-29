@@ -1,6 +1,7 @@
 ﻿using OpenCNCPilot.Core.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -30,7 +31,10 @@ namespace OpenCNCPilot.Controls
 
         private void JobControl_Loaded(object sender, RoutedEventArgs e)
         {
-            DataContext = new JobControlViewModel(App.Current.Machine, App.Current.Settings);
+            if (!DesignerProperties.GetIsInDesignMode(this))
+            {
+                DataContext = new JobControlViewModel(App.Current.Machine, App.Current.Settings);
+            }
         }
     }
 }

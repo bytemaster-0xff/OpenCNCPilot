@@ -23,7 +23,6 @@ namespace OpenCNCPilot
             _app = this;
 
             WPFDeviceServices.Init(Dispatcher);
-            SLWIOC.RegisterSingleton<IDeviceManager>(new DeviceManager());
         }
 
         public async Task InitAsync()
