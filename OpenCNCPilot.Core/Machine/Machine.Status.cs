@@ -1,4 +1,5 @@
 ﻿using LagoVista.Core.Models.Drawing;
+using LagoVista.Core.PlatformSupport;
 
 namespace LagoVista.GCode.Sender
 {
@@ -34,8 +35,6 @@ namespace LagoVista.GCode.Sender
             private set
             {
                 _filePosition = value;
-                RaiseEvent(FilePositionChanged);
-
                 RaisePropertyChanged();
             }
         }
@@ -51,7 +50,6 @@ namespace LagoVista.GCode.Sender
                     return;
 
                 _mode = value;
-                RaiseEvent(OperatingModeChanged);
 
                 RaisePropertyChanged();
             }
@@ -65,10 +63,8 @@ namespace LagoVista.GCode.Sender
             {
                 if (_status == value)
                     return;
+
                 _status = value;
-
-                RaiseEvent(StatusChanged);
-
                 RaisePropertyChanged();
             }
         }
@@ -87,8 +83,6 @@ namespace LagoVista.GCode.Sender
                 if (!Connected)
                     Mode = OperatingMode.Disconnected;
 
-                RaiseEvent(ConnectionStateChanged);
-
                 RaisePropertyChanged();
             }
         }
@@ -104,13 +98,26 @@ namespace LagoVista.GCode.Sender
 
                 _bufferState = value;
 
-                RaiseEvent(BufferStateChanged);
+                RaisePropertyChanged();
             }
+        }        
+
+        public bool HasJob
+        {
+            get { return CurrentJob != null; }
         }
 
         public bool BufferSpaceAvailable(int bytes)
         {
             return bytes < (_settings.ControllerBufferSize - BufferState);
+        }
+
+        public void AddStatusMessage(StatusMessageTypes type, string message)
+        {
+            Services.DispatcherServices.Invoke(() =>
+            {
+                Messages.Add(Models.StatusMessage.Create(type, message));
+            });
         }
     }
 }

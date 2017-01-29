@@ -16,11 +16,10 @@ namespace LagoVista.GCode.Sender
         private void ParseStatus(string line)
         {
             Match grblStatusMatch = StatusEx.Match(line);
-            bool update = false;
 
             if (!grblStatusMatch.Success)
             {
-                NonFatalException.Invoke(string.Format("Received Bad Status: '{0}'", line));
+                AddStatusMessage(StatusMessageTypes.Warning, $"Recieved Bad Status: {line}");
                 return;
             }
 
@@ -31,19 +30,15 @@ namespace LagoVista.GCode.Sender
                 Status = status.Value;
             }
 
-            Vector3 NewMachinePosition, NewWorkPosition;
-
-
             Group mx = grblStatusMatch.Groups["MX"], my = grblStatusMatch.Groups["MY"], mz = grblStatusMatch.Groups["MZ"];
 
             if (mx.Success)
             {
-                NewMachinePosition = new Vector3(double.Parse(mx.Value, Constants.DecimalParseFormat), double.Parse(my.Value, Constants.DecimalParseFormat), double.Parse(mz.Value, Constants.DecimalParseFormat));
+                var newMachinePosition = new Vector3(double.Parse(mx.Value, Constants.DecimalParseFormat), double.Parse(my.Value, Constants.DecimalParseFormat), double.Parse(mz.Value, Constants.DecimalParseFormat));
 
-                if (MachinePosition != NewMachinePosition)
-                    update = true;
+                if (MachinePosition != newMachinePosition)
 
-                MachinePosition = NewMachinePosition;
+                MachinePosition = newMachinePosition;
             }
 
             Group wx = grblStatusMatch.Groups["WX"], wy = grblStatusMatch.Groups["WY"], wz = grblStatusMatch.Groups["WZ"];
@@ -51,26 +46,23 @@ namespace LagoVista.GCode.Sender
 
             if (wx.Success)
             {
-                NewWorkPosition = new Vector3(double.Parse(wx.Value, Constants.DecimalParseFormat), double.Parse(wy.Value, Constants.DecimalParseFormat), double.Parse(wz.Value, Constants.DecimalParseFormat));
+                var newWorkPosition = new Vector3(double.Parse(wx.Value, Constants.DecimalParseFormat), double.Parse(wy.Value, Constants.DecimalParseFormat), double.Parse(wz.Value, Constants.DecimalParseFormat));
 
-                if (WorkPosition != NewWorkPosition)
-                    update = true;
+                if (WorkPosition != newWorkPosition)
+                {
 
-                WorkPosition = NewWorkPosition;
+                    WorkPosition = newWorkPosition;
+                }
             }
             else if (wcox.Success)
             {
-                NewWorkPosition = new Vector3(double.Parse(wcox.Value, Constants.DecimalParseFormat), double.Parse(wcoy.Value, Constants.DecimalParseFormat), double.Parse(wcoz.Value, Constants.DecimalParseFormat));
+                var newWorkPosition = new Vector3(double.Parse(wcox.Value, Constants.DecimalParseFormat), double.Parse(wcoy.Value, Constants.DecimalParseFormat), double.Parse(wcoz.Value, Constants.DecimalParseFormat));
 
-                if (WorkPosition != NewWorkPosition)
-                    update = true;
-
-                WorkPosition = NewWorkPosition;
+                if (WorkPosition != newWorkPosition)
+                {
+                    WorkPosition = newWorkPosition;
+                }
             }
-
-
-            if (update && Connected && PositionUpdateReceived != null)
-                PositionUpdateReceived.Invoke();
         }
 
         public bool ParseLine(String line)
@@ -81,42 +73,32 @@ namespace LagoVista.GCode.Sender
                 return false;
             }
 
-            bool update = false;
-
-            Vector3 NewMachinePosition, NewWorkPosition;
-
             Group mx = m114PositionMatch.Groups["MX"], my = m114PositionMatch.Groups["MY"], mz = m114PositionMatch.Groups["MZ"];
             Group wx = m114PositionMatch.Groups["WX"], wy = m114PositionMatch.Groups["WY"], wz = m114PositionMatch.Groups["WZ"];
 
             if (mx.Success)
             {
-                NewMachinePosition = new Vector3(double.Parse(mx.Value, Constants.DecimalParseFormat), double.Parse(my.Value, Constants.DecimalParseFormat), double.Parse(mz.Value, Constants.DecimalParseFormat));
+                var newMachinePosition = new Vector3(double.Parse(mx.Value, Constants.DecimalParseFormat), double.Parse(my.Value, Constants.DecimalParseFormat), double.Parse(mz.Value, Constants.DecimalParseFormat));
 
-                if (MachinePosition != NewMachinePosition)
-                    update = true;
-
-                MachinePosition = NewMachinePosition;
+                if (MachinePosition != newMachinePosition)
+                {
+                    MachinePosition = newMachinePosition;
+                }
             }
 
             if (wx.Success)
             {
-                NewWorkPosition = new Vector3(double.Parse(wx.Value, Constants.DecimalParseFormat), double.Parse(wy.Value, Constants.DecimalParseFormat), double.Parse(wz.Value, Constants.DecimalParseFormat));
+                var newWorkPosition = new Vector3(double.Parse(wx.Value, Constants.DecimalParseFormat), double.Parse(wy.Value, Constants.DecimalParseFormat), double.Parse(wz.Value, Constants.DecimalParseFormat));
 
-                if (WorkPosition != NewWorkPosition)
-                    update = true;
-
-                WorkPosition = NewWorkPosition;
+                if (WorkPosition != newWorkPosition)
+                {
+                    WorkPosition = newWorkPosition;
+                }
             }
-
-            if (update && Connected && PositionUpdateReceived != null)
-                PositionUpdateReceived.Invoke();
 
             return true;
         }
 
-
-
-        //TODO: Removed compiled option
         private static Regex ProbeEx = new Regex(@"\[PRB:(?'MX'-?[0-9]+\.?[0-9]*),(?'MY'-?[0-9]+\.?[0-9]*),(?'MZ'-?[0-9]+\.?[0-9]*):(?'Success'0|1)\]");
 
         /// <summary>
@@ -135,7 +117,7 @@ namespace LagoVista.GCode.Sender
 
             if (!probeMatch.Success || !(mx.Success & my.Success & mz.Success & success.Success))
             {
-                NonFatalException.Invoke($"Received Bad Probe: '{line}'");
+                AddStatusMessage(StatusMessageTypes.Warning, $"Received Bad Probe: '{line}'");
                 return;
             }
 

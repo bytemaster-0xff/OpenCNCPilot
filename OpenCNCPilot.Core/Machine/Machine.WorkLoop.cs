@@ -21,8 +21,7 @@ namespace LagoVista.GCode.Sender
 
         DateTime _lastPollTime;
         TimeSpan _waitTime;
-
-        JobProcessor _jobProcessor;
+        
 
         private void SendHighPriorityItems()
         {
@@ -40,8 +39,8 @@ namespace LagoVista.GCode.Sender
             _writer.Write('\n');
             _writer.Flush();
 
-            RaiseEvent(UpdateStatus, send_line.ToString());
-            RaiseEvent(LineSent, send_line.ToString());
+            UpdateStatus(send_line.ToString());
+            AddStatusMessage(StatusMessageTypes.SentLine, send_line.ToString());
 
             BufferState += 1;
 
@@ -73,9 +72,9 @@ namespace LagoVista.GCode.Sender
         {
             SendHighPriorityItems();
 
-            if (Mode == OperatingMode.SendingJob && _jobProcessor != null)
+            if (Mode == OperatingMode.SendingJob && CurrentJob != null)
             {
-                _jobProcessor.Process();
+                CurrentJob.Process();
                 //SendFile(_writer);
             }
             else if (ShouldSendNormalPriorityItems())

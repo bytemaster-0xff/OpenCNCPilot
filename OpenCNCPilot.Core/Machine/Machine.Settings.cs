@@ -20,7 +20,7 @@ namespace LagoVista.GCode.Sender
                     return;
                 _distanceMode = value;
 
-                RaiseEvent(DistanceModeChanged);
+                RaisePropertyChanged();
             }
         }
 
@@ -34,7 +34,7 @@ namespace LagoVista.GCode.Sender
                     return;
                 _unit = value;
 
-                RaiseEvent(UnitChanged);
+                RaisePropertyChanged();
             }
         }
 
@@ -48,7 +48,7 @@ namespace LagoVista.GCode.Sender
                     return;
                 _plane = value;
 
-                RaiseEvent(PlaneChanged);
+                RaisePropertyChanged();
             }
         }
 

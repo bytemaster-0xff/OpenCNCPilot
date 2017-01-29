@@ -1,62 +1,47 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using LagoVista.Core.GCode;
+using LagoVista.GCode.Sender.Models;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LagoVista.GCode.Sender
 {
     public partial class Machine
     {
-        private ReadOnlyCollection<string> _file = new ReadOnlyCollection<string>(new string[0]);
-        public ReadOnlyCollection<string> File
-        {
-            get { return _file; }
-            set
-            {
-                _file = value;
-                FilePosition = 0;
-                RaisePropertyChanged();
-                RaiseEvent(FileChanged);
-            }
-        }
+        public ObservableCollection<StatusMessage> Messages { get; private set; }
 
-        public void SetFile(IList<string> file)
+        public void SetFile(GCodeFile file)
         {
             if (Mode == OperatingMode.SendingJob)
             {
-                RaiseEvent(Info, "Can't change file while active");
+                AddStatusMessage(StatusMessageTypes.Warning, "Can't change file while active");
                 return;
             }
 
-            File = new ReadOnlyCollection<string>(file);
-            FilePosition = 0;
+            CurrentJob = new JobProcessor(this, file);
         }
 
         public void ClearFile()
         {
             if (Mode == OperatingMode.SendingJob)
             {
-                RaiseEvent(Info, "Can't change file while active");
+                AddStatusMessage(StatusMessageTypes.Warning, "Can't change file while active");
                 return;
             }
 
-            File = new ReadOnlyCollection<string>(new string[0]);
-            FilePosition = 0;
+            CurrentJob = null;
         }
 
         public void FileStart()
         {
             if (!Connected)
             {
-                RaiseEvent(Info, "Not Connected");
+                AddStatusMessage(StatusMessageTypes.Warning, "Not Connected");
                 return;
             }
 
             if (Mode != OperatingMode.Manual)
             {
-                RaiseEvent(Info, "Not in Manual Mode");
+                AddStatusMessage(StatusMessageTypes.Warning, "Busy");
                 return;
             }
 
@@ -67,32 +52,17 @@ namespace LagoVista.GCode.Sender
         {
             if (!Connected)
             {
-                RaiseEvent(Info, "Not Connected");
+                AddStatusMessage(StatusMessageTypes.Warning, "Not Connected");
                 return;
             }
 
             if (Mode != OperatingMode.SendingJob)
             {
-                RaiseEvent(Info, "Not in SendFile Mode");
+                AddStatusMessage(StatusMessageTypes.Warning, "Not Sending File");
                 return;
             }
 
             Mode = OperatingMode.Manual;
         }
-
-        public void FileGoto(int lineNumber)
-        {
-            if (Mode == OperatingMode.SendingJob)
-                return;
-
-            if (lineNumber >= File.Count || lineNumber < 0)
-            {
-                RaiseEvent(NonFatalException, "Line Number outside of file length");
-                return;
-            }
-
-            FilePosition = lineNumber;
-        }
-
     }
 }

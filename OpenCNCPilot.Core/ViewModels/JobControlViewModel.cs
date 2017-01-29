@@ -33,7 +33,6 @@ namespace LagoVista.GCode.Sender.ViewModels
         private void _machine_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(_machine.Mode) ||
-                e.PropertyName == nameof(_machine.File) ||
                 e.PropertyName == nameof(_machine.Connected))
             {
                 DispatcherServices.Invoke(() =>
@@ -63,7 +62,7 @@ namespace LagoVista.GCode.Sender.ViewModels
 
         public bool CanStartJob()
         {
-            return _machine.File != null && 
+            return _machine.HasJob && 
                 _machine.Connected && 
                 _machine.Mode == OperatingMode.Manual;
         }
@@ -77,15 +76,13 @@ namespace LagoVista.GCode.Sender.ViewModels
 
         public bool CanProbeHeightMap()
         {
-            return _machine.File != null
-                && _machine.Connected
+            return _machine.Connected
                 && _machine.Mode == OperatingMode.Manual;
         }
 
         public bool CanStartProbeHeight()
         {
-            return _machine.File != null
-                && _machine.Connected
+            return  _machine.Connected
                 && _machine.Mode == OperatingMode.Manual;
         }
 

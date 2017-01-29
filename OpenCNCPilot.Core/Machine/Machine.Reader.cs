@@ -13,15 +13,15 @@ namespace LagoVista.GCode.Sender
         {
             if (line == "ok")
             {
-                if(_jobProcessor != null)
+                if(CurrentJob != null)
                 {
                     lock (this)
                     {
-                        BufferState -= _jobProcessor.CommandAcknowledged();
-                        if (_jobProcessor.Completed)
+                        BufferState -= CurrentJob.CommandAcknowledged();
+                        if (CurrentJob.Completed)
                         {
                             Mode = OperatingMode.Manual;
-                            _jobProcessor = null;
+                            CurrentJob = null;
                         }
                     }
                 }                
@@ -57,23 +57,23 @@ namespace LagoVista.GCode.Sender
                 else if (line.StartsWith("[PRB:"))
                 {
                     RaiseEvent(ParseProbe, line);
-                    RaiseEvent(LineReceived, line);
                 }
                 else if (line.StartsWith("["))
                 {
-                    RaiseEvent(UpdateStatus, line);
-                    RaiseEvent(LineReceived, line);
+                    UpdateStatus(line);
+
+                    AddStatusMessage(StatusMessageTypes.ReceviedLine, line);
                 }
                 else if (line.StartsWith("ALARM"))
                 {
-                    RaiseEvent(NonFatalException, line);
+                    AddStatusMessage(StatusMessageTypes.FatalError, line);
                     Mode = OperatingMode.Manual;
                 }
                 else if (line.Length > 0)
                 {
                     if (!ParseLine(line))
                     {
-                        RaiseEvent(LineReceived, line);
+                        AddStatusMessage(StatusMessageTypes.ReceviedLine, line);
                     }
                 }
             }

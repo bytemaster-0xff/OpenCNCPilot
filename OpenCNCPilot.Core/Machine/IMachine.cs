@@ -16,26 +16,9 @@ namespace LagoVista.GCode.Sender
     public interface IMachine : INotifyPropertyChanged
     {
         event Action<Vector3, bool> ProbeFinished;
-        event Action<string> NonFatalException;
-        event Action<string> Info;
-        event Action<string> LineReceived;
-        event Action<string> LineSent;
-        event Action ConnectionStateChanged;
-        event Action PositionUpdateReceived;
-        event Action StatusChanged;
-        event Action DistanceModeChanged;
-        event Action UnitChanged;
-        event Action PlaneChanged;
-        event Action BufferStateChanged;
-        event Action OperatingModeChanged;
-        event Action FileChanged;
-        event Action FilePositionChanged;
-
-        ReadOnlyCollection<string> File { get; }
-
-        int FilePosition { get; }
 
         int BufferState { get;  }
+
 
         Vector3 MachinePosition { get; }
         Vector3 WorkPosition { get; }
@@ -44,15 +27,23 @@ namespace LagoVista.GCode.Sender
 
         String Status { get; }
 
+        bool HasJob { get; }
+
+
         ParseDistanceMode DistanceMode { get;  }
 
         ParseUnit Unit { get; }
 
         ArcPlane Plane { get; }
 
+        IJobProcessor CurrentJob { get; }
+
+
         bool Connected { get; }
 
         Task ConnectAsync(ISerialPort serialPort);
+
+
 
         Task DisconnectAsync();
 
@@ -64,7 +55,10 @@ namespace LagoVista.GCode.Sender
 
         void CycleStart();
 
-        void SetFile(IList<string> file);
+        void ClearAlarm();
+
+
+        void SetFile(GCodeFile file);
 
         void ClearFile();
 
@@ -72,16 +66,19 @@ namespace LagoVista.GCode.Sender
 
         void FilePause();
 
+
+
         void ProbeStart();
 
         void ProbeStop();
 
-        void FileGoto(int lineNumber);
 
         void ClearQueue();
 
         bool BufferSpaceAvailable(int bytes);
 
         void SendCommand(GCodeCommand cmd);
+
+        void AddStatusMessage(StatusMessageTypes type, String message);
     }
 }

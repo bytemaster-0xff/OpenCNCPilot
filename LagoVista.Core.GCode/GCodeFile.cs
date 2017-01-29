@@ -12,7 +12,7 @@ namespace LagoVista.Core.GCode
     public partial class GCodeFile
     {
         public ReadOnlyCollection<GCodeCommand> Commands { get; private set; }
-        public string FileName = string.Empty;
+        public string FileName { get; set; }
         public Vector3 Min { get; private set; }
         public Vector3 Max { get; private set; }
         public Vector3 Size { get; private set; }

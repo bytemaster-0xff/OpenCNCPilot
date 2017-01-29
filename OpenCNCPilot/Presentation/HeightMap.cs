@@ -9,33 +9,30 @@ using System.Xml;
 
 namespace LagoVista.GCode.Sender.Application.Presentation
 {
-    public class HeightMap : BaseHeightMap
-    {
-        public HeightMap(Settings settings, double gridSize, Vector2 min, Vector2 max) : base(settings, gridSize, min, max) { }
-        public HeightMap(Settings settings) : base(settings) { }
-
-        public void GetModel(MeshGeometryVisual3D mesh)
+    public class HeightMapServices
+    {        
+        public static  void GetModel(HeightMap map, MeshGeometryVisual3D mesh)
         {
             MeshBuilder mb = new MeshBuilder(false, true);
 
-            double Hdelta = MaxHeight - MinHeight;
+            double Hdelta = map.MaxHeight - map.MinHeight;
 
-            for (int x = 0; x < SizeX - 1; x++)
+            for (int x = 0; x < map.SizeX - 1; x++)
             {
-                for (int y = 0; y < SizeY - 1; y++)
+                for (int y = 0; y < map.SizeY - 1; y++)
                 {
-                    if (!Points[x, y].HasValue || !Points[x, y + 1].HasValue || !Points[x + 1, y].HasValue || !Points[x + 1, y + 1].HasValue)
+                    if (!map.Points[x, y].HasValue || !map.Points[x, y + 1].HasValue || !map.Points[x + 1, y].HasValue || !map.Points[x + 1, y + 1].HasValue)
                         continue;
 
                     mb.AddQuad(
-                        new System.Windows.Media.Media3D.Point3D(Min.X + (x + 1) * Delta.X / (SizeX - 1), Min.Y + (y) * Delta.Y / (SizeY - 1), Points[x + 1, y].Value),
-                        new System.Windows.Media.Media3D.Point3D(Min.X + (x + 1) * Delta.X / (SizeX - 1), Min.Y + (y + 1) * Delta.Y / (SizeY - 1), Points[x + 1, y + 1].Value),
-                        new System.Windows.Media.Media3D.Point3D(Min.X + (x) * Delta.X / (SizeX - 1), Min.Y + (y + 1) * Delta.Y / (SizeY - 1), Points[x, y + 1].Value),
-                        new System.Windows.Media.Media3D.Point3D(Min.X + (x) * Delta.X / (SizeX - 1), Min.Y + (y) * Delta.Y / (SizeY - 1), Points[x, y].Value),
-                        new System.Windows.Point(0, Convert.ToInt32( (Points[x + 1, y].Value - MinHeight) * Hdelta)),
-                        new System.Windows.Point(0, Convert.ToInt32((Points[x + 1, y + 1].Value - MinHeight) * Hdelta)),
-                        new System.Windows.Point(0, Convert.ToInt32((Points[x, y + 1].Value - MinHeight) * Hdelta)),
-                        new System.Windows.Point(0, Convert.ToInt32((Points[x, y].Value - MinHeight) * Hdelta))
+                        new System.Windows.Media.Media3D.Point3D(map.Min.X + (x + 1) * map.Delta.X / (map.SizeX - 1), map.Min.Y + (y) * map.Delta.Y / (map.SizeY - 1), map.Points[x + 1, y].Value),
+                        new System.Windows.Media.Media3D.Point3D(map.Min.X + (x + 1) * map.Delta.X / (map.SizeX - 1), map.Min.Y + (y + 1) * map.Delta.Y / (map.SizeY - 1), map.Points[x + 1, y + 1].Value),
+                        new System.Windows.Media.Media3D.Point3D(map.Min.X + (x) * map.Delta.X / (map.SizeX - 1), map.Min.Y + (y + 1) * map.Delta.Y / (map.SizeY - 1), map.Points[x, y + 1].Value),
+                        new System.Windows.Media.Media3D.Point3D(map.Min.X + (x) * map.Delta.X / (map.SizeX - 1), map.Min.Y + (y) * map.Delta.Y / (map.SizeY - 1), map.Points[x, y].Value),
+                        new System.Windows.Point(0, Convert.ToInt32( (map.Points[x + 1, y].Value - map.MinHeight) * Hdelta)),
+                        new System.Windows.Point(0, Convert.ToInt32((map.Points[x + 1, y + 1].Value - map.MinHeight) * Hdelta)),
+                        new System.Windows.Point(0, Convert.ToInt32((map.Points[x, y + 1].Value - map.MinHeight) * Hdelta)),
+                        new System.Windows.Point(0, Convert.ToInt32((map.Points[x, y].Value - map.MinHeight) * Hdelta))
                         );
                 }
             }
@@ -43,9 +40,9 @@ namespace LagoVista.GCode.Sender.Application.Presentation
             mesh.MeshGeometry = mb.ToMesh();
         }
 
-        public void GetPreviewModel(LinesVisual3D border, PointsVisual3D pointv)
+        public static void GetPreviewModel(HeightMap map, LinesVisual3D border, PointsVisual3D pointv)
         {
-            GetPreviewModel(Min, Max, SizeX, SizeY, border, pointv);
+            GetPreviewModel(map.Min, map.Max, map.SizeX, map.SizeY, border, pointv);
         }
 
         public static void GetPreviewModel(Vector2 min, Vector2 max, double gridSize, LinesVisual3D border, PointsVisual3D pointv)
@@ -147,16 +144,6 @@ namespace LagoVista.GCode.Sender.Application.Presentation
             line.Points = linePoints;
             rapid.Points = rapidPoints;
             arc.Points = arcPoints;
-        }
-
-        public static HeightMap Load(string path, Settings settings)
-        {
-            var map = new HeightMap(settings);
-
-            var r = XmlReader.Create(path);
-            map.Load(r);           
-
-            return map;
         }
     }
 }

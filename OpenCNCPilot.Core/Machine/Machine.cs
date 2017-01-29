@@ -10,31 +10,13 @@ using LagoVista.GCode.Sender.Util;
 
 namespace LagoVista.GCode.Sender
 {
-    enum ConnectionType
-    {
-        Serial
-    }
-
     public partial class Machine : IMachine
     {
         Settings _settings;
         CancellationToken _cancelToken;
 
         public event Action<Vector3, bool> ProbeFinished;
-        public event Action<string> NonFatalException;
-        public event Action<string> Info;
-        public event Action<string> LineReceived;
-        public event Action<string> LineSent;
-        public event Action ConnectionStateChanged;
-        public event Action PositionUpdateReceived;
-        public event Action StatusChanged;
-        public event Action DistanceModeChanged;
-        public event Action UnitChanged;
-        public event Action PlaneChanged;
-        public event Action BufferStateChanged;
-        public event Action OperatingModeChanged;
-        public event Action FileChanged;
-        public event Action FilePositionChanged;
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         public Machine(Settings settings)
@@ -51,7 +33,7 @@ namespace LagoVista.GCode.Sender
         {
             if (Mode != OperatingMode.Manual)
             {
-                RaiseEvent(Info, "Not in Manual mode");
+                AddStatusMessage(StatusMessageTypes.Info, "Not in manual mode.");
                 return;
             }
 
@@ -108,8 +90,6 @@ namespace LagoVista.GCode.Sender
         /// </summary>
         private void ReportError(string error)
         {
-            if (NonFatalException != null)
-                NonFatalException.Invoke(GrblErrorProvider.Instance.ExpandError(error));
         }
 
         private void RaiseEvent(Action<string> action, string param)

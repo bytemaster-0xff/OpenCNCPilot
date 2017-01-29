@@ -47,8 +47,13 @@ namespace LagoVista.GCode.Sender.ViewModels
             ZStep = settings.MediumStepSize;
 
             //JogCommand = new RelayCommand((param) => Jog((JogDirections)param), (param) => { return _machine.Connected; });
-            JogCommand = new RelayCommand((param) => Jog((JogDirections)param));
-            ResetCommand = new RelayCommand((param) => ResetAxis((Reset)param));
+            JogCommand = new RelayCommand((param) => Jog((JogDirections)param), CanJog);
+            ResetCommand = new RelayCommand((param) => ResetAxis((Reset)param), CanResetAxis);
+
+            SoftResetCommand = new RelayCommand(SoftReset, CanSoftReset);
+            ClearAlarmCommand = new RelayCommand(ClearAlarm, CanClearAlarm);
+            FeedHoldCommand = new RelayCommand(FeedHold, CanFeedHold);
+            CycleStartCommand = new RelayCommand(CycleStart, CanCycleStart);
 
             SetMicroStepSizeCommand = new RelayCommand((param) => SetStepSize((Axis)param, MicroStepModes.Micro));
         }
@@ -93,12 +98,64 @@ namespace LagoVista.GCode.Sender.ViewModels
             }
         }
 
+        public bool CanResetAxis(object param)
+        {
+            return _machine.Connected && _machine.Mode == OperatingMode.Manual;
+        }
+
+        public bool CanJog(object param)
+        {
+            return _machine.Connected && _machine.Mode == OperatingMode.Manual;
+        }
+
+        public void CycleStart()
+        {
+            _machine.CycleStart();
+        }
+
+        public bool CanCycleStart()
+        {
+            return _machine.Connected;
+        }
+
+
+        public void SoftReset()
+        {
+            _machine.SoftReset();
+        }
+
+        public bool CanFeedHold()
+        {
+            return _machine.Connected;
+        }
+
+        public void FeedHold()
+        {
+            _machine.FeedHold();
+        }
+
+        public bool CanSoftReset()
+        {
+            return _machine.Connected;
+        }
+
+        public bool CanClearAlarm()
+        {
+            return _machine.Connected && _machine.Status.ToLower().StartsWith("alarm");
+        }
+
+        public void ClearAlarm()
+        {
+            _machine.ClearAlarm();
+        }
+
+
         public void Jog(JogDirections direction)
         {
-            switch (direction)
+/*            switch (direction)
             {
 
-            }
+            }*/
         }
 
         public void ResetAxis(Reset axis)
@@ -157,5 +214,12 @@ namespace LagoVista.GCode.Sender.ViewModels
      
         public IMachine Machine { get { return _machine; } }
 
+        public RelayCommand SoftResetCommand { get; private set; }
+
+        public RelayCommand ClearAlarmCommand { get; private set; }
+
+        public RelayCommand FeedHoldCommand { get; private set; }
+
+        public RelayCommand CycleStartCommand { get; private set; }
     }
 }

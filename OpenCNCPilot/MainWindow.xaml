@@ -8,8 +8,6 @@
         xmlns:ctls="clr-namespace:LagoVista.GCode.Sender.Application.Controls"
 	    mc:Ignorable="d"
 		AllowDrop="True"
-		Drop="Window_Drop"
-		DragEnter="Window_DragEnter"
         Title="LagoVista - GCode Sender" Height="1024" Width="1280" Closing="Window_Closing">
     <Window.Resources>
         <ResourceDictionary Source="MainWindow.Resources.xaml"/>
@@ -29,7 +27,12 @@
                 <Separator />
                 <MenuItem  Header="Close" Command="{Binding Close}" />
             </MenuItem>
-            <MenuItem Header="Settings" x:Name="SettingsMenu" Click="SettingsMenu_Click" />
+            <MenuItem Header="Settings" >
+                <MenuItem x:Name="SettingsMenu" Click="SettingsMenu_Click" Header="Machine Settings" />
+                <MenuItem Header="Set Inches" Command="{Binding SetImperialUnitsCommand}" />
+                <MenuItem Header="Set Millimeters" Command="{Binding OpenGCodeFileCommand}" />
+            </MenuItem>
+                      
             <MenuItem Header="Machines" x:Name="MachinesMenu" />
         </Menu>
 

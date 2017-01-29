@@ -14,27 +14,28 @@ namespace LagoVista.GCode.Sender
 
         public async Task ConnectAsync(ISerialPort port)
         {
+            if (Connected)
+                throw new Exception("Can't Connect: Already Connected");
+
             try
             {
-                if (Connected)
-                    throw new Exception("Can't Connect: Already Connected");
-
                 var outputStream = await port.OpenAsync();
                 if (outputStream == null)
                 {
-                    RaiseEvent(ReportError, $"Could not open serial port.");
+                    AddStatusMessage(StatusMessageTypes.Warning, $"Could not open serial port.");
                     return;
                 }
 
                 Connected = true;
 
-                _toSend.Clear();
-                _sentQueue.Clear();
+                lock (_queueAccessLocker)
+                {
+                    _toSend.Clear();
+                    _sentQueue.Clear();
+                    _toSendPriority.Clear();
+                }
 
                 Mode = OperatingMode.Manual;
-
-                if (PositionUpdateReceived != null)
-                    PositionUpdateReceived.Invoke();
 
                 _cancelToken = new CancellationToken();
                 _port = port;
@@ -44,144 +45,152 @@ namespace LagoVista.GCode.Sender
                     Work(outputStream);
                 }, _cancelToken);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _port = null;
                 Connected = false;
-                RaiseEvent(ReportError, $"Could not open serial port: " + ex.Message);
+                AddStatusMessage(StatusMessageTypes.Warning, $"Could not open serial port: " + ex.Message);
             }
         }
 
+        private object _queueAccessLocker = new object();
+
         public async Task DisconnectAsync()
         {
-            if (!Connected)
-                throw new Exception("Can't Disconnect: Not Connected");
+            lock (this)
+            {
+                if (!Connected)
+                {
+                    AddStatusMessage(StatusMessageTypes.Warning, "Can not disconnected - Not Connected");
+                    return;
+                }
 
-            Mode = OperatingMode.Disconnected;
-            Connected = false;
+                Mode = OperatingMode.Disconnected;
+                Connected = false;
 
-            await _port.CloseAsync();
+                MachinePosition = new Vector3();
+                WorkPosition = new Vector3();
 
-            MachinePosition = new Vector3();
-            WorkPosition = new Vector3();
+                Status = "Disconnected";
+                DistanceMode = ParseDistanceMode.Absolute;
+                Unit = ParseUnit.Metric;
+                Plane = ArcPlane.XY;
+                BufferState = 0;
 
-            if (PositionUpdateReceived != null)
-                PositionUpdateReceived.Invoke();
+                lock (_queueAccessLocker)
+                {
+                    _toSend.Clear();
+                    _toSendPriority.Clear();
+                    _sentQueue.Clear();
+                }
+            }
 
-            Status = "Disconnected";
-            DistanceMode = ParseDistanceMode.Absolute;
-            Unit = ParseUnit.Metric;
-            Plane = ArcPlane.XY;
-            BufferState = 0;
-
-            _toSend.Clear();
-            _toSendPriority.Clear();
-            _sentQueue.Clear();
+            if (_port != null)
+            {
+                await _port.CloseAsync();
+            }
         }
 
         public void SendLine(string line)
         {
+            if (AssertConnected())
+            {
+                if (Mode != OperatingMode.Manual && Mode != OperatingMode.ProbingHeightMap)
+                {
+                    AddStatusMessage(StatusMessageTypes.Warning, "Not In Manual Mode");
+                    return;
+                }
+
+                lock (_toSend)
+                {
+                    _toSend.Enqueue(line);
+                }
+            }
+        }
+
+        private bool AssertConnected()
+        {
             if (!Connected)
             {
-                RaiseEvent(Info, "Not Connected");
-                return;
+                AddStatusMessage(StatusMessageTypes.Warning, "Not Connected");
+                return false;
             }
 
-            if (Mode != OperatingMode.Manual && Mode != OperatingMode.ProbingHeightMap)
-            {
-                RaiseEvent(Info, "Not in Manual Mode");
-                return;
-            }
-
-            lock (_toSend)
-            {
-                _toSend.Enqueue(line);
-            }
+            return true;
         }
 
         public void SoftReset()
         {
-            if (!Connected)
+            if (AssertConnected())
             {
-                RaiseEvent(Info, "Not Connected");
-                return;
+
+                Mode = OperatingMode.Manual;
+
+                lock (_queueAccessLocker)
+                {
+                    _toSend.Clear();
+                    _toSendPriority.Clear();
+                    _sentQueue.Clear();
+                    _toSendPriority.Enqueue(((char)0x18).ToString());
+                }
+
+                BufferState = 0;
             }
+        }
 
-            Mode = OperatingMode.Manual;
 
-            lock (_toSend)
-                lock (_toSendPriority)
-                    lock (_sentQueue)
-                    {
-                        _toSend.Clear();
-                        _toSendPriority.Clear();
-                        _sentQueue.Clear();
-                        _toSendPriority.Enqueue(((char)0x18).ToString());
-                    }
-
-            BufferState = 0;
+        private void Enqueue(String cmd)
+        {
+            if (AssertConnected())
+            {
+                lock (_queueAccessLocker)
+                {
+                    _toSendPriority.Enqueue(cmd);
+                }
+            }
         }
 
         public void FeedHold()
         {
-            if (!Connected)
-            {
-                RaiseEvent(Info, "Not Connected");
-                return;
-            }
+            Enqueue("!");
+        }
 
-            lock (_toSendPriority)
-            {
-                _toSendPriority.Enqueue("!");
-            }
+        public void ClearAlarm()
+        {
+            Enqueue("$X");
         }
 
         public void CycleStart()
         {
-            if (!Connected)
-            {
-                RaiseEvent(Info, "Not Connected");
-                return;
-            }
-
-            lock (_toSendPriority)
-            {
-                _toSendPriority.Enqueue("~");
-            }
+            Enqueue("~");
         }
 
         public void ProbeStart()
         {
-            if (!Connected)
+            if (AssertConnected())
             {
-                RaiseEvent(Info, "Not Connected");
-                return;
-            }
+                if (Mode != OperatingMode.Manual)
+                {
+                    AddStatusMessage(StatusMessageTypes.Warning, "Busy");
+                    return;
+                }
 
-            if (Mode != OperatingMode.Manual)
-            {
-                RaiseEvent(Info, "Can't start probing while running!");
-                return;
+                Mode = OperatingMode.ProbingHeightMap;
             }
-
-            Mode = OperatingMode.ProbingHeightMap;
         }
 
         public void ProbeStop()
         {
-            if (!Connected)
+            if (AssertConnected())
             {
-                RaiseEvent(Info, "Not Connected");
-                return;
-            }
+                if (Mode != OperatingMode.ProbingHeightMap)
+                {
+                    AddStatusMessage(StatusMessageTypes.Warning, "Not in Probe Mode");
+                    return;
+                }
 
-            if (Mode != OperatingMode.ProbingHeightMap)
-            {
-                RaiseEvent(Info, "Not in Probe mode");
-                return;
+                Mode = OperatingMode.Manual;
             }
-
-            Mode = OperatingMode.Manual;
         }
     }
 }

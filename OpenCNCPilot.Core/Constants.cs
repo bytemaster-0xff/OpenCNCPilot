@@ -19,6 +19,14 @@ namespace LagoVista.GCode.Sender
     }
 
 
+    public enum StatusMessageTypes
+    {
+        ReceviedLine,
+        SentLine,
+        Info,
+        Warning,
+        FatalError
+    }
 
     public class Constants
 	{

@@ -123,18 +123,6 @@
       <Generator>MSBuild:Compile</Generator>
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="MainWindow.xaml.EditTab.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="MainWindow.xaml.FileTab.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="MainWindow.xaml.MachineStatus.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="MainWindow.xaml.StatusBar.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
-    </Compile>
     <Compile Include="NewHeightMapWindow.xaml.cs">
       <DependentUpon>NewHeightMapWindow.xaml</DependentUpon>
     </Compile>
