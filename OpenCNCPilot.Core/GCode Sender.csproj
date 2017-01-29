@@ -40,9 +40,12 @@
     <Compile Include="Machine\Machine.File.cs" />
     <Compile Include="Machine\Machine.Interface.cs" />
     <Compile Include="Machine\Machine.Parser.cs" />
+    <Compile Include="Machine\Machine.Reader.cs" />
     <Compile Include="Machine\Machine.Settings.cs" />
     <Compile Include="Machine\Machine.Status.cs" />
     <Compile Include="Machine\Machine.WorkLoop.cs" />
+    <Compile Include="Machine\Machine.Writer.cs" />
+    <Compile Include="Machine\JobProcessor.cs" />
     <Compile Include="Machine\SimulatedMachine.cs" />
     <Compile Include="Models\BaseHeightMap.cs" />
     <Compile Include="Models\PCBoard.cs" />

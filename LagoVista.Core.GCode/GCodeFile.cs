@@ -11,7 +11,7 @@ namespace LagoVista.Core.GCode
 {
     public partial class GCodeFile
     {
-        public ReadOnlyCollection<Command> Commands { get; private set; }
+        public ReadOnlyCollection<GCodeCommand> Commands { get; private set; }
         public string FileName = string.Empty;
         public Vector3 Min { get; private set; }
         public Vector3 Max { get; private set; }
@@ -19,14 +19,14 @@ namespace LagoVista.Core.GCode
 
         public double TravelDistance { get; private set; } = 0;
 
-        private GCodeFile(List<Command> commands)
+        private GCodeFile(List<GCodeCommand> commands)
         {
 
-            Commands = new ReadOnlyCollection<Command>(commands);
+            Commands = new ReadOnlyCollection<GCodeCommand>(commands);
 
             Vector3 min = Vector3.MaxValue, max = Vector3.MinValue;
 
-            foreach (Motion m in Enumerable.Concat(Commands.OfType<GCodeLine>(), Commands.OfType<GCodeArc>().SelectMany(a => a.Split(0.1))))
+            foreach (GCodeMotion m in Enumerable.Concat(Commands.OfType<GCodeLine>(), Commands.OfType<GCodeArc>().SelectMany(a => a.Split(0.1))))
             {
                 for (int i = 0; i < 3; i++)
                 {
@@ -62,13 +62,13 @@ namespace LagoVista.Core.GCode
 
         public GCodeFile Split(double length)
         {
-            List<Command> newFile = new List<Command>();
+            List<GCodeCommand> newFile = new List<GCodeCommand>();
 
-            foreach (Command c in Commands)
+            foreach (GCodeCommand c in Commands)
             {
-                if (c is Motion)
+                if (c is GCodeMotion)
                 {
-                    newFile.AddRange(((Motion)c).Split(length));
+                    newFile.AddRange(((GCodeMotion)c).Split(length));
                 }
                 else
                 {
@@ -81,9 +81,9 @@ namespace LagoVista.Core.GCode
 
         public GCodeFile ArcsToLines(double length)
         {
-            List<Command> newFile = new List<Command>();
+            List<GCodeCommand> newFile = new List<GCodeCommand>();
 
-            foreach (Command c in Commands)
+            foreach (GCodeCommand c in Commands)
             {
                 if (c is GCodeArc)
                 {

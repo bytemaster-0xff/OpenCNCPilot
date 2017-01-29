@@ -23,9 +23,9 @@ namespace LagoVista.Core.GCode
 
             foreach (var c in Commands)
             {
-                if (c is Motion)
+                if (c is GCodeMotion)
                 {
-                    var m = c as Motion;
+                    var m = c as GCodeMotion;
 
                     if (m.Feed != State.Feed)
                     {

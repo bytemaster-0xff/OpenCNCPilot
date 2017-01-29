@@ -35,7 +35,7 @@ namespace LagoVista.GCode.Sender
 
         int FilePosition { get; }
 
-        int BufferState { get; }
+        int BufferState { get;  }
 
         Vector3 MachinePosition { get; }
         Vector3 WorkPosition { get; }
@@ -79,5 +79,9 @@ namespace LagoVista.GCode.Sender
         void FileGoto(int lineNumber);
 
         void ClearQueue();
+
+        bool BufferSpaceAvailable(int bytes);
+
+        void SendCommand(GCodeCommand cmd);
     }
 }

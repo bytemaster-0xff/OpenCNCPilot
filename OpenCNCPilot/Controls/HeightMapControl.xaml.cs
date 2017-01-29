@@ -40,13 +40,13 @@ namespace LagoVista.GCode.Sender.Application.Controls
             ModelHeightMapPoints.Points.Clear();
         }
 
-        public void SetPreviewModel(IReadOnlyList<Command> commands)
+        public void SetPreviewModel(IReadOnlyList<GCodeCommand> commands)
         {
             HeightMap.GetModel(commands, App.Current.Settings, ModelLine, ModelRapid, ModelArc);
         }
 
 
-        public void SetPreviewModel(List<Command> commands)
+        public void SetPreviewModel(List<GCodeCommand> commands)
         {
             HeightMap.GetModel(commands, App.Current.Settings, ModelLine, ModelRapid, ModelArc);
         }

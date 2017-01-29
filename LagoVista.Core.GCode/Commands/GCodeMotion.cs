@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace LagoVista.Core.GCode.Commands
 {
-    public abstract class Motion : Command
+    public abstract class GCodeMotion : GCodeCommand
 	{ 
 		public Vector3 Start;
 		public Vector3 End;
@@ -16,8 +16,6 @@ namespace LagoVista.Core.GCode.Commands
 				return End - Start;
 			}
 		}
-
-        public DateTime? StartTimeStamp { get; set; }
 
 		/// <summary>
 		/// Total travel distance of tool
@@ -36,7 +34,7 @@ namespace LagoVista.Core.GCode.Commands
 		/// </summary>
 		/// <param name="length">the maximum allowed length per returned segment</param>
 		/// <returns>collection of smaller motions that together form this motion</returns>
-		public abstract IEnumerable<Motion> Split(double length);
+		public abstract IEnumerable<GCodeMotion> Split(double length);
 
         public override TimeSpan EstimatedRunTime
         {
@@ -58,7 +56,7 @@ namespace LagoVista.Core.GCode.Commands
             return String.Format("{0}. - {1}    Duration:[{2:0}ms]    Length[{3:0.0}mm]   Feed[{4:0}]", LineNumber, Line.Trim('\r','\n'), EstimatedRunTime.TotalMilliseconds, Length, Feed);
         }
 
-        public Vector3 CurrentPosition
+        public override Vector3 CurrentPosition
         {
             get
             {

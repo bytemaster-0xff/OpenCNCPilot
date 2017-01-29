@@ -17,12 +17,12 @@ namespace LagoVista.Core.GCode.Parser
         private Regex GCodeSplitter = new Regex(@"([A-Z])\s*(\-?\d+\.?\d*)");
         private double[] MotionCommands = new double[] { 0, 1, 2, 3 };
         private string ValidWords = "GMXYZIJKFR";
-        public List<Command> Commands;
+        public List<GCodeCommand> Commands;
 
         public void Reset()
         {
             State = new ParserState();
-            Commands = new List<Command>(); //don't reuse, might be used elsewhere
+            Commands = new List<GCodeCommand>(); //don't reuse, might be used elsewhere
         }
 
         public GCodeParser()
@@ -117,7 +117,7 @@ namespace LagoVista.Core.GCode.Parser
                 words.Remove(feedRateCommand);
             }
 
-            Motion motion = null;
+            GCodeMotion motion = null;
             try
             {                
                 if (motionMode <= 1)

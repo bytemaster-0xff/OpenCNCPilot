@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace LagoVista.Core.GCode.Commands
 {
-    public class GCodeArc : Motion
+    public class GCodeArc : GCodeMotion
     {
         public ArcPlane Plane;
         public ArcDirection Direction;
@@ -91,7 +91,7 @@ namespace LagoVista.Core.GCode.Commands
             return interpolation;
         }
 
-        public override IEnumerable<Motion> Split(double length)
+        public override IEnumerable<GCodeMotion> Split(double length)
         {
             int divisions = (int)Math.Ceiling(Length / length);
 

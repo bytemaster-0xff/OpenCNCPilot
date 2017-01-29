@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace LagoVista.Core.GCode.Commands
 {
-    public class GCodeLine : Motion
+    public class GCodeLine : GCodeMotion
 	{
 		public bool Rapid;
 
@@ -22,7 +22,7 @@ namespace LagoVista.Core.GCode.Commands
 			return Start + Delta * ratio;
 		}
 
-		public override IEnumerable<Motion> Split(double length)
+		public override IEnumerable<GCodeMotion> Split(double length)
 		{
 			int divisions = (int)Math.Ceiling(Length / length);
 

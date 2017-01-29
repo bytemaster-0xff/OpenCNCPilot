@@ -34,14 +34,14 @@ namespace LagoVista.Core.GCode
             return FromList(commands);
         }
 
-        public static GCodeFile FromCommands(List<Command> commands)
+        public static GCodeFile FromCommands(List<GCodeCommand> commands)
         {
             return new GCodeFile(commands) { FileName = "output.nc" };
         }
 
         public static GCodeFile GetEmpty()
         {
-            return new GCodeFile(new List<Command>());
+            return new GCodeFile(new List<GCodeCommand>());
         }
     }
 }

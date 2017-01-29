@@ -231,7 +231,7 @@ namespace LagoVista.GCode.Sender.Models
         {
             double segmentLength = Math.Min(GridX, GridY);
 
-            var newToolPath = new List<Command>();
+            var newToolPath = new List<GCodeCommand>();
 
             foreach (var command in file.Commands)
             {
@@ -242,9 +242,9 @@ namespace LagoVista.GCode.Sender.Models
                 }
                 else
                 {
-                    Motion m = (Motion)command;
+                    GCodeMotion m = (GCodeMotion)command;
 
-                    foreach (Motion subMotion in m.Split(segmentLength))
+                    foreach (GCodeMotion subMotion in m.Split(segmentLength))
                     {
                         subMotion.Start.Z += InterpolateZ(subMotion.Start.X, subMotion.Start.Y);
                         subMotion.End.Z += InterpolateZ(subMotion.End.X, subMotion.End.Y);
