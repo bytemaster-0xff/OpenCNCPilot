@@ -13,10 +13,18 @@ namespace LagoVista.GCode.Sender
         {
             if (line == "ok")
             {
-                if (_sentQueue.Count != 0)
+                if(_jobProcessor != null)
                 {
-                    BufferState -= ((string)_sentQueue.Dequeue()).Length + 1;
-                }
+                    lock (this)
+                    {
+                        BufferState -= _jobProcessor.CommandAcknowledged();
+                        if (_jobProcessor.Completed)
+                        {
+                            Mode = OperatingMode.Manual;
+                            _jobProcessor = null;
+                        }
+                    }
+                }                
                 else
                 {
                     LagoVista.Core.PlatformSupport.Services.Logger.Log(LagoVista.Core.PlatformSupport.LogLevel.Warning, "Machine_Work", "Received OK without anything in the Sent Buffer");
