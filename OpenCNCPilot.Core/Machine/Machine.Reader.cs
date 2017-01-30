@@ -18,7 +18,7 @@ namespace LagoVista.GCode.Sender
                     lock (this)
                     {
                         BufferState -= CurrentJob.CommandAcknowledged();
-                        if (CurrentJob.Completed)
+                        if (CurrentJob.IsCompleted)
                         {
                             Mode = OperatingMode.Manual;
                             CurrentJob = null;

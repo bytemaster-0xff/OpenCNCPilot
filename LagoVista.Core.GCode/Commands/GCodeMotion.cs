@@ -8,7 +8,6 @@ namespace LagoVista.Core.GCode.Commands
     {       
         public Vector3 Start { get; set; }
 		public Vector3 End { get; set; }
-		public double Feed { get; set; }
 		public Vector3 Delta
 		{
 			get

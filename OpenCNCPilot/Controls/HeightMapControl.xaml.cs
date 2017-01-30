@@ -28,7 +28,17 @@ namespace LagoVista.GCode.Sender.Application.Controls
                 {
                     if (args.PropertyName == nameof(App.Current.Machine.HasJob))
                     {
-                        Presentation.HeightMapServices.GetModel(App.Current.Machine.CurrentJob.Commands, App.Current.Settings, ModelLine, ModelRapid, ModelArc);
+                        Dispatcher.Invoke(() =>
+                        {
+                            if (App.Current.Machine.HasJob)
+                            {
+                                Presentation.HeightMapServices.GetModel(App.Current.Machine.CurrentJob.Commands, App.Current.Settings, ModelLine, ModelRapid, ModelArc);
+                            }
+                            else
+                            {
+                                Clear();
+                            }
+                        });
                     }
                 };
             }

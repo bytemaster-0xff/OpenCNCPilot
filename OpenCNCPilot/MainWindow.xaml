@@ -32,7 +32,7 @@
                 <MenuItem Header="Set Inches" Command="{Binding SetImperialUnitsCommand}" />
                 <MenuItem Header="Set Millimeters" Command="{Binding OpenGCodeFileCommand}" />
             </MenuItem>
-                      
+
             <MenuItem Header="Machines" x:Name="MachinesMenu" />
         </Menu>
 
@@ -50,21 +50,23 @@
                     <RowDefinition Height="auto" />
                 </Grid.RowDefinitions>
 
-                <ctls:JobControl Grid.ColumnSpan="2" />
+                <ctls:JobControl Grid.ColumnSpan="2" DataContext="{Binding JobControlVM}" />
 
                 <ctls:HeightMapControl  x:Name="HeightMap" Grid.Row="1" Grid.ColumnSpan="2" />
-                
+
                 <ctls:CurrentFileControl x:Name="CurrentFile"  Grid.Row="2"/>
                 <ctls:MachineResponseControl x:Name="MachineResponse" Grid.Row="2" Grid.Column="1" />
-                
-                <ctls:MachineControl  Grid.Column="2" Grid.RowSpan="2" />
+
+                <ctls:MachineControl  Grid.Column="2" Grid.RowSpan="2" DataContext="{Binding MachineControlVM}"  />
                 <ctls:ImageSensorControl HorizontalAlignment="Right" VerticalAlignment="Bottom" Grid.Column="2" Grid.Row="2" />
-                <TextBox x:Name="TextBoxManual" Grid.Row="3" Grid.ColumnSpan="2" Margin="4,4,24,4" Height="28" />
-                <Button Grid.Row="3" Grid.Column="1" Height="28" Width="24" HorizontalAlignment="Right">
-                    <Button.Content>
-                        <fa:ImageAwesome Icon="Play" VerticalAlignment="Center" HorizontalAlignment="Center" />
-                    </Button.Content>
-                </Button>
+                <Grid  Grid.Row="3" Grid.ColumnSpan="2" DataContext="{Binding ManualSendVM}" >
+                    <TextBox x:Name="TextBoxManual" Margin="24" Height="28" />
+                    <Button Grid.Row="3" Grid.Column="1" Height="28" Width="24" HorizontalAlignment="Right">
+                        <Button.Content>
+                            <fa:ImageAwesome Icon="Play" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                        </Button.Content>
+                    </Button>
+                </Grid>
             </Grid>
         </Grid>
     </Grid>

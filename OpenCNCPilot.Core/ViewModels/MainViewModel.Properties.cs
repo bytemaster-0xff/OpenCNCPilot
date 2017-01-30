@@ -30,7 +30,7 @@ namespace LagoVista.GCode.Sender.ViewModels
         }
 
         private ManualSendViewModel _manualSendVM;
-        private ManualSendViewModel ManualSendVM
+        public ManualSendViewModel ManualSendVM
         {
             get { return _manualSendVM; }
             set { Set(ref _manualSendVM, value); }

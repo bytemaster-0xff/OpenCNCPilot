@@ -22,9 +22,9 @@
             </StackPanel>
 
             <StackPanel Grid.Column="1" Orientation="Horizontal">
-                <Label Content="{Binding Path=Machine.CurrentJob.EstimatedTime.Minutes, FallbackValue=0}"  />
+                <Label Content="{Binding Path=Machine.CurrentJob.TimeRemaining.Minutes, FallbackValue=0}"  />
                 <Label Content=":" />
-                <Label Content="{Binding Path=Machine.CurrentJob.EstimatedTime.Seconds, FallbackValue=00, StringFormat=00}"  />
+                <Label Content="{Binding Path=Machine.CurrentJob.TimeRemaining.Seconds, FallbackValue=00, StringFormat=00}"  />
             </StackPanel>
         </Grid>
 
@@ -34,14 +34,16 @@
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="80" />
+                            <ColumnDefinition Width="80" />
                             <ColumnDefinition Width="200" />
                             <ColumnDefinition Width="50" />
                             <ColumnDefinition Width="50" />
                         </Grid.ColumnDefinitions>
+                        <TextBlock Text="{Binding Status}" />
                         <TextBlock Text="{Binding LineNumber}" />
                         <TextBlock Text="{Binding Line}" Grid.Column="1" />
                         <TextBlock Text="{Binding EstimatedRunTime.TotalSeconds}" Grid.Column="2" />
-                        <TextBlock Text="{Binding Feed}" Grid.Column="2" />
+                        <TextBlock Text="{Binding Feed}" Grid.Column="3" />
                     </Grid>
                 </DataTemplate>
             </ListView.ItemTemplate>

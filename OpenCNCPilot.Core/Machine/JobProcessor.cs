@@ -15,6 +15,8 @@ namespace LagoVista.GCode.Sender
         public IMachine _machine;
         GCodeFile _file;
 
+        private bool _isDirty;
+
         private int _tail = 0;
         private int _head = 0;
 
@@ -36,7 +38,8 @@ namespace LagoVista.GCode.Sender
 
             while (_machine.BufferSpaceAvailable(_file.Commands[_head].MessageLength) && _head < _file.Commands.Count)
             {
-                _machine.SendCommand(_file.Commands[_head++]);
+                _machine.SendCommand(_file.Commands[_head]);
+                _file.Commands[_head++].Status = GCodeCommand.StatusTypes.Sent;
             }
         }
 
@@ -48,30 +51,50 @@ namespace LagoVista.GCode.Sender
         public int CommandAcknowledged()
         {
             var sentCommandLength = _file.Commands[_tail].MessageLength;
-            _tail++;
+            _file.Commands[_tail++].Status = GCodeCommand.StatusTypes.Acknowledged;
             _file.Commands[_tail].StartTimeStamp = DateTime.Now;
 
             return sentCommandLength;
         }
 
-        public bool Completed
+        public bool IsDirty
         {
-            get { return _tail == _head; }
+            get { return _isDirty; }
+        }
+
+        public bool IsCompleted
+        {
+            get { return _tail ==  TotalLines; }
         }
 
         public void Reset()
         {
+            _head = 0;
+            _tail = 0;
+            foreach(var cmd in Commands)
+            {
+                cmd.Status = GCodeCommand.StatusTypes.Ready;
+            }
+        }
 
+        public void QueueAllItems()
+        {
+            foreach (var cmd in Commands)
+            {
+                cmd.Status = GCodeCommand.StatusTypes.Ready;
+            }
         }
 
         public void ApplyHeightMap(HeightMap map)
         {
             _file = map.ApplyHeightMap(_file);
+            _isDirty = true;
         }
 
         public void ArcToLines(double length)
         {
             _file = _file.ArcsToLines(length);
+            _isDirty = true;
         }
 
         public TimeSpan TimeRemaining

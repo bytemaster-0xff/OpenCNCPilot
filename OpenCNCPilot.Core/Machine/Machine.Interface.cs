@@ -119,6 +119,18 @@ namespace LagoVista.GCode.Sender
             return true;
         }
 
+        private bool AssertNotBusy()
+        {
+            if (Mode != OperatingMode.Manual)
+            {
+                AddStatusMessage(StatusMessageTypes.Warning, "Busy");
+                return false;
+            }
+
+            return true;
+        }
+
+
         public void SoftReset()
         {
             if (AssertConnected())

@@ -33,12 +33,21 @@ namespace LagoVista.GCode.Sender.ViewModels
             {
                 DispatcherServices.Invoke(() =>
                 {
+                    ConnectCommand.RaiseCanExecuteChanged();
                     StartJobCommand.RaiseCanExecuteChanged();
                     StartProbeJobCommand.RaiseCanExecuteChanged();
                     StartProbeHeightMapCommand.RaiseCanExecuteChanged();
                     StopJobCommand.RaiseCanExecuteChanged();
                     PauseJobCommand.RaiseCanExecuteChanged();
                     EmergencyStopCommand.RaiseCanExecuteChanged();
+                });
+            }
+
+            if(e.PropertyName == nameof(Machine.HasJob))
+            {
+                DispatcherServices.Invoke(() =>
+                {
+                    StartJobCommand.RaiseCanExecuteChanged();
                 });
             }
         }

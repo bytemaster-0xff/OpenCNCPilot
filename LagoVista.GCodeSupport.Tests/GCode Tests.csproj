@@ -58,9 +58,9 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="GCodeSampleFile.cs" />
-    <Compile Include="GCode_Command_Tests.cs" />
-    <Compile Include="Mocks\FakeLogger.cs" />
+    <Compile Include="GCode\GCodeSampleFile.cs" />
+    <Compile Include="GCode\GCode_Command_Tests.cs" />
+    <Compile Include="Mocks\FakePlatformSupport.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -75,6 +75,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Machine\" />
+    <Folder Include="ViewModel\" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

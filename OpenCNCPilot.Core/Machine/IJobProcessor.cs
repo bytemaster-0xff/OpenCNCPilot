@@ -10,6 +10,7 @@ namespace LagoVista.GCode.Sender
 {
     public interface IJobProcessor
     {
+        
         int CurrentIndex { get; }
         int TotalLines { get; }
 
@@ -19,9 +20,12 @@ namespace LagoVista.GCode.Sender
 
         int CommandAcknowledged();
 
-        bool Completed { get; }
+        bool IsDirty { get; }
+        bool IsCompleted { get; }
 
         void Reset();
+
+        void QueueAllItems();
 
         TimeSpan TimeRemaining { get; }
         TimeSpan ElapsedTime { get; }

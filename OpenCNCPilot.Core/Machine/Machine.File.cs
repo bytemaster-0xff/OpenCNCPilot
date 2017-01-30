@@ -11,58 +11,50 @@ namespace LagoVista.GCode.Sender
 
         public void SetFile(GCodeFile file)
         {
-            if (Mode == OperatingMode.SendingJob)
+            if (AssertNotBusy())
             {
-                AddStatusMessage(StatusMessageTypes.Warning, "Can't change file while active");
-                return;
+                CurrentJob = new JobProcessor(this, file);
             }
-
-            CurrentJob = new JobProcessor(this, file);
         }
 
         public void ClearFile()
         {
-            if (Mode == OperatingMode.SendingJob)
+            if (AssertNotBusy())
             {
-                AddStatusMessage(StatusMessageTypes.Warning, "Can't change file while active");
-                return;
+                CurrentJob = null;
             }
-
-            CurrentJob = null;
         }
 
         public void FileStart()
         {
-            if (!Connected)
+            if (AssertConnected() && AssertNotBusy())
             {
-                AddStatusMessage(StatusMessageTypes.Warning, "Not Connected");
-                return;
-            }
+                if(!HasJob)
+                {
+                    AddStatusMessage(StatusMessageTypes.Warning, "Please open a job first.");
+                    return;
+                }
 
-            if (Mode != OperatingMode.Manual)
-            {
-                AddStatusMessage(StatusMessageTypes.Warning, "Busy");
-                return;
-            }
+                CurrentJob.Reset();
+                CurrentJob.QueueAllItems();
 
-            Mode = OperatingMode.SendingJob;
+                Mode = OperatingMode.SendingJob;
+            }
         }
 
         public void FilePause()
         {
-            if (!Connected)
+            if (AssertConnected())
             {
-                AddStatusMessage(StatusMessageTypes.Warning, "Not Connected");
-                return;
-            }
 
-            if (Mode != OperatingMode.SendingJob)
-            {
-                AddStatusMessage(StatusMessageTypes.Warning, "Not Sending File");
-                return;
-            }
+                if (Mode != OperatingMode.SendingJob)
+                {
+                    AddStatusMessage(StatusMessageTypes.Warning, "Not Sending File");
+                    return;
+                }
 
-            Mode = OperatingMode.Manual;
+                Mode = OperatingMode.Manual;
+            }
         }
     }
 }

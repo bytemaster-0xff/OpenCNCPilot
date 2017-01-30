@@ -3,8 +3,24 @@ using System;
 
 namespace LagoVista.Core.GCode.Commands
 {
-	public abstract class GCodeCommand 
+	public abstract class GCodeCommand : LagoVista.Core.Models.ModelBase
 	{
+        public enum StatusTypes
+        {
+            Ready,
+            Queued,
+            Sent,
+            Acknowledged
+        }
+
+        private StatusTypes _status = StatusTypes.Ready;
+        public StatusTypes Status
+        {
+            get { return _status; }
+            set { Set(ref _status, value); }
+        }
+
+        public double Feed { get; set; }
 
         public string Line { get; set; }
         public int LineNumber { get; set; }

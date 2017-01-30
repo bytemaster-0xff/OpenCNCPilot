@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 
 namespace LagoVista.GCodeSupport.Tests.Mocks
 {
-    public class FakeLogger : ILogger
+    public class FakePlatformSupport : ILogger
     {
         public static void Register()
         {
-            SLWIOC.Register<ILogger>(new FakeLogger());
+            SLWIOC.Register<ILogger>(new FakePlatformSupport());
         }
 
         public void Log(LogLevel level, string area, string message, params KeyValuePair<string, string>[] args)

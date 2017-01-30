@@ -14,7 +14,7 @@ namespace LagoVista.GCodeSupport.Tests
         [TestInitialize]
         public void Init()
         {
-            Mocks.FakeLogger.Register();
+            Mocks.FakePlatformSupport.Register();
         }
 
         [TestMethod]
