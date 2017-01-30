@@ -163,7 +163,12 @@ namespace LagoVista.GCode.Sender
 
         private void HandleMCode(string cmd)
         {
-            AddResponse("ok");
+            if(cmd == "M114")
+            {
+
+            }
+            else
+                AddResponse("ok");
         }
 
         Vector3 _machine = new Vector3();

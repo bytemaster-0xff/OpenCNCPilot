@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Windows.Controls;
 using System.Windows.Media;
 
@@ -13,10 +14,6 @@ namespace LagoVista.GCode.Sender.Application.Controls
         {
             InitializeComponent();
         }
-        
-        public IJobProcessor CurrentJob
-        {
-            get { return App.Current.Machine.CurrentJob; }
-        }
+
     }
 }

@@ -11,8 +11,6 @@ namespace LagoVista.GCode.Sender.ViewModels
         IMachine _machine;
         Settings _settings;
 
-        HeightMap _heightMap;
-
         HeightMapViewModel _heightMapVieModel;
 
         public MainViewModel(IMachine machine, Settings settings)
@@ -69,7 +67,7 @@ namespace LagoVista.GCode.Sender.ViewModels
 
         public bool CanApplyHeightMap()
         {
-            return _machine.HasJob && _heightMap != null;
+            return _machine.HasJob && HeightMapVM.CurrentHeightMap != null;
         }
 
         private bool CanPerformFileOperation(Object instance)
@@ -79,9 +77,9 @@ namespace LagoVista.GCode.Sender.ViewModels
 
         public void ApplyHeightMap()
         {
-            if (_machine.HasJob)
+            if (_machine.HasJob && HeightMapVM.CurrentHeightMap != null)
             {
-                _machine.CurrentJob.ApplyHeightMap(_heightMap);
+                _machine.CurrentJob.ApplyHeightMap(HeightMapVM.CurrentHeightMap);
             }
         }
 
@@ -178,13 +176,19 @@ namespace LagoVista.GCode.Sender.ViewModels
         {
             _machine.ClearFile();
         }
-        
+
 
         public HeightMapViewModel HeightMapVM
         {
             get { return _heightMapVieModel; }
             set { Set(ref _heightMapVieModel, value); }
         }
+
+        public IMachine Machine
+        {
+            get { return _machine; }
+        }
+
 
         public RelayCommand SetImperialUnitsCommand { get; private set; }
         public RelayCommand SetMetricUnitsCommand { get; private set; }

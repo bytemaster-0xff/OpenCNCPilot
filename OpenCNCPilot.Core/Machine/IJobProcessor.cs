@@ -32,6 +32,5 @@ namespace LagoVista.GCode.Sender
         void ArcToLines(double length);
 
         IEnumerable<GCodeCommand> Commands { get; }
-
     }
 }

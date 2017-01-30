@@ -114,6 +114,7 @@
       <DependentUpon>MachineResponseControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Converters\ColorConverters.cs" />
+    <Compile Include="Converters\MessageTypeConverter.cs" />
     <Compile Include="EnterNumberWindow.xaml.cs">
       <DependentUpon>EnterNumberWindow.xaml</DependentUpon>
     </Compile>

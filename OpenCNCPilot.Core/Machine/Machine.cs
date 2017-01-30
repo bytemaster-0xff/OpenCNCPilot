@@ -22,6 +22,7 @@ namespace LagoVista.GCode.Sender
         public Machine(Settings settings)
         {
             _settings = settings;
+            Messages = new System.Collections.ObjectModel.ObservableCollection<Models.StatusMessage>();
         }
 
         public void RaisePropertyChanged([CallerMemberName]string propertyName = "")
