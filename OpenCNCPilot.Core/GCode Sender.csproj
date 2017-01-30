@@ -37,35 +37,125 @@
     <Compile Include="Machine\IJobProcessor.cs" />
     <Compile Include="Machine\IMachine.cs" />
     <Compile Include="Machine\Machine.cs" />
-    <Compile Include="Machine\Machine.File.cs" />
-    <Compile Include="Machine\Machine.Interface.cs" />
-    <Compile Include="Machine\Machine.Parser.cs" />
-    <Compile Include="Machine\Machine.Properties.cs" />
-    <Compile Include="Machine\Machine.Reader.cs" />
-    <Compile Include="Machine\Machine.Settings.cs" />
-    <Compile Include="Machine\Machine.Status.cs" />
-    <Compile Include="Machine\Machine.WorkLoop.cs" />
-    <Compile Include="Machine\Machine.Writer.cs" />
+    <Compile Include="Machine\Machine.File.cs">
+      <DependentUpon>Machine.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Machine\Machine.Interface.cs">
+      <DependentUpon>Machine.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Machine\Machine.Parser.cs">
+      <DependentUpon>Machine.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Machine\Machine.Properties.cs">
+      <DependentUpon>Machine.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Machine\Machine.Reader.cs">
+      <DependentUpon>Machine.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Machine\Machine.Settings.cs">
+      <DependentUpon>Machine.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Machine\Machine.Status.cs">
+      <DependentUpon>Machine.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Machine\Machine.WorkLoop.cs">
+      <DependentUpon>Machine.cs</DependentUpon>
+    </Compile>
     <Compile Include="Machine\JobProcessor.cs" />
+    <Compile Include="Machine\Machine.Writer.cs">
+      <DependentUpon>Machine.cs</DependentUpon>
+    </Compile>
     <Compile Include="Machine\SimulatedMachine.cs" />
     <Compile Include="Models\HeightMap.cs" />
-    <Compile Include="Models\HeightMap.Math.cs" />
-    <Compile Include="Models\HeightMap.Properties.cs" />
-    <Compile Include="Models\HeightMap.Storage.cs" />
+    <Compile Include="Models\HeightMap.Math.cs">
+      <DependentUpon>HeightMap.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Models\HeightMap.Properties.cs">
+      <DependentUpon>HeightMap.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Models\HeightMap.Storage.cs">
+      <DependentUpon>HeightMap.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\PCBoard.cs" />
     <Compile Include="Models\StatusMessage.cs" />
+    <Compile Include="ViewModels\GCodeAppViewModel.cs" />
+    <Compile Include="ViewModels\HeightMapViewModel.CommandHandlers.cs">
+      <DependentUpon>HeightMapViewModel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModels\HeightMapViewModel.Commanding.cs">
+      <DependentUpon>HeightMapViewModel.cs</DependentUpon>
+    </Compile>
     <Compile Include="ViewModels\HeightMapViewModel.cs" />
+    <Compile Include="ViewModels\HeightMapViewModel.Properties.cs">
+      <DependentUpon>HeightMapViewModel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModels\JobControlViewModel.ComandHandlers.cs">
+      <DependentUpon>JobControlViewModel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModels\JobControlViewModel.Commanding.cs">
+      <DependentUpon>JobControlViewModel.cs</DependentUpon>
+    </Compile>
     <Compile Include="ViewModels\JobControlViewModel.cs" />
+    <Compile Include="ViewModels\JobControlViewModel.Properties.cs">
+      <DependentUpon>JobControlViewModel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModels\MachineControlViewModel.CommandHandlers.cs">
+      <DependentUpon>MachineControlViewModel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModels\MachineControlViewModel.Commanding.cs">
+      <DependentUpon>MachineControlViewModel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModels\MachineControlViewModel.Defines.cs">
+      <DependentUpon>MachineControlViewModel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModels\MachineControlViewModel.Properties.cs">
+      <DependentUpon>MachineControlViewModel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModels\MainViewModel.CommandHandlers.cs">
+      <DependentUpon>MainViewModel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModels\MainViewModel.Commanding.cs">
+      <DependentUpon>MainViewModel.cs</DependentUpon>
+    </Compile>
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Util\GrblErrorProvider.cs" />
-    <Compile Include="ViewModels\JobViewModel.cs" />
     <Compile Include="ViewModels\MachineControlViewModel.cs" />
+    <Compile Include="ViewModels\MainViewModel.Properties.cs">
+      <DependentUpon>MainViewModel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModels\ManualSendViewModel.CommandHandlers.cs">
+      <DependentUpon>ManualSendViewModel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModels\ManualSendViewModel.Commanding.cs">
+      <DependentUpon>ManualSendViewModel.cs</DependentUpon>
+    </Compile>
     <Compile Include="ViewModels\ManualSendViewModel.cs" />
-    <Compile Include="ViewModels\ProbingViewModel.cs" />
+    <Compile Include="ViewModels\ManualSendViewModel.Properties.cs">
+      <DependentUpon>ManualSendViewModel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModels\NewHeightMapViewModel.CommandHandlers.cs">
+      <DependentUpon>NewHeightMapViewModel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModels\NewHeightMapViewModel.Commanding.cs">
+      <DependentUpon>NewHeightMapViewModel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModels\NewHeightMapViewModel.cs" />
+    <Compile Include="ViewModels\NewHeightMapViewModel.Properties.cs">
+      <DependentUpon>NewHeightMapViewModel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModels\SettingsViewModel.CommandHandlers.cs">
+      <DependentUpon>SettingsViewModel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModels\SettingsViewModel.Commanding.cs">
+      <DependentUpon>SettingsViewModel.cs</DependentUpon>
+    </Compile>
     <Compile Include="ViewModels\SettingsViewModel.cs" />
+    <Compile Include="ViewModels\SettingsViewModel.Properties.cs">
+      <DependentUpon>SettingsViewModel.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="LagoVista.Core, Version=1.1.0.32, Culture=neutral, processorArchitecture=MSIL">

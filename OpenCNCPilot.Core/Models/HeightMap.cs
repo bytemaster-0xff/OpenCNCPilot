@@ -125,8 +125,11 @@ namespace LagoVista.GCode.Sender.Models
 
                     foreach (GCodeMotion subMotion in m.Split(segmentLength))
                     {
-                        subMotion.Start.Z += InterpolateZ(subMotion.Start.X, subMotion.Start.Y);
-                        subMotion.End.Z += InterpolateZ(subMotion.End.X, subMotion.End.Y);
+                        var startZOffset = InterpolateZ(subMotion.Start.X, subMotion.Start.Y);
+                        subMotion.Start = new Vector3(subMotion.Start.X, subMotion.Start.Y, subMotion.Start.Z + startZOffset);
+
+                        var endZOffset = InterpolateZ(subMotion.End.X, subMotion.End.Y);
+                        subMotion.End = new Vector3(subMotion.End.X, subMotion.End.Y, subMotion.End.Z + endZOffset);
 
                         newToolPath.Add(subMotion);
                     }

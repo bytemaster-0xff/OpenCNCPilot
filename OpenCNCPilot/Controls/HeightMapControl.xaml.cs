@@ -1,6 +1,5 @@
 ﻿using LagoVista.Core.GCode.Commands;
 using LagoVista.Core.Models.Drawing;
-using LagoVista.GCode.Sender.Application.Presentation;
 using LagoVista.GCode.Sender.Models;
 using System.Collections.Generic;
 using System.ComponentModel;

@@ -42,8 +42,12 @@
     <Compile Include="Commands\GCodeMotion.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="GCodeFile.cs" />
-    <Compile Include="GCodeFile.Factory.cs" />
-    <Compile Include="GCodeFile.GCodeProducer.cs" />
+    <Compile Include="GCodeFile.Factory.cs">
+      <DependentUpon>GCodeFile.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GCodeFile.GCodeProducer.cs">
+      <DependentUpon>GCodeFile.cs</DependentUpon>
+    </Compile>
     <Compile Include="Parser\GCodeParser.cs" />
     <Compile Include="Parser\GCodeParser.Helpers.cs" />
     <Compile Include="Parser\GCodeParser.Motion.cs" />

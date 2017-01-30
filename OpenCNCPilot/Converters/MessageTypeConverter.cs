@@ -15,9 +15,9 @@ namespace LagoVista.GCode.Sender.Application.Converters
         {
             var messageType = (StatusMessageTypes)value;
             if (messageType == StatusMessageTypes.Warning)
-                return Brushes.Blue;
+                return "Blue";
             
-            return Brushes.White;
+            return "White";
 
         }
 
@@ -35,10 +35,10 @@ namespace LagoVista.GCode.Sender.Application.Converters
 
             switch(messageType)
             {
-                case StatusMessageTypes.FatalError: return Brushes.Red;
+                case StatusMessageTypes.FatalError: return "Red";
                 case StatusMessageTypes.ReceviedLine:
-                case StatusMessageTypes.SentLine: return Brushes.Green;
-                case StatusMessageTypes.Warning: return Brushes.Yellow;
+                case StatusMessageTypes.SentLine: return "Green";
+                case StatusMessageTypes.Warning: return "Yellow";
             }
 
             return Brushes.Black;

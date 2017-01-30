@@ -115,19 +115,11 @@
     </Compile>
     <Compile Include="Converters\ColorConverters.cs" />
     <Compile Include="Converters\MessageTypeConverter.cs" />
-    <Compile Include="EnterNumberWindow.xaml.cs">
-      <DependentUpon>EnterNumberWindow.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Extensions\Vector3DExtensions.cs" />
-    <Compile Include="MainWindow.ProbingTab.xaml.cs">
-      <SubType>Code</SubType>
-      <Generator>MSBuild:Compile</Generator>
-      <DependentUpon>MainWindow.xaml</DependentUpon>
-    </Compile>
     <Compile Include="NewHeightMapWindow.xaml.cs">
       <DependentUpon>NewHeightMapWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Presentation\HeightMap.cs" />
+    <Compile Include="Presentation\HeightMapServices.cs" />
     <Compile Include="SettingsWindow.xaml.cs">
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
     </Compile>
@@ -153,10 +145,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\MachineResponseControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="EnterNumberWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

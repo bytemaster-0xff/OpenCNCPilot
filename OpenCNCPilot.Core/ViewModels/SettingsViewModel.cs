@@ -2,54 +2,19 @@
 using LagoVista.Core.IOC;
 using LagoVista.Core.Models;
 using LagoVista.Core.PlatformSupport;
-using LagoVista.Core.ViewModels;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace LagoVista.GCode.Sender.ViewModels
 {
-    public class SettingsViewModel : ViewModelBase
+    public partial class SettingsViewModel : GCodeAppViewModel
     {
-        public Settings Settings { get; private set; }
-        private IMachine _machine;
-        public SettingsViewModel(IMachine machine, Settings settings)
+        public SettingsViewModel(IMachine machine, Settings settings) : base(machine, settings)
         {
-            Settings = settings;
-            _machine = machine;
-            if(settings.CurrentSerialPort == null)
-            {
-                settings.CurrentSerialPort = new SerialPortInfo()
-                {
-                    Id = "empty",
-                    Name = "-select-"
-                };
-            }
+
+            InitComamnds();
             Init();
-
-            SaveCommand = new RelayCommand(Save);
-            CancelCommand = new RelayCommand(Cancel);
-        }
-
-
-
-        public String SelectedPortId
-        {
-            get { return Settings.CurrentSerialPort.Id; }
-            set
-            {
-                var port = SerialPorts.Where(prt => prt.Id == value).FirstOrDefault();
-                if (port == null)
-                    port = SerialPorts.First();
-                else
-                {
-                    port.BaudRate = 115200;
-                }
-
-                Settings.CurrentSerialPort = port;
-            }
         }
 
         public override async void Init()
@@ -59,6 +24,15 @@ namespace LagoVista.GCode.Sender.ViewModels
 
         public override async Task InitAsync()
         {
+            if (Settings.CurrentSerialPort == null)
+            {
+                Settings.CurrentSerialPort = new SerialPortInfo()
+                {
+                    Id = "empty",
+                    Name = "-select-"
+                };
+            }
+
             var ports = await SLWIOC.Get<IDeviceManager>().GetSerialPortsAsync();
 #if DEBUG
             ports.Insert(0, new SerialPortInfo() { Id = "Simulated", Name = "Simulated" });
@@ -77,36 +51,5 @@ namespace LagoVista.GCode.Sender.ViewModels
             MachineTypes = machineTypes;
             RaisePropertyChanged(MachineType);
         }
-
-        public bool CanChangeMachineConfig
-        {
-            get { return !_machine.Connected; }
-        }
-
-
-        public void Save()
-        {
-
-        }
-
-        public void Cancel()
-        {
-
-        }
-
-        public List<String> MachineTypes { get; private set; }
-
-        public String MachineType
-        {
-            get { return Settings.MachineType.ToString(); }
-            set { Settings.MachineType = (FirmwareTypes)Enum.Parse(typeof(FirmwareTypes), value.Replace(".","_")); }
-        }
-
-        public ObservableCollection<SerialPortInfo> SerialPorts { get; private set; }
-
-        public RelayCommand SaveCommand { get; private set; }
-        public RelayCommand CancelCommand { get; private set; }
-
-
     }
 }

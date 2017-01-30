@@ -1,7 +1,4 @@
-﻿using LagoVista.GCode.Sender.ViewModels;
-using System.ComponentModel;
-using System.Windows;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 
 namespace LagoVista.GCode.Sender.Application.Controls
 {
@@ -13,16 +10,6 @@ namespace LagoVista.GCode.Sender.Application.Controls
         public JobControl()
         {
             InitializeComponent();
-
-            this.Loaded += JobControl_Loaded;
-        }
-
-        private void JobControl_Loaded(object sender, RoutedEventArgs e)
-        {
-            if (!DesignerProperties.GetIsInDesignMode(this))
-            {
-                DataContext = new JobControlViewModel(App.Current.Machine, App.Current.Settings);
-            }
         }
     }
 }

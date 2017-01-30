@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace LagoVista.Core.GCode.Commands
 {
     public abstract class GCodeMotion : GCodeCommand
-    {
+    {       
         public Vector3 Start { get; set; }
 		public Vector3 End { get; set; }
 		public double Feed { get; set; }
