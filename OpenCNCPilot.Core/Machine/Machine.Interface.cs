@@ -121,7 +121,7 @@ namespace LagoVista.GCode.Sender
 
         private bool AssertNotBusy()
         {
-            if (Mode != OperatingMode.Manual)
+            if (Mode != OperatingMode.Manual && Mode != OperatingMode.Disconnected)
             {
                 AddStatusMessage(StatusMessageTypes.Warning, "Busy");
                 return false;

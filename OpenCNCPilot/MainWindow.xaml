@@ -22,8 +22,8 @@
             <MenuItem Header="File"  >
                 <MenuItem Header="New HeightMap" />
                 <Separator />
-                <MenuItem Header="Open HeightMap"  Command="{Binding OpenHeightMapCommand}" />
                 <MenuItem Header="Open GCode File" Command="{Binding OpenGCodeFileCommand}" />
+                <MenuItem Header="Open HeightMap"  Command="{Binding OpenHeightMapCommand}" />
                 <Separator />
                 <MenuItem  Header="Close" Command="{Binding Close}" />
             </MenuItem>

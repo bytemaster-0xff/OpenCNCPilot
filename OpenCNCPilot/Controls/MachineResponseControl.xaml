@@ -11,6 +11,7 @@
         <cvts:MessageTypeForegroundColorConverter x:Key="MessageTypeForegroundColorConverter" />
     </UserControl.Resources>
     <ListBox Name="ListBoxHistory" 
+             HorizontalContentAlignment="Stretch"
                  ItemsSource="{Binding Path=Machine.Messages}"
                  IsHitTestVisible="False" BorderThickness="0" Background="Transparent"
                  ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Disabled">

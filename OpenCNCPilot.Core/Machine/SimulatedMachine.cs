@@ -46,11 +46,26 @@ namespace LagoVista.GCode.Sender
     {
         private List<byte> _outputArray = new List<byte>();
 
+        ITimer _timer;
+
         FirmwareTypes _firmwareType;
 
         public SimulatedGCodeMachine(FirmwareTypes firmwareType)
         {
             _firmwareType = firmwareType;
+            _timer = Services.TimerFactory.Create(TimeSpan.FromSeconds(0.5));
+            _timer.Tick += _timer_Tick;
+            _timer.Start();
+
+        }
+
+        private void _timer_Tick(object sender, EventArgs e)
+        {
+            if (_commands.Any())
+            {
+                var cmd = _commands.Dequeue();
+                HandleCommand(cmd);
+            }
         }
 
         public override bool CanRead { get { return true; } }
@@ -165,7 +180,8 @@ namespace LagoVista.GCode.Sender
         {
             if(cmd == "M114")
             {
-
+                var response = $"X: {_work.X} Y: {_work.Y} RZ: {_work.Z} LZ: 0.00 Count X:0.00 Y: 0.00 RZ: 41.02 LZ: 41.02";
+                AddResponse(response);
             }
             else
                 AddResponse("ok");
@@ -187,6 +203,7 @@ namespace LagoVista.GCode.Sender
 
         States _state = States.Idle;
 
+        Queue<String> _commands = new Queue<string>();
 
         private void HandleCommand(String command)
         {
@@ -194,16 +211,12 @@ namespace LagoVista.GCode.Sender
             var cmdLetter = command.First();
             switch(cmdLetter)
             {
-                case '?':
-                    AddResponse($"<{_state},MPos:{_machine.X},{_machine.Y},{_machine.Z},WPos:{_work.X},{_work.Y},{_work.Z}>");
-                    break;
                 case '$': AddResponse("ok"); break;
                 case 'G': HandleGCode(command);
                     break;
                 case 'M': HandleMCode(command);
                     System.Threading.Tasks.Task.Delay(100).Wait();
                     break;
-
             }
         }
 
@@ -213,7 +226,16 @@ namespace LagoVista.GCode.Sender
             var commands = text.Split('\n');
             foreach(var command in commands.Where(cmd=> !String.IsNullOrEmpty(cmd)))
             {
-                HandleCommand(command);
+                var cleanCommand = command.Trim('\r');
+
+                if(cleanCommand == "?")
+                {
+                    AddResponse($"<{_state},MPos:{_machine.X},{_machine.Y},{_machine.Z},WPos:{_work.X},{_work.Y},{_work.Z}>");
+                }
+                else
+                {
+                    _commands.Enqueue(command.TrimEnd('\r'));
+                }
             }
         }
     }
