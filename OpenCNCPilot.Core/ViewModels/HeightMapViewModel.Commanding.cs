@@ -37,6 +37,5 @@ namespace LagoVista.GCode.Sender.ViewModels
         public RelayCommand PauseProbingCommand { get; private set; }
 
         public RelayCommand StartProbingCommand { get; private set; }
-
     }
 }

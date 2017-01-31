@@ -27,12 +27,12 @@
         <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding MinY, UpdateSourceTrigger=PropertyChanged, Delay=500}" />
         <TextBox Grid.Row="0" Grid.Column="3" Text="{Binding MaxX, UpdateSourceTrigger=PropertyChanged, Delay=500}" />
         <TextBox Grid.Row="1" Grid.Column="3" Text="{Binding MaxY, UpdateSourceTrigger=PropertyChanged, Delay=500}" />
-        <Label Content="-" Grid.Row="1" Grid.Column="2" />
+        <Label Content="-" Grid.Row="0" Grid.Column="2" />
         <Label Content="-" Grid.Row="1" Grid.Column="2" />
         <Label Content="GridSize:" Grid.Row="2"/>
         <TextBox Grid.Row="2" Grid.ColumnSpan="2" Text="{Binding GridSize, UpdateSourceTrigger=PropertyChanged, Delay=500}" />
 
-        <Button Command="{Binding GenerateTestPatternCommand}" Content="Generate Test Pattern" Grid.Row="3" />
+        <Button Command="{Binding GenerateTestPatternCommand}" Content="Generate Test Pattern" Grid.ColumnSpan="4" Grid.Row="3" />
         <Button Grid.ColumnSpan="3" Grid.Column="1" Grid.Row="4" Content="Ok" Click="Button_Click" />
     </Grid>
 </Window>

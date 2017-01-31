@@ -52,12 +52,12 @@
 
                 <ctls:JobControl Grid.ColumnSpan="2" DataContext="{Binding JobControlVM}" />
 
-                <ctls:HeightMapControl  x:Name="HeightMap" Grid.Row="1" Grid.ColumnSpan="2" />
+                <ctls:HeightMapControl DataContext="{Binding HeightMapVM}" CurrentJob="{Binding Path=Machine.CurrentJob}"  HeightMap="{Binding Path=CurrentHeightMap}" Grid.Row="1" Grid.ColumnSpan="2" />
 
                 <ctls:CurrentFileControl x:Name="CurrentFile"  Grid.Row="2"/>
                 <ctls:MachineResponseControl x:Name="MachineResponse" Grid.Row="2" Grid.Column="1" />
 
-                <ctls:MachineControl  Grid.Column="2" Grid.RowSpan="2" DataContext="{Binding MachineControlVM}"  />
+                <ctls:MachineControl  Grid.Column="2" Grid.RowSpan="2"  />
                 <ctls:ImageSensorControl HorizontalAlignment="Right" VerticalAlignment="Bottom" Grid.Column="2" Grid.Row="2" />
                 <Grid  Grid.Row="3" Grid.ColumnSpan="2" DataContext="{Binding ManualSendVM}" >
                     <TextBox x:Name="TextBoxManual" Margin="24" Height="28" />

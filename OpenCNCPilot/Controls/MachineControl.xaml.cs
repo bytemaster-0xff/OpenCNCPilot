@@ -10,6 +10,12 @@ namespace LagoVista.GCode.Sender.Application.Controls
         public MachineControl()
         {
             InitializeComponent();
+            Loaded += MachineControl_Loaded;
+        }
+
+        private void MachineControl_Loaded(object sender, System.Windows.RoutedEventArgs e)
+        {
+            DataContext = new ViewModels.MachineControlViewModel(App.Current.Machine, App.Current.Settings);
         }
     }
 }

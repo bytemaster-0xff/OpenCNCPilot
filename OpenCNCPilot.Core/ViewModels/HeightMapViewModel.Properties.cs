@@ -16,6 +16,7 @@ namespace LagoVista.GCode.Sender.ViewModels
             {
                 Set(ref _currentHeightMap, value);
                 StartProbingCommand.RaiseCanExecuteChanged();
+                HeightMapChanged();
             }
         }
     }

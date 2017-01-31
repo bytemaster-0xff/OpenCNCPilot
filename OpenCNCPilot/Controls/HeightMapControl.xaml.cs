@@ -4,6 +4,7 @@ using LagoVista.GCode.Sender.Models;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Controls;
+using System.Windows;
 
 
 namespace LagoVista.GCode.Sender.Application.Controls
@@ -16,33 +17,8 @@ namespace LagoVista.GCode.Sender.Application.Controls
         public HeightMapControl()
         {
             InitializeComponent();
-            Loaded += HeightMapControl_Loaded;
         }
-
-
-        private void HeightMapControl_Loaded(object sender, System.Windows.RoutedEventArgs e)
-        {
-            if (!DesignerProperties.GetIsInDesignMode(this))
-            {
-                App.Current.Machine.PropertyChanged += (sndr, args) =>
-                {
-                    if (args.PropertyName == nameof(App.Current.Machine.HasJob))
-                    {
-                        Dispatcher.Invoke(() =>
-                        {
-                            if (App.Current.Machine.HasJob)
-                            {
-                                Presentation.HeightMapServices.GetModel(App.Current.Machine.CurrentJob.Commands, App.Current.Settings, ModelLine, ModelRapid, ModelArc);
-                            }
-                            else
-                            {
-                                Clear();
-                            }
-                        });
-                    }
-                };
-            }
-        }
+        
 
         public void SetPreviewModel(HeightMap map)
         {
@@ -80,33 +56,39 @@ namespace LagoVista.GCode.Sender.Application.Controls
             set { ModelTool.Visible = value; }
         }
 
-        private HeightMap _heightMap;
-        public HeightMap HeightMap
+        public static readonly DependencyProperty CurrentJobProperty
+                = DependencyProperty.Register("CurrentJob", typeof(IJobProcessor), typeof(HeightMapControl), new PropertyMetadata(null));
+
+        public IJobProcessor CurrentJob
         {
-            get { return _heightMap; }
+            get { return GetValue(CurrentJobProperty) as IJobProcessor; }
             set
             {
-                _heightMap = value;
-                if (_heightMap == null)
+                SetValue(CurrentJobProperty, value);
+                if (value != null)
+                    Presentation.HeightMapServices.GetModel(value.Commands, App.Current.Settings, ModelLine, ModelRapid, ModelArc);
+                else
+                    Clear();
+            }
+        }
+
+        public static readonly DependencyProperty HeightMapProperty
+            = DependencyProperty.Register("HeightMap", typeof(HeightMap), typeof(HeightMapControl), new PropertyMetadata(null));
+
+        public HeightMap HeightMap
+        {
+            get { return GetValue(HeightMapProperty) as HeightMap; }
+            set
+            {
+                SetValue(HeightMapProperty, value);
+                if (value == null)
                 {
                     Clear();
                 }
                 else
                 {
-                    Presentation.HeightMapServices.GetPreviewModel(_heightMap, ModelHeightMapBoundary, ModelHeightMapPoints);
+                    Presentation.HeightMapServices.GetPreviewModel(value, ModelHeightMapBoundary, ModelHeightMapPoints);
                 }
-            }
-        }
-
-
-        IMachine _machine;
-        public IMachine Machine
-        {
-            get { return _machine; }
-            set
-            {
-                _machine = value;
-
             }
         }
     }
