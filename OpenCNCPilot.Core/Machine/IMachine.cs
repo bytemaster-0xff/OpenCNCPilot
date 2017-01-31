@@ -29,6 +29,8 @@ namespace LagoVista.GCode.Sender
 
         bool HasJob { get; }
 
+        int MessageCount { get; }
+
 
         ParseDistanceMode DistanceMode { get;  }
 

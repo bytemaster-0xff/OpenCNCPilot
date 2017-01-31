@@ -15,5 +15,47 @@ namespace LagoVista.GCode.Sender.ViewModels
             get { return _heightMap; }
             set { Set(ref _heightMap, value); }
         }
+
+        public bool Validate()
+        {
+            if (HeightMap.Min.X > HeightMap.Max.X)
+            {
+                var originalMinX = HeightMap.Min.X;
+                HeightMap.Min = new Core.Models.Drawing.Vector2()
+                {
+                    X = HeightMap.Max.X,
+                    Y = HeightMap.Min.Y
+                };
+
+                HeightMap.Max = new Core.Models.Drawing.Vector2()
+                {
+                    X = originalMinX,
+                    Y = HeightMap.Max.Y
+                };
+            }
+
+            if (HeightMap.Min.Y > HeightMap.Max.Y)
+            {
+                var originalMinY = HeightMap.Min.Y;
+                HeightMap.Min = new Core.Models.Drawing.Vector2()
+                {
+                    X = HeightMap.Min.X,
+                    Y = HeightMap.Max.Y
+                };
+
+                HeightMap.Max = new Core.Models.Drawing.Vector2()
+                {
+                    X = HeightMap.Max.Y,
+                    Y = originalMinY
+                };
+            }
+            return true;
+        }
+
+
+        public void GenerateTestPattern()
+        {
+             
+        }
     }
 }

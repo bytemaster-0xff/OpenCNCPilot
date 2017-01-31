@@ -33,5 +33,39 @@ namespace LagoVista.GCode.Sender.Models
 
             return linUpper * fY + linLower * (1 - fY);     //bilinear result
         }
+
+        public Core.GCode.GCodeFile ApplyHeightMap(Core.GCode.GCodeFile file)
+        {
+            double segmentLength = Math.Min(GridX, GridY);
+
+            var newToolPath = new List<Core.GCode.Commands.GCodeCommand>();
+
+            foreach (var command in file.Commands)
+            {
+                if (command is Core.GCode.Commands.MCode)
+                {
+                    newToolPath.Add(command);
+                    continue;
+                }
+                else
+                {
+                    Core.GCode.Commands.GCodeMotion m = (Core.GCode.Commands.GCodeMotion)command;
+
+                    foreach (var subMotion in m.Split(segmentLength))
+                    {
+                        var startZOffset = InterpolateZ(subMotion.Start.X, subMotion.Start.Y);
+                        subMotion.Start = new Core.Models.Drawing.Vector3(subMotion.Start.X, subMotion.Start.Y, subMotion.Start.Z + startZOffset);
+
+                        var endZOffset = InterpolateZ(subMotion.End.X, subMotion.End.Y);
+                        subMotion.End = new Core.Models.Drawing.Vector3(subMotion.End.X, subMotion.End.Y, subMotion.End.Z + endZOffset);
+
+                        newToolPath.Add(subMotion);
+                    }
+                }
+            }
+
+            return Core.GCode.GCodeFile.FromCommands(newToolPath);
+        }
+
     }
 }

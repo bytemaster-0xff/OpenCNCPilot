@@ -117,6 +117,7 @@ namespace LagoVista.GCode.Sender
             Services.DispatcherServices.Invoke(() =>
             {
                 Messages.Add(Models.StatusMessage.Create(type, message));
+                RaisePropertyChanged(nameof(MessageCount));
             });
         }
     }

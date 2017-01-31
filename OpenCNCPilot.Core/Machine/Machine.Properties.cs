@@ -19,5 +19,18 @@ namespace LagoVista.GCode.Sender
                 RaisePropertyChanged(nameof(HasJob));
             }
         }
+
+        public int MessageCount
+        {
+            get
+            {
+                if(Messages == null)
+                {
+                    return 0;
+                }
+
+                return Messages.Count - 1;
+            }
+        }
     }
 }

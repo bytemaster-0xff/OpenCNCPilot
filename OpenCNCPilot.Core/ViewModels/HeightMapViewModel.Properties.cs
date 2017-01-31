@@ -18,6 +18,5 @@ namespace LagoVista.GCode.Sender.ViewModels
                 StartProbingCommand.RaiseCanExecuteChanged();
             }
         }
-
     }
 }

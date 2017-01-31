@@ -41,8 +41,7 @@ namespace LagoVista.GCode.Sender.Models
             if (fileName != null)
             {
                 var heightMap = await Core.PlatformSupport.Services.Storage.GetAsync<HeightMap>(fileName);
-                heightMap._settings = settings;
-
+                heightMap.Refresh();
                 return heightMap;
             }
             else

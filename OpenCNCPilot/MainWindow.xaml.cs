@@ -26,11 +26,6 @@ namespace LagoVista.GCode.Sender.Application
 
             DataContext = new MainViewModel(App.Current.Machine, App.Current.Settings);            
         }
-
-        private void Hyperlink_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
-		{
-			System.Diagnostics.Process.Start(e.Uri.AbsoluteUri);
-		}
 	
         private void SettingsMenu_Click(object sender, RoutedEventArgs e)
         {
@@ -43,6 +38,15 @@ namespace LagoVista.GCode.Sender.Application
             {
                 await App.Current.Machine.DisconnectAsync();
             }
+        }
+
+        private void NewHeigtMap_Click(object sender, RoutedEventArgs e)
+        {
+            var vm = DataContext as MainViewModel;
+            if (vm.HeightMapVM.CurrentHeightMap == null)
+                vm.HeightMapVM.CurrentHeightMap = new Models.HeightMap();
+
+            new NewHeightMapWindow(vm.HeightMapVM.CurrentHeightMap).ShowDialog();
         }
     }
 }

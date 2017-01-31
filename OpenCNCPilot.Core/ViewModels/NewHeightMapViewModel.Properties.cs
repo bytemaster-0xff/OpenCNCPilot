@@ -8,5 +8,36 @@ namespace LagoVista.GCode.Sender.ViewModels
 {
     public partial class NewHeightMapViewModel
     {
+        public double MinX
+        {
+            get { return HeightMap.Min.X; }
+            set { HeightMap.Min = new Core.Models.Drawing.Vector2(value, HeightMap.Min.Y); }
+        }
+
+        public double MinY
+        {
+            get { return HeightMap.Min.Y; }
+            set { HeightMap.Min = new Core.Models.Drawing.Vector2(HeightMap.Min.Y, value); }
+        }
+
+        public double MaxX
+        {
+            get { return HeightMap.Max.X; }
+            set { HeightMap.Max = new Core.Models.Drawing.Vector2(value, HeightMap.Max.Y); }
+        }
+
+        public double MaxY
+        {
+            get { return HeightMap.Max.Y; }
+            set { HeightMap.Max = new Core.Models.Drawing.Vector2( HeightMap.Max.X, value); }
+        }
+
+        private double _gridSize;
+        public double GridSize
+        {
+            get { return _gridSize; }
+            set { _gridSize = value; }
+        }
+
     }
 }

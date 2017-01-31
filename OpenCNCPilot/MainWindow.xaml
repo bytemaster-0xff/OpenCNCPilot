@@ -20,7 +20,7 @@
         </Grid.RowDefinitions>
         <Menu>
             <MenuItem Header="File"  >
-                <MenuItem Header="New HeightMap" />
+                <MenuItem Header="New HeightMap" x:Name="NewHeigtMap" Click="NewHeigtMap_Click" />
                 <Separator />
                 <MenuItem Header="Open GCode File" Command="{Binding OpenGCodeFileCommand}" />
                 <MenuItem Header="Open HeightMap"  Command="{Binding OpenHeightMapCommand}" />

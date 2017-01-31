@@ -4,18 +4,20 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:cvts="clr-namespace:LagoVista.GCode.Sender.Application.Converters"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:ctls="clr-namespace:LagoVista.GCode.Sender.Application.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
         <cvts:MessageTypeBackgroundColorConverter x:Key="MessageTypeBackgroundColorConverter" />
         <cvts:MessageTypeForegroundColorConverter x:Key="MessageTypeForegroundColorConverter" />
     </UserControl.Resources>
-    <ListBox Name="ListBoxHistory" 
-             HorizontalContentAlignment="Stretch"
+    <ctls:ListBoxScroll  HorizontalContentAlignment="Stretch"
+                 SelectedIndex="{Binding Path=Machine.MessageCount}"
                  ItemsSource="{Binding Path=Machine.Messages}"
-                 IsHitTestVisible="False" BorderThickness="0" Background="Transparent"
-                 ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Disabled">
-        <ListBox.ItemTemplate>
+                 IsHitTestVisible="False" BorderThickness="0"
+                 ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
+                 ScrollViewer.VerticalScrollBarVisibility="Disabled">
+        <ctls:ListBoxScroll.ItemTemplate>
             <DataTemplate>
                 <Grid Background="{Binding MessageType, Converter={StaticResource MessageTypeBackgroundColorConverter}}" >
                     <Grid.ColumnDefinitions>
@@ -28,6 +30,6 @@
                     <TextBlock Text="{Binding Message}" Grid.Column="2" Foreground="{Binding MessageType, Converter={StaticResource MessageTypeForegroundColorConverter}}" />
                 </Grid>
             </DataTemplate>
-        </ListBox.ItemTemplate>
-    </ListBox>
+        </ctls:ListBoxScroll.ItemTemplate>
+    </ctls:ListBoxScroll>
 </UserControl>

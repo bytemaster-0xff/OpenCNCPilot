@@ -6,31 +6,23 @@ using LagoVista.Core.Models.Drawing;
 
 namespace LagoVista.GCode.Sender.Models
 {
-    public partial class HeightMap
+    public partial class HeightMap : Core.Models.ModelBase
     {
         private String _fileName = null;
 
-        private Settings _settings;
-
-        public HeightMap(Settings settings, double gridSize, Vector2 min, Vector2 max)
-        {
-            _settings = settings;
-
-            Init(gridSize, min, max);
-        }
-
-        public HeightMap(Settings settings)
-        {
-            _settings = settings;
-        }
-
         public HeightMap()
         {
-
+            Min = new Vector2(0, 0);
+            Max = new Vector2(100, 80);
+            GridSize = 20;
+            Refresh();
         }
-
-        private void Init(double gridSize, Vector2 min, Vector2 max)
+      
+        public void Refresh()
         {
+            var min = Min;
+            var max = Max;
+            var gridSize = GridSize;
             if (min.X == max.X || min.Y == max.Y)
                 throw new Exception("Height map can't be infinitely narrow");
 
@@ -82,12 +74,12 @@ namespace LagoVista.GCode.Sender.Models
 
         public void FillWithTestPattern(string pattern)
         {
-            for (int x = 0; x < SizeX; x++)
+            for (var x = 0; x < SizeX; x++)
             {
-                for (int y = 0; y < SizeY; y++)
+                for (var y = 0; y < SizeY; y++)
                 {
-                    double X = (x * (Max.X - Min.X)) / (SizeX - 1) + Min.X;
-                    double Y = (y * (Max.Y - Min.Y)) / (SizeY - 1) + Min.Y;
+                    var X = (x * (Max.X - Min.X)) / (SizeX - 1) + Min.X;
+                    var Y = (y * (Max.Y - Min.Y)) / (SizeY - 1) + Min.Y;
 
                     var d = (X * X + Y * Y) / 1000.0;
                     AddPoint(x, y, (double)d);
@@ -103,41 +95,6 @@ namespace LagoVista.GCode.Sender.Models
                 MaxHeight = height;
             if (height < MinHeight)
                 MinHeight = height;
-        }
-
-
-        public GCodeFile ApplyHeightMap(GCodeFile file)
-        {
-            double segmentLength = Math.Min(GridX, GridY);
-
-            var newToolPath = new List<GCodeCommand>();
-
-            foreach (var command in file.Commands)
-            {
-                if (command is MCode)
-                {
-                    newToolPath.Add(command);
-                    continue;
-                }
-                else
-                {
-                    GCodeMotion m = (GCodeMotion)command;
-
-                    foreach (GCodeMotion subMotion in m.Split(segmentLength))
-                    {
-                        var startZOffset = InterpolateZ(subMotion.Start.X, subMotion.Start.Y);
-                        subMotion.Start = new Vector3(subMotion.Start.X, subMotion.Start.Y, subMotion.Start.Z + startZOffset);
-
-                        var endZOffset = InterpolateZ(subMotion.End.X, subMotion.End.Y);
-                        subMotion.End = new Vector3(subMotion.End.X, subMotion.End.Y, subMotion.End.Z + endZOffset);
-
-                        newToolPath.Add(subMotion);
-                    }
-                }
-            }
-
-            return GCodeFile.FromCommands(newToolPath);
-        }
-
+        }    
     }
 }

@@ -10,7 +10,7 @@ using LagoVista.GCode.Sender.Models;
 
 namespace LagoVista.GCode.Sender
 {
-    public class JobProcessor : IJobProcessor
+    public class JobProcessor : Core.Models.ModelBase, IJobProcessor
     {
         public IMachine _machine;
         GCodeFile _file;
@@ -36,23 +36,24 @@ namespace LagoVista.GCode.Sender
             if (_started == null)
                 _started = DateTime.Now;
 
-            while (_machine.BufferSpaceAvailable(_file.Commands[_head].MessageLength) && _head < _file.Commands.Count)
+            while (_machine.BufferSpaceAvailable(_file.Commands[Head].MessageLength) &&
+                        Head < _file.Commands.Count)
             {
-                _machine.SendCommand(_file.Commands[_head]);
-                _file.Commands[_head++].Status = GCodeCommand.StatusTypes.Sent;
+                _machine.SendCommand(_file.Commands[Head]);
+                _file.Commands[Head++].Status = GCodeCommand.StatusTypes.Sent;
             }
         }
 
         public GCodeCommand CurrentCommand
         {
-            get { return _file.Commands[_tail]; }
+            get { return _file.Commands[Tail]; }
         }
 
         public int CommandAcknowledged()
         {
-            var sentCommandLength = _file.Commands[_tail].MessageLength;
-            _file.Commands[_tail++].Status = GCodeCommand.StatusTypes.Acknowledged;
-            _file.Commands[_tail].StartTimeStamp = DateTime.Now;
+            var sentCommandLength = _file.Commands[Tail].MessageLength;
+            _file.Commands[Tail++].Status = GCodeCommand.StatusTypes.Acknowledged;
+            _file.Commands[Tail].StartTimeStamp = DateTime.Now;
 
             return sentCommandLength;
         }
@@ -64,14 +65,14 @@ namespace LagoVista.GCode.Sender
 
         public bool IsCompleted
         {
-            get { return _tail ==  TotalLines; }
+            get { return Tail == TotalLines; }
         }
 
         public void Reset()
         {
-            _head = 0;
-            _tail = 0;
-            foreach(var cmd in Commands)
+            Head = 0;
+            Tail = 0;
+            foreach (var cmd in Commands)
             {
                 cmd.Status = GCodeCommand.StatusTypes.Ready;
             }
@@ -109,7 +110,7 @@ namespace LagoVista.GCode.Sender
         {
             get
             {
-                if(_started.HasValue)
+                if (_started.HasValue)
                     return DateTime.Now - _started.Value;
                 else
                 {
@@ -122,7 +123,7 @@ namespace LagoVista.GCode.Sender
         {
             get
             {
-                if(_started.HasValue)
+                if (_started.HasValue)
                 {
                     return _started.Value.Add(_file.EstimatedRunTime);
                 }
@@ -130,8 +131,20 @@ namespace LagoVista.GCode.Sender
                 {
                     return DateTime.Now;
                 }
-                
+
             }
+        }
+
+        public int Head
+        {
+            get { return _head; }
+            set { Set(ref _head, value); }
+        }
+
+        public int Tail
+        {
+            get { return _tail; }
+            set { Set(ref _tail, value); }
         }
 
         public IEnumerable<GCodeCommand> Commands

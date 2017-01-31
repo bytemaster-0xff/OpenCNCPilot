@@ -23,6 +23,7 @@ namespace LagoVista.GCode.Sender
         {
             _settings = settings;
             Messages = new System.Collections.ObjectModel.ObservableCollection<Models.StatusMessage>();
+            AddStatusMessage(StatusMessageTypes.Info, "Startup.");
         }
 
         public void RaisePropertyChanged([CallerMemberName]string propertyName = "")

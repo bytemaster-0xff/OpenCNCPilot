@@ -113,6 +113,7 @@
     <Compile Include="Controls\MachineResponseControl.xaml.cs">
       <DependentUpon>MachineResponseControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\ScrollListBox.cs" />
     <Compile Include="Converters\ColorConverters.cs" />
     <Compile Include="Converters\GCodeSendStatusTypeConverters.cs" />
     <Compile Include="Converters\MessageTypeConverter.cs" />

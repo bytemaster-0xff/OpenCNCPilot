@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:cvts="clr-namespace:LagoVista.GCode.Sender.Application.Converters"
+             xmlns:ctls="clr-namespace:LagoVista.GCode.Sender.Application.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
@@ -33,8 +34,15 @@
             </StackPanel>
         </Grid>
 
-        <ListView Grid.Row="1" Name="ListViewFile" HorizontalContentAlignment="Stretch" ItemsSource="{Binding Path=Machine.CurrentJob.Commands}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Background="Transparent">
-            <ListView.ItemTemplate>
+        <ctls:ListBoxScroll Grid.Row="1" x:Name="ListViewFile"
+                            SelectedIndex="{Binding Path=Machine.CurrentJob.Head}" 
+                            HorizontalContentAlignment="Stretch" 
+                            ItemsSource="{Binding Path=Machine.CurrentJob.Commands}"
+                            IsHitTestVisible="False" BorderThickness="0"
+                            ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
+                            ScrollViewer.VerticalScrollBarVisibility="Disabled">
+
+            <ctls:ListBoxScroll.ItemTemplate>
                 <DataTemplate>
                     <Grid Background="{Binding Status, Converter={StaticResource GCodeSendBackgroundConverter}}">
                         <Grid.ColumnDefinitions>
@@ -45,13 +53,13 @@
                             <ColumnDefinition Width="50" />
                         </Grid.ColumnDefinitions>
                         <TextBlock Text="{Binding Status}" Foreground="{Binding Status, Converter={StaticResource GCodeSendForegroundConverter}}"/>
-                        <TextBlock Text="{Binding LineNumber}" Foreground="{Binding Status, Converter={StaticResource GCodeSendForegroundConverter}}"/>
-                        <TextBlock Text="{Binding Line}" Grid.Column="1" Foreground="{Binding Status, Converter={StaticResource GCodeSendForegroundConverter}}"/>
-                        <TextBlock Text="{Binding EstimatedRunTime.TotalSeconds}" Grid.Column="2" Foreground="{Binding Status, Converter={StaticResource GCodeSendForegroundConverter}}"/>
-                        <TextBlock Text="{Binding Feed}" Grid.Column="3" Foreground="{Binding Status, Converter={StaticResource GCodeSendForegroundConverter}}"/>
+                        <TextBlock Text="{Binding LineNumber}" Grid.Column="1" Foreground="{Binding Status, Converter={StaticResource GCodeSendForegroundConverter}}"/>
+                        <TextBlock Text="{Binding Line}" Grid.Column="2" Foreground="{Binding Status, Converter={StaticResource GCodeSendForegroundConverter}}"/>
+                        <TextBlock Text="{Binding EstimatedRunTime.TotalSeconds}" Grid.Column="3" Foreground="{Binding Status, Converter={StaticResource GCodeSendForegroundConverter}}"/>
+                        <TextBlock Text="{Binding Feed}" Grid.Column="4" Foreground="{Binding Status, Converter={StaticResource GCodeSendForegroundConverter}}"/>
                     </Grid>
                 </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+            </ctls:ListBoxScroll.ItemTemplate>
+        </ctls:ListBoxScroll>
     </Grid>
 </UserControl>

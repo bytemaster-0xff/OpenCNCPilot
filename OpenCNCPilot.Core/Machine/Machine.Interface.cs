@@ -40,6 +40,9 @@ namespace LagoVista.GCode.Sender
                 _cancelToken = new CancellationToken();
                 _port = port;
 
+                AddStatusMessage(StatusMessageTypes.Info, $"Connected to Serial Port.");
+
+
                 await Task.Run(() =>
                 {
                     Work(outputStream);

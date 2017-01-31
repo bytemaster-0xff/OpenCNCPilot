@@ -10,7 +10,9 @@ namespace LagoVista.GCode.Sender.ViewModels
     {
         private void InitCommands()
         {
-
+            GenerateTestPatternCommand = new Core.Commanding.RelayCommand(GenerateTestPattern);
         }
+
+        public Core.Commanding.RelayCommand GenerateTestPatternCommand { get; private set; }
     }
 }

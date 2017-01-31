@@ -23,6 +23,9 @@ namespace LagoVista.GCode.Sender
         bool IsDirty { get; }
         bool IsCompleted { get; }
 
+        int Head { get; }
+        int Tail { get; }
+
         void Reset();
 
         void QueueAllItems();
