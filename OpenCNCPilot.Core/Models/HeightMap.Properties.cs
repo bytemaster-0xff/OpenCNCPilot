@@ -6,9 +6,11 @@ namespace LagoVista.GCode.Sender.Models
 {
     public partial class HeightMap
     {
-        public double?[,] Points { get;  set; }
-        public int SizeX { get;  set; }
-        public int SizeY { get;  set; }
+        public double?[,] Points { get; set; }
+
+
+        public int SizeX { get; set; }
+        public int SizeY { get; set; }
 
         public int Progress { get { return TotalPoints - NotProbed.Count; } }
         public int TotalPoints { get { return SizeX * SizeY; } }
@@ -33,12 +35,16 @@ namespace LagoVista.GCode.Sender.Models
         public double GridSize
         {
             get { return _gridSize; }
-            set { Set(ref _gridSize, value); }
+            set
+            {
+                Set(ref _gridSize, value);
+                Refresh();
+            }
         }
 
         public Vector2 Delta { get { return Max - Min; } }
 
-        public double MinHeight { get;  set; } = 0;
+        public double MinHeight { get; set; } = 0;
         public double MaxHeight { get; set; } = 0;
 
         public double GridX { get { return (Max.X - Min.X) / (SizeX - 1); } }

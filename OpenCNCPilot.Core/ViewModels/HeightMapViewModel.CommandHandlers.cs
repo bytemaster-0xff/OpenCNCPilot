@@ -90,10 +90,5 @@ namespace LagoVista.GCode.Sender.ViewModels
 
             Machine.ProbeStop();
         }
-
-        public void HeightMapChanged()
-        {
-            
-        }
     }
 }

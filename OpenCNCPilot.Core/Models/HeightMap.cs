@@ -24,13 +24,16 @@ namespace LagoVista.GCode.Sender.Models
             var max = Max;
             var gridSize = GridSize;
             if (min.X == max.X || min.Y == max.Y)
-                throw new Exception("Height map can't be infinitely narrow");
+                return;
+
+            if (gridSize == 0)
+                return;
 
             int pointsX = (int)Math.Ceiling((max.X - min.X) / gridSize) + 1;
             int pointsY = (int)Math.Ceiling((max.Y - min.Y) / gridSize) + 1;
 
             if (pointsX == 0 || pointsY == 0)
-                throw new Exception("Height map must have at least 4 points");
+                return;
 
             Points = new double?[pointsX, pointsY];
 

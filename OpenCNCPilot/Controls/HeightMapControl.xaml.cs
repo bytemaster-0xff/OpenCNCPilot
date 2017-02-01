@@ -19,7 +19,6 @@ namespace LagoVista.GCode.Sender.Application.Controls
             InitializeComponent();
         }
 
-
         public void SetPreviewModel(HeightMap map)
         {
             //map.GetPreviewModel(ModelHeightMapBoundary, ModelHeightMapPoints);
@@ -65,7 +64,13 @@ namespace LagoVista.GCode.Sender.Application.Controls
         }
 
         public static readonly DependencyProperty CurrentJobProperty
-                = DependencyProperty.Register("CurrentJob", typeof(IJobProcessor), typeof(HeightMapControl), new PropertyMetadata(null));
+                = DependencyProperty.Register("CurrentJob", typeof(IJobProcessor), typeof(HeightMapControl), new PropertyMetadata(PropChangeCallback));
+
+        private static void PropChangeCallback(DependencyObject obj, DependencyPropertyChangedEventArgs args)
+        {
+            var ctl = obj as HeightMapControl;
+            ctl.CurrentJob = args.NewValue as IJobProcessor;
+        }
 
         public IJobProcessor CurrentJob
         {
@@ -81,7 +86,14 @@ namespace LagoVista.GCode.Sender.Application.Controls
         }
 
         public static readonly DependencyProperty HeightMapProperty
-            = DependencyProperty.Register("HeightMap", typeof(HeightMap), typeof(HeightMapControl), new PropertyMetadata(null));
+            = DependencyProperty.Register("HeightMap", typeof(HeightMap), typeof(HeightMapControl), new PropertyMetadata(HeightMapChangedCallback));
+
+        public static void  HeightMapChangedCallback(DependencyObject obj, DependencyPropertyChangedEventArgs args)
+        {
+            var ctl = obj as HeightMapControl;
+            ctl.HeightMap = args.NewValue as HeightMap;
+        }
+
 
         public HeightMap HeightMap
         {
