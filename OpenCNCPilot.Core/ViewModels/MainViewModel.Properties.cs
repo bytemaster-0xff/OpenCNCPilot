@@ -9,27 +9,10 @@ namespace LagoVista.GCode.Sender.ViewModels
 {
     public partial class MainViewModel
     {
-        JobControlViewModel _jobControlVM;
-        public JobControlViewModel JobControlVM
-        {
-            get { return _jobControlVM; }
-            set { Set(ref _jobControlVM, value); }
-        }
-
-        MachineControlViewModel _machineControlVM;
-        public MachineControlViewModel MachineControlVM
-        {
-            get { return _machineControlVM; }
-            set { Set(ref _machineControlVM, value); }
-        }
-
-        private ManualSendViewModel _manualSendVM;
-        public ManualSendViewModel ManualSendVM
-        {
-            get { return _manualSendVM; }
-            set { Set(ref _manualSendVM, value); }
-        }
-
+        public JobControlViewModel JobControlVM { get; private set; }
+        public MachineControlViewModel MachineControlVM { get; private set; }
+        public ManualSendViewModel ManualSendVM { get; private set; }
+       
         HeightMap _heightMap;
         public HeightMap HeightMap
         {
@@ -37,8 +20,12 @@ namespace LagoVista.GCode.Sender.ViewModels
             set
             {
                 Set(ref _heightMap, value);
+                HeightMapProbingManager.HeightMap = value;
                 JobControlVM.StartProbeHeightMapCommand.RaiseCanExecuteChanged();
             }
         }
+
+        public Managers.HeightMapProbingManager HeightMapProbingManager { get; private set; }
+
     }
 }

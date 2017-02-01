@@ -37,14 +37,10 @@ namespace LagoVista.GCode.Sender.Application.Controls
             ModelHeightMapPoints.Points.Clear();
         }
 
-        public HeightMapViewModel ViewModel
+        public MainViewModel ViewModel
         {
-            get { return DataContext as HeightMapViewModel; }
+            get { return DataContext as MainViewModel; }
         }
-
-
-
-
 
         public void SetPreviewModel(List<GCodeCommand> commands)
         {

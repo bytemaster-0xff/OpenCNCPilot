@@ -6,7 +6,11 @@ using System.Threading.Tasks;
 
 namespace LagoVista.GCode.Sender.Managers
 {
-    class ToolChangeManager
+    public partial class ToolChangeManager
     {
+        public ToolChangeManager(IMachine machine)
+        {
+            Machine = machine;
+        }
     }
 }

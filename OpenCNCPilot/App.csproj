@@ -113,6 +113,9 @@
     <Compile Include="Controls\MachineResponseControl.xaml.cs">
       <DependentUpon>MachineResponseControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\MachineStatusControl.xaml.cs">
+      <DependentUpon>MachineStatusControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\ScrollListBox.cs" />
     <Compile Include="Converters\ColorConverters.cs" />
     <Compile Include="Converters\GCodeSendStatusTypeConverters.cs" />
@@ -147,6 +150,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\MachineResponseControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\MachineStatusControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

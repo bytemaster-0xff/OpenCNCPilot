@@ -22,41 +22,38 @@ namespace LagoVista.GCode.Sender.ViewModels
 
             EmergencyStopCommand = new RelayCommand(Kill, CanKill);
 
-            Machine.PropertyChanged += _machine_PropertyChanged;         
+            Machine.PropertyChanged += _machine_PropertyChanged;
+            HeightMapProbingManager.PropertyChanged += HeightMapProbingManager_PropertyChanged; 
+        }
+
+        private void RefreshCommandExecuteStatus()
+        {
+            ConnectCommand.RaiseCanExecuteChanged();
+            StartJobCommand.RaiseCanExecuteChanged();
+            StartProbeJobCommand.RaiseCanExecuteChanged();
+            StartProbeHeightMapCommand.RaiseCanExecuteChanged();
+            StopJobCommand.RaiseCanExecuteChanged();
+            PauseJobCommand.RaiseCanExecuteChanged();
+            EmergencyStopCommand.RaiseCanExecuteChanged();
+        }
+
+        private void HeightMapProbingManager_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if(e.PropertyName == nameof(HeightMapProbingManager.HeightMap) ||
+               e.PropertyName == nameof(HeightMapProbingManager.HeightMap.Status))
+            {
+                DispatcherServices.Invoke(RefreshCommandExecuteStatus); 
+            }
         }
 
         private void _machine_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(Machine.Mode) ||
+                e.PropertyName == nameof(Machine.HasJob) ||
                 e.PropertyName == nameof(Machine.IsInitialized) ||
                 e.PropertyName == nameof(Machine.Connected))
             {
-                DispatcherServices.Invoke(() =>
-                {
-                    ConnectCommand.RaiseCanExecuteChanged();
-                    StartJobCommand.RaiseCanExecuteChanged();
-                    StartProbeJobCommand.RaiseCanExecuteChanged();
-                    StartProbeHeightMapCommand.RaiseCanExecuteChanged();
-                    StopJobCommand.RaiseCanExecuteChanged();
-                    PauseJobCommand.RaiseCanExecuteChanged();
-                    EmergencyStopCommand.RaiseCanExecuteChanged();
-                });
-            }
-
-            if(e.PropertyName == nameof(Machine.HasJob))
-            {
-                DispatcherServices.Invoke(() =>
-                {
-                    StartJobCommand.RaiseCanExecuteChanged();
-                });
-            }
-        }
-
-        private void _settings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof(Settings.CurrentSerialPort))
-            {
-                ConnectCommand.RaiseCanExecuteChanged();
+                DispatcherServices.Invoke(RefreshCommandExecuteStatus);
             }
         }
 
@@ -82,7 +79,9 @@ namespace LagoVista.GCode.Sender.ViewModels
         public bool CanProbeHeightMap()
         {
             return Machine.Connected
-                && Machine.Mode == OperatingMode.Manual;
+                && Machine.Mode == OperatingMode.Manual 
+                && HeightMapProbingManager.HeightMap != null
+                && HeightMapProbingManager.HeightMap.Status == Models.HeightMap.HeightMapStatus.Populated;
         }
 
         public bool CanStartProbeHeight()
