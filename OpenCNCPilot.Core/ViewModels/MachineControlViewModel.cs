@@ -4,11 +4,8 @@ namespace LagoVista.GCode.Sender.ViewModels
 {
     public partial class MachineControlViewModel : GCodeAppViewModel
     {
-        public MachineControlViewModel(IMachine machine, Settings settings) : base(machine, settings)
+        public MachineControlViewModel(IMachine machine) : base(machine)
         {
-            XYStep = settings.MediumStepSize;
-            ZStep = settings.MediumStepSize;
-
             InitCommands();
         }
     }

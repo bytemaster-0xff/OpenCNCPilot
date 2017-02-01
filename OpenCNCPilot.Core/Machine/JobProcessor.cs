@@ -36,8 +36,7 @@ namespace LagoVista.GCode.Sender
             if (_started == null)
                 _started = DateTime.Now;
 
-            while (_machine.BufferSpaceAvailable(_file.Commands[Head].MessageLength) &&
-                        Head < _file.Commands.Count)
+            while (Head < _file.Commands.Count && _machine.BufferSpaceAvailable(_file.Commands[Head].MessageLength))
             {
                 _machine.SendCommand(_file.Commands[Head]);
                 _file.Commands[Head++].Status = GCodeCommand.StatusTypes.Sent;
@@ -53,7 +52,15 @@ namespace LagoVista.GCode.Sender
         {
             var sentCommandLength = _file.Commands[Tail].MessageLength;
             _file.Commands[Tail++].Status = GCodeCommand.StatusTypes.Acknowledged;
-            _file.Commands[Tail].StartTimeStamp = DateTime.Now;
+            if (Tail < _file.Commands.Count)
+            {
+                _file.Commands[Tail].StartTimeStamp = DateTime.Now;
+            }
+            else
+            {
+                RaisePropertyChanged(nameof(IsCompleted));
+            }
+
 
             return sentCommandLength;
         }

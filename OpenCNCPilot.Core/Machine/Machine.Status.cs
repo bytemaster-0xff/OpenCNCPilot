@@ -1,5 +1,7 @@
 ﻿using LagoVista.Core.Models.Drawing;
 using LagoVista.Core.PlatformSupport;
+using System;
+using System.Diagnostics;
 
 namespace LagoVista.GCode.Sender
 {
@@ -116,6 +118,8 @@ namespace LagoVista.GCode.Sender
         {
             Services.DispatcherServices.Invoke(() =>
             {
+                Debug.WriteLine($"{DateTime.Now.ToString()}  {type} - {message}");
+
                 Messages.Add(Models.StatusMessage.Create(type, message));
                 RaisePropertyChanged(nameof(MessageCount));
             });

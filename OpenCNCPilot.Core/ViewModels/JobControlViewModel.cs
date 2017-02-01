@@ -8,7 +8,7 @@ namespace LagoVista.GCode.Sender.ViewModels
 {
     public partial class JobControlViewModel : GCodeAppViewModel
     {
-        public JobControlViewModel(IMachine machine, Settings settings) : base(machine, settings)
+        public JobControlViewModel(IMachine machine) : base(machine)
         {
             InitCommands();
         }

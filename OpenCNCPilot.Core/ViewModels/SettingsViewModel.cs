@@ -10,7 +10,7 @@ namespace LagoVista.GCode.Sender.ViewModels
 {
     public partial class SettingsViewModel : GCodeAppViewModel
     {
-        public SettingsViewModel(IMachine machine, Settings settings) : base(machine, settings)
+        public SettingsViewModel(IMachine machine) : base(machine)
         {
 
             InitComamnds();
@@ -24,9 +24,9 @@ namespace LagoVista.GCode.Sender.ViewModels
 
         public override async Task InitAsync()
         {
-            if (Settings.CurrentSerialPort == null)
+            if (Machine.Settings.CurrentSerialPort == null)
             {
-                Settings.CurrentSerialPort = new SerialPortInfo()
+                Machine.Settings.CurrentSerialPort = new SerialPortInfo()
                 {
                     Id = "empty",
                     Name = "-select-"

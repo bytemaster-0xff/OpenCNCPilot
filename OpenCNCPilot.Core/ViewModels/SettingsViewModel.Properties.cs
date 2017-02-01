@@ -13,7 +13,7 @@ namespace LagoVista.GCode.Sender.ViewModels
 
         public String SelectedPortId
         {
-            get { return Settings.CurrentSerialPort.Id; }
+            get { return Machine.Settings.CurrentSerialPort.Id; }
             set
             {
                 var port = SerialPorts.Where(prt => prt.Id == value).FirstOrDefault();
@@ -24,17 +24,16 @@ namespace LagoVista.GCode.Sender.ViewModels
                     port.BaudRate = 115200;
                 }
 
-                Settings.CurrentSerialPort = port;
+                Machine.Settings.CurrentSerialPort = port;
             }
         }
-
 
         public List<String> MachineTypes { get; private set; }
 
         public String MachineType
         {
-            get { return Settings.MachineType.ToString(); }
-            set { Settings.MachineType = (FirmwareTypes)Enum.Parse(typeof(FirmwareTypes), value.Replace(".", "_")); }
+            get { return Machine.Settings.MachineType.ToString().Replace("_","."); }
+            set { Machine.Settings.MachineType = (FirmwareTypes)Enum.Parse(typeof(FirmwareTypes), value.Replace(".", "_")); }
         }
 
         public ObservableCollection<SerialPortInfo> SerialPorts { get; private set; }

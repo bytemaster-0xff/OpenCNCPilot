@@ -20,17 +20,32 @@ namespace LagoVista.GCode.Sender
             }
         }
 
+        private bool _isInitialized = false;
+        public bool IsInitialized
+        {
+            get { return _isInitialized; }
+            set
+            {
+                _isInitialized = value;
+                RaisePropertyChanged();
+            }
+        }
+
+
         public int MessageCount
         {
             get
             {
-                if(Messages == null)
+                if (Messages == null)
                 {
                     return 0;
                 }
 
                 return Messages.Count - 1;
             }
+            set { }
         }
+
+        public Settings Settings { get { return _settings; } }
     }
 }

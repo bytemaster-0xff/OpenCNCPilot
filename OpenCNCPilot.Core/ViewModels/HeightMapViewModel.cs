@@ -10,7 +10,7 @@ namespace LagoVista.GCode.Sender.ViewModels
     {
         HeightMap _currentHeightMap;
 
-        public  HeightMapViewModel(IMachine machine, Settings settings) : base(machine, settings)
+        public  HeightMapViewModel(IMachine machine) : base(machine)
         {         
             InitCommanding();
         }        

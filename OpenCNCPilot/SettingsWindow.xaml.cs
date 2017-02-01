@@ -13,16 +13,21 @@ namespace LagoVista.GCode.Sender.Application
 	/// </summary>
 	public partial class SettingsWindow : Window
 	{
-		public SettingsWindow()
+
+        IMachine _machine;
+
+        public SettingsWindow(IMachine machine)
 		{
-			InitializeComponent();
-            DataContext = new SettingsViewModel(App.Current.Machine, App.Current.Settings);
+            _machine = machine;
+            DataContext = new SettingsViewModel(machine);
+            InitializeComponent();
+            
             Closed += SettingsWindow_Closed;
 		}
 
         private async void SettingsWindow_Closed(object sender, EventArgs e)
         {
-            await App.Current.Settings.SaveAsync();
+            await _machine.Settings.SaveAsync();
         }
 	}
 }

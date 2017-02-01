@@ -46,8 +46,8 @@ namespace LagoVista.GCode.Sender.Application.Controls
 
         public void RefreshToolPosition()
         {
-            ModelTool.Point1 = (App.Current.Machine.WorkPosition + new Vector3(0, 0, 10)).ToPoint3D().ToMedia3D();
-            ModelTool.Point2 = App.Current.Machine.WorkPosition.ToPoint3D().ToMedia3D();
+          //  ModelTool.Point1 = (App.Current.Machine.WorkPosition + new Vector3(0, 0, 10)).ToPoint3D().ToMedia3D();
+          //  ModelTool.Point2 = App.Current.Machine.WorkPosition.ToPoint3D().ToMedia3D();
         }
 
         public bool ModelToolVisible
@@ -65,10 +65,10 @@ namespace LagoVista.GCode.Sender.Application.Controls
             set
             {
                 SetValue(CurrentJobProperty, value);
-                if (value != null)
+              /*  if (value != null)
                     Presentation.HeightMapServices.GetModel(value.Commands, App.Current.Settings, ModelLine, ModelRapid, ModelArc);
                 else
-                    Clear();
+                    Clear();*/
             }
         }
 

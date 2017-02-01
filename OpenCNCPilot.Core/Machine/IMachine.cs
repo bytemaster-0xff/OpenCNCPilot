@@ -19,6 +19,9 @@ namespace LagoVista.GCode.Sender
 
         int BufferState { get;  }
 
+        Task InitAsync();
+
+        bool IsInitialized { get; set; }
 
         Vector3 MachinePosition { get; }
         Vector3 WorkPosition { get; }
@@ -82,5 +85,7 @@ namespace LagoVista.GCode.Sender
         void SendCommand(GCodeCommand cmd);
 
         void AddStatusMessage(StatusMessageTypes type, String message);
+
+        Settings Settings { get; }
     }
 }

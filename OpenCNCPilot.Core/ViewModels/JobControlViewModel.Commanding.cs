@@ -22,13 +22,13 @@ namespace LagoVista.GCode.Sender.ViewModels
 
             EmergencyStopCommand = new RelayCommand(Kill, CanKill);
 
-            Machine.PropertyChanged += _machine_PropertyChanged;
-            Settings.PropertyChanged += _settings_PropertyChanged;
+            Machine.PropertyChanged += _machine_PropertyChanged;         
         }
 
         private void _machine_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(Machine.Mode) ||
+                e.PropertyName == nameof(Machine.IsInitialized) ||
                 e.PropertyName == nameof(Machine.Connected))
             {
                 DispatcherServices.Invoke(() =>
@@ -62,7 +62,7 @@ namespace LagoVista.GCode.Sender.ViewModels
 
         public bool CanChangeConnectionStatus()
         {
-            return Settings.CurrentSerialPort != null && Settings.CurrentSerialPort.Id != "empty";
+            return Machine.IsInitialized &&  Machine.Settings.CurrentSerialPort != null && Machine.Settings.CurrentSerialPort.Id != "empty";
         }
 
         public bool CanStartJob()

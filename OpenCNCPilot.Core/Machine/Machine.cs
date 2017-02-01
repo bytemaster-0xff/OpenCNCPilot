@@ -7,6 +7,7 @@ using LagoVista.Core.Models.Drawing;
 using LagoVista.Core.GCode;
 using System.ComponentModel;
 using LagoVista.GCode.Sender.Util;
+using System.Threading.Tasks;
 
 namespace LagoVista.GCode.Sender
 {
@@ -19,11 +20,16 @@ namespace LagoVista.GCode.Sender
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public Machine(Settings settings)
+        public Machine()
         {
-            _settings = settings;
             Messages = new System.Collections.ObjectModel.ObservableCollection<Models.StatusMessage>();
             AddStatusMessage(StatusMessageTypes.Info, "Startup.");
+        }
+
+        public async Task InitAsync()
+        {
+            _settings = await Settings.LoadAsync();
+            IsInitialized = true;
         }
 
         public void RaisePropertyChanged([CallerMemberName]string propertyName = "")

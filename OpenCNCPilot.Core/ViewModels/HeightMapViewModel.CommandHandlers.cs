@@ -25,10 +25,10 @@ namespace LagoVista.GCode.Sender.ViewModels
 
             Machine.SendLine($"G0X{nextPoint.X.ToString("0.###", Constants.DecimalOutputFormat)}Y{nextPoint.Y.ToString("0.###", Constants.DecimalOutputFormat)}");
 
-            Machine.SendLine($"G38.3Z-{Settings.ProbeMaxDepth.ToString("0.###", Constants.DecimalOutputFormat)}F{Settings.ProbeFeed.ToString("0.#", Constants.DecimalOutputFormat)}");
+            Machine.SendLine($"G38.3Z-{Machine.Settings.ProbeMaxDepth.ToString("0.###", Constants.DecimalOutputFormat)}F{Machine.Settings.ProbeFeed.ToString("0.#", Constants.DecimalOutputFormat)}");
 
             Machine.SendLine("G91");
-            Machine.SendLine($"G0Z{Settings.ProbeMinimumHeight.ToString("0.###", Constants.DecimalOutputFormat)}");
+            Machine.SendLine($"G0Z{Machine.Settings.ProbeMinimumHeight.ToString("0.###", Constants.DecimalOutputFormat)}");
             Machine.SendLine("G90");
         }
 
@@ -43,7 +43,7 @@ namespace LagoVista.GCode.Sender.ViewModels
                 return;
             }
 
-            if (!success && Settings.AbortOnProbeFail)
+            if (!success && Machine.Settings.AbortOnProbeFail)
             {
                 Machine.AddStatusMessage(StatusMessageTypes.FatalError, "Probe Failed! aborting");
                 Machine.ProbeStop();
@@ -56,7 +56,7 @@ namespace LagoVista.GCode.Sender.ViewModels
 
             if (_currentHeightMap.NotProbed.Count == 0)
             {
-                Machine.SendLine($"G0Z{Settings.ProbeSafeHeight.ToString(Constants.DecimalOutputFormat)}");
+                Machine.SendLine($"G0Z{Machine.Settings.ProbeSafeHeight.ToString(Constants.DecimalOutputFormat)}");
                 Machine.ProbeStop();
                 return;
             }
@@ -78,7 +78,7 @@ namespace LagoVista.GCode.Sender.ViewModels
                 return;
 
             Machine.SendLine("G90");
-            Machine.SendLine($"G0Z{Settings.ProbeSafeHeight.ToString("0.###", Constants.DecimalOutputFormat)}");
+            Machine.SendLine($"G0Z{Machine.Settings.ProbeSafeHeight.ToString("0.###", Constants.DecimalOutputFormat)}");
 
             HeightMapProbeNextPoint();
         }

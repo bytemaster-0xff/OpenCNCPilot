@@ -11,6 +11,11 @@ namespace LagoVista.GCode.Sender
     {
         private void ProcessResponseLine(String line)
         {
+            if(String.IsNullOrEmpty(line))
+            {
+                return;
+            }
+
             if (line == "ok")
             {
                 if(CurrentJob != null)
@@ -31,6 +36,10 @@ namespace LagoVista.GCode.Sender
                     AddStatusMessage(StatusMessageTypes.Warning, "Unexpected OK");
                     BufferState = 0;
                 }
+            }
+            else if(line.Contains("endstops"))
+            {
+                AddStatusMessage(StatusMessageTypes.FatalError, line);
             }
             else if (line != null)
             {

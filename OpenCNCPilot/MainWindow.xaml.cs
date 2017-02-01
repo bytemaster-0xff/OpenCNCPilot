@@ -14,30 +14,34 @@ namespace LagoVista.GCode.Sender.Application
 	{        
 		public MainWindow()
 		{
+            ViewModel = new MainViewModel();
+            DataContext = ViewModel;
 			InitializeComponent();
             this.Loaded += MainWindow_Loaded;
 		}
 
         private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            await App.Current.InitAsync();
-
+            await ViewModel.InitAsync();
             await GrblErrorProvider.InitAsync();
 
-            DataContext = new MainViewModel(App.Current.Machine, App.Current.Settings);            
         }
 	
         private void SettingsMenu_Click(object sender, RoutedEventArgs e)
         {
-            new SettingsWindow().ShowDialog();
+            new SettingsWindow(ViewModel.Machine).ShowDialog();
         }
 
         private async void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            if(App.Current.Machine.Connected)
-            {
-                await App.Current.Machine.DisconnectAsync();
-            }
+            await ViewModel.Machine.DisconnectAsync();
+        }
+
+        MainViewModel _viewModel;
+        public MainViewModel ViewModel
+        {
+            get { return _viewModel; }
+            set { _viewModel = value; }
         }
 
         private void NewHeigtMap_Click(object sender, RoutedEventArgs e)
@@ -46,7 +50,7 @@ namespace LagoVista.GCode.Sender.Application
             if (vm.HeightMapVM.CurrentHeightMap == null)
                 vm.HeightMapVM.CurrentHeightMap = new Models.HeightMap();
 
-            new NewHeightMapWindow(vm.HeightMapVM.CurrentHeightMap).ShowDialog();
+            new NewHeightMapWindow(ViewModel.Machine, vm.HeightMapVM.CurrentHeightMap).ShowDialog();
         }
     }
 }

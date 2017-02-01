@@ -6,16 +6,18 @@ namespace LagoVista.GCode.Sender.ViewModels
     public class GCodeAppViewModel : ViewModelBase
     {
         private IMachine _machine;
-        private Settings _settings;
 
-        public GCodeAppViewModel(IMachine machine, Settings settings)
+        public GCodeAppViewModel(IMachine machine)
         {
-            _settings = settings;
             _machine = machine;
         }
 
-        public IMachine Machine { get { return _machine; } }
-        public Settings Settings { get { return _settings; } }
+        public GCodeAppViewModel()
+        {
+
+        }
+
+        public IMachine Machine { get { return _machine; } set { _machine = value; } }
 
         public void AssertInManualMode(Action action)
         {

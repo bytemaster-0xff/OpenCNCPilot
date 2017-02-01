@@ -47,7 +47,7 @@ namespace LagoVista.GCode.Sender.ViewModels
         {
             if (Machine.HasJob)
             {
-                var result = await Popups.PromptForDoubleAsync("Convert Line to Arch", Settings.ArcToLineSegmentLength, "Enter Arc Width", true);
+                var result = await Popups.PromptForDoubleAsync("Convert Line to Arch", Machine.Settings.ArcToLineSegmentLength, "Enter Arc Width", true);
                 if (result.HasValue)
                     Machine.CurrentJob.ArcToLines(result.Value);
             }
@@ -72,7 +72,7 @@ namespace LagoVista.GCode.Sender.ViewModels
 
         public async void OpenHeightMapFile(object instance)
         {
-            var heightMap = await HeightMap.OpenAsync(Settings);
+            var heightMap = await HeightMap.OpenAsync(Machine.Settings);
             if (heightMap != null)
             {
                 _heightMapVieModel.CurrentHeightMap = heightMap;

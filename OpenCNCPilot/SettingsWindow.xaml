@@ -64,24 +64,24 @@
 
                 <Label Grid.Row="1" Content="Serial Port" HorizontalAlignment="Left"  VerticalAlignment="Top"/>
 
-                <TextBox Grid.Row="2"  Text="{Binding Settings.CurrentSerialPort.BaudRate, Mode=TwoWay}" />
+                <TextBox Grid.Row="2"  Text="{Binding Machine.Settings.CurrentSerialPort.BaudRate, Mode=TwoWay}" />
                 <Label  IsEnabled="{Binding CanChangeMachineConfig}"
                         Content="BaudRate" Grid.Row="2" />
 
-                <TextBox  Text="{Binding Settings.ControllerBufferSize, Mode=TwoWay}" Grid.Row="4"/>
+                <TextBox  Text="{Binding Machine.Settings.ControllerBufferSize, Mode=TwoWay}" Grid.Row="4"/>
                 <Label Content="Controller Buffer" Grid.Row="4"  />
 
-                <TextBox Text="{Binding Settings.StatusPollIntervalIdle}" Grid.Row="5"/>
+                <TextBox Text="{Binding Machine.Settings.StatusPollIntervalIdle}" Grid.Row="5"/>
                 <Label Content="Idle Status Poll Interval (ms)" Grid.Row="5" />
                 
-                <TextBox  Text="{Binding Settings.StatusPollIntervalRunning}" Grid.Row="6"/>
+                <TextBox  Text="{Binding Machine.Settings.StatusPollIntervalRunning}" Grid.Row="6"/>
                 <Label Content="Running Status Poll Interval (ms)" Grid.Row="6"  />
             </Grid>
         </TabItem>
 
         <TabItem Header="Viewport">
             <Grid>
-                <TextBox Margin="10,10,0,0" Text="{Binding Settings.ViewportArcSplit, Mode=TwoWay}"/>
+                <TextBox Margin="10,10,0,0" Text="{Binding Machine.Settings.ViewportArcSplit, Mode=TwoWay}"/>
                 <Label Content="preview arc segment length (mm)" HorizontalAlignment="Left" Margin="135,9,0,0" VerticalAlignment="Top"/>
 
                 <CheckBox Content="Preview Toolpath" HorizontalAlignment="Left" Margin="116,40,0,0" VerticalAlignment="Top" IsChecked="{Binding Settings.EnableCodePreview, Mode=TwoWay}"/>
@@ -90,18 +90,18 @@
 
         <TabItem Header="Probing">
             <Grid>
-                <TextBox Margin="10,10,0,0" Text="{Binding Settings.ProbeFeed, Mode=TwoWay}"/>
+                <TextBox Margin="10,10,0,0" Text="{Binding Machine.Settings.ProbeFeed, Mode=TwoWay}"/>
                 <Label Content="Probe Plunge Feedrate (mm/min)" HorizontalAlignment="Left" Margin="135,9,0,0" VerticalAlignment="Top"/>
 
                 <CheckBox Content="Abort on Probe Fail" HorizontalAlignment="Left" Margin="116,40,0,0" VerticalAlignment="Top" IsChecked="{Binding Settings.AbortOnProbeFail, Mode=TwoWay}"/>
 
-                <TextBox Margin="10,61,0,0" Text="{Binding Settings.ProbeSafeHeight, Mode=TwoWay}"/>
+                <TextBox Margin="10,61,0,0" Text="{Binding Machine.Settings.ProbeSafeHeight, Mode=TwoWay}"/>
                 <Label Content="Safe Height (mm)" HorizontalAlignment="Left" Margin="135,60,0,0" VerticalAlignment="Top"/>
 
-                <TextBox Margin="10,89,0,0" Text="{Binding Settings.ProbeMinimumHeight, Mode=TwoWay}" ToolTip="This height will be added to the height of the last probe point to prevent crashes on highly tilted surfaces"/>
+                <TextBox Margin="10,89,0,0" Text="{Binding Machine.Settings.ProbeMinimumHeight, Mode=TwoWay}" ToolTip="This height will be added to the height of the last probe point to prevent crashes on highly tilted surfaces"/>
                 <Label Content="Minimum Height (mm)" HorizontalAlignment="Left" Margin="135,88,0,0" VerticalAlignment="Top"/>
 
-                <TextBox Margin="10,117,0,0" Text="{Binding Settings.ProbeMaxDepth, Mode=TwoWay}"/>
+                <TextBox Margin="10,117,0,0" Text="{Binding Machine.Settings.ProbeMaxDepth, Mode=TwoWay}"/>
                 <Label Content="Max Depth (mm)" HorizontalAlignment="Left" Margin="135,116,0,0" VerticalAlignment="Top"/>
             </Grid>
         </TabItem>

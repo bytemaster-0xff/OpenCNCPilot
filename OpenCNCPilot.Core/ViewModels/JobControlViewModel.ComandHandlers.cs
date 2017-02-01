@@ -51,15 +51,13 @@ namespace LagoVista.GCode.Sender.ViewModels
             }
             else
             {
-                if (Settings.CurrentSerialPort.Name == "Simulated")
+                if (Machine.Settings.CurrentSerialPort.Name == "Simulated")
                 {
-                    await Machine.ConnectAsync(new SimulatedMachine(Settings.MachineType));
+                    await Machine.ConnectAsync(new SimulatedMachine(Machine.Settings.MachineType));
                 }
                 else
                 {
-                    var port = DeviceManager.CreateSerialPort(Settings.CurrentSerialPort);
-                    var stream = await port.OpenAsync();
-                    await Machine.ConnectAsync(port);
+                    await Machine.ConnectAsync(DeviceManager.CreateSerialPort(Machine.Settings.CurrentSerialPort));
                 }
             }
         }
