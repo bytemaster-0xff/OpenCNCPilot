@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Controls;
 using System.Windows;
-
+using LagoVista.GCode.Sender.ViewModels;
 
 namespace LagoVista.GCode.Sender.Application.Controls
 {
@@ -18,7 +18,7 @@ namespace LagoVista.GCode.Sender.Application.Controls
         {
             InitializeComponent();
         }
-        
+
 
         public void SetPreviewModel(HeightMap map)
         {
@@ -38,6 +38,14 @@ namespace LagoVista.GCode.Sender.Application.Controls
             ModelHeightMapPoints.Points.Clear();
         }
 
+        public HeightMapViewModel ViewModel
+        {
+            get { return DataContext as HeightMapViewModel; }
+        }
+
+
+
+
 
         public void SetPreviewModel(List<GCodeCommand> commands)
         {
@@ -46,8 +54,8 @@ namespace LagoVista.GCode.Sender.Application.Controls
 
         public void RefreshToolPosition()
         {
-          //  ModelTool.Point1 = (App.Current.Machine.WorkPosition + new Vector3(0, 0, 10)).ToPoint3D().ToMedia3D();
-          //  ModelTool.Point2 = App.Current.Machine.WorkPosition.ToPoint3D().ToMedia3D();
+            //  ModelTool.Point1 = (App.Current.Machine.WorkPosition + new Vector3(0, 0, 10)).ToPoint3D().ToMedia3D();
+            //  ModelTool.Point2 = App.Current.Machine.WorkPosition.ToPoint3D().ToMedia3D();
         }
 
         public bool ModelToolVisible
@@ -65,10 +73,10 @@ namespace LagoVista.GCode.Sender.Application.Controls
             set
             {
                 SetValue(CurrentJobProperty, value);
-              /*  if (value != null)
-                    Presentation.HeightMapServices.GetModel(value.Commands, App.Current.Settings, ModelLine, ModelRapid, ModelArc);
+                if (value != null)
+                    Presentation.HeightMapServices.GetModel(value.Commands, ViewModel.Machine.Settings.ViewportArcSplit, ModelLine, ModelRapid, ModelArc);
                 else
-                    Clear();*/
+                    Clear();
             }
         }
 

@@ -104,7 +104,7 @@ namespace LagoVista.GCode.Sender.Application.Presentation
             border.Points = b;
         }
 
-        public static void GetModel(IEnumerable<GCodeCommand> toolPath, Settings settings, LinesVisual3D line, LinesVisual3D rapid, LinesVisual3D arc)
+        public static void GetModel(IEnumerable<GCodeCommand> toolPath, double viewPortArcSplit, LinesVisual3D line, LinesVisual3D rapid, LinesVisual3D arc)
         {  
             Point3DCollection linePoints = new Point3DCollection();
             Point3DCollection rapidPoints = new Point3DCollection();
@@ -133,7 +133,7 @@ namespace LagoVista.GCode.Sender.Application.Presentation
 
                 if (a != null)
                 {
-                    foreach (GCodeMotion sub in a.Split(settings.ViewportArcSplit))
+                    foreach (GCodeMotion sub in a.Split(viewPortArcSplit))
                     {
                         arcPoints.Add(sub.Start.ToPoint3D().ToMedia3D());
                         arcPoints.Add(sub.End.ToPoint3D().ToMedia3D());

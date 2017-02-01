@@ -32,12 +32,13 @@ namespace LagoVista.GCode.Sender.ViewModels
             set { HeightMap.Max = new Core.Models.Drawing.Vector2( HeightMap.Max.X, value); }
         }
 
-        private double _gridSize;
         public double GridSize
         {
-            get { return _gridSize; }
-            set { _gridSize = value; }
+            get { return HeightMap.GridSize; }
+            set { HeightMap.GridSize = value; }
         }
+
+
 
     }
 }

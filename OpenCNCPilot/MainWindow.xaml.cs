@@ -50,7 +50,7 @@ namespace LagoVista.GCode.Sender.Application
             if (vm.HeightMapVM.CurrentHeightMap == null)
                 vm.HeightMapVM.CurrentHeightMap = new Models.HeightMap();
 
-            new NewHeightMapWindow(ViewModel.Machine, vm.HeightMapVM.CurrentHeightMap).ShowDialog();
+            new NewHeightMapWindow(this, ViewModel.Machine, vm.HeightMapVM.CurrentHeightMap).ShowDialog();
         }
     }
 }
