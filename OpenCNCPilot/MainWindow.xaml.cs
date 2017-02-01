@@ -47,10 +47,13 @@ namespace LagoVista.GCode.Sender.Application
         private void NewHeigtMap_Click(object sender, RoutedEventArgs e)
         {
             var vm = DataContext as MainViewModel;
-            if (vm.HeightMapVM.CurrentHeightMap == null)
-                vm.HeightMapVM.CurrentHeightMap = new Models.HeightMap();
-
-            new NewHeightMapWindow(this, ViewModel.Machine, vm.HeightMapVM.CurrentHeightMap).ShowDialog();
+            
+           var newHeightMapWindow = new NewHeightMapWindow(this, ViewModel.Machine);
+           
+            if(newHeightMapWindow.ShowDialog().HasValue && newHeightMapWindow.DialogResult.Value)
+            {
+                ViewModel.HeightMapVM.HeightMap = newHeightMapWindow.HeightMap;
+            }
         }
     }
 }

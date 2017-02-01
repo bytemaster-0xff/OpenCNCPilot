@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LagoVista.GCode.Sender.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,13 +9,6 @@ namespace LagoVista.GCode.Sender.ViewModels
 {
     public partial class MainViewModel
     {
-        HeightMapViewModel _heightMapVieModel;
-        public HeightMapViewModel HeightMapVM
-        {
-            get { return _heightMapVieModel; }
-            set { Set(ref _heightMapVieModel, value); }
-        }
-
         JobControlViewModel _jobControlVM;
         public JobControlViewModel JobControlVM
         {
@@ -34,6 +28,17 @@ namespace LagoVista.GCode.Sender.ViewModels
         {
             get { return _manualSendVM; }
             set { Set(ref _manualSendVM, value); }
+        }
+
+        HeightMap _heightMap;
+        public HeightMap HeightMap
+        {
+            get { return _heightMap; }
+            set
+            {
+                Set(ref _heightMap, value);
+                JobControlVM.StartProbeHeightMapCommand.RaiseCanExecuteChanged();
+            }
         }
     }
 }

@@ -62,7 +62,7 @@ namespace LagoVista.GCode.Sender.ViewModels
        
         public bool CanApplyHeightMap()
         {
-            return Machine.HasJob && HeightMapVM.CurrentHeightMap != null;
+            return Machine.HasJob && HeightMapVM.HeightMap != null;
         }
 
         private bool CanPerformFileOperation(Object instance)
@@ -72,7 +72,7 @@ namespace LagoVista.GCode.Sender.ViewModels
 
         public bool CanClearHeightMap()
         {
-            return HeightMapVM.CurrentHeightMap != null;
+            return HeightMapVM.HeightMap != null;
         }
 
         public RelayCommand SetImperialUnitsCommand { get; private set; }

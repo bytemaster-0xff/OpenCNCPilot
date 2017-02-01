@@ -190,6 +190,8 @@ namespace LagoVista.GCode.Sender
                     return;
                 }
 
+                AddStatusMessage(StatusMessageTypes.Info, "Probe Height Map Started.");
+
                 Mode = OperatingMode.ProbingHeightMap;
             }
         }
@@ -200,9 +202,11 @@ namespace LagoVista.GCode.Sender
             {
                 if (Mode != OperatingMode.ProbingHeightMap)
                 {
-                    AddStatusMessage(StatusMessageTypes.Warning, "Not in Probe Mode");
+                    AddStatusMessage(StatusMessageTypes.Warning, "Not in Probe Mode.");
                     return;
                 }
+
+                AddStatusMessage(StatusMessageTypes.Info, "Probe Height Map Completed.");
 
                 Mode = OperatingMode.Manual;
             }

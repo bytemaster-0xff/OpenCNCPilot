@@ -66,6 +66,10 @@
       <DependentUpon>Machine.cs</DependentUpon>
     </Compile>
     <Compile Include="Machine\SimulatedMachine.cs" />
+    <Compile Include="Managers\HeightMapProbingManager.Actions.cs" />
+    <Compile Include="Managers\HeightMapProbingManager.cs" />
+    <Compile Include="Managers\HeightMapProbingManager.Properties.cs" />
+    <Compile Include="Managers\IHeightMapProbingManager.cs" />
     <Compile Include="Models\HeightMap.cs" />
     <Compile Include="Models\HeightMap.Math.cs">
       <DependentUpon>HeightMap.cs</DependentUpon>
@@ -79,16 +83,6 @@
     <Compile Include="Models\PCBoard.cs" />
     <Compile Include="Models\StatusMessage.cs" />
     <Compile Include="ViewModels\GCodeAppViewModel.cs" />
-    <Compile Include="ViewModels\HeightMapViewModel.CommandHandlers.cs">
-      <DependentUpon>HeightMapViewModel.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ViewModels\HeightMapViewModel.Commanding.cs">
-      <DependentUpon>HeightMapViewModel.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ViewModels\HeightMapViewModel.cs" />
-    <Compile Include="ViewModels\HeightMapViewModel.Properties.cs">
-      <DependentUpon>HeightMapViewModel.cs</DependentUpon>
-    </Compile>
     <Compile Include="ViewModels\JobControlViewModel.ComandHandlers.cs">
       <DependentUpon>JobControlViewModel.cs</DependentUpon>
     </Compile>

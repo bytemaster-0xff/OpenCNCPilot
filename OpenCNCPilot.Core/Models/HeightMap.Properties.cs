@@ -6,6 +6,13 @@ namespace LagoVista.GCode.Sender.Models
 {
     public partial class HeightMap
     {
+        public enum HeightMapStatus
+        {
+            NotPopulated,
+            Populating,
+            Populated,
+        }
+
         public double?[,] Points { get; set; }
 
 
@@ -39,6 +46,17 @@ namespace LagoVista.GCode.Sender.Models
             {
                 Set(ref _gridSize, value);
                 Refresh();
+            }
+        }
+
+        HeightMapStatus _status = HeightMapStatus.NotPopulated;
+        public HeightMapStatus Status
+        {
+            get { return _status; }
+            set
+            {
+                _status = value;
+                RaisePropertyChanged();
             }
         }
 

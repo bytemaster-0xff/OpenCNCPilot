@@ -40,7 +40,7 @@ namespace LagoVista.GCode.Sender.ViewModels
 
         public void ClearHeightMap()
         {
-            HeightMapVM.CurrentHeightMap = null;
+            HeightMap = null;
         }
 
         public async void ArcToLine()
@@ -55,9 +55,9 @@ namespace LagoVista.GCode.Sender.ViewModels
 
         public void ApplyHeightMap()
         {
-            if (Machine.HasJob && HeightMapVM.CurrentHeightMap != null)
+            if (Machine.HasJob && HeightMap != null)
             {
-                Machine.CurrentJob.ApplyHeightMap(HeightMapVM.CurrentHeightMap);
+                Machine.CurrentJob.ApplyHeightMap(HeightMap);
             }
         }
 
@@ -75,7 +75,7 @@ namespace LagoVista.GCode.Sender.ViewModels
             var heightMap = await HeightMap.OpenAsync(Machine.Settings);
             if (heightMap != null)
             {
-                _heightMapVieModel.CurrentHeightMap = heightMap;
+                HeightMap = heightMap;
             }
         }
 
