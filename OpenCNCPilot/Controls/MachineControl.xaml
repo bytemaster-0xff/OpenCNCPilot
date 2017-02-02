@@ -8,16 +8,8 @@
              mc:Ignorable="d" 
              Background="Gray"
              d:DesignHeight="800" d:DesignWidth="300">
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
-        </Grid.RowDefinitions>
-
-
-
-        <Grid Grid.Row="1" Background="Black">
+    <StackPanel>
+        <Grid  Background="Black">
             <Grid Margin="4">
                 <Grid.Resources>
                     <Style TargetType="TextBlock" >
@@ -70,48 +62,113 @@
                 <Button Content="All" Grid.Column="4" Grid.Row="4" Command="{Binding ResetCommand}" CommandParameter="{x:Static vm:MachineControlViewModel+Reset.All}" />
             </Grid>
         </Grid>
-        <Grid Margin="3" Grid.Row="2">
+
+        <Grid Grid.ColumnSpan="4" Margin="0,30,0,30" >
+            <Grid.Resources>
+                <Style TargetType="Button" x:Key="JogSize">
+                    <Setter Property="Width" Value="48" />
+                    <Setter Property="Height" Value="48" />
+                </Style>
+            </Grid.Resources>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="40" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="50" />
+                <ColumnDefinition Width="100" />
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="Jog Feed Rate" Grid.ColumnSpan="3" FontSize="24" Margin="4" />
+            <TextBlock Text="XY" Grid.Row="2" FontSize="16" Margin="8,4,4,4" />
+            <TextBlock Text="Z" Grid.Row="3" FontSize="16" Margin="8,4,4,4"/>
+            <Slider Grid.Row="2" Grid.Column="1" Minimum="0.001" Maximum="20" Value="{Binding XYStep, Mode=TwoWay}" VerticalAlignment="Center"  />
+            <Slider Grid.Row="3" Grid.Column="1" Minimum="0.001" Maximum="20" Value="{Binding ZStep, Mode=TwoWay}"  VerticalAlignment="Center" />
+            <TextBlock Text="{Binding XYStep, FallbackValue=0.5, StringFormat=0.00}" Grid.Row="2" Grid.Column="2" FontSize="16" Margin="4"  TextAlignment="Right"/>
+            <TextBlock Text="{Binding ZStep, FallbackValue=0.5, StringFormat=0.00}" Grid.Row="3" Grid.Column="2" FontSize="16" Margin="4" TextAlignment="Right" />
+            
+            <ComboBox IsReadOnly="True" Grid.Column="4" Grid.Row="2" Margin="4" FontSize="16" >
+                <ComboBoxItem >0.01 - 0.1</ComboBoxItem>
+                <ComboBoxItem>0.1 - 1.0</ComboBoxItem>
+                <ComboBoxItem>1 - 10</ComboBoxItem>
+                <ComboBoxItem>10 - 50</ComboBoxItem>
+            </ComboBox>
+            <ComboBox IsReadOnly="True" Grid.Column="4" Grid.Row="3" Margin="4" FontSize="16">
+                <ComboBoxItem >0.01 - 0.1</ComboBoxItem>
+                <ComboBoxItem>0.1 - 1.0</ComboBoxItem>
+                <ComboBoxItem>1 - 10</ComboBoxItem>
+                <ComboBoxItem>10 - 50</ComboBoxItem>
+            </ComboBox>
+
+        </Grid>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="48" />
+                <ColumnDefinition Width="48" />
+                <ColumnDefinition Width="48" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="48" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
             <Grid.Resources>
                 <Style TargetType="Button" x:Key="JogArrow">
                     <Setter Property="Width" Value="48" />
                     <Setter Property="Height" Value="48" />
                     <Setter Property="BorderBrush" Value="Transparent" />
+                    <Setter Property="Foreground" Value="Red" />
                     <Setter Property="Template">
                         <Setter.Value>
                             <ControlTemplate TargetType="{x:Type Button}">
-                                <Grid>
-                                    <Ellipse Stroke="{TemplateBinding BorderBrush}">
-                                        <VisualStateManager.VisualStateGroups>
-                                            <VisualStateGroup Name="CommonStates">
-                                                <VisualState Name="Normal" />
-                                                <VisualState Name="MouseOver" >
+                                <Grid x:Name="BtnContainer">
+                                    <VisualStateManager.VisualStateGroups>
+                                        <VisualStateGroup Name="CommonStates">
+                                            <VisualState Name="Normal" />
+                                            <VisualState Name="MouseOver" >
+                                                <Storyboard>
+                                                    <ColorAnimation Storyboard.TargetName="EllipseFill" 
+                                                            Storyboard.TargetProperty="Color"
+                                                            Duration="0:0:0.25"
+                                                            To="Silver"/>
+                                                </Storyboard>
+                                            </VisualState>
+                                            <VisualState Name="Pressed" >
+                                                <Storyboard>
+                                                    <ColorAnimation Storyboard.TargetName="EllipseFill" 
+                                                            Storyboard.TargetProperty="Color"
+                                                            Duration="0:0:0.25"
+                                                            To="DarkGray"/>
+                                                </Storyboard>
+                                            </VisualState>
+                                            <VisualState Name="Disabled">
+                                                <Storyboard>
                                                     <Storyboard>
                                                         <ColorAnimation Storyboard.TargetName="EllipseFill" 
                                                             Storyboard.TargetProperty="Color"
-                                                            To="Yellow"/>
+                                                            Duration="0:0:0.25"
+                                                            To="Gray"/>
+                                                        <DoubleAnimation Storyboard.TargetName="BtnContainer" 
+                                                                         Storyboard.TargetProperty="Opacity"
+                                                                         Duration="0:0:0.25"
+                                                                         To="0.25" />
+                                                    </Storyboard>
+                                                </Storyboard>
+                                            </VisualState>
+                                        </VisualStateGroup>
+                                    </VisualStateManager.VisualStateGroups>
 
-                                                    </Storyboard>
-                                                </VisualState>
-                                                <VisualState Name="Pressed" >
-                                                    <Storyboard>
-                                                        <ColorAnimation Storyboard.TargetName="EllipseFill" 
-                                                            Storyboard.TargetProperty="Color"
-                                                            To="Green"/>
-                                                    </Storyboard>
-                                                </VisualState>
-                                                <VisualState Name="Disabled">
-                                                    <Storyboard>
-                                                        <Storyboard>
-                                                            <ColorAnimation Storyboard.TargetName="EllipseFill" 
-                                                            Storyboard.TargetProperty="Color"
-                                                            To="Blue"/>
-                                                        </Storyboard>
-                                                    </Storyboard>
-                                                </VisualState>
-                                            </VisualStateGroup>
-                                        </VisualStateManager.VisualStateGroups>
+                                    <Ellipse Stroke="{TemplateBinding BorderBrush}">
                                         <Ellipse.Fill>
-                                            <SolidColorBrush x:Name="EllipseFill" Color="DarkGray" />
+                                            <SolidColorBrush x:Name="EllipseFill" Color="Gray" />
                                         </Ellipse.Fill>
                                     </Ellipse>
                                     <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
@@ -119,91 +176,38 @@
                             </ControlTemplate>
                         </Setter.Value>
                     </Setter>
-
-                </Style>
-                <Style TargetType="Button" x:Key="JogSize">
-                    <Setter Property="Width" Value="48" />
-                    <Setter Property="Height" Value="48" />
                 </Style>
             </Grid.Resources>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="auto"  />
-                <RowDefinition Height="auto"  />
-                <RowDefinition Height="auto"  />
-                <RowDefinition Height="auto"  />
-                <RowDefinition Height="auto"  />
-                <RowDefinition Height="auto"  />
-                <RowDefinition Height="auto"  />
-            </Grid.RowDefinitions>
-
-            <Grid Grid.ColumnSpan="4" Margin="0,30,0,30" >
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="auto" />
-                    <RowDefinition Height="auto" />
-                    <RowDefinition Height="auto" />
-                    <RowDefinition Height="auto" />
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="60" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="60" />
-                </Grid.ColumnDefinitions>
-                <Grid Grid.ColumnSpan="4" Grid.Row="1" >
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <Button Content="[-]" Grid.Column="0" Style="{StaticResource JogSize}" />
-                    <Button Content="[--]" Grid.Column="1" Style="{StaticResource JogSize}" />
-                    <Button Content="[---]" Grid.Column="2" Style="{StaticResource JogSize}" />
-                    <Button Content="[------]" Grid.Column="3" Style="{StaticResource JogSize}" />
-                </Grid>
-                <TextBlock Text="Jog Feed Rate" Grid.ColumnSpan="3" />
-                <TextBlock Text="XY" Grid.Row="2" />
-                <TextBlock Text="Z" Grid.Row="3" />
-                <Slider Grid.Row="2" Grid.Column="1" Minimum="0.001" Maximum="20" Value="{Binding XYStep, Mode=TwoWay}" />
-                <Slider Grid.Row="3" Grid.Column="1" Minimum="0.001" Maximum="20" Value="{Binding ZStep, Mode=TwoWay}"/>
-                <TextBlock Text="{Binding XYStep, FallbackValue=0.5}" Grid.Row="2" Grid.Column="2" />
-                <TextBlock Text="{Binding ZStep, FallbackValue=0.5}" Grid.Row="3" Grid.Column="2" />
-            </Grid>
-            <Button Style="{StaticResource JogArrow}"  Grid.Row="1" Grid.Column="1"  Command="{Binding JogCommand}" CommandParameter="{x:Static vm:MachineControlViewModel+JogDirections.YPlus}">
+            <Button Style="{StaticResource JogArrow}"  Grid.Row="0" Grid.Column="2"  Command="{Binding JogCommand}" CommandParameter="{x:Static vm:MachineControlViewModel+JogDirections.YPlus}">
                 <Button.Content>
-                    <fa:ImageAwesome Icon="ArrowCircleUp" />
+                    <fa:ImageAwesome  Icon="ArrowCircleUp" />
                 </Button.Content>
             </Button>
-            <Button Style="{StaticResource JogArrow}"  Grid.Row="2" Grid.Column="0"   Command="{Binding JogCommand}" CommandParameter="{x:Static vm:MachineControlViewModel+JogDirections.XMinus}">
+            <Button Style="{StaticResource JogArrow}"  Grid.Row="1" Grid.Column="1"   Command="{Binding JogCommand}" CommandParameter="{x:Static vm:MachineControlViewModel+JogDirections.XMinus}">
                 <Button.Content>
                     <fa:ImageAwesome Icon="ArrowCircleLeft" />
                 </Button.Content>
             </Button>
-            <Button Style="{StaticResource JogArrow}"  Grid.Row="2" Grid.Column="2"  Command="{Binding JogCommand}" CommandParameter="{x:Static vm:MachineControlViewModel+JogDirections.XPlus}">
+            <Button Style="{StaticResource JogArrow}"  Grid.Row="1" Grid.Column="3"  Command="{Binding JogCommand}" CommandParameter="{x:Static vm:MachineControlViewModel+JogDirections.XPlus}">
                 <Button.Content>
                     <fa:ImageAwesome Icon="ArrowCircleRight" />
                 </Button.Content>
             </Button>
-            <Button Style="{StaticResource JogArrow}" BorderBrush="Transparent" Grid.Row="3" Grid.Column="1"  Command="{Binding JogCommand}" CommandParameter="{x:Static vm:MachineControlViewModel+JogDirections.YMinus}">
+            <Button Style="{StaticResource JogArrow}" Grid.Row="2" Grid.Column="2"  Command="{Binding JogCommand}" CommandParameter="{x:Static vm:MachineControlViewModel+JogDirections.YMinus}">
                 <Button.Content>
                     <fa:ImageAwesome Icon="ArrowCircleDown" />
                 </Button.Content>
             </Button>
-            <Button Style="{StaticResource JogArrow}" Grid.Row="1" Grid.Column="4">
+            <Button Style="{StaticResource JogArrow}" Grid.Row="0" Grid.Column="5" Command="{Binding JogCommand}" CommandParameter="{x:Static vm:MachineControlViewModel+JogDirections.ZPlus}">
                 <Button.Content>
                     <fa:ImageAwesome Icon="ArrowCircleUp" />
                 </Button.Content>
             </Button>
-            <Button Style="{StaticResource JogArrow}"  Grid.Row="3" Grid.Column="4">
+            <Button Style="{StaticResource JogArrow}"  Grid.Row="2" Grid.Column="5" Command="{Binding JogCommand}" CommandParameter="{x:Static vm:MachineControlViewModel+JogDirections.ZMinus}">
                 <Button.Content>
                     <fa:ImageAwesome Icon="ArrowCircleDown" />
                 </Button.Content>
             </Button>
         </Grid>
-    </Grid>
+    </StackPanel>
 </UserControl>

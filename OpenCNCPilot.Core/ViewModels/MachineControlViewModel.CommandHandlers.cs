@@ -7,7 +7,7 @@ namespace LagoVista.GCode.Sender.ViewModels
         {
             Machine.CycleStart();
         }
-        
+
         public void SoftReset()
         {
             Machine.SoftReset();
@@ -25,10 +25,10 @@ namespace LagoVista.GCode.Sender.ViewModels
 
         public void Jog(JogDirections direction)
         {
-            /*            switch (direction)
-                        {
+            switch (direction)
+            {
 
-                        }*/
+            }
         }
 
         public void ResetAxis(Reset axis)

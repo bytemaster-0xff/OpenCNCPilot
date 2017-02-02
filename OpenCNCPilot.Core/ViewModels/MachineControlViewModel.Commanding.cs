@@ -15,6 +15,22 @@ namespace LagoVista.GCode.Sender.ViewModels
             CycleStartCommand = new RelayCommand(CycleStart, CanCycleStart);
 
             SetMicroStepSizeCommand = new RelayCommand((param) => SetStepSize((Axis)param, MicroStepModes.Micro));
+
+            Machine.PropertyChanged += Machine_PropertyChanged;
+        }
+
+        private void Machine_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if(e.PropertyName == nameof(Machine.Connected) ||
+               e.PropertyName == nameof(Machine.Mode))
+            {
+                SoftResetCommand.RaiseCanExecuteChanged();
+                ClearAlarmCommand.RaiseCanExecuteChanged();
+                FeedHoldCommand.RaiseCanExecuteChanged();
+                CycleStartCommand.RaiseCanExecuteChanged();
+                JogCommand.RaiseCanExecuteChanged();
+                ResetCommand.RaiseCanExecuteChanged();
+            }
         }
 
         public bool CanResetAxis(object param)
