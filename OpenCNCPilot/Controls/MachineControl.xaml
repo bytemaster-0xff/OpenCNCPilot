@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:fa="http://schemas.fontawesome.io/icons/"
-             xmlns:vm="clr-namespace:LagoVista.GCode.Sender.ViewModels;assembly=LagoVista.GCode.Sender"
+             xmlns:sndr="clr-namespace:LagoVista.GCode.Sender;assembly=LagoVista.GCode.Sender"
              mc:Ignorable="d" 
              Background="Gray"
              d:DesignHeight="800" d:DesignWidth="300">
@@ -56,10 +56,10 @@
                 <TextBlock Text="{Binding Machine.WorkPosition.Y, StringFormat=0.000, FallbackValue=18.287}" Style="{StaticResource Position}" Grid.Row="2" Grid.Column="2" />
                 <TextBlock Text="{Binding Machine.WorkPosition.Z, StringFormat=0.000, FallbackValue=8.042}" Style="{StaticResource Position}" Grid.Row="3" Grid.Column="2" />
 
-                <Button Content="X" Grid.Column="4" Grid.Row="1" Command="{Binding ResetCommand}" CommandParameter="{x:Static vm:MachineControlViewModel+Reset.X}" />
-                <Button Content="Y" Grid.Column="4" Grid.Row="2" Command="{Binding ResetCommand}" CommandParameter="{x:Static vm:MachineControlViewModel+Reset.Y}" />
-                <Button Content="Z" Grid.Column="4" Grid.Row="3" Command="{Binding ResetCommand}" CommandParameter="{x:Static vm:MachineControlViewModel+Reset.Z}" />
-                <Button Content="All" Grid.Column="4" Grid.Row="4" Command="{Binding ResetCommand}" CommandParameter="{x:Static vm:MachineControlViewModel+Reset.All}" />
+                <Button Content="X" Grid.Column="4" Grid.Row="1" Command="{Binding ResetCommand}" CommandParameter="{x:Static sndr:ResetAxis.X}" />
+                <Button Content="Y" Grid.Column="4" Grid.Row="2" Command="{Binding ResetCommand}" CommandParameter="{x:Static sndr:ResetAxis.Y}" />
+                <Button Content="Z" Grid.Column="4" Grid.Row="3" Command="{Binding ResetCommand}" CommandParameter="{x:Static sndr:ResetAxis.Z}" />
+                <Button Content="All" Grid.Column="4" Grid.Row="4" Command="{Binding ResetCommand}" CommandParameter="{x:Static sndr:ResetAxis.All}" />
             </Grid>
         </Grid>
 
@@ -86,24 +86,36 @@
             <TextBlock Text="Jog Feed Rate" Grid.ColumnSpan="3" FontSize="24" Margin="4" />
             <TextBlock Text="XY" Grid.Row="2" FontSize="16" Margin="8,4,4,4" />
             <TextBlock Text="Z" Grid.Row="3" FontSize="16" Margin="8,4,4,4"/>
-            <Slider Grid.Row="2" Grid.Column="1" Minimum="0.001" Maximum="20" Value="{Binding XYStep, Mode=TwoWay}" VerticalAlignment="Center"  />
-            <Slider Grid.Row="3" Grid.Column="1" Minimum="0.001" Maximum="20" Value="{Binding ZStep, Mode=TwoWay}"  VerticalAlignment="Center" />
-            <TextBlock Text="{Binding XYStep, FallbackValue=0.5, StringFormat=0.00}" Grid.Row="2" Grid.Column="2" FontSize="16" Margin="4"  TextAlignment="Right"/>
-            <TextBlock Text="{Binding ZStep, FallbackValue=0.5, StringFormat=0.00}" Grid.Row="3" Grid.Column="2" FontSize="16" Margin="4" TextAlignment="Right" />
-            
-            <ComboBox IsReadOnly="True" Grid.Column="4" Grid.Row="2" Margin="4" FontSize="16" >
-                <ComboBoxItem >0.01 - 0.1</ComboBoxItem>
-                <ComboBoxItem>0.1 - 1.0</ComboBoxItem>
-                <ComboBoxItem>1 - 10</ComboBoxItem>
-                <ComboBoxItem>10 - 50</ComboBoxItem>
-            </ComboBox>
-            <ComboBox IsReadOnly="True" Grid.Column="4" Grid.Row="3" Margin="4" FontSize="16">
-                <ComboBoxItem >0.01 - 0.1</ComboBoxItem>
-                <ComboBoxItem>0.1 - 1.0</ComboBoxItem>
-                <ComboBoxItem>1 - 10</ComboBoxItem>
-                <ComboBoxItem>10 - 50</ComboBoxItem>
-            </ComboBox>
+            <Slider Grid.Row="2" Grid.Column="1"
+                    Minimum="{Binding XYStepMin}"
+                    Maximum="{Binding XYStepMax}" 
+                    LargeChange="{Binding XYStepInterval}" 
+                    SmallChange="{Binding XYStepInterval}"
+                    Value="{Binding XYStepSize, Mode=TwoWay}" 
+                    VerticalAlignment="Center"  />
+            <Slider Grid.Row="3" Grid.Column="1"  
+                    Minimum="{Binding ZStepMin}"
+                    Maximum="{Binding ZStepMax}" 
+                    LargeChange="{Binding Path=ZStepInterval}" 
+                    SmallChange="{Binding Path=ZStepInterval}"
+                    Value="{Binding ZStepSize, Mode=TwoWay}"  
+                    VerticalAlignment="Center" />
+            <TextBlock Text="{Binding XYStepSize, FallbackValue=0.5, StringFormat=0.00}"
+                       Grid.Row="2" Grid.Column="2" FontSize="16" Margin="4" TextAlignment="Right" />
+            <TextBlock Text="{Binding ZStepSize, FallbackValue=0.5, StringFormat=0.00}"
+                       Grid.Row="3" Grid.Column="2" FontSize="16" Margin="4" TextAlignment="Right" />
 
+            <ComboBox IsReadOnly="True" Grid.Column="4" Grid.Row="2" Margin="4" FontSize="16" 
+                      DisplayMemberPath="Value" 
+                      SelectedValuePath="Key" 
+                      SelectedValue="{Binding Path=XYStepMode, Mode=TwoWay}"
+                      ItemsSource="{Binding StepSizes}" />
+            
+            <ComboBox IsReadOnly="True" Grid.Column="4" Grid.Row="3" Margin="4" FontSize="16"
+                      DisplayMemberPath="Value" 
+                      SelectedValuePath="Key" 
+                      SelectedValue="{Binding Path=ZStepMode, Mode=TwoWay}"
+                      ItemsSource="{Binding StepSizes}" />
         </Grid>
         <Grid>
             <Grid.ColumnDefinitions>
@@ -121,89 +133,34 @@
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <Grid.Resources>
-                <Style TargetType="Button" x:Key="JogArrow">
-                    <Setter Property="Width" Value="48" />
-                    <Setter Property="Height" Value="48" />
-                    <Setter Property="BorderBrush" Value="Transparent" />
-                    <Setter Property="Foreground" Value="Red" />
-                    <Setter Property="Template">
-                        <Setter.Value>
-                            <ControlTemplate TargetType="{x:Type Button}">
-                                <Grid x:Name="BtnContainer">
-                                    <VisualStateManager.VisualStateGroups>
-                                        <VisualStateGroup Name="CommonStates">
-                                            <VisualState Name="Normal" />
-                                            <VisualState Name="MouseOver" >
-                                                <Storyboard>
-                                                    <ColorAnimation Storyboard.TargetName="EllipseFill" 
-                                                            Storyboard.TargetProperty="Color"
-                                                            Duration="0:0:0.25"
-                                                            To="Silver"/>
-                                                </Storyboard>
-                                            </VisualState>
-                                            <VisualState Name="Pressed" >
-                                                <Storyboard>
-                                                    <ColorAnimation Storyboard.TargetName="EllipseFill" 
-                                                            Storyboard.TargetProperty="Color"
-                                                            Duration="0:0:0.25"
-                                                            To="DarkGray"/>
-                                                </Storyboard>
-                                            </VisualState>
-                                            <VisualState Name="Disabled">
-                                                <Storyboard>
-                                                    <Storyboard>
-                                                        <ColorAnimation Storyboard.TargetName="EllipseFill" 
-                                                            Storyboard.TargetProperty="Color"
-                                                            Duration="0:0:0.25"
-                                                            To="Gray"/>
-                                                        <DoubleAnimation Storyboard.TargetName="BtnContainer" 
-                                                                         Storyboard.TargetProperty="Opacity"
-                                                                         Duration="0:0:0.25"
-                                                                         To="0.25" />
-                                                    </Storyboard>
-                                                </Storyboard>
-                                            </VisualState>
-                                        </VisualStateGroup>
-                                    </VisualStateManager.VisualStateGroups>
 
-                                    <Ellipse Stroke="{TemplateBinding BorderBrush}">
-                                        <Ellipse.Fill>
-                                            <SolidColorBrush x:Name="EllipseFill" Color="Gray" />
-                                        </Ellipse.Fill>
-                                    </Ellipse>
-                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                </Grid>
-                            </ControlTemplate>
-                        </Setter.Value>
-                    </Setter>
-                </Style>
             </Grid.Resources>
-            <Button Style="{StaticResource JogArrow}"  Grid.Row="0" Grid.Column="2"  Command="{Binding JogCommand}" CommandParameter="{x:Static vm:MachineControlViewModel+JogDirections.YPlus}">
+            <Button Style="{StaticResource JogArrow}"  Grid.Row="0" Grid.Column="2"  Command="{Binding JogCommand}" CommandParameter="{x:Static sndr:JogDirections.YPlus}">
                 <Button.Content>
                     <fa:ImageAwesome  Icon="ArrowCircleUp" />
                 </Button.Content>
             </Button>
-            <Button Style="{StaticResource JogArrow}"  Grid.Row="1" Grid.Column="1"   Command="{Binding JogCommand}" CommandParameter="{x:Static vm:MachineControlViewModel+JogDirections.XMinus}">
+            <Button Style="{StaticResource JogArrow}"  Grid.Row="1" Grid.Column="1"   Command="{Binding JogCommand}" CommandParameter="{x:Static sndr:JogDirections.XMinus}">
                 <Button.Content>
                     <fa:ImageAwesome Icon="ArrowCircleLeft" />
                 </Button.Content>
             </Button>
-            <Button Style="{StaticResource JogArrow}"  Grid.Row="1" Grid.Column="3"  Command="{Binding JogCommand}" CommandParameter="{x:Static vm:MachineControlViewModel+JogDirections.XPlus}">
+            <Button Style="{StaticResource JogArrow}"  Grid.Row="1" Grid.Column="3"  Command="{Binding JogCommand}" CommandParameter="{x:Static sndr:JogDirections.XPlus}">
                 <Button.Content>
                     <fa:ImageAwesome Icon="ArrowCircleRight" />
                 </Button.Content>
             </Button>
-            <Button Style="{StaticResource JogArrow}" Grid.Row="2" Grid.Column="2"  Command="{Binding JogCommand}" CommandParameter="{x:Static vm:MachineControlViewModel+JogDirections.YMinus}">
+            <Button Style="{StaticResource JogArrow}" Grid.Row="2" Grid.Column="2"  Command="{Binding JogCommand}" CommandParameter="{x:Static sndr:JogDirections.YMinus}">
                 <Button.Content>
                     <fa:ImageAwesome Icon="ArrowCircleDown" />
                 </Button.Content>
             </Button>
-            <Button Style="{StaticResource JogArrow}" Grid.Row="0" Grid.Column="5" Command="{Binding JogCommand}" CommandParameter="{x:Static vm:MachineControlViewModel+JogDirections.ZPlus}">
+            <Button Style="{StaticResource JogArrow}" Grid.Row="0" Grid.Column="5" Command="{Binding JogCommand}" CommandParameter="{x:Static sndr:JogDirections.ZPlus}">
                 <Button.Content>
                     <fa:ImageAwesome Icon="ArrowCircleUp" />
                 </Button.Content>
             </Button>
-            <Button Style="{StaticResource JogArrow}"  Grid.Row="2" Grid.Column="5" Command="{Binding JogCommand}" CommandParameter="{x:Static vm:MachineControlViewModel+JogDirections.ZMinus}">
+            <Button Style="{StaticResource JogArrow}"  Grid.Row="2" Grid.Column="5" Command="{Binding JogCommand}" CommandParameter="{x:Static sndr:JogDirections.ZMinus}">
                 <Button.Content>
                     <fa:ImageAwesome Icon="ArrowCircleDown" />
                 </Button.Content>

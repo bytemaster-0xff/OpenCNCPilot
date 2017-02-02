@@ -1,29 +1,23 @@
 ﻿
 
+using System.Collections.Generic;
+
 namespace LagoVista.GCode.Sender.ViewModels
 {
     public partial class MachineControlViewModel
     {
-
-        private double _xyStep;
-        public double XYStep
-        {
-            get { return _xyStep; }
-            set { Set(ref _xyStep, value); }
-        }
-
-        private double _zStep;
-        public double ZStep
-        {
-            get { return _zStep; }
-            set { Set(ref _zStep, value); }
-        }
-
         private double _xyStepMin;
         public double XYStepMin
         {
             get { return _xyStepMin; }
             set { Set(ref _xyStepMin, value); }
+        }
+
+        private double _xyStepInterval;
+        public double XYStepInterval
+        {
+            get { return _xyStepInterval; }
+            set { Set(ref _xyStepInterval, value); }
         }
 
         private double _xyStepMax;
@@ -33,11 +27,21 @@ namespace LagoVista.GCode.Sender.ViewModels
             set { Set(ref _xyStepMax, value); }
         }
 
-        private double _zStepMin;
-        public double ZStepMin
+        public double XYStepSize
         {
-            get { return _zStepMin; }
-            set { Set(ref _zStepMin, value); }
+            get { return Machine.Settings.XYStepSize; }
+            set
+            {
+                Machine.Settings.XYStepSize = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private double _zStepInterval;
+        public double ZStepInterval
+        {
+            get { return _zStepInterval; }
+            set { Set(ref _zStepInterval, value); }
         }
 
         private double _zStepMax;
@@ -45,6 +49,112 @@ namespace LagoVista.GCode.Sender.ViewModels
         {
             get { return _zStepMax; }
             set { Set(ref _zStepMax, value); }
+        }
+
+        private double _zStepMin;
+        public double ZStepMin
+        {
+            get { return _zStepMin; }
+            set { Set(ref _zStepMin, value); }
+        }
+
+        public double ZStepSize
+        {
+            get { return Machine.Settings.ZStepSize; }
+            set
+            {
+                Machine.Settings.ZStepSize = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public StepModes XYStepMode
+        {
+            get { return Machine.Settings.XYStepMode; }
+            set
+            {
+                Machine.Settings.XYStepMode = value;
+                RaisePropertyChanged();
+                switch (XYStepMode)
+                {
+                    case StepModes.Large:
+                        XYStepInterval = 2.5;
+                        XYStepMax = 50;
+                        XYStepMin = 10;
+                        XYStepSize = 10;
+                        break;
+                    case StepModes.Medium:
+                        XYStepInterval = 1;
+                        XYStepMax = 10;
+                        XYStepMin = 1;
+                        XYStepSize = 5;
+                        break;
+                    case StepModes.Small:
+                        XYStepInterval = 0.1;
+                        XYStepMax = 1;
+                        XYStepMin = 0.1;
+                        XYStepSize = 0.5;
+                        break;
+                    case StepModes.Micro:
+                        XYStepInterval = 0.01;
+                        XYStepMax = 0.1;
+                        XYStepMin = 0.01;
+                        XYStepSize = 0.05;
+                        break;
+                }
+            }
+        }
+
+        public StepModes ZStepMode
+        {
+            get { return Machine.Settings.ZStepMode; }
+            set
+            {
+                Machine.Settings.ZStepMode = value;
+                RaisePropertyChanged();
+                switch (ZStepMode)
+                {
+                    case StepModes.Large:
+                        ZStepInterval = 2.5;
+                        ZStepMax = 50;
+                        ZStepMin = 10;
+                        ZStepSize = 10;
+                        break;
+                    case StepModes.Medium:
+                        ZStepInterval = 1;
+                        ZStepMax = 10;
+                        ZStepMin = 1;
+                        ZStepSize = 5;
+                        break;
+                    case StepModes.Small:
+                        ZStepInterval = 0.1;
+                        ZStepMax = 1;
+                        ZStepMin = 0.1;
+                        ZStepSize = 0.5;
+                        break;
+                    case StepModes.Micro:
+                        ZStepInterval = 0.01;
+                        ZStepMax = 0.1;
+                        ZStepMin = 0.01;
+                        ZStepSize = 0.05;
+                        break;
+                }
+            }
+        }
+
+        public List<KeyValuePair<StepModes, string>> StepSizes
+        {
+            get
+            {
+                return new List<KeyValuePair<StepModes, string>>()
+                {
+                    new KeyValuePair<StepModes, string>(StepModes.Large, "10 - 50"),
+                    new KeyValuePair<StepModes, string>(StepModes.Medium, "1 - 10"),
+                    new KeyValuePair<StepModes, string>(StepModes.Small, "0.1 - 1.0"),
+                    new KeyValuePair<StepModes, string>(StepModes.Micro, "0.01 - 0.1"),
+                };
+            }
+            set { }
         }
     }
 }

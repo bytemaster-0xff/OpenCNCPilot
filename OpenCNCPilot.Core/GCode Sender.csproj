@@ -102,9 +102,6 @@
     <Compile Include="ViewModels\MachineControlViewModel.Commanding.cs">
       <DependentUpon>MachineControlViewModel.cs</DependentUpon>
     </Compile>
-    <Compile Include="ViewModels\MachineControlViewModel.Defines.cs">
-      <DependentUpon>MachineControlViewModel.cs</DependentUpon>
-    </Compile>
     <Compile Include="ViewModels\MachineControlViewModel.Properties.cs">
       <DependentUpon>MachineControlViewModel.cs</DependentUpon>
     </Compile>

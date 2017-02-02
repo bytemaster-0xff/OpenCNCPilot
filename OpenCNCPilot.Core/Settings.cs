@@ -30,13 +30,36 @@ namespace LagoVista.GCode.Sender
         public bool AbortOnProbeFail { get; set; }
         public double ProbeFeed { get; set; }
 
-        public double MicroStepSize { get; set; }
-        public double SmallStepSize { get; set; }
-        public double MediumStepSize { get; set; }
-        public double LargeStepSize { get; set; }
+        private double _xyStepSize;
+        public double XYStepSize
+        {
+            get { return _xyStepSize; }
+            set { Set(ref _xyStepSize, value); }
+        }
+
+        private double _zStepSize;
+        public double ZStepSize
+        {
+            get { return _zStepSize; }
+            set { Set(ref _zStepSize, value); }
+        }
+
+        StepModes _xyStepMode;
+        public StepModes XYStepMode
+        {
+            get { return _xyStepMode; }
+            set { Set(ref _xyStepMode, value); }
+        }
+
+        StepModes _zStepMode;
+        public StepModes ZStepMode
+        {
+            get { return _zStepMode; }
+            set { Set(ref _zStepMode, value); }
+        }
 
         public FirmwareTypes MachineType { get; set; }
-        
+
 
         public async static Task<Settings> LoadAsync()
         {
@@ -47,7 +70,7 @@ namespace LagoVista.GCode.Sender
                     settings = Settings.Default;
                 return settings;
             }
-            catch(Exception)
+            catch (Exception)
             {
                 return Settings.Default;
             }
@@ -63,7 +86,7 @@ namespace LagoVista.GCode.Sender
             get
             {
                 return new Settings()
-                {                
+                {
                     ControllerBufferSize = 120,
                     StatusPollIntervalIdle = 1000,
                     StatusPollIntervalRunning = 100,
@@ -76,10 +99,8 @@ namespace LagoVista.GCode.Sender
                     ProbeFeed = 20,
                     ArcToLineSegmentLength = 1,
                     SplitSegmentLength = 5,
-                    MicroStepSize = 0.1,
-                    SmallStepSize = 1,
-                    MediumStepSize = 5,
-                    LargeStepSize = 10
+                    XYStepSize = 1,
+                    ZStepSize = 1,
                 };
             }
         }

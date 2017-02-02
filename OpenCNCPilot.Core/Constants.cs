@@ -2,6 +2,38 @@
 
 namespace LagoVista.GCode.Sender
 {
+    public enum JogDirections
+    {
+        YPlus,
+        YMinus,
+        XPlus,
+        XMinus,
+        ZPlus,
+        ZMinus
+    }
+
+    public enum Axis
+    {
+        XY,
+        Z
+    }
+
+    public enum ResetAxis
+    {
+        X,
+        Y,
+        Z,
+        All
+    }
+
+    public enum StepModes
+    {
+        Micro,
+        Small,
+        Medium,
+        Large
+    }
+
     public enum FirmwareTypes
     {
         GRBL1_1,

@@ -7,10 +7,6 @@
              xmlns:ctls="clr-namespace:LagoVista.GCode.Sender.Application.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-    <UserControl.Resources>
-        <cvts:MessageTypeBackgroundColorConverter x:Key="MessageTypeBackgroundColorConverter" />
-        <cvts:MessageTypeForegroundColorConverter x:Key="MessageTypeForegroundColorConverter" />
-    </UserControl.Resources>
     <ctls:ListBoxScroll  HorizontalContentAlignment="Stretch"
                  SelectedIndex="{Binding Path=Machine.MessageCount}"
                  ItemsSource="{Binding Path=Machine.Messages}"

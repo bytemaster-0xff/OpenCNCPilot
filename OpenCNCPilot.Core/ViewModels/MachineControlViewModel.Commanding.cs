@@ -7,14 +7,12 @@ namespace LagoVista.GCode.Sender.ViewModels
         private void InitCommands()
         {
             JogCommand = new RelayCommand((param) => Jog((JogDirections)param), CanJog);
-            ResetCommand = new RelayCommand((param) => ResetAxis((Reset)param), CanResetAxis);
+            ResetCommand = new RelayCommand((param) => ResetAxis((ResetAxis)param), CanResetAxis);
 
             SoftResetCommand = new RelayCommand(SoftReset, CanSoftReset);
             ClearAlarmCommand = new RelayCommand(ClearAlarm, CanClearAlarm);
             FeedHoldCommand = new RelayCommand(FeedHold, CanFeedHold);
             CycleStartCommand = new RelayCommand(CycleStart, CanCycleStart);
-
-            SetMicroStepSizeCommand = new RelayCommand((param) => SetStepSize((Axis)param, MicroStepModes.Micro));
 
             Machine.PropertyChanged += Machine_PropertyChanged;
         }
@@ -65,16 +63,9 @@ namespace LagoVista.GCode.Sender.ViewModels
 
         public RelayCommand JogCommand { get; private set; }
         public RelayCommand ResetCommand { get; private set; }
-
-        public RelayCommand SetMicroStepSizeCommand { get; private set; }
-
         public RelayCommand SoftResetCommand { get; private set; }
-
         public RelayCommand ClearAlarmCommand { get; private set; }
-
         public RelayCommand FeedHoldCommand { get; private set; }
-
         public RelayCommand CycleStartCommand { get; private set; }
-
     }
 }
