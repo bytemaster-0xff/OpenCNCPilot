@@ -89,7 +89,8 @@ namespace LagoVista.GCode.Sender
             {
                 CurrentJob.Process();
             }
-            else if (ShouldSendNormalPriorityItems())
+
+            if (ShouldSendNormalPriorityItems())
             {
                 SendNormalPriorityItems();
             }

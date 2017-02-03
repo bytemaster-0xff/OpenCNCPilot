@@ -24,7 +24,7 @@ namespace LagoVista.GCode.Sender
         {
             Messages = new System.Collections.ObjectModel.ObservableCollection<Models.StatusMessage>();
             AddStatusMessage(StatusMessageTypes.Info, "Startup.");
-            
+
             /* Have defaults loaded until the real settings come in */
             _settings = Settings.Default;
         }
@@ -38,7 +38,9 @@ namespace LagoVista.GCode.Sender
 
         public void RaisePropertyChanged([CallerMemberName]string propertyName = "")
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            Services.DispatcherServices.Invoke(() =>
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName))
+            );
         }
 
         public void ClearQueue()
@@ -95,7 +97,7 @@ namespace LagoVista.GCode.Sender
             }
         }
 
- 
+
 
         /// <summary>
         /// Reports error. This is there to offload the ExpandError function from the "Real-Time" worker thread to the application thread

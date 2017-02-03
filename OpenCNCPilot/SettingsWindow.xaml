@@ -56,7 +56,7 @@
                 <TextBox  Text="{Binding Machine.Settings.WorkAreaWidth}" Grid.Row="3" />
              
                 <Label Grid.Row="4" Content="Work Area Height" />
-                <TextBox Text="{Binding Machine.Settings.WorkAreaHeight}" Grid.Row="4" />
+                <TextBox Text="{Binding Machine.Settings.WorkAreaHeight}"  Grid.Row="4" />
                 <Label Grid.Row="5" Content="GCode Jog Command" />
                 <ComboBox Grid.Row="5"  
                           IsEnabled="{Binding CanChangeMachineConfig}"

@@ -1,8 +1,9 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:cvtrs="clr-namespace:LagoVista.GCode.Sender.Application.Converters"
-                    xmlns:local="clr-namespace:LagoVista.GCode.Sender.Application.Resources">
+                    xmlns:cvtrs="clr-namespace:LagoVista.GCode.Sender.Application.Converters">
     <cvtrs:ColorEnabledConverter x:Key="ColorEnabledConverter" />
+    <cvtrs:PointConverter x:Key="PointConverter" />
+    <cvtrs:ToolTopPointConverter x:Key="ToolTopPointConverter" />
     <cvtrs:MessageTypeBackgroundColorConverter x:Key="MessageTypeBackgroundColorConverter" />
     <cvtrs:MessageTypeForegroundColorConverter x:Key="MessageTypeForegroundColorConverter" />
 </ResourceDictionary>

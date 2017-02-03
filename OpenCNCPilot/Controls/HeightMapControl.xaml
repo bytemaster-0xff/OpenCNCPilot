@@ -6,10 +6,10 @@
              xmlns:h="http://helix-toolkit.org/wpf"
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="800">
-        <h:HelixViewport3D Name="viewport" ShowViewCube="False" Panel.ZIndex="0" >
+    <h:HelixViewport3D Name="viewport" ShowViewCube="False" Panel.ZIndex="0"  >
         <h:HelixViewport3D.Camera>
             <PerspectiveCamera
-					Position="50, -150, 250"
+             		Position="50, -150, 250"
 					LookDirection="-50, 150,-250"
 					UpDirection="0,0,1"/>
         </h:HelixViewport3D.Camera>
@@ -19,13 +19,18 @@
         <h:LinesVisual3D Thickness="0.5" Color="Gray" x:Name="ModelRapid"/>
         <h:LinesVisual3D Thickness="1" Color="Black" x:Name="ModelLine"/>
         <h:LinesVisual3D Thickness="1" Color="Blue" x:Name="ModelArc"/>
-        <h:ArrowVisual3D x:Name="ModelTool" Direction="0,0,-10"/>
+        <h:ArrowVisual3D 
+            x:Name="ModelTool" Direction="0,0,-10"
+            Point2="{Binding Machine.WorkPosition, Converter={StaticResource PointConverter}}"
+            Point1="{Binding Machine.WorkPosition, Converter={StaticResource ToolTopPointConverter}}" />
+        <!-- Note: Width and Height seem to have different meanings on GridLinesVisual3D-->
         <h:GridLinesVisual3D 
-         
-				x:Name="ModelGrid"
+         		x:Name="ModelGrid"
                 MinorDistance="10"
                 MajorDistance="100"
-           	Width="500" Length="300">
+            Origin="BottomLeft"
+           	Width="{Binding Machine.Settings.WorkAreaHeight, FallbackValue=300}"
+            Length ="{Binding Machine.Settings.WorkAreaWidth, FallbackValue=200}" >
         </h:GridLinesVisual3D>
         <h:MeshGeometryVisual3D x:Name="ModelHeightMap">
             <h:MeshGeometryVisual3D.Material>

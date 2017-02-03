@@ -22,6 +22,8 @@ namespace LagoVista.GCode.Sender
                 {
                     lock (this)
                     {
+                        CurrentJob.CommandAcknowledged();
+
                         lock (_queueAccessLocker)
                         {
                             if (_sentQueue.Any())

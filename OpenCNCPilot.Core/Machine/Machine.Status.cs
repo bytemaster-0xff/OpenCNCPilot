@@ -102,7 +102,7 @@ namespace LagoVista.GCode.Sender
 
                 RaisePropertyChanged();
             }
-        }        
+        }
 
         public bool HasJob
         {
