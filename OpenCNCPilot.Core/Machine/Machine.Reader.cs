@@ -11,33 +11,53 @@ namespace LagoVista.GCode.Sender
     {
         private void ProcessResponseLine(String line)
         {
-            if(String.IsNullOrEmpty(line))
+            if (String.IsNullOrEmpty(line))
             {
                 return;
             }
 
             if (line == "ok")
             {
-                if(CurrentJob != null)
+                if (CurrentJob != null)
                 {
                     lock (this)
                     {
-                        BufferState -= CurrentJob.CommandAcknowledged();
+                        lock (_queueAccessLocker)
+                        {
+                            if (_sentQueue.Any())
+                            {
+                                var sentLine = _sentQueue.Dequeue();
+                                BufferState -= (sentLine.Length + 1);
+                            }
+                        }
+
                         if (CurrentJob.IsCompleted)
                         {
                             Mode = OperatingMode.Manual;
                             CurrentJob = null;
                         }
                     }
-                }                
+                }
                 else
                 {
+                    lock (_queueAccessLocker)
+                    {
+                        if (_sentQueue.Any())
+                        {
+                            var sentLine = _sentQueue.Dequeue();
+                            BufferState -= (sentLine.Length + 1);
+                            return;
+                        }
+                    }
+
                     LagoVista.Core.PlatformSupport.Services.Logger.Log(LagoVista.Core.PlatformSupport.LogLevel.Warning, "Machine_Work", "Received OK without anything in the Sent Buffer");
                     AddStatusMessage(StatusMessageTypes.Warning, "Unexpected OK");
                     BufferState = 0;
+
                 }
+
             }
-            else if(line.Contains("endstops"))
+            else if (line.Contains("endstops"))
             {
                 AddStatusMessage(StatusMessageTypes.FatalError, line);
             }

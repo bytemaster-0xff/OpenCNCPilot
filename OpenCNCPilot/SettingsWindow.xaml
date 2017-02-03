@@ -7,15 +7,58 @@
         Title="SettingsWindow" Height="300" Width="392.161">
     <Window.Resources>
         <Style TargetType="TextBox">
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-            <Setter Property="HorizontalContentAlignment" Value="Right"/>
-            <Setter Property="HorizontalAlignment" Value="Left"/>
-            <Setter Property="VerticalAlignment" Value="Top"/>
-            <Setter Property="Height" Value="23"/>
-            <Setter Property="Width" Value="120"/>
+            <Setter Property="Margin" Value="4" />
+            <Setter Property="Grid.Column" Value="0" />
+            <Setter Property="TextAlignment" Value="Right" />
+        </Style>
+        <Style TargetType="ComboBox">
+            <Setter Property="Margin" Value="4" />
+            <Setter Property="Grid.Column" Value="0" />
+        </Style>
+        <Style TargetType="Label">
+            <Setter Property="Margin" Value="4" />
+            <Setter Property="Grid.Column" Value="1" />
         </Style>
     </Window.Resources>
     <TabControl>
+        <TabItem Header="Machine">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="135" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <Label Grid.Row="0" Content="MachineType" />
+                <ComboBox Grid.Row="0" Grid.Column="0" 
+                          IsEnabled="{Binding CanChangeMachineConfig}"
+                          SelectedValue="{Binding Path=MachineType, Mode=TwoWay}"
+                          ItemsSource="{Binding Path=MachineTypes}"  />
+
+                <TextBox Text="{Binding WorkAreaWidth}" Grid.Row="1" />
+                <Label Grid.Row="1" Content="Work Area Width" />
+                <TextBox Text="{Binding WorkAreaHeight}" Grid.Row="2" />
+                <Label Grid.Row="2" Content="Work Area Height" />
+                <TextBox Text="{Binding WorkAreaWidth}" Grid.Row="1" />
+                <Label Grid.Row="3" Content="GCode Jog Command" />
+                <ComboBox Grid.Row="3" Grid.Column="0" 
+                          IsEnabled="{Binding CanChangeMachineConfig}"
+                          SelectedValue="{Binding Path=Machine.Settings.JogGCodeCommand, Mode=TwoWay}"
+                          ItemsSource="{Binding Path=GCodeJogCommand}"  />
+
+
+            </Grid>
+        </TabItem>
+
         <TabItem Header="Connection">
             <Grid>
                 <Grid.RowDefinitions>
@@ -32,35 +75,13 @@
                     <ColumnDefinition Width="135" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <Grid.Resources>
-                    <Style TargetType="TextBox">
-                        <Setter Property="Margin" Value="4" />
-                        <Setter Property="Grid.Column" Value="0" />
-                        <Setter Property="TextAlignment" Value="Right" />
-                    </Style>
-                    <Style TargetType="ComboBox">
-                        <Setter Property="Margin" Value="4" />
-                        <Setter Property="Grid.Column" Value="0" />
-                    </Style>
-                    <Style TargetType="Label">
-                        <Setter Property="Margin" Value="4" />
-                        <Setter Property="Grid.Column" Value="1" />
-                    </Style>
-
-                </Grid.Resources>
-                <ComboBox Grid.Row="0" Grid.Column="0" 
-                          IsEnabled="{Binding CanChangeMachineConfig}"
-                          SelectedValue="{Binding Path=MachineType, Mode=TwoWay}"
-                          ItemsSource="{Binding Path=MachineTypes}"  />
-
-                <Label Grid.Row="0" Content="MachineType" />
-
                 <ComboBox Grid.Row="1" Grid.Column="0" 
                           SelectedValuePath="Id"
                           IsEnabled="{Binding CanChangeMachineConfig}"
                           DisplayMemberPath="Name"
                           SelectedValue="{Binding Path=SelectedPortId, Mode=TwoWay}"
                           ItemsSource="{Binding Path=SerialPorts}"  />
+
 
                 <Label Grid.Row="1" Content="Serial Port" HorizontalAlignment="Left"  VerticalAlignment="Top"/>
 
@@ -73,7 +94,7 @@
 
                 <TextBox Text="{Binding Machine.Settings.StatusPollIntervalIdle}" Grid.Row="5"/>
                 <Label Content="Idle Status Poll Interval (ms)" Grid.Row="5" />
-                
+
                 <TextBox  Text="{Binding Machine.Settings.StatusPollIntervalRunning}" Grid.Row="6"/>
                 <Label Content="Running Status Poll Interval (ms)" Grid.Row="6"  />
             </Grid>

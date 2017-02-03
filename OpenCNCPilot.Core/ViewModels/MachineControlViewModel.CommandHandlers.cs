@@ -1,4 +1,6 @@
 ﻿
+using LagoVista.Core.GCode.Commands;
+
 namespace LagoVista.GCode.Sender.ViewModels
 {
     public partial class MachineControlViewModel
@@ -27,7 +29,24 @@ namespace LagoVista.GCode.Sender.ViewModels
         {
             switch (direction)
             {
-
+                case JogDirections.XPlus:
+                    Machine.SendCommand($"{Machine.Settings.JogGCodeCommand} X{Machine.MachinePosition.X + XYStepSize} F{Machine.Settings.JogFeedRate}");
+                    break;
+                case JogDirections.YPlus:
+                    Machine.SendCommand( $"{Machine.Settings.JogGCodeCommand} Y{Machine.MachinePosition.Y + XYStepSize} F{Machine.Settings.JogFeedRate}");
+                    break;
+                case JogDirections.ZPlus:
+                    Machine.SendCommand($"{Machine.Settings.JogGCodeCommand} Z{Machine.MachinePosition.Z + ZStepSize} F{Machine.Settings.JogFeedRate}");
+                    break;
+                case JogDirections.XMinus:
+                    Machine.SendCommand($"{Machine.Settings.JogGCodeCommand} X{Machine.MachinePosition.X - XYStepSize} F{Machine.Settings.JogFeedRate}");
+                    break;
+                case JogDirections.YMinus:
+                    Machine.SendCommand($"{Machine.Settings.JogGCodeCommand} Y{Machine.MachinePosition.Y - XYStepSize} F{Machine.Settings.JogFeedRate}");
+                    break;
+                case JogDirections.ZMinus:
+                    Machine.SendCommand($"{Machine.Settings.JogGCodeCommand} Z{Machine.MachinePosition.Z - ZStepSize} F{Machine.Settings.JogFeedRate}");
+                    break;
             }
         }
 

@@ -33,7 +33,7 @@ namespace LagoVista.GCode.Sender.Managers
 
             if (HeightMap.NotProbed.Count == 0)
             {
-                Machine.SendLine($"G0Z{Machine.Settings.ProbeSafeHeight.ToString(Constants.DecimalOutputFormat)}");
+                Machine.SendCommand($"G0Z{Machine.Settings.ProbeSafeHeight.ToString(Constants.DecimalOutputFormat)}");
                 Machine.ProbeStop();
 
                 ProbingCompleted?.Invoke(this, null);
@@ -58,13 +58,13 @@ namespace LagoVista.GCode.Sender.Managers
 
             var nextPoint = HeightMap.GetCoordinates(HeightMap.NotProbed.Peek().Item1, HeightMap.NotProbed.Peek().Item2);
 
-            Machine.SendLine($"G0X{nextPoint.X.ToString("0.###", Constants.DecimalOutputFormat)}Y{nextPoint.Y.ToString("0.###", Constants.DecimalOutputFormat)}");
+            Machine.SendCommand($"G0X{nextPoint.X.ToString("0.###", Constants.DecimalOutputFormat)}Y{nextPoint.Y.ToString("0.###", Constants.DecimalOutputFormat)}");
 
-            Machine.SendLine($"G38.3Z-{Machine.Settings.ProbeMaxDepth.ToString("0.###", Constants.DecimalOutputFormat)}F{Machine.Settings.ProbeFeed.ToString("0.#", Constants.DecimalOutputFormat)}");
+            Machine.SendCommand($"G38.3Z-{Machine.Settings.ProbeMaxDepth.ToString("0.###", Constants.DecimalOutputFormat)}F{Machine.Settings.ProbeFeed.ToString("0.#", Constants.DecimalOutputFormat)}");
 
-            Machine.SendLine("G91");
-            Machine.SendLine($"G0Z{Machine.Settings.ProbeMinimumHeight.ToString("0.###", Constants.DecimalOutputFormat)}");
-            Machine.SendLine("G90");
+            Machine.SendCommand("G91");
+            Machine.SendCommand($"G0Z{Machine.Settings.ProbeMinimumHeight.ToString("0.###", Constants.DecimalOutputFormat)}");
+            Machine.SendCommand("G90");
         }
 
 
@@ -81,8 +81,8 @@ namespace LagoVista.GCode.Sender.Managers
             if (Machine.Mode != OperatingMode.ProbingHeightMap)
                 return;
 
-            Machine.SendLine("G90");
-            Machine.SendLine($"G0Z{Machine.Settings.ProbeSafeHeight.ToString("0.###", Constants.DecimalOutputFormat)}");
+            Machine.SendCommand("G90");
+            Machine.SendCommand($"G0Z{Machine.Settings.ProbeSafeHeight.ToString("0.###", Constants.DecimalOutputFormat)}");
 
             HeightMapProbeNextPoint();
         }

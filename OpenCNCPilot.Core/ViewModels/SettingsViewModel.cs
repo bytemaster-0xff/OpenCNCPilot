@@ -41,15 +41,22 @@ namespace LagoVista.GCode.Sender.ViewModels
             SerialPorts = ports;
             RaisePropertyChanged(nameof(SerialPorts));
 
-            var machineTypes = new List<string>();
+            var MachineTypes = new List<string>();
             var enums = Enum.GetValues(typeof(FirmwareTypes));
             foreach(var enumType in enums)
             {
-                machineTypes.Add(enumType.ToString().Replace("_","."));
+                MachineTypes.Add(enumType.ToString().Replace("_","."));
+            }
+            RaisePropertyChanged(nameof(MachineTypes));
+
+            var gcodeCommands = Enum.GetValues(typeof(JogGCodeCommand));
+            GCodeJogCommands = new List<string>();
+            foreach (var gcodeCmd in gcodeCommands)
+            {
+                GCodeJogCommands.Add(gcodeCmd.ToString().Replace("_", "."));
             }
 
-            MachineTypes = machineTypes;
-            RaisePropertyChanged(MachineType);
+            RaisePropertyChanged(nameof(GCodeJogCommands));
         }
     }
 }

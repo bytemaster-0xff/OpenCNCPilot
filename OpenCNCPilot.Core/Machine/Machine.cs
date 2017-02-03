@@ -60,7 +60,7 @@ namespace LagoVista.GCode.Sender
 
         /// <summary>
         /// Updates Status info from each line sent
-        /// </summary>
+        /// </summary
         /// <param name="line"></param>
         private void UpdateStatus(string line)
         {

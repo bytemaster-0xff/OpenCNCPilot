@@ -44,6 +44,20 @@ namespace LagoVista.GCode.Sender
             set { Set(ref _zStepSize, value); }
         }
 
+        JogGCodeCommand _jogGCodeCommand;
+        public JogGCodeCommand JogGCodeCommand
+        {
+            get { return _jogGCodeCommand; }
+            set { Set(ref _jogGCodeCommand, value); }
+        }
+
+        private int _jogFeedRate;
+        public int JogFeedRate
+        {
+            get { return _jogFeedRate; }
+            set { Set(ref _jogFeedRate, value); }
+        }
+
         StepModes _xyStepMode;
         public StepModes XYStepMode
         {
@@ -90,6 +104,8 @@ namespace LagoVista.GCode.Sender
                     ControllerBufferSize = 120,
                     StatusPollIntervalIdle = 1000,
                     StatusPollIntervalRunning = 100,
+                    JogFeedRate = 2000,
+                    JogGCodeCommand = JogGCodeCommand.G0,
                     ViewportArcSplit = 1,
                     EnableCodePreview = true,
                     ProbeSafeHeight = 5,

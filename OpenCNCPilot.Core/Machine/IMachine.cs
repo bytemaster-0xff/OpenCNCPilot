@@ -17,7 +17,7 @@ namespace LagoVista.GCode.Sender
     {
         event Action<Vector3, bool> ProbeFinished;
 
-        int BufferState { get;  }
+        int BufferState { get; set; }
 
         Task InitAsync();
 
@@ -51,9 +51,7 @@ namespace LagoVista.GCode.Sender
 
 
         Task DisconnectAsync();
-
-        void SendLine(string line);
-
+        
         void SoftReset();
 
         void FeedHold();
@@ -83,6 +81,8 @@ namespace LagoVista.GCode.Sender
         bool BufferSpaceAvailable(int bytes);
 
         void SendCommand(GCodeCommand cmd);
+
+        void SendCommand(String cmd);
 
         void AddStatusMessage(StatusMessageTypes type, String message);
 

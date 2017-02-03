@@ -94,23 +94,6 @@ namespace LagoVista.GCode.Sender
             }
         }
 
-        public void SendLine(string line)
-        {
-            if (AssertConnected())
-            {
-                if (Mode != OperatingMode.Manual && Mode != OperatingMode.ProbingHeightMap)
-                {
-                    AddStatusMessage(StatusMessageTypes.Warning, "Not In Manual Mode");
-                    return;
-                }
-
-                lock (_toSend)
-                {
-                    _toSend.Enqueue(line);
-                }
-            }
-        }
-
         private bool AssertConnected()
         {
             if (!Connected)
@@ -154,30 +137,37 @@ namespace LagoVista.GCode.Sender
         }
 
 
-        private void Enqueue(String cmd)
+        private void Enqueue(String cmd, bool highPriority = false)
         {
             if (AssertConnected())
             {
                 lock (_queueAccessLocker)
                 {
-                    _toSendPriority.Enqueue(cmd);
+                    if (highPriority)
+                    {
+                        _toSendPriority.Enqueue(cmd);
+                    }
+                    else
+                    {
+                        _toSend.Enqueue(cmd);
+                    }
                 }
             }
         }
 
         public void FeedHold()
         {
-            Enqueue("!");
+            Enqueue("!", true);
         }
 
         public void ClearAlarm()
         {
-            Enqueue("$X");
+            Enqueue("$X", true);
         }
 
         public void CycleStart()
         {
-            Enqueue("~");
+            Enqueue("~", true);
         }
 
         public void ProbeStart()

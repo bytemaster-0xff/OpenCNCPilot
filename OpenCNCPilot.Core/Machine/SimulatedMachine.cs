@@ -211,7 +211,7 @@ namespace LagoVista.GCode.Sender
             var cmdLetter = command.First();
             switch(cmdLetter)
             {
-                case '$': AddResponse("ok"); break;
+                case '$': AddResponse("Status: Blah, Blah"); break;
                 case 'G': HandleGCode(command);
                     break;
                 case 'M': HandleMCode(command);

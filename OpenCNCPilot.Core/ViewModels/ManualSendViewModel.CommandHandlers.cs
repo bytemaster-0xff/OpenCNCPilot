@@ -15,7 +15,7 @@ namespace LagoVista.GCode.Sender.ViewModels
         {
             if(!String.IsNullOrEmpty(ManualCommandText))
             {
-                Machine.SendLine(ManualCommandText);
+                Machine.SendCommand(ManualCommandText);
             }
         }
 

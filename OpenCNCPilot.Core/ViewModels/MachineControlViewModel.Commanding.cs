@@ -25,7 +25,7 @@ namespace LagoVista.GCode.Sender.ViewModels
                 SoftResetCommand.RaiseCanExecuteChanged();
                 ClearAlarmCommand.RaiseCanExecuteChanged();
                 FeedHoldCommand.RaiseCanExecuteChanged();
-                CycleStartCommand.RaiseCanExecuteChanged();
+                CycleStartCommand.RaiseCanExecuteChanged(); 
                 JogCommand.RaiseCanExecuteChanged();
                 ResetCommand.RaiseCanExecuteChanged();
             }

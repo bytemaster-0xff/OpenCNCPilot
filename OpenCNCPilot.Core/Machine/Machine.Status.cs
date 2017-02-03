@@ -93,7 +93,7 @@ namespace LagoVista.GCode.Sender
         public int BufferState
         {
             get { return _bufferState; }
-            private set
+            set
             {
                 if (_bufferState == value)
                     return;

@@ -50,6 +50,7 @@
                     <RowDefinition Height="300" />
                     <RowDefinition Height="auto" />
                 </Grid.RowDefinitions>
+                <ctls:MachineStatusControl Grid.Row="1" Width="200" Height="200" HorizontalAlignment="Left" VerticalAlignment="Top" />
 
                 <ctls:JobControl Grid.ColumnSpan="2" DataContext="{Binding JobControlVM}" />
 

@@ -29,6 +29,14 @@ namespace LagoVista.GCode.Sender.ViewModels
         }
 
         public List<String> MachineTypes { get; private set; }
+        public List<String> GCodeJogCommands { get; private set; }
+
+        private String _gcodeJogCommand;
+        public String GCodeJogCommand
+        {
+            get { return _gcodeJogCommand; }
+            set { Set(ref _gcodeJogCommand, value); }
+        }
 
         public String MachineType
         {

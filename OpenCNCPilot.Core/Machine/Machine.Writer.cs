@@ -12,16 +12,16 @@ namespace LagoVista.GCode.Sender
     {
         public void SendCommand(GCodeCommand cmd)
         {
-            var send_line = cmd.Line;
-            _writer.Write(send_line);
-            _writer.Write('\n');
-            _writer.Flush();
+            SendCommand(cmd.Line);
 
-            UpdateStatus(send_line);
-            AddStatusMessage(StatusMessageTypes.SentLine, send_line);
+        }
 
-            BufferState += cmd.MessageLength;
-
+        public void SendCommand(String cmd)
+        {
+            if (AssertConnected())
+            {
+                Enqueue(cmd);
+            }
         }
     }
 }

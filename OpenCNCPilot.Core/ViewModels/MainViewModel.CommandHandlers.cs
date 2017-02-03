@@ -9,12 +9,12 @@ namespace LagoVista.GCode.Sender.ViewModels
 
         public void SetAbsolutePositionMode()
         {
-            AssertInManualMode(() => Machine.SendLine("G90"));
+            AssertInManualMode(() => Machine.SendCommand("G90"));
         }
 
         public void SetIncrementalPositionMode()
         {
-            AssertInManualMode(() => Machine.SendLine("G91"));
+            AssertInManualMode(() => Machine.SendCommand("G91"));
         }
 
         private void ButtonArcPlane_Click()
@@ -23,18 +23,18 @@ namespace LagoVista.GCode.Sender.ViewModels
                 return;
 
             if (Machine.Plane != ArcPlane.XY)
-                Machine.SendLine("G17");
+                Machine.SendCommand("G17");
         }
 
         //http://www.cnccookbook.com/CCCNCGCodeG20G21MetricImperialUnitConversion.htm
         public void SetImperialUnits()
         {
-            AssertInManualMode(() => Machine.SendLine("G20"));
+            AssertInManualMode(() => Machine.SendCommand("G20"));
         }
 
         public void SetMetricUnits()
         {
-            AssertInManualMode(() => Machine.SendLine("G21"));
+            AssertInManualMode(() => Machine.SendCommand("G21"));
         }
 
 

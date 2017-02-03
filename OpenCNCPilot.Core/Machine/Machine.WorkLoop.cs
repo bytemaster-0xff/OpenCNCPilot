@@ -27,7 +27,13 @@ namespace LagoVista.GCode.Sender
         {
             while (_toSendPriority.Count > 0)
             {
-                _writer.Write(_toSendPriority.Dequeue());
+                var line = _toSendPriority.Dequeue();
+                _writer.Write(line);
+                if (line != "?")
+                {
+                    AddStatusMessage(StatusMessageTypes.SentLinePriority, line.TrimStart().TrimEnd());
+                }
+
                 _writer.Flush();
             }
         }
@@ -42,6 +48,7 @@ namespace LagoVista.GCode.Sender
             UpdateStatus(send_line.ToString());
             AddStatusMessage(StatusMessageTypes.SentLine, send_line.ToString());
 
+            BufferState += send_line.Length;
             BufferState += 1;
 
             _sentQueue.Enqueue(send_line);
@@ -54,9 +61,15 @@ namespace LagoVista.GCode.Sender
 
             if ((Now - _lastPollTime).TotalMilliseconds > (Mode == OperatingMode.Manual ? _settings.StatusPollIntervalIdle : _settings.StatusPollIntervalRunning))
             {
-                var statusRequest = _settings.MachineType == FirmwareTypes.GRBL1_1 ? "?" : "M114\n";
-                _writer.Write(statusRequest);
-                _writer.Flush();
+                if(_settings.MachineType == FirmwareTypes.GRBL1_1)
+                {
+                    Enqueue("?", true);
+                }
+                else
+                {
+                    Enqueue("M114");
+                }
+
                 _lastPollTime = Now;
             }
 
@@ -75,7 +88,6 @@ namespace LagoVista.GCode.Sender
             if (Mode == OperatingMode.SendingJob && CurrentJob != null)
             {
                 CurrentJob.Process();
-                //SendFile(_writer);
             }
             else if (ShouldSendNormalPriorityItems())
             {
@@ -120,8 +132,7 @@ namespace LagoVista.GCode.Sender
 
                 if (_settings.MachineType == FirmwareTypes.GRBL1_1)
                 {
-                    _writer.Write("\n$G\n");
-                    _writer.Flush();
+                    Enqueue("\n$G\n", true);
                 }
 
                 while (true)

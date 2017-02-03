@@ -12,6 +12,12 @@ namespace LagoVista.GCode.Sender
         ZMinus
     }
 
+    public enum JogGCodeCommand
+    {
+        G0,
+        G1
+    }
+
     public enum Axis
     {
         XY,
@@ -55,6 +61,7 @@ namespace LagoVista.GCode.Sender
     {
         ReceviedLine,
         SentLine,
+        SentLinePriority,
         Info,
         Warning,
         FatalError

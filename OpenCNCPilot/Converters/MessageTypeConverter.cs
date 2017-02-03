@@ -38,6 +38,7 @@ namespace LagoVista.GCode.Sender.Application.Converters
                 case StatusMessageTypes.FatalError: return "Red";
                 case StatusMessageTypes.ReceviedLine:
                 case StatusMessageTypes.SentLine: return "Green";
+                case StatusMessageTypes.SentLinePriority: return "Red";
                 case StatusMessageTypes.Warning: return "Yellow";
             }
 

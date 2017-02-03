@@ -76,6 +76,7 @@
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="40" />
@@ -83,35 +84,48 @@
                 <ColumnDefinition Width="50" />
                 <ColumnDefinition Width="100" />
             </Grid.ColumnDefinitions>
-            <TextBlock Text="Jog Feed Rate" Grid.ColumnSpan="3" FontSize="24" Margin="4" />
-            <TextBlock Text="XY" Grid.Row="2" FontSize="16" Margin="8,4,4,4" />
-            <TextBlock Text="Z" Grid.Row="3" FontSize="16" Margin="8,4,4,4"/>
             <Slider Grid.Row="2" Grid.Column="1"
+                    Grid.ColumnSpan="2"
+                    Minimum="0"
+                    Maximum="5000" 
+                    LargeChange="500" 
+                    SmallChange="100"
+                    Value="{Binding Machine.Settings.JogFeedRate, Mode=TwoWay}" 
+                    VerticalAlignment="Center"  />
+
+            <TextBlock Text="Jog" Grid.ColumnSpan="3" FontSize="24" Margin="4" />
+            <TextBlock Text="Rate" Grid.Row="2" FontSize="16" Margin="8,4,4,4" />
+            <TextBlock Text="XY" Grid.Row="3" FontSize="16" Margin="8,4,4,4" />
+            <TextBlock Text="Z" Grid.Row="4" FontSize="16" Margin="8,4,4,4"/>
+            
+            <Slider Grid.Row="3" Grid.Column="1"
                     Minimum="{Binding XYStepMin}"
                     Maximum="{Binding XYStepMax}" 
                     LargeChange="{Binding XYStepInterval}" 
                     SmallChange="{Binding XYStepInterval}"
                     Value="{Binding XYStepSizeSlider, Mode=TwoWay}" 
                     VerticalAlignment="Center"  />
-            <Slider Grid.Row="3" Grid.Column="1"  
+            <Slider Grid.Row="4" Grid.Column="1"  
                     Minimum="{Binding ZStepMin}"
                     Maximum="{Binding ZStepMax}" 
                     LargeChange="{Binding Path=ZStepInterval}" 
                     SmallChange="{Binding Path=ZStepInterval}"
                     Value="{Binding ZStepSizeSlider, Mode=TwoWay}"  
                     VerticalAlignment="Center" />
+            <TextBlock Text="{Binding Machine.Settings.JogFeedRate, FallbackValue=1000, StringFormat=0.00}"
+                       Grid.Row="2" Grid.Column="3" FontSize="16" Margin="4" TextAlignment="Right" />
             <TextBlock Text="{Binding XYStepSize, FallbackValue=0.5, StringFormat=0.00}"
-                       Grid.Row="2" Grid.Column="2" FontSize="16" Margin="4" TextAlignment="Right" />
-            <TextBlock Text="{Binding ZStepSize, FallbackValue=0.5, StringFormat=0.00}"
                        Grid.Row="3" Grid.Column="2" FontSize="16" Margin="4" TextAlignment="Right" />
+            <TextBlock Text="{Binding ZStepSize, FallbackValue=0.5, StringFormat=0.00}"
+                       Grid.Row="4" Grid.Column="2" FontSize="16" Margin="4" TextAlignment="Right" />
 
-            <ComboBox IsReadOnly="True" Grid.Column="4" Grid.Row="2" Margin="4" FontSize="16" 
+            <ComboBox IsReadOnly="True" Grid.Column="4" Grid.Row="3" Margin="4" FontSize="16" 
                       DisplayMemberPath="Value" 
                       SelectedValuePath="Key" 
                       SelectedValue="{Binding Path=XYStepMode, Mode=TwoWay}"
                       ItemsSource="{Binding StepSizes}" />
             
-            <ComboBox IsReadOnly="True" Grid.Column="4" Grid.Row="3" Margin="4" FontSize="16"
+            <ComboBox IsReadOnly="True" Grid.Column="4" Grid.Row="4" Margin="4" FontSize="16"
                       DisplayMemberPath="Value" 
                       SelectedValuePath="Key" 
                       SelectedValue="{Binding Path=ZStepMode, Mode=TwoWay}"
