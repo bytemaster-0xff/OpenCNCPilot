@@ -1,6 +1,7 @@
 ﻿using LagoVista.Core.Models;
 using LagoVista.Core.PlatformSupport;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading.Tasks;
 
@@ -27,6 +28,21 @@ namespace LagoVista.GCode.Sender
         public double ProbeSafeHeight { get; set; }
         public double ProbeMaxDepth { get; set; }
         public double ProbeMinimumHeight { get; set; }
+
+        int _workAreaWidth;
+        public int WorkAreaWidth
+        {
+            get { return _workAreaWidth; }
+            set { Set(ref _workAreaWidth, value); }
+        }
+
+        int _workAreaHeight;
+        public int WorkAreaHeight
+        {
+            get { return _workAreaHeight; }
+            set { Set(ref _workAreaHeight, value); }
+        }
+
         public bool AbortOnProbeFail { get; set; }
         public double ProbeFeed { get; set; }
 
@@ -42,6 +58,20 @@ namespace LagoVista.GCode.Sender
         {
             get { return _zStepSize; }
             set { Set(ref _zStepSize, value); }
+        }
+
+        private String _machineName;
+        public String MachineName
+        {
+            get { return _machineName; }
+            set { Set(ref _machineName, value); }
+        }
+
+        MachineOrigin _machineOrigin;
+        public MachineOrigin MachineOrigin
+        {
+            get { return _machineOrigin; }
+            set { Set(ref _machineOrigin, value); }
         }
 
         JogGCodeCommand _jogGCodeCommand;
@@ -90,6 +120,19 @@ namespace LagoVista.GCode.Sender
             }
         }
 
+        public List<string> Validate()
+        {
+            var errs = new List<string>();
+
+            if (String.IsNullOrEmpty(MachineName))
+            {
+                errs.Add("Machine Name is Requried.");
+            }
+
+          
+            return errs;
+        }
+
         public async Task SaveAsync()
         {
             await Services.Storage.StoreAsync(this, "Settings.json");
@@ -101,10 +144,12 @@ namespace LagoVista.GCode.Sender
             {
                 return new Settings()
                 {
+                    MachineName = "",
                     ControllerBufferSize = 120,
                     StatusPollIntervalIdle = 1000,
                     StatusPollIntervalRunning = 100,
                     JogFeedRate = 2000,
+                    MachineOrigin = MachineOrigin.Bottom_Left,
                     JogGCodeCommand = JogGCodeCommand.G0,
                     ViewportArcSplit = 1,
                     EnableCodePreview = true,
@@ -117,6 +162,8 @@ namespace LagoVista.GCode.Sender
                     SplitSegmentLength = 5,
                     XYStepSize = 1,
                     ZStepSize = 1,
+                    WorkAreaWidth = 300,
+                    WorkAreaHeight = 200
                 };
             }
         }

@@ -4,6 +4,7 @@ using LagoVista.Core.Models;
 using LagoVista.Core.PlatformSupport;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 
 namespace LagoVista.GCode.Sender.ViewModels
@@ -41,22 +42,35 @@ namespace LagoVista.GCode.Sender.ViewModels
             SerialPorts = ports;
             RaisePropertyChanged(nameof(SerialPorts));
 
-            var MachineTypes = new List<string>();
+            var machineTypes = new ObservableCollection<string>();
             var enums = Enum.GetValues(typeof(FirmwareTypes));
             foreach(var enumType in enums)
             {
-                MachineTypes.Add(enumType.ToString().Replace("_","."));
+                machineTypes.Add(enumType.ToString().Replace("_","."));
             }
+
+            MachineTypes = machineTypes;
             RaisePropertyChanged(nameof(MachineTypes));
 
             var gcodeCommands = Enum.GetValues(typeof(JogGCodeCommand));
-            GCodeJogCommands = new List<string>();
+            var gcodeJogCommands = new ObservableCollection<string>();
             foreach (var gcodeCmd in gcodeCommands)
             {
-                GCodeJogCommands.Add(gcodeCmd.ToString().Replace("_", "."));
+                gcodeJogCommands.Add(gcodeCmd.ToString().Replace("_", "."));
             }
 
+            GCodeJogCommands = gcodeJogCommands;
             RaisePropertyChanged(nameof(GCodeJogCommands));
+
+            var origins = Enum.GetValues(typeof(MachineOrigin));
+            var originOptions = new ObservableCollection<string>();
+            foreach(var origin in origins)
+            {
+                originOptions.Add(origin.ToString().Replace("_", " "));
+            }
+
+            MachineOrigins = originOptions;
+            RaisePropertyChanged(nameof(MachineOrigins));
         }
     }
 }

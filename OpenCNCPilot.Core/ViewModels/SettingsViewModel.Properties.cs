@@ -28,15 +28,30 @@ namespace LagoVista.GCode.Sender.ViewModels
             }
         }
 
-        public List<String> MachineTypes { get; private set; }
-        public List<String> GCodeJogCommands { get; private set; }
+        public ObservableCollection<String> MachineTypes { get; private set; }
+        public ObservableCollection<String> GCodeJogCommands { get; private set; }
+        public ObservableCollection<String> MachineOrigins { get; private set; }
 
-        private String _gcodeJogCommand;
         public String GCodeJogCommand
         {
-            get { return _gcodeJogCommand; }
-            set { Set(ref _gcodeJogCommand, value); }
+            get { return Machine.Settings.JogGCodeCommand.ToString(); }
+            set
+            {
+                Machine.Settings.JogGCodeCommand = (JogGCodeCommand)Enum.Parse(typeof(JogGCodeCommand), value);
+            }
         }
+
+        public String MachineOrigin
+        {
+            get { return Machine.Settings.MachineOrigin.ToString().Replace("_", " "); }
+            set
+            {
+                var newValue = value.Replace(" ", "_");
+                Machine.Settings.MachineOrigin = (MachineOrigin)Enum.Parse(typeof(MachineOrigin), newValue);
+            }
+        }
+
+
 
         public String MachineType
         {

@@ -12,6 +12,14 @@ namespace LagoVista.GCode.Sender
         ZMinus
     }
 
+    public enum MachineOrigin
+    {
+        Top_Left,
+        Bottom_Left,
+        Top_Right,
+        Bottom_Right,
+    }
+
     public enum JogGCodeCommand
     {
         G0,

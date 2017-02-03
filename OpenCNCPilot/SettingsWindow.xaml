@@ -8,16 +8,16 @@
     <Window.Resources>
         <Style TargetType="TextBox">
             <Setter Property="Margin" Value="4" />
-            <Setter Property="Grid.Column" Value="0" />
+            <Setter Property="Grid.Column" Value="1" />
             <Setter Property="TextAlignment" Value="Right" />
         </Style>
         <Style TargetType="ComboBox">
             <Setter Property="Margin" Value="4" />
-            <Setter Property="Grid.Column" Value="0" />
+            <Setter Property="Grid.Column" Value="1" />
         </Style>
         <Style TargetType="Label">
             <Setter Property="Margin" Value="4" />
-            <Setter Property="Grid.Column" Value="1" />
+            <Setter Property="Grid.Column" Value="0" />
         </Style>
     </Window.Resources>
     <TabControl>
@@ -34,28 +34,34 @@
                     <RowDefinition Height="auto" />
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="135" />
+                    <ColumnDefinition Width="140" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
+                <Label Grid.Row="0" Grid.Column="0" Content="Name" />
+                <TextBox Text="{Binding Machine.Settings.MachineName, Mode=TwoWay}" Grid.Column="1" />
 
-                <Label Grid.Row="0" Content="MachineType" />
-                <ComboBox Grid.Row="0" Grid.Column="0" 
+                <Label Grid.Row="1" Content="Machine Type" />
+                <ComboBox Grid.Row="1" 
                           IsEnabled="{Binding CanChangeMachineConfig}"
                           SelectedValue="{Binding Path=MachineType, Mode=TwoWay}"
                           ItemsSource="{Binding Path=MachineTypes}"  />
 
-                <TextBox Text="{Binding WorkAreaWidth}" Grid.Row="1" />
-                <Label Grid.Row="1" Content="Work Area Width" />
-                <TextBox Text="{Binding WorkAreaHeight}" Grid.Row="2" />
-                <Label Grid.Row="2" Content="Work Area Height" />
-                <TextBox Text="{Binding WorkAreaWidth}" Grid.Row="1" />
-                <Label Grid.Row="3" Content="GCode Jog Command" />
-                <ComboBox Grid.Row="3" Grid.Column="0" 
+                <Label Grid.Row="2" Content="Origin" />
+                <ComboBox Grid.Row="2" 
                           IsEnabled="{Binding CanChangeMachineConfig}"
-                          SelectedValue="{Binding Path=Machine.Settings.JogGCodeCommand, Mode=TwoWay}"
-                          ItemsSource="{Binding Path=GCodeJogCommand}"  />
+                          SelectedValue="{Binding Path=MachineOrigin, Mode=TwoWay}"
+                          ItemsSource="{Binding Path=MachineOrigins}"  />
 
-
+                <Label Grid.Row="3" Content="Work Area Width" />
+                <TextBox  Text="{Binding Machine.Settings.WorkAreaWidth}" Grid.Row="3" />
+             
+                <Label Grid.Row="4" Content="Work Area Height" />
+                <TextBox Text="{Binding Machine.Settings.WorkAreaHeight}" Grid.Row="4" />
+                <Label Grid.Row="5" Content="GCode Jog Command" />
+                <ComboBox Grid.Row="5"  
+                          IsEnabled="{Binding CanChangeMachineConfig}"
+                          SelectedValue="{Binding Path=GCodeJogCommand, Mode=TwoWay}"
+                          ItemsSource="{Binding Path=GCodeJogCommands}"  />
             </Grid>
         </TabItem>
 
