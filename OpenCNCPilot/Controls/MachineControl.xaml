@@ -91,14 +91,14 @@
                     Maximum="{Binding XYStepMax}" 
                     LargeChange="{Binding XYStepInterval}" 
                     SmallChange="{Binding XYStepInterval}"
-                    Value="{Binding XYStepSize, Mode=TwoWay}" 
+                    Value="{Binding XYStepSizeSlider, Mode=TwoWay}" 
                     VerticalAlignment="Center"  />
             <Slider Grid.Row="3" Grid.Column="1"  
                     Minimum="{Binding ZStepMin}"
                     Maximum="{Binding ZStepMax}" 
                     LargeChange="{Binding Path=ZStepInterval}" 
                     SmallChange="{Binding Path=ZStepInterval}"
-                    Value="{Binding ZStepSize, Mode=TwoWay}"  
+                    Value="{Binding ZStepSizeSlider, Mode=TwoWay}"  
                     VerticalAlignment="Center" />
             <TextBlock Text="{Binding XYStepSize, FallbackValue=0.5, StringFormat=0.00}"
                        Grid.Row="2" Grid.Column="2" FontSize="16" Margin="4" TextAlignment="Right" />

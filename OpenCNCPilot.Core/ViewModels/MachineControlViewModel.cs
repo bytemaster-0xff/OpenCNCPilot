@@ -7,6 +7,6 @@ namespace LagoVista.GCode.Sender.ViewModels
         public MachineControlViewModel(IMachine machine) : base(machine)
         {
             InitCommands();
-        }
+        }      
     }
 }

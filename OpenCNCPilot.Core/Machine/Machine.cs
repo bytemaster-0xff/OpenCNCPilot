@@ -32,6 +32,7 @@ namespace LagoVista.GCode.Sender
         public async Task InitAsync()
         {
             _settings = await Settings.LoadAsync();
+            RaisePropertyChanged(nameof(Settings));
             IsInitialized = true;
         }
 

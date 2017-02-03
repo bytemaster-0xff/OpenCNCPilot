@@ -37,6 +37,25 @@ namespace LagoVista.GCode.Sender.ViewModels
             }
         }
 
+        private double _xySizeStepSlider;
+        public double XYStepSizeSlider
+        {
+            get { return _xySizeStepSlider; }
+            set
+            {
+                _xySizeStepSlider = value;
+                RaisePropertyChanged();
+
+                var newValue = System.Convert.ToInt32(value / XYStepInterval) * XYStepInterval;
+                var fractional = value % XYStepInterval;
+                if (fractional > XYStepInterval / 2)
+                    newValue += XYStepInterval;
+
+                XYStepSize = newValue;
+            }
+        }
+
+
         private double _zStepInterval;
         public double ZStepInterval
         {
@@ -68,6 +87,21 @@ namespace LagoVista.GCode.Sender.ViewModels
             }
         }
 
+        private double _zSizeStepSlider;
+        public double ZStepSizeSlider
+        {
+            get { return _zSizeStepSlider; }
+            set
+            {
+                _zSizeStepSlider = value;
+                RaisePropertyChanged();
+
+                var newValue = System.Convert.ToInt32(value / ZStepInterval) * ZStepInterval;
+           
+                ZStepSize = newValue;
+            }
+        }
+
         public StepModes XYStepMode
         {
             get { return Machine.Settings.XYStepMode; }
@@ -82,24 +116,28 @@ namespace LagoVista.GCode.Sender.ViewModels
                         XYStepMax = 50;
                         XYStepMin = 10;
                         XYStepSize = 10;
+                        XYStepSizeSlider = XYStepSize;
                         break;
                     case StepModes.Medium:
                         XYStepInterval = 1;
                         XYStepMax = 10;
                         XYStepMin = 1;
                         XYStepSize = 5;
+                        XYStepSizeSlider = XYStepSize;
                         break;
                     case StepModes.Small:
                         XYStepInterval = 0.1;
                         XYStepMax = 1;
                         XYStepMin = 0.1;
                         XYStepSize = 0.5;
+                        XYStepSizeSlider = XYStepSize;
                         break;
                     case StepModes.Micro:
                         XYStepInterval = 0.01;
                         XYStepMax = 0.1;
                         XYStepMin = 0.01;
                         XYStepSize = 0.05;
+                        XYStepSizeSlider = XYStepSize;
                         break;
                 }
             }
@@ -119,24 +157,28 @@ namespace LagoVista.GCode.Sender.ViewModels
                         ZStepMax = 50;
                         ZStepMin = 10;
                         ZStepSize = 10;
+                        ZStepSizeSlider = ZStepSize;
                         break;
                     case StepModes.Medium:
                         ZStepInterval = 1;
                         ZStepMax = 10;
                         ZStepMin = 1;
                         ZStepSize = 5;
+                        ZStepSizeSlider = ZStepSize;
                         break;
                     case StepModes.Small:
                         ZStepInterval = 0.1;
                         ZStepMax = 1;
                         ZStepMin = 0.1;
                         ZStepSize = 0.5;
+                        ZStepSizeSlider = ZStepSize;
                         break;
                     case StepModes.Micro:
                         ZStepInterval = 0.01;
                         ZStepMax = 0.1;
                         ZStepMin = 0.01;
                         ZStepSize = 0.05;
+                        ZStepSizeSlider = ZStepSize;
                         break;
                 }
             }

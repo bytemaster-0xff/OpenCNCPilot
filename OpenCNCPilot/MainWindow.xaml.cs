@@ -55,5 +55,10 @@ namespace LagoVista.GCode.Sender.Application
                 ViewModel.HeightMap = newHeightMapWindow.HeightMap;
             }
         }
+
+        private async void Window_Closed(object sender, EventArgs e)
+        {
+            await ViewModel.Machine.Settings.SaveAsync();
+        }
     }
 }

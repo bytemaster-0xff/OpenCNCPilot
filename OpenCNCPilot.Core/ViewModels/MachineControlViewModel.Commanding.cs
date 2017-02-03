@@ -19,7 +19,7 @@ namespace LagoVista.GCode.Sender.ViewModels
 
         private void Machine_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if(e.PropertyName == nameof(Machine.Connected) ||
+            if (e.PropertyName == nameof(Machine.Connected) ||
                e.PropertyName == nameof(Machine.Mode))
             {
                 SoftResetCommand.RaiseCanExecuteChanged();
@@ -28,6 +28,19 @@ namespace LagoVista.GCode.Sender.ViewModels
                 CycleStartCommand.RaiseCanExecuteChanged();
                 JogCommand.RaiseCanExecuteChanged();
                 ResetCommand.RaiseCanExecuteChanged();
+            }
+
+            if (e.PropertyName == nameof(Machine.Settings))
+            {
+                /* Keep the saved values as temp vars since updating the StepMode will overwrite */
+                var originalXYStepSize = Machine.Settings.XYStepSize;
+                var originalZStepSize = Machine.Settings.ZStepSize;
+
+                XYStepMode = Machine.Settings.XYStepMode;
+                ZStepMode = Machine.Settings.ZStepMode;
+
+                XYStepSizeSlider = originalXYStepSize;
+                ZStepSizeSlider = originalZStepSize;
             }
         }
 

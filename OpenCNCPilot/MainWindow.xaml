@@ -6,6 +6,7 @@
 		xmlns:h="http://helix-toolkit.org/wpf"
         xmlns:fa="http://schemas.fontawesome.io/icons/"
         xmlns:ctls="clr-namespace:LagoVista.GCode.Sender.Application.Controls"
+        Closed="Window_Closed" 
 	    mc:Ignorable="d"
 		AllowDrop="True"
         Title="LagoVista - GCode Sender" Height="1024" Width="1280" Closing="Window_Closing">
