@@ -54,7 +54,7 @@
 
                 <Label Grid.Row="3" Content="Work Area Width" />
                 <TextBox  Text="{Binding Machine.Settings.WorkAreaWidth}" Grid.Row="3" />
-             
+
                 <Label Grid.Row="4" Content="Work Area Height" />
                 <TextBox Text="{Binding Machine.Settings.WorkAreaHeight}"  Grid.Row="4" />
                 <Label Grid.Row="5" Content="GCode Jog Command" />
@@ -106,8 +106,33 @@
             </Grid>
         </TabItem>
 
+        <TabItem Header="Vision">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="140" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto" />
+                </Grid.RowDefinitions>
+
+                <Label Content="Camera" />
+                <ComboBox ItemsSource="{Binding Cameras}" 
+                          DisplayMemberPath="Name"
+                          SelectedValuePath="Id"
+                          SelectedValue="{Binding PositioningCameraId, Mode=TwoWay}"/>
+            </Grid>
+        </TabItem>
+
         <TabItem Header="Viewport">
             <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="140" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto" />
+                </Grid.RowDefinitions>
                 <TextBox Margin="10,10,0,0" Text="{Binding Machine.Settings.ViewportArcSplit, Mode=TwoWay}"/>
                 <Label Content="preview arc segment length (mm)" HorizontalAlignment="Left" Margin="135,9,0,0" VerticalAlignment="Top"/>
 

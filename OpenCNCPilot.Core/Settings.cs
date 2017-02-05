@@ -1,5 +1,6 @@
 ﻿using LagoVista.Core.Models;
 using LagoVista.Core.PlatformSupport;
+using LagoVista.GCode.Sender.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -102,8 +103,14 @@ namespace LagoVista.GCode.Sender
             set { Set(ref _zStepMode, value); }
         }
 
-        public FirmwareTypes MachineType { get; set; }
+        Camera _positioningCamera;
+        public Camera PositioningCamera
+        {
+            get { return _positioningCamera; }
+            set { Set(ref _positioningCamera, value); }
+        }
 
+        public FirmwareTypes MachineType { get; set; }
 
         public async static Task<Settings> LoadAsync()
         {

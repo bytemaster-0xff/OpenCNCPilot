@@ -1,4 +1,5 @@
-﻿using LagoVista.GCode.Sender.ViewModels;
+﻿using DirectShowLib;
+using LagoVista.GCode.Sender.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,10 +21,26 @@ namespace LagoVista.GCode.Sender.Application
 		{
             _machine = machine;
             DataContext = new SettingsViewModel(machine);
+            var cameras = DsDevice.GetDevicesOfCat(FilterCategory.VideoInputDevice);
+            var idx = 0;
+            foreach (var camera in cameras)
+            {
+                ViewModel.Cameras.Add(new Models.Camera()
+                {
+                    Id = camera.DevicePath,
+                    Name = camera.Name,
+                    CameraIndex = idx++
+                });
+            }
+
             InitializeComponent();
             
             Closed += SettingsWindow_Closed;
 		}
+        public SettingsViewModel ViewModel
+        {
+            get { return DataContext as SettingsViewModel; }
+        }
 
         private async void SettingsWindow_Closed(object sender, EventArgs e)
         {

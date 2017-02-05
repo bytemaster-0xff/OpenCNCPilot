@@ -1,4 +1,5 @@
 ﻿using LagoVista.Core.Models;
+using LagoVista.GCode.Sender.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -51,7 +52,22 @@ namespace LagoVista.GCode.Sender.ViewModels
             }
         }
 
+        public List<Camera> Cameras { get; private set; }
 
+        public String PositioningCameraId
+        {
+            get
+            {
+                return Machine.Settings.PositioningCamera != null ? Machine.Settings.PositioningCamera.Id : "";
+            }
+            set
+            {
+                if(value != null)
+                {
+                    Machine.Settings.PositioningCamera = Cameras.Where(cmr => cmr.Id == value).FirstOrDefault();
+                }
+            }
+        }
 
         public String MachineType
         {

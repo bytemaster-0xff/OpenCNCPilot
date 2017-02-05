@@ -13,7 +13,7 @@ namespace LagoVista.GCode.Sender.ViewModels
     {
         public SettingsViewModel(IMachine machine) : base(machine)
         {
-
+            Cameras = new List<Models.Camera>();
             InitComamnds();
             Init();
         }

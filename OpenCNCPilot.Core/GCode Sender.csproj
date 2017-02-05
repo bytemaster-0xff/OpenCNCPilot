@@ -73,6 +73,7 @@
     <Compile Include="Managers\ToolChangeManager.Actions.cs" />
     <Compile Include="Managers\ToolChangeManager.cs" />
     <Compile Include="Managers\ToolChangeManager.Properties.cs" />
+    <Compile Include="Models\Camera.cs" />
     <Compile Include="Models\HeightMap.cs" />
     <Compile Include="Models\HeightMap.Math.cs">
       <DependentUpon>HeightMap.cs</DependentUpon>

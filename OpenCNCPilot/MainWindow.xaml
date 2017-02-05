@@ -43,19 +43,19 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="300" />
+                    <ColumnDefinition Width="280" />
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto" />
                     <RowDefinition Height="*" />
-                    <RowDefinition Height="200" />
+                    <RowDefinition Height="150" />
                     <RowDefinition Height="36" />
                 </Grid.RowDefinitions>
-                <ctls:MachineStatusControl Grid.Row="1" Grid.Column="1" Width="200" Height="200" HorizontalAlignment="RIght" VerticalAlignment="Bottom" />
+                <ctls:MachineStatusControl Grid.Row="1" Grid.Column="1" Width="170" Height="160" HorizontalAlignment="RIght" VerticalAlignment="Bottom" />
 
                 <ctls:JobControl Grid.ColumnSpan="2" DataContext="{Binding JobControlVM}" />
 
-                <ctls:HeightMapControl CurrentJob="{Binding Machine.CurrentJob}"  HeightMap="{Binding HeightMap}" Grid.Row="1" Grid.ColumnSpan="2" />
+                <ctls:HeightMapControl CurrentJob="{Binding Machine.CurrentJob}"  HeightMap="{Binding HeightMap}" Grid.Row="1" Grid.ColumnSpan="2"  />
 
                 <ctls:CurrentFileControl x:Name="CurrentFile"  Grid.Row="2"/>
                 <ctls:MachineResponseControl x:Name="MachineResponse" Grid.Row="2" Grid.Column="1" />
