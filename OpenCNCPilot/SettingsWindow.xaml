@@ -20,7 +20,7 @@
             <Setter Property="Grid.Column" Value="0" />
         </Style>
     </Window.Resources>
-    <TabControl>
+    <TabControl x:Name="Tabs">
         <TabItem Header="Machine">
             <Grid>
                 <Grid.RowDefinitions>

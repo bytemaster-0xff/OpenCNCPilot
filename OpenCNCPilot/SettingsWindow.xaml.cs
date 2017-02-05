@@ -14,10 +14,9 @@ namespace LagoVista.GCode.Sender.Application
 	/// </summary>
 	public partial class SettingsWindow : Window
 	{
-
         IMachine _machine;
 
-        public SettingsWindow(IMachine machine)
+        public SettingsWindow(IMachine machine, int index = 0)
 		{
             _machine = machine;
             DataContext = new SettingsViewModel(machine);
@@ -34,6 +33,8 @@ namespace LagoVista.GCode.Sender.Application
             }
 
             InitializeComponent();
+
+            Tabs.SelectedIndex = index;
             
             Closed += SettingsWindow_Closed;
 		}
@@ -46,5 +47,7 @@ namespace LagoVista.GCode.Sender.Application
         {
             await _machine.Settings.SaveAsync();
         }
+
+
 	}
 }
