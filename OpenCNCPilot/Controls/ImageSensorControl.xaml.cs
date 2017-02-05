@@ -4,6 +4,7 @@ using LagoVista.GCode.Sender.ViewModels;
 using System;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
@@ -24,7 +25,7 @@ namespace LagoVista.GCode.Sender.Application.Controls
         public ImageSensorControl()
         {
             InitializeComponent();
-            Stop.IsEnabled = true;
+            Stop.Visibility = Visibility.Collapsed;
             DataContextChanged += ImageSensorControl_DataContextChanged;
         }
 
@@ -92,7 +93,15 @@ namespace LagoVista.GCode.Sender.Application.Controls
             }));
         }
 
-        public void StartCapture()
+        private async Task InitCapture(int cameraIndex)
+        {
+            await Task.Run(() =>
+           {
+               _videoCapture = new VideoCapture(cameraIndex);
+           });
+        }
+
+        public async void StartCapture()
         {
             lock (_videoCaptureLocker)
             {
@@ -100,27 +109,37 @@ namespace LagoVista.GCode.Sender.Application.Controls
                 {
                     return;
                 }
-
-                if (ViewModel.Machine.Settings.PositioningCamera == null)
-                {
-                    MessageBox.Show("Please select a camera");
-                    new SettingsWindow(ViewModel.Machine, 2).ShowDialog();
-                    return;
-                }
-
-                try
-                {
-                    _videoCapture = new VideoCapture(ViewModel.Machine.Settings.PositioningCamera.CameraIndex);
-                    _timer = new Timer(ProcessFrame, _videoCapture, 0, 100);
-                    _timerStopped = false;
-                    Stop.IsEnabled = true;
-                    Play.IsEnabled = false;
-                }
-                catch (NullReferenceException excpt)
-                {
-                    MessageBox.Show(excpt.Message);
-                }
             }
+
+            if (ViewModel.Machine.Settings.PositioningCamera == null)
+            {
+                MessageBox.Show("Please select a camera");
+                new SettingsWindow(ViewModel.Machine, 2).ShowDialog();
+                return;
+            }
+
+            try
+            {
+                LoadingMask.Visibility = Visibility.Visible;
+                await InitCapture(ViewModel.Machine.Settings.PositioningCamera.CameraIndex);
+
+                Play.Visibility = Visibility.Collapsed;
+                Stop.Visibility = Visibility.Visible;
+
+                ProcessFrame(null);
+
+                _timer = new Timer(ProcessFrame, _videoCapture, 0, 100);
+                _timerStopped = false;
+            }
+            catch (NullReferenceException excpt)
+            {
+                MessageBox.Show(excpt.Message);
+            }
+            finally
+            {
+                LoadingMask.Visibility = Visibility.Collapsed;
+            }
+
         }
 
         public void StopCapture()
@@ -137,13 +156,14 @@ namespace LagoVista.GCode.Sender.Application.Controls
             {
                 if (_videoCapture != null)
                 {
+                    _videoCapture.Stop();
                     _videoCapture.Dispose();
                     _videoCapture = null;
                 }
             }
 
-            Stop.IsEnabled = false;
-            Play.IsEnabled = true;
+            Play.Visibility = Visibility.Visible;
+            Stop.Visibility = Visibility.Collapsed;
 
             var src = new BitmapImage();
             src.BeginInit();
