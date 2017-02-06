@@ -46,12 +46,9 @@ namespace LagoVista.GCode.Sender
     public class SimulatedGCodeMachine : Stream
     {
         private List<byte> _outputArray = new List<byte>();
-
         GCodeParser _parser = new GCodeParser();
-
-
+        Queue<String> _commands = new Queue<string>();
         ITimer _timer;
-
         FirmwareTypes _firmwareType;
 
         public SimulatedGCodeMachine(FirmwareTypes firmwareType)
@@ -59,16 +56,21 @@ namespace LagoVista.GCode.Sender
             _firmwareType = firmwareType;
             _timer = Services.TimerFactory.Create(TimeSpan.FromSeconds(0.5));
             _timer.Tick += _timer_Tick;
-            _timer.Start();
 
+            _timer.Start();
         }
 
         private void _timer_Tick(object sender, EventArgs e)
         {
-            if (_commands.Any())
+            if(_commands.Any())
             {
-                var cmd = _commands.Dequeue();
-                HandleCommand(cmd);
+                _timer.Stop();
+                while (_commands.Any())
+                {
+                    var cmd = _commands.Dequeue();
+                    HandleCommand(cmd);
+                }
+                _timer.Start();
             }
         }
 
@@ -158,7 +160,6 @@ namespace LagoVista.GCode.Sender
 
         private void HandleGCode(String cmd)
         {
-
             var parts = cmd.Split(' ');
             foreach(var part in parts.Where(itm=>!String.IsNullOrEmpty(itm)))
             {
@@ -182,7 +183,10 @@ namespace LagoVista.GCode.Sender
             var line = _parser.CleanupLine(cmd, idx);
             var parsedLine = _parser.Parse(line, idx);
 
-            System.Threading.Tasks.Task.Delay(parsedLine.EstimatedRunTime).Wait();
+            if (parsedLine.EstimatedRunTime != TimeSpan.Zero)
+            {
+                System.Threading.Tasks.Task.Delay(parsedLine.EstimatedRunTime).Wait();
+            }
 
             AddResponse("ok");
         }
@@ -214,8 +218,7 @@ namespace LagoVista.GCode.Sender
 
         States _state = States.Idle;
 
-        Queue<String> _commands = new Queue<string>();
-
+     
         private void HandleCommand(String command)
         {
             Debug.WriteLine(DateTime.Now.ToString() + "Handling command: " + command);

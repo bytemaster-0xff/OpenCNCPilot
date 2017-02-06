@@ -19,6 +19,7 @@ namespace LagoVista.Core.GCode.Commands
 
 		public override Vector3 Interpolate(double ratio)
 		{
+            ratio = Math.Min(ratio, 1);
 			return Start + Delta * ratio;
 		}
 
