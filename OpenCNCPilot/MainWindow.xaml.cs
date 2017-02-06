@@ -35,7 +35,10 @@ namespace LagoVista.GCode.Sender.Application
         private async void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             ImageSensor.ShutDown();
-            await ViewModel.Machine.DisconnectAsync();
+            if (ViewModel.Machine.Connected)
+            {
+                await ViewModel.Machine.DisconnectAsync();
+            }
         }
 
         MainViewModel _viewModel;

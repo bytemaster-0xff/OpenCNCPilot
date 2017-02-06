@@ -74,19 +74,21 @@ namespace LagoVista.GCode.Sender.Application.Controls
                         using (var blurredGray = new Mat())
                         using (var finalOutput = new Mat())
                         {
-                            CvInvoke.GaussianBlur(gray, blurredGray, new System.Drawing.Size(5, 5), 3);
-                            CvInvoke.Canny(blurredGray, finalOutput, 15, 45, 3);
+                            CvInvoke.GaussianBlur(gray, blurredGray, new System.Drawing.Size(7, 7), 0);
+                            CvInvoke.Canny(blurredGray, finalOutput, 0, 50, 5, false);
+                            CvInvoke.Threshold(finalOutput, finalOutput, 100, 255, Emgu.CV.CvEnum.ThresholdType.Binary);
+
                             var segments = CvInvoke.HoughLinesP(finalOutput, 1, Math.PI / 2, 50, 5, 5);
 
                             foreach (var segment in segments)
                             {
-                                CvInvoke.Line(originalFrame,
+                                CvInvoke.Line(blurredGray,
                                     segment.P1,
                                     segment.P2,
                                     new MCvScalar(0x00, 0x00, 0xFF), 2, Emgu.CV.CvEnum.LineType.AntiAlias);
                             }
 
-                            WebCamImage.Source = Emgu.CV.WPF.BitmapSourceConvert.ToBitmapSource(originalFrame);
+                            WebCamImage.Source = Emgu.CV.WPF.BitmapSourceConvert.ToBitmapSource(finalOutput);
                         }
                     }
                 }
@@ -128,7 +130,7 @@ namespace LagoVista.GCode.Sender.Application.Controls
 
                 ProcessFrame(null);
 
-                _timer = new Timer(ProcessFrame, _videoCapture, 0, 100);
+                _timer = new Timer(ProcessFrame, _videoCapture, 0, 500);
                 _timerStopped = false;
             }
             catch (NullReferenceException excpt)
