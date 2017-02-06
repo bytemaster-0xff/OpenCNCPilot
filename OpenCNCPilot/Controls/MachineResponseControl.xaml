@@ -17,8 +17,8 @@
             <DataTemplate>
                 <Grid Background="{Binding MessageType, Converter={StaticResource MessageTypeBackgroundColorConverter}}" >
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="100" />
-                        <ColumnDefinition Width="80" />
+                        <ColumnDefinition Width="120" />
+                        <ColumnDefinition Width="90" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
                     <TextBlock Text="{Binding DateStamp}" Foreground="{Binding MessageType, Converter={StaticResource MessageTypeForegroundColorConverter}}" />

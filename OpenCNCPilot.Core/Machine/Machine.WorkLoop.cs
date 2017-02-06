@@ -21,7 +21,7 @@ namespace LagoVista.GCode.Sender
 
         DateTime _lastPollTime;
         TimeSpan _waitTime;
-        
+
 
         private void SendHighPriorityItems()
         {
@@ -59,18 +59,30 @@ namespace LagoVista.GCode.Sender
         {
             var Now = DateTime.Now;
 
-            if ((Now - _lastPollTime).TotalMilliseconds > (Mode == OperatingMode.Manual ? _settings.StatusPollIntervalIdle : _settings.StatusPollIntervalRunning))
+            if (Mode == OperatingMode.Manual)
             {
-                if(_settings.MachineType == FirmwareTypes.GRBL1_1)
+                if ((Now - _lastPollTime).TotalMilliseconds > _settings.StatusPollIntervalIdle)
                 {
-                    Enqueue("?", true);
-                }
-                else
-                {
-                    Enqueue("M114");
-                }
+                    if (_settings.MachineType == FirmwareTypes.GRBL1_1)
+                    {
+                        Enqueue("?", true);
+                    }
+                    else
+                    {
+                        Enqueue("M114");
+                    }
 
-                _lastPollTime = Now;
+                    _lastPollTime = Now;
+                }
+            }
+            else if (Mode == OperatingMode.SendingJob)
+            {
+                if ((Now - _lastPollTime).TotalMilliseconds > _settings.StatusPollIntervalRunning)
+                {
+                    MachinePosition = _jobProcessor.CurrentCommand.CurrentPosition;
+                    WorkPosition = _jobProcessor.CurrentCommand.CurrentPosition;
+                    _lastPollTime = Now;
+                }
             }
 
             await Task.Delay(_waitTime);
@@ -112,8 +124,8 @@ namespace LagoVista.GCode.Sender
                     return;
                 }
 
-                await Send();                
-           }
+                await Send();
+            }
 
             ProcessResponseLine(lineTask.Result);
         }

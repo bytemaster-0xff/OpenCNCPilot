@@ -44,13 +44,17 @@ namespace LagoVista.Core.GCode.Parser
 
             foreach (string linei in file)
             {
-                string line = CleanupLine(linei, i);
+                var line = CleanupLine(linei, i);
 
                 if (string.IsNullOrWhiteSpace(line))
                     continue;
 
-                Parse(line.ToUpper(), i);
-
+                var motionLine = Parse(line.ToUpper(), i);
+                if (motionLine != null)
+                {
+                    Commands.Add(motionLine);
+                }
+            
                 i++;
             }
 
@@ -59,7 +63,7 @@ namespace LagoVista.Core.GCode.Parser
             Services.Logger.Log(LogLevel.Message, "GCodeParser_Parse", $"Parsing the GCode File took {sw.ElapsedMilliseconds} ms");
         }
 
-        string CleanupLine(string line, int lineNumber)
+        public string CleanupLine(string line, int lineNumber)
         {
             int commentIndex = line.IndexOf(';');
 
@@ -81,7 +85,7 @@ namespace LagoVista.Core.GCode.Parser
             return line;
         }
 
-        void Parse(string line, int lineNumber)
+        public GCodeMotion Parse(string line, int lineNumber)
         {
             var words = FindWords(line);
 
@@ -91,7 +95,7 @@ namespace LagoVista.Core.GCode.Parser
 
             if (words.Count == 0)
             {
-                return;
+                return null;
             }
 
             var motionMode = State.LastMotionMode;
@@ -117,30 +121,20 @@ namespace LagoVista.Core.GCode.Parser
                 words.Remove(feedRateCommand);
             }
 
-            GCodeMotion motion = null;
             try
-            {                
-                if (motionMode <= 1)
-                {
-                    motion = ParseLine(words, motionMode, EndPos);
-                }
-                else
-                {
-                    motion = ParseArc(words, motionMode, EndPos, UnitMultiplier);
-                }
+            {
+                var motion = (motionMode <= 1) ? ParseLine(words, motionMode, EndPos) : ParseArc(words, motionMode, EndPos, UnitMultiplier);
+                motion.Line = line;
+                motion.Feed = State.Feed;
+                motion.LineNumber = lineNumber;
+                State.Position = EndPos;
+
+                return motion;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw new ParseException(ex.Message, lineNumber);
             }
-
-            motion.Line = line;
-            motion.Feed = State.Feed;
-            motion.LineNumber = lineNumber;
-            Commands.Add(motion);
-
-            State.Position = EndPos;
-            return;
         }
     }
 }

@@ -9,8 +9,8 @@
     <h:HelixViewport3D Name="viewport" ShowViewCube="False" Panel.ZIndex="0"  >
         <h:HelixViewport3D.Camera>
             <PerspectiveCamera
-             		Position="150, -160,350"
-					LookDirection="0, 35,-50"
+             		Position="150, -300,250" 
+					LookDirection="0, 35,-20"
 					UpDirection="0,0,1"/>
         </h:HelixViewport3D.Camera>
 

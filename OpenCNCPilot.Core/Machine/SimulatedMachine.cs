@@ -1,4 +1,5 @@
-﻿using LagoVista.Core.Models.Drawing;
+﻿using LagoVista.Core.GCode.Parser;
+using LagoVista.Core.Models.Drawing;
 using LagoVista.Core.PlatformSupport;
 using System;
 using System.Collections.Generic;
@@ -13,7 +14,7 @@ namespace LagoVista.GCode.Sender
     public class SimulatedMachine : ISerialPort
     {
         FirmwareTypes _firmwareType;
-
+     
         public SimulatedMachine(FirmwareTypes firmwareType)
         {
             _firmwareType = firmwareType;
@@ -45,6 +46,9 @@ namespace LagoVista.GCode.Sender
     public class SimulatedGCodeMachine : Stream
     {
         private List<byte> _outputArray = new List<byte>();
+
+        GCodeParser _parser = new GCodeParser();
+
 
         ITimer _timer;
 
@@ -150,9 +154,10 @@ namespace LagoVista.GCode.Sender
             return value;
         }
 
+        int idx = 1;
+
         private void HandleGCode(String cmd)
         {
-            System.Threading.Tasks.Task.Delay(500).Wait();
 
             var parts = cmd.Split(' ');
             foreach(var part in parts.Where(itm=>!String.IsNullOrEmpty(itm)))
@@ -173,6 +178,12 @@ namespace LagoVista.GCode.Sender
                         break;
                 }
             }
+
+            var line = _parser.CleanupLine(cmd, idx);
+            var parsedLine = _parser.Parse(line, idx);
+
+            System.Threading.Tasks.Task.Delay(parsedLine.EstimatedRunTime).Wait();
+
             AddResponse("ok");
         }
 
