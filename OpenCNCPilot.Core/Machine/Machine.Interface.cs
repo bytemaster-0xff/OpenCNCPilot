@@ -22,7 +22,7 @@ namespace LagoVista.GCode.Sender
                 var outputStream = await port.OpenAsync();
                 if (outputStream == null)
                 {
-                    AddStatusMessage(StatusMessageTypes.Warning, $"Could not open serial port.");
+                    AddStatusMessage(StatusMessageTypes.Warning, $"Could not open serial port");
                     return;
                 }
 
@@ -40,7 +40,7 @@ namespace LagoVista.GCode.Sender
                 _cancelToken = new CancellationToken();
                 _port = port;
 
-                AddStatusMessage(StatusMessageTypes.Info, $"Connected to Serial Port.");
+                AddStatusMessage(StatusMessageTypes.Info, $"Opened Serial Port");
 
 
                 await Task.Run(() =>
@@ -91,7 +91,11 @@ namespace LagoVista.GCode.Sender
             if (_port != null)
             {
                 await _port.CloseAsync();
+                AddStatusMessage(StatusMessageTypes.Info, "Closed Serial Port");
+                _port = null;
             }
+
+            AddStatusMessage(StatusMessageTypes.Info, "Disconnected");
         }
 
         private bool AssertConnected()

@@ -148,7 +148,7 @@ namespace LagoVista.GCode.Sender
                     Enqueue("\n$G\n", true);
                 }
 
-                while (true)
+                while (Connected)
                 {
                     await WorkLoop();
                 }
