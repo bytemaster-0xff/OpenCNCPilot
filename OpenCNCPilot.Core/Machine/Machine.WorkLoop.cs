@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LagoVista.Core.PlatformSupport;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -40,6 +41,11 @@ namespace LagoVista.GCode.Sender
         private void SendNormalPriorityItems()
         {
             var send_line = _toSend.Peek();
+
+            if(send_line.StartsWith("M06"))
+            {
+                Services.Popups.ShowAsync("Tool Change ");
+            }
 
             _writer.Write(send_line);
             _writer.Write('\n');

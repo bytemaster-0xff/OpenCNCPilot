@@ -32,5 +32,16 @@ namespace LagoVista.Core.GCode.Commands
         public abstract Vector3 CurrentPosition { get; }
 
         public int MessageLength { get { return Line.Length + 1; } }
+
+        public virtual void SetComment(string comment) { }
+
+        public string Command
+        {
+            get
+            {
+                var parts = Line.Split(' ');
+                return parts[0];
+            }
+        }
     }
 }

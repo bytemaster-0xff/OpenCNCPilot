@@ -16,7 +16,7 @@ namespace LagoVista.Core.GCode.Parser
         //TODO: Removed compiled options
         private Regex GCodeSplitter = new Regex(@"([A-Z])\s*(\-?\d+\.?\d*)");
         private double[] MotionCommands = new double[] { 0, 1, 2, 3 };
-        private string ValidWords = "GMXYZIJKFR";
+        private string ValidWords = "GMXYZSTPIJKFR";
         public List<GCodeCommand> Commands;
 
         public void Reset()
@@ -38,29 +38,37 @@ namespace LagoVista.Core.GCode.Parser
 
         public void Parse(IEnumerable<string> file)
         {
-            int i = 1;
+            int lineIndex = 1;
 
             var sw = System.Diagnostics.Stopwatch.StartNew();
 
-            foreach (string linei in file)
+            foreach (string line in file)
             {
-                var line = CleanupLine(linei, i);
+                var cleanedLine = CleanupLine(line, lineIndex);
 
-                if (string.IsNullOrWhiteSpace(line))
+                if (string.IsNullOrWhiteSpace(cleanedLine))
                     continue;
 
-                var motionLine = Parse(line.ToUpper(), i);
+                var motionLine = Parse(cleanedLine.ToUpper(), lineIndex);                
                 if (motionLine != null)
                 {
+                    motionLine.SetComment(GetComment(line));
                     Commands.Add(motionLine);
                 }
             
-                i++;
+                lineIndex++;
             }
 
             sw.Stop();
 
             Services.Logger.Log(LogLevel.Message, "GCodeParser_Parse", $"Parsing the GCode File took {sw.ElapsedMilliseconds} ms");
+        }
+
+        public string GetComment(string line)
+        {
+            int commentIndex = line.IndexOf(';');
+
+            return commentIndex > -1 ? line.Substring(commentIndex) : "";
         }
 
         public string CleanupLine(string line, int lineNumber)
@@ -79,7 +87,7 @@ namespace LagoVista.Core.GCode.Parser
                 if (end < start)
                     throw new ParseException("mismatched parentheses", lineNumber);
 
-                line = line.Remove(start, end - start);
+                line = line.Remove(start, (end - start) + 1);
             }
 
             return line;
@@ -105,10 +113,10 @@ namespace LagoVista.Core.GCode.Parser
                 motionMode = (int)words.First().Parameter;
                 State.LastMotionMode = motionMode;
                 words.RemoveAt(0);
-            }
 
-            if (motionMode < 0)
-                throw new ParseException("No Motion Mode active", lineNumber);
+                if (motionMode < 0)
+                    throw new ParseException("No Motion Mode active", lineNumber);
+            }
 
             var UnitMultiplier = (State.Unit == ParseUnit.Metric) ? 1 : 25.4;
 

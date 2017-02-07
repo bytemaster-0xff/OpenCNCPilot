@@ -28,5 +28,20 @@ namespace LagoVista.Core.GCode.Commands
         {
             get { return new Vector3(0,0,0); }
         }
+
+        public override void SetComment(string comment)
+        {
+            switch(Command)
+            {
+                case "M6":
+                case "M06":
+                    DrillSize = double.Parse(comment);
+                    break;
+            }
+        }
+
+        public double DrillSize { get; private set; }
+
+        public String Tool { get; private set; }
     }
 }

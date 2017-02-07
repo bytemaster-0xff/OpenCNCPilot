@@ -104,9 +104,14 @@ namespace LagoVista.GCode.Sender
 
         }
 
+        SpinWait _bufferEmptySpinWait = new SpinWait();
+
         public override int Read(byte[] buffer, int offset, int count)
         {
-            SpinWait.SpinUntil(() => _outputArray.Any());
+            while(_outputArray.Count == 0)
+            {
+                _bufferEmptySpinWait.SpinOnce();
+            }
 
             lock (_outputArray)
             {
