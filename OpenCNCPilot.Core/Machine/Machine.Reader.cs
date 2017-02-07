@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -15,6 +16,8 @@ namespace LagoVista.GCode.Sender
             {
                 return;
             }
+
+            Debug.WriteLine(DateTime.Now.ToString() + "  >>> " + line);
 
             if (line == "ok")
             {
@@ -55,9 +58,7 @@ namespace LagoVista.GCode.Sender
                     LagoVista.Core.PlatformSupport.Services.Logger.Log(LagoVista.Core.PlatformSupport.LogLevel.Warning, "Machine_Work", "Received OK without anything in the Sent Buffer");
                     AddStatusMessage(StatusMessageTypes.Warning, "Unexpected OK");
                     BufferState = 0;
-
                 }
-
             }
             else if (line.Contains("endstops"))
             {
@@ -106,6 +107,14 @@ namespace LagoVista.GCode.Sender
                     if (!ParseLine(line))
                     {
                         AddStatusMessage(StatusMessageTypes.ReceviedLine, line);
+                    }
+                    lock (_queueAccessLocker)
+                    {
+                        if (_sentQueue.Any())
+                        {
+                            var sentLine = _sentQueue.Dequeue();
+                            BufferState -= (sentLine.Length + 1);
+                        }
                     }
                 }
             }

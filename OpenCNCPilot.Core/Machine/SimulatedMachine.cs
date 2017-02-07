@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace LagoVista.GCode.Sender
@@ -14,7 +15,7 @@ namespace LagoVista.GCode.Sender
     public class SimulatedMachine : ISerialPort
     {
         FirmwareTypes _firmwareType;
-     
+
         public SimulatedMachine(FirmwareTypes firmwareType)
         {
             _firmwareType = firmwareType;
@@ -33,7 +34,7 @@ namespace LagoVista.GCode.Sender
 
         public void Dispose()
         {
-            
+
         }
 
         public Task<Stream> OpenAsync()
@@ -62,7 +63,7 @@ namespace LagoVista.GCode.Sender
 
         private void _timer_Tick(object sender, EventArgs e)
         {
-            if(_commands.Any())
+            if (_commands.Any())
             {
                 _timer.Stop();
                 while (_commands.Any())
@@ -81,7 +82,7 @@ namespace LagoVista.GCode.Sender
         public override bool CanWrite { get { return true; } }
 
         public override long Length
-        { 
+        {
             get { return _outputArray.Count; }
         }
 
@@ -100,15 +101,12 @@ namespace LagoVista.GCode.Sender
 
         public override void Flush()
         {
-            
+
         }
 
         public override int Read(byte[] buffer, int offset, int count)
         {
-            while(_outputArray.Count == 0)
-            {
-                System.Threading.Tasks.Task.Delay(10).Wait();
-            }
+            SpinWait.SpinUntil(() => _outputArray.Any());
 
             lock (_outputArray)
             {
@@ -150,9 +148,10 @@ namespace LagoVista.GCode.Sender
         }
 
         double GetParamValue(String param)
-        {   double value  = 0;
+        {
+            double value = 0;
             Double.TryParse(param.Substring(1), out value);
-      
+
             return value;
         }
 
@@ -160,10 +159,17 @@ namespace LagoVista.GCode.Sender
 
         private void HandleGCode(String cmd)
         {
+            var line = _parser.CleanupLine(cmd, idx);
+            var parsedLine = _parser.Parse(line, idx);
+
+            var finishTime = DateTime.Now + parsedLine.EstimatedRunTime;
+
+            SpinWait.SpinUntil(() => DateTime.Now > finishTime);
+
             var parts = cmd.Split(' ');
-            foreach(var part in parts.Where(itm=>!String.IsNullOrEmpty(itm)))
+            foreach (var part in parts.Where(itm => !String.IsNullOrEmpty(itm)))
             {
-                switch(part.Substring(0,1))
+                switch (part.Substring(0, 1))
                 {
                     case "X":
                         _machine.X = GetParamValue(part);
@@ -180,22 +186,14 @@ namespace LagoVista.GCode.Sender
                 }
             }
 
-            var line = _parser.CleanupLine(cmd, idx);
-            var parsedLine = _parser.Parse(line, idx);
-
-            if (parsedLine.EstimatedRunTime != TimeSpan.Zero)
-            {
-                System.Threading.Tasks.Task.Delay(parsedLine.EstimatedRunTime).Wait();
-            }
-
             AddResponse("ok");
         }
 
         private void HandleMCode(string cmd)
         {
-            if(cmd == "M114")
+            if (cmd == "M114")
             {
-                var response = $"X: {_work.X} Y: {_work.Y} RZ: {_work.Z} LZ: 0.00 Count X:0.00 Y: 0.00 RZ: 41.02 LZ: 41.02";
+                var response = $"X: {_work.X} Y: {_work.Y} RZ: {_work.Z} LZ: 0.00 Count X:{_machine.X} Y: {_machine.Y} RZ: {_machine.Z} LZ: 41.02";
                 AddResponse(response);
             }
             else
@@ -218,17 +216,19 @@ namespace LagoVista.GCode.Sender
 
         States _state = States.Idle;
 
-     
+
         private void HandleCommand(String command)
         {
-            Debug.WriteLine(DateTime.Now.ToString() + "Handling command: " + command);
+            Debug.WriteLine(DateTime.Now.ToString() + "  Handling command: " + command);
             var cmdLetter = command.First();
-            switch(cmdLetter)
+            switch (cmdLetter)
             {
                 case '$': AddResponse("Status: Blah, Blah"); break;
-                case 'G': HandleGCode(command);
+                case 'G':
+                    HandleGCode(command);
                     break;
-                case 'M': HandleMCode(command);
+                case 'M':
+                    HandleMCode(command);
                     System.Threading.Tasks.Task.Delay(100).Wait();
                     break;
             }
@@ -238,11 +238,11 @@ namespace LagoVista.GCode.Sender
         {
             var text = System.Text.Encoding.UTF8.GetString(buffer, offset, count);
             var commands = text.Split('\n');
-            foreach(var command in commands.Where(cmd=> !String.IsNullOrEmpty(cmd)))
+            foreach (var command in commands.Where(cmd => !String.IsNullOrEmpty(cmd)))
             {
                 var cleanCommand = command.Trim('\r');
 
-                if(cleanCommand == "?")
+                if (cleanCommand == "?")
                 {
                     AddResponse($"<{_state},MPos:{_machine.X},{_machine.Y},{_machine.Z},WPos:{_work.X},{_work.Y},{_work.Z}>");
                 }
