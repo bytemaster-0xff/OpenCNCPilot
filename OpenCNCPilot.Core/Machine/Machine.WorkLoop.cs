@@ -1,4 +1,5 @@
-﻿using LagoVista.Core.PlatformSupport;
+﻿using LagoVista.Core.GCode.Commands;
+using LagoVista.Core.PlatformSupport;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -15,6 +16,7 @@ namespace LagoVista.GCode.Sender
 
         Queue<string> _sentQueue = new Queue<string>();
         Queue<string> _toSend = new Queue<string>();
+        Queue<GCodeCommand> _jobToSend = new Queue<GCodeCommand>();
         Queue<string> _toSendPriority = new Queue<string>();
 
         StreamReader _reader;
@@ -42,11 +44,6 @@ namespace LagoVista.GCode.Sender
         {
             var send_line = _toSend.Peek();
 
-            if(send_line.StartsWith("M06"))
-            {
-                Services.Popups.ShowAsync("Tool Change ");
-            }
-
             _writer.Write(send_line);
             _writer.Write('\n');
             _writer.Flush();
@@ -59,6 +56,32 @@ namespace LagoVista.GCode.Sender
 
             _sentQueue.Enqueue(send_line);
             _toSend.Dequeue();
+        }
+
+        private async void SendJobItems()
+        {
+            var sendCommand = _jobToSend.Peek();
+
+            if (sendCommand.Command == "M06")
+            {
+                Mode = OperatingMode.PendingToolChange;
+                var machineCommand = sendCommand as MCode;
+                await Services.Popups.ShowAsync("Tool Change " + machineCommand.DrillSize.ToString());
+                Mode = OperatingMode.SendingJob;
+            }
+
+            _writer.Write(sendCommand.Line);
+            _writer.Write('\n');
+            _writer.Flush();
+
+            UpdateStatus(sendCommand.Line.ToString());
+            AddStatusMessage(StatusMessageTypes.SentLine, sendCommand.Line.ToString());
+
+            BufferState += sendCommand.Line.Length;
+            BufferState += 1;
+
+            _sentQueue.Enqueue(sendCommand.Line);
+            _jobToSend.Dequeue();
         }
 
         private async Task QueryStatus()
@@ -99,6 +122,11 @@ namespace LagoVista.GCode.Sender
             return _toSend.Count > 0 && ((_toSend.Peek().ToString()).Length + 1) < (_settings.ControllerBufferSize - BufferState);
         }
 
+        private bool ShouldSendJobItems()
+        {
+            return _jobToSend.Count > 0 && ((_jobToSend.Peek().ToString()).Length + 1) < (_settings.ControllerBufferSize - BufferState);
+        }
+
         private async Task Send()
         {
             SendHighPriorityItems();
@@ -108,7 +136,11 @@ namespace LagoVista.GCode.Sender
                 CurrentJob.Process();
             }
 
-            if (ShouldSendNormalPriorityItems())
+            if(ShouldSendJobItems() && Mode == OperatingMode.SendingJob)
+            {
+                SendJobItems();
+            }
+            else if (ShouldSendNormalPriorityItems())
             {
                 SendNormalPriorityItems();
             }

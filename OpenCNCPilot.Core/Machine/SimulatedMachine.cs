@@ -165,7 +165,7 @@ namespace LagoVista.GCode.Sender
         private void HandleGCode(String cmd)
         {
             var line = _parser.CleanupLine(cmd, idx);
-            var parsedLine = _parser.Parse(line, idx);
+            var parsedLine = _parser.ParseMotionLine(line, idx);
 
             var finishTime = DateTime.Now + parsedLine.EstimatedRunTime;
 

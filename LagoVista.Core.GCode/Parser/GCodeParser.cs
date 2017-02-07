@@ -44,19 +44,12 @@ namespace LagoVista.Core.GCode.Parser
 
             foreach (string line in file)
             {
-                var cleanedLine = CleanupLine(line, lineIndex);
-
-                if (string.IsNullOrWhiteSpace(cleanedLine))
-                    continue;
-
-                var motionLine = Parse(cleanedLine.ToUpper(), lineIndex);                
-                if (motionLine != null)
+                var command = ParseLine(line, lineIndex);
+                if (command != null)
                 {
-                    motionLine.SetComment(GetComment(line));
-                    Commands.Add(motionLine);
+                    Commands.Add(command);
+                    lineIndex++;
                 }
-            
-                lineIndex++;
             }
 
             sw.Stop();
@@ -64,11 +57,43 @@ namespace LagoVista.Core.GCode.Parser
             Services.Logger.Log(LogLevel.Message, "GCodeParser_Parse", $"Parsing the GCode File took {sw.ElapsedMilliseconds} ms");
         }
 
+        public GCodeCommand ParseLine(string line, int lineIndex)
+        {
+            var cleanedLine = CleanupLine(line, lineIndex);
+
+            if (!string.IsNullOrWhiteSpace(cleanedLine))
+            {
+                if (cleanedLine.StartsWith("G"))
+                {
+                    var motionLine = ParseMotionLine(cleanedLine.ToUpper(), lineIndex);
+                    if (motionLine != null)
+                    {
+                        motionLine.SetComment(GetComment(line));
+                        return motionLine;
+                    }
+                }
+                else if (cleanedLine.StartsWith("M"))
+                {
+                    var machineLine = ParseMachineCommand(cleanedLine.ToUpper(), lineIndex);
+                    if(machineLine != null)
+                    {
+                        machineLine.SetComment(GetComment(line));
+                        return machineLine;
+                    }
+                }
+                else
+                {
+
+                }
+            }
+            return null;
+        }
+
         public string GetComment(string line)
         {
             int commentIndex = line.IndexOf(';');
 
-            return commentIndex > -1 ? line.Substring(commentIndex) : "";
+            return commentIndex > -1 ? line.Substring(commentIndex + 1) : "";
         }
 
         public string CleanupLine(string line, int lineNumber)
@@ -93,7 +118,33 @@ namespace LagoVista.Core.GCode.Parser
             return line;
         }
 
-        public GCodeMotion Parse(string line, int lineNumber)
+        public OtherCode ParseOtherCode(string line, int lineNumber)
+        {
+            return new OtherCode()
+            {
+                Line = line,
+                LineNumber = lineNumber
+            };
+        }
+
+        public MCode ParseMachineCommand(string line, int lineNumber)
+        {
+            var words = FindWords(line);
+            Validate(words);
+            Prune(words, line, lineNumber);
+            if (words.Count == 0)
+            {
+                return null;
+            }
+
+            return new MCode()
+            {
+                Line = line,
+                LineNumber = lineNumber
+            };
+        }
+
+        public GCodeMotion ParseMotionLine(string line, int lineNumber)
         {
             var words = FindWords(line);
 
@@ -127,6 +178,14 @@ namespace LagoVista.Core.GCode.Parser
             {
                 State.Feed = feedRateCommand.Parameter;
                 words.Remove(feedRateCommand);
+            }
+
+            var dwellCommand = words.Where(wrd => wrd.Command == 'P').FirstOrDefault();
+            if (dwellCommand != null)
+            {
+                //TODO: Do we care?
+               // State.Feed = feedRateCommand.Parameter;
+                words.Remove(dwellCommand);
             }
 
             try

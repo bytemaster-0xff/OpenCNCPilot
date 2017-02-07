@@ -12,8 +12,10 @@ namespace LagoVista.GCode.Sender
     {
         public void SendCommand(GCodeCommand cmd)
         {
-            SendCommand(cmd.Line);
-
+            if (AssertConnected())
+            {
+                Enqueue(cmd);
+            }
         }
 
         public void SendCommand(String cmd)

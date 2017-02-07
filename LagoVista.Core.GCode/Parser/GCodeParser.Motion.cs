@@ -171,7 +171,6 @@ namespace LagoVista.Core.GCode.Parser
             arc.V = V;
             arc.Plane = State.Plane;
 
-
             return arc;
 
         }

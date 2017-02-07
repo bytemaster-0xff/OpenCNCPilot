@@ -59,6 +59,7 @@ namespace LagoVista.GCode.Sender
     {
         Manual,
         SendingJob,
+        PendingToolChange,
         ProbingHeightMap,
         ProbingHeight,
         Disconnected

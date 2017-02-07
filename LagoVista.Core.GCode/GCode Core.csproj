@@ -40,6 +40,7 @@
     <Compile Include="Commands\GCodeLine.cs" />
     <Compile Include="Commands\MCode.cs" />
     <Compile Include="Commands\GCodeMotion.cs" />
+    <Compile Include="Commands\OtherCode.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="GCodeFile.cs" />
     <Compile Include="GCodeFile.Factory.cs">

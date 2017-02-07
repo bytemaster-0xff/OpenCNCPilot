@@ -60,6 +60,7 @@
   <ItemGroup>
     <Compile Include="GCode\GCodeSampleFile.cs" />
     <Compile Include="GCode\GCode_Command_Tests.cs" />
+    <Compile Include="GCode\LineParser.cs" />
     <Compile Include="Mocks\FakePlatformSupport.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

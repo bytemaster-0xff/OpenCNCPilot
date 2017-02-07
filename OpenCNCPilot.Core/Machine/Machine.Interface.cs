@@ -159,6 +159,17 @@ namespace LagoVista.GCode.Sender
             }
         }
 
+        private void Enqueue(GCodeCommand cmd)
+        {
+            if (AssertConnected())
+            {
+                lock (_queueAccessLocker)
+                {
+                    _jobToSend.Enqueue(cmd);
+                }
+            }
+        }
+
         public void FeedHold()
         {
             Enqueue("!", true);
