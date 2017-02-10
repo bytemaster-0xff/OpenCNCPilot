@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LagoVista.GCode.Sender.Managers
+namespace LagoVista.GCode.Sender.Interfaces
 {
     public interface IHeightMapProbingManager : INotifyPropertyChanged
     {

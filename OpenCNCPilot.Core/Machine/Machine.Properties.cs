@@ -1,5 +1,7 @@
-﻿using System;
+﻿using LagoVista.GCode.Sender.Interfaces;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,17 +10,11 @@ namespace LagoVista.GCode.Sender
 {
     public partial class Machine
     {
-        IJobProcessor _jobProcessor;
-        public IJobProcessor CurrentJob
-        {
-            get { return _jobProcessor; }
-            private set
-            {
-                _jobProcessor = value;
-                RaisePropertyChanged();
-                RaisePropertyChanged(nameof(HasJob));
-            }
-        }
+        public IJobManager JobManager { get; private set; }
+
+        public IHeightMapProbingManager HeightMapProbingManager { get; private set; }
+
+        public IProbingManager ProbingManager { get;  private set;}
 
         private bool _isInitialized = false;
         public bool IsInitialized
@@ -29,6 +25,11 @@ namespace LagoVista.GCode.Sender
                 _isInitialized = value;
                 RaisePropertyChanged();
             }
+        }
+
+        public ObservableCollection<Models.StatusMessage> Messages
+        {
+            get; private set;
         }
 
 

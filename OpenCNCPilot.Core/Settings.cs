@@ -82,6 +82,13 @@ namespace LagoVista.GCode.Sender
             set { Set(ref _jogGCodeCommand, value); }
         }
 
+        MessageVerbosityLevels _messageVerbosity;
+        public MessageVerbosityLevels MessageVerbosity
+        {
+            get { return _messageVerbosity; }
+            set { Set(ref _messageVerbosity, value); }
+        }
+
         private int _jogFeedRate;
         public int JogFeedRate
         {

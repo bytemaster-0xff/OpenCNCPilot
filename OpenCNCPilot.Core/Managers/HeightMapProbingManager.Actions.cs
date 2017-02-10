@@ -16,14 +16,14 @@ namespace LagoVista.GCode.Sender.Managers
 
             if (!Machine.Connected || HeightMap == null || HeightMap.NotProbed.Count == 0)
             {
-                Machine.ProbeStop();
+                ProbeStop();
                 return;
             }
 
             if (!success && Machine.Settings.AbortOnProbeFail)
             {
                 Machine.AddStatusMessage(StatusMessageTypes.FatalError, "Probe Failed! aborting");
-                Machine.ProbeStop();
+                ProbeStop();
                 return;
             }
 
@@ -34,13 +34,23 @@ namespace LagoVista.GCode.Sender.Managers
             if (HeightMap.NotProbed.Count == 0)
             {
                 Machine.SendCommand($"G0Z{Machine.Settings.ProbeSafeHeight.ToString(Constants.DecimalOutputFormat)}");
-                Machine.ProbeStop();
+                ProbeStop();
 
                 ProbingCompleted?.Invoke(this, null);
                 return;
             }
 
             HeightMapProbeNextPoint();
+        }
+
+        public void ProbeStart()
+        {
+
+        }
+
+        private void ProbeStop()
+        {
+
         }
 
 
@@ -52,7 +62,7 @@ namespace LagoVista.GCode.Sender.Managers
 
             if (!Machine.Connected || HeightMap == null || HeightMap.NotProbed.Count == 0)
             {
-                Machine.ProbeStop();
+                ProbeStop();
                 return;
             }
 
@@ -76,7 +86,7 @@ namespace LagoVista.GCode.Sender.Managers
             if (HeightMap.Progress == HeightMap.TotalPoints)
                 return;
 
-            Machine.ProbeStart();
+            ProbeStart();
 
             if (Machine.Mode != OperatingMode.ProbingHeightMap)
                 return;
@@ -92,7 +102,7 @@ namespace LagoVista.GCode.Sender.Managers
             if (Machine.Mode != OperatingMode.ProbingHeightMap)
                 return;
           
-            Machine.ProbeStop();
+            ProbeStop();
         }
     }
 }

@@ -12,7 +12,7 @@ namespace LagoVista.GCode.Sender.ViewModels
             OpenGCodeFileCommand = new RelayCommand(OpenGCodeFile, CanPerformFileOperation);
             CloseFileCommand = new RelayCommand(CloseFile, CanPerformFileOperation);
             ClearHeightMapCommand = new RelayCommand(ClearHeightMap, CanClearHeightMap);
-            ArcToLineCommand = new RelayCommand(ArcToLine, CurrentlyJob);
+            ArcToLineCommand = new RelayCommand(ArcToLine, CanConvertArcToLine);
             ApplyHeightMapCommand = new RelayCommand(ApplyHeightMap, CanApplyHeightMap);
 
             SetMetricUnitsCommand = new RelayCommand(SetMetricUnits, CanChangeUnits);
@@ -38,21 +38,21 @@ namespace LagoVista.GCode.Sender.ViewModels
                 });
             }
 
-            if (e.PropertyName == nameof(Machine.HasJob))
+            if (e.PropertyName == nameof(Machine.JobManager.HasValidFile))
             {
                 ArcToLineCommand.RaiseCanExecuteChanged();
                 ApplyHeightMapCommand.RaiseCanExecuteChanged();
             }
         }
 
-        public bool CurrentlyJob()
-        {
-            return Machine.HasJob;
-        }
-
         public bool CanSetPositionMode()
         {
             return Machine.Mode == OperatingMode.Manual && Machine.Connected;
+        }
+
+        public bool CanConvertArcToLine()
+        {
+            return Machine.JobManager.HasValidFile;
         }
 
         public bool CanChangeUnits()
@@ -62,7 +62,7 @@ namespace LagoVista.GCode.Sender.ViewModels
        
         public bool CanApplyHeightMap()
         {
-            return Machine.HasJob && HeightMap != null && HeightMap.Status == Models.HeightMap.HeightMapStatus.Populated ;
+            return Machine.JobManager.HasValidFile && HeightMap != null && HeightMap.Status == Models.HeightMap.HeightMapStatus.Populated ;
         }
 
         private bool CanPerformFileOperation(Object instance)

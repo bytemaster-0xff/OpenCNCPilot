@@ -58,6 +58,7 @@ namespace LagoVista.GCode.Sender
     public enum OperatingMode
     {
         Manual,
+        Alarm,
         SendingJob,
         PendingToolChange,
         ProbingHeightMap,
@@ -75,6 +76,15 @@ namespace LagoVista.GCode.Sender
         Warning,
         FatalError
     }
+
+    public enum MessageVerbosityLevels
+    {
+        Quiet,
+        Normal,
+        Verbose,
+        Diagnostics
+    }
+
 
     public class Constants
 	{

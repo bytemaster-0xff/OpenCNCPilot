@@ -2,6 +2,7 @@
 using LagoVista.Core.IOC;
 using LagoVista.Core.Models;
 using LagoVista.Core.PlatformSupport;
+using LagoVista.GCode.Sender.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

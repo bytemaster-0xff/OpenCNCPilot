@@ -1,37 +1,43 @@
-﻿using LagoVista.Core.GCode;
+﻿using LagoVista.Core.Commanding;
+using LagoVista.Core.GCode;
 using LagoVista.Core.GCode.Commands;
+using LagoVista.Core.PlatformSupport;
+using LagoVista.GCode.Sender.Interfaces;
+using LagoVista.GCode.Sender.Models;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using LagoVista.GCode.Sender.Models;
 
-namespace LagoVista.GCode.Sender
+namespace LagoVista.GCode.Sender.Managers
 {
-    public class JobProcessor : Core.Models.ModelBase, IJobProcessor
+    public class JobManager : Core.Models.ModelBase, IJobManager
     {
-        public IMachine _machine;
+        IMachine _machine;
+        ILogger _logger;
         GCodeFile _file;
 
-        private bool _isDirty;
+        bool _isDirty;
 
-        private int _tail = 0;
-        private int _head = 0;
+        int _tail = 0;
+        int _head = 0;
 
         DateTime? _started;
-
-        public int CurrentIndex { get { return _head; } }
-        public int TotalLines { get { return _file.Commands.Count; } }
-
-        public JobProcessor(IMachine machine, GCodeFile file)
+       
+        public JobManager(IMachine machine, ILogger logger)
         {
             _machine = machine;
-            _file = file;
+            _logger = logger;
         }
 
-        public void Process()
+
+        public Task OpenFileAsync(string path)
+        {
+            _file = GCodeFile.Load(path);
+
+            return Task.FromResult(default(object));
+        }
+
+        public void ProcessNextLines()
         {
             if (_started == null)
                 _started = DateTime.Now;
@@ -60,7 +66,6 @@ namespace LagoVista.GCode.Sender
             {
                 RaisePropertyChanged(nameof(IsCompleted));
             }
-
 
             return sentCommandLength;
         }
@@ -105,7 +110,17 @@ namespace LagoVista.GCode.Sender
             _isDirty = true;
         }
 
-        public TimeSpan TimeRemaining
+        public Task OpenGCodeFileAsync(string path)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task CloseFileAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public TimeSpan EstimatedTimeRemaining
         {
             get
             {
@@ -142,6 +157,10 @@ namespace LagoVista.GCode.Sender
             }
         }
 
+        public int CurrentIndex { get { return _head; } }
+        public int TotalLines { get { return _file.Commands.Count; } }
+
+
         public int Head
         {
             get { return _head; }
@@ -158,5 +177,19 @@ namespace LagoVista.GCode.Sender
         {
             get { return _file.Commands; }
         }
+
+        private bool _hasValidFile = false;
+        public bool HasValidFile
+        {
+            get { return _hasValidFile; }
+            set { Set(ref _hasValidFile, value); }
+        }
+
+        public RelayCommand StartJobCommand { get; private set; }
+
+        public RelayCommand StopJobCommand { get; private set; }
+
+        public RelayCommand PauseJobCommand { get; private set; }
+        public RelayCommand ResetJobCommand { get; private set; }
     }
 }

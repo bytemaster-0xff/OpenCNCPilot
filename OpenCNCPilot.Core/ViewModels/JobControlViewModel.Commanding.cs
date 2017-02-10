@@ -49,7 +49,7 @@ namespace LagoVista.GCode.Sender.ViewModels
         private void _machine_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(Machine.Mode) ||
-                e.PropertyName == nameof(Machine.HasJob) ||
+                e.PropertyName == nameof(Machine.JobManager.HasValidFile) ||
                 e.PropertyName == nameof(Machine.IsInitialized) ||
                 e.PropertyName == nameof(Machine.Connected))
             {
@@ -64,7 +64,7 @@ namespace LagoVista.GCode.Sender.ViewModels
 
         public bool CanStartJob()
         {
-            return Machine.HasJob &&
+            return Machine.JobManager.HasValidFile &&
                 Machine.Connected &&
                 Machine.Mode == OperatingMode.Manual;
         }

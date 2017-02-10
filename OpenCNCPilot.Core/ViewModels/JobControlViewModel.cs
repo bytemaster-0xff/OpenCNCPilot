@@ -2,6 +2,7 @@
 using LagoVista.Core.Commanding;
 using LagoVista.Core.IOC;
 using LagoVista.Core.ViewModels;
+using LagoVista.GCode.Sender.Interfaces;
 using System;
 
 namespace LagoVista.GCode.Sender.ViewModels

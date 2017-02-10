@@ -78,7 +78,7 @@ namespace LagoVista.GCode.Sender
                 DistanceMode = ParseDistanceMode.Absolute;
                 Unit = ParseUnit.Metric;
                 Plane = ArcPlane.XY;
-                BufferState = 0;
+                UnacknowledgedBytesSent = 0;
 
                 lock (_queueAccessLocker)
                 {
@@ -136,7 +136,7 @@ namespace LagoVista.GCode.Sender
                     _toSendPriority.Enqueue(((char)0x18).ToString());
                 }
 
-                BufferState = 0;
+                UnacknowledgedBytesSent = 0;
             }
         }
 

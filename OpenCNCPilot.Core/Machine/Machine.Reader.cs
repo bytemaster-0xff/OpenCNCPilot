@@ -21,25 +21,25 @@ namespace LagoVista.GCode.Sender
 
             if (line == "ok")
             {
-                if (CurrentJob != null)
+                if (JobManager.HasValidFile)
                 {
                     lock (this)
                     {
-                        CurrentJob.CommandAcknowledged();
+                        JobManager.CommandAcknowledged();
 
                         lock (_queueAccessLocker)
                         {
                             if (_sentQueue.Any())
                             {
                                 var sentLine = _sentQueue.Dequeue();
-                                BufferState -= (sentLine.Length + 1);
+                                UnacknowledgedBytesSent -= (sentLine.Length + 1);
                             }
                         }
 
-                        if (CurrentJob.IsCompleted)
+                        if (JobManager.IsCompleted)
                         {
                             Mode = OperatingMode.Manual;
-                            CurrentJob = null;
+                            JobManager = null;
                         }
                     }
                 }
@@ -50,14 +50,14 @@ namespace LagoVista.GCode.Sender
                         if (_sentQueue.Any())
                         {
                             var sentLine = _sentQueue.Dequeue();
-                            BufferState -= (sentLine.Length + 1);
+                            UnacknowledgedBytesSent -= (sentLine.Length + 1);
                             return;
                         }
                     }
 
                     LagoVista.Core.PlatformSupport.Services.Logger.Log(LagoVista.Core.PlatformSupport.LogLevel.Warning, "Machine_Work", "Received OK without anything in the Sent Buffer");
                     AddStatusMessage(StatusMessageTypes.Warning, "Unexpected OK");
-                    BufferState = 0;
+                    UnacknowledgedBytesSent = 0;
                 }
             }
             else if (line.Contains("endstops"))
@@ -73,14 +73,14 @@ namespace LagoVista.GCode.Sender
                         var errorline = _sentQueue.Dequeue();
 
                         RaiseEvent(ReportError, $"{line}: {errorline}");
-                        BufferState -= errorline.Length + 1;
+                        UnacknowledgedBytesSent -= errorline.Length + 1;
                     }
                     else
                     {
                         if ((DateTime.Now - _connectTime).TotalMilliseconds > 200)
                             RaiseEvent(ReportError, $"Received <{line}> without anything in the Sent Buffer");
 
-                        BufferState = 0;
+                        UnacknowledgedBytesSent = 0;
                     }
 
                     Mode = OperatingMode.Manual;
@@ -113,7 +113,7 @@ namespace LagoVista.GCode.Sender
                         if (_sentQueue.Any())
                         {
                             var sentLine = _sentQueue.Dequeue();
-                            BufferState -= (sentLine.Length + 1);
+                            UnacknowledgedBytesSent -= (sentLine.Length + 1);
                         }
                     }
                 }

@@ -8,6 +8,7 @@ using LagoVista.Core.GCode;
 using System.ComponentModel;
 using LagoVista.GCode.Sender.Util;
 using System.Threading.Tasks;
+using LagoVista.GCode.Sender.Interfaces;
 
 namespace LagoVista.GCode.Sender
 {

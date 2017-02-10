@@ -2,6 +2,7 @@
 using System.Windows.Controls;
 using System.Windows;
 using LagoVista.GCode.Sender.ViewModels;
+using LagoVista.GCode.Sender.Interfaces;
 
 namespace LagoVista.GCode.Sender.Application.Controls
 {
@@ -13,19 +14,6 @@ namespace LagoVista.GCode.Sender.Application.Controls
         public HeightMapControl()
         {
             InitializeComponent();
-            this.Loaded += HeightMapControl_Loaded;
-        }
-
-        private void HeightMapControl_Loaded(object sender, RoutedEventArgs e)
-        {
-            ViewModel.Machine.PropertyChanged += Machine_PropertyChanged;
-        }
-
-        private void Machine_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {   if(e.PropertyName == "CurrentJob")
-            {
-                CurrentJob = ViewModel.Machine.CurrentJob;
-            }
         }
 
         public void Clear()
@@ -50,19 +38,19 @@ namespace LagoVista.GCode.Sender.Application.Controls
         }
 
         public static readonly DependencyProperty CurrentJobProperty =
-                DependencyProperty.Register("CurrentJob", typeof(IJobProcessor),
+                DependencyProperty.Register("CurrentJob", typeof(IJobManager),
                     typeof(HeightMapControl),
                     new PropertyMetadata(PropChangeCallback));
 
         private static void PropChangeCallback(DependencyObject obj, DependencyPropertyChangedEventArgs args)
         {
             var ctl = obj as HeightMapControl;
-            ctl.CurrentJob = args.NewValue as IJobProcessor;
+            ctl.CurrentJob = args.NewValue as IJobManager;
         }
 
-        public IJobProcessor CurrentJob
+        public IJobManager CurrentJob
         {
-            get { return GetValue(CurrentJobProperty) as IJobProcessor; }
+            get { return GetValue(CurrentJobProperty) as IJobManager; }
             set
             {
                 SetValue(CurrentJobProperty, value);

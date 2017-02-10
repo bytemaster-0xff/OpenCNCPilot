@@ -1,4 +1,6 @@
 ﻿
+using LagoVista.GCode.Sender.Interfaces;
+
 namespace LagoVista.GCode.Sender.ViewModels
 {
     public partial class ManualSendViewModel : GCodeAppViewModel

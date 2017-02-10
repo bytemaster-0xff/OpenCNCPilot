@@ -71,7 +71,7 @@ namespace LagoVista.GCode.Sender.ViewModels
 
         public bool CanClearAlarm()
         {
-            return Machine.Connected && Machine.Status.ToLower().StartsWith("alarm");
+            return Machine.Connected && Machine.Mode == OperatingMode.Alarm;
         }
 
         public RelayCommand JogCommand { get; private set; }

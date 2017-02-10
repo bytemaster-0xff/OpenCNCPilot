@@ -1,4 +1,5 @@
 ﻿using DirectShowLib;
+using LagoVista.GCode.Sender.Interfaces;
 using LagoVista.GCode.Sender.ViewModels;
 using System;
 using System.Collections.Generic;

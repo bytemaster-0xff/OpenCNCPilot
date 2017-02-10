@@ -51,8 +51,8 @@ namespace LagoVista.GCode.Sender
             UpdateStatus(send_line.ToString());
             AddStatusMessage(StatusMessageTypes.SentLine, send_line.ToString());
 
-            BufferState += send_line.Length;
-            BufferState += 1;
+            UnacknowledgedBytesSent += send_line.Length;
+            UnacknowledgedBytesSent += 1;
 
             _sentQueue.Enqueue(send_line);
             _toSend.Dequeue();
@@ -77,8 +77,8 @@ namespace LagoVista.GCode.Sender
             UpdateStatus(sendCommand.Line.ToString());
             AddStatusMessage(StatusMessageTypes.SentLine, sendCommand.Line.ToString());
 
-            BufferState += sendCommand.Line.Length;
-            BufferState += 1;
+            UnacknowledgedBytesSent += sendCommand.Line.Length;
+            UnacknowledgedBytesSent += 1;
 
             _sentQueue.Enqueue(sendCommand.Line);
             _jobToSend.Dequeue();
@@ -108,8 +108,8 @@ namespace LagoVista.GCode.Sender
             {
                 if ((Now - _lastPollTime).TotalMilliseconds > _settings.StatusPollIntervalRunning)
                 {
-                    MachinePosition = _jobProcessor.CurrentCommand.CurrentPosition;
-                    WorkPosition = _jobProcessor.CurrentCommand.CurrentPosition;
+                    MachinePosition = JobManager.CurrentCommand.CurrentPosition;
+                    WorkPosition = JobManager.CurrentCommand.CurrentPosition;
                     _lastPollTime = Now;
                 }
             }
@@ -119,21 +119,21 @@ namespace LagoVista.GCode.Sender
 
         private bool ShouldSendNormalPriorityItems()
         {
-            return _toSend.Count > 0 && ((_toSend.Peek().ToString()).Length + 1) < (_settings.ControllerBufferSize - BufferState);
+            return _toSend.Count > 0 && ((_toSend.Peek().ToString()).Length + 1) < (_settings.ControllerBufferSize - UnacknowledgedBytesSent);
         }
 
         private bool ShouldSendJobItems()
         {
-            return _jobToSend.Count > 0 && ((_jobToSend.Peek().ToString()).Length + 1) < (_settings.ControllerBufferSize - BufferState);
+            return _jobToSend.Count > 0 && ((_jobToSend.Peek().ToString()).Length + 1) < (_settings.ControllerBufferSize - UnacknowledgedBytesSent);
         }
 
         private async Task Send()
         {
             SendHighPriorityItems();
 
-            if (Mode == OperatingMode.SendingJob && CurrentJob != null)
+            if (Mode == OperatingMode.SendingJob)
             {
-                CurrentJob.Process();
+                JobManager.ProcessNextLines();
             }
 
             if(ShouldSendJobItems() && Mode == OperatingMode.SendingJob)
@@ -179,7 +179,7 @@ namespace LagoVista.GCode.Sender
                 _reader = new StreamReader(stream);
                 _writer = new StreamWriter(stream);
 
-                BufferState = 0;
+                UnacknowledgedBytesSent = 0;
 
                 if (_settings.MachineType == FirmwareTypes.GRBL1_1)
                 {

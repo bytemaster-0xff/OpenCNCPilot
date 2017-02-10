@@ -34,12 +34,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Machine\IJobProcessor.cs" />
-    <Compile Include="Machine\IMachine.cs" />
+    <Compile Include="Interfaces\IJobManager.cs" />
+    <Compile Include="Interfaces\IMachine.cs" />
+    <Compile Include="Interfaces\IProbingManager.cs" />
     <Compile Include="Machine\Machine.cs" />
-    <Compile Include="Machine\Machine.File.cs">
-      <DependentUpon>Machine.cs</DependentUpon>
-    </Compile>
     <Compile Include="Machine\Machine.Interface.cs">
       <DependentUpon>Machine.cs</DependentUpon>
     </Compile>
@@ -61,7 +59,6 @@
     <Compile Include="Machine\Machine.WorkLoop.cs">
       <DependentUpon>Machine.cs</DependentUpon>
     </Compile>
-    <Compile Include="Machine\JobProcessor.cs" />
     <Compile Include="Machine\Machine.Writer.cs">
       <DependentUpon>Machine.cs</DependentUpon>
     </Compile>
@@ -69,7 +66,8 @@
     <Compile Include="Managers\HeightMapProbingManager.Actions.cs" />
     <Compile Include="Managers\HeightMapProbingManager.cs" />
     <Compile Include="Managers\HeightMapProbingManager.Properties.cs" />
-    <Compile Include="Managers\IHeightMapProbingManager.cs" />
+    <Compile Include="Interfaces\IHeightMapProbingManager.cs" />
+    <Compile Include="Managers\JobManager.cs" />
     <Compile Include="Managers\ToolChangeManager.Actions.cs" />
     <Compile Include="Managers\ToolChangeManager.cs" />
     <Compile Include="Managers\ToolChangeManager.Properties.cs" />

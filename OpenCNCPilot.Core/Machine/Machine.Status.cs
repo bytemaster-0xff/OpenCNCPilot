@@ -90,7 +90,7 @@ namespace LagoVista.GCode.Sender
         }
 
         private int _bufferState;
-        public int BufferState
+        public int UnacknowledgedBytesSent
         {
             get { return _bufferState; }
             set
@@ -103,18 +103,13 @@ namespace LagoVista.GCode.Sender
                 RaisePropertyChanged();
             }
         }
-
-        public bool HasJob
-        {
-            get { return CurrentJob != null; }
-        }
-
+       
         public bool BufferSpaceAvailable(int bytes)
         {
-            return bytes < (_settings.ControllerBufferSize - BufferState);
+            return bytes < (_settings.ControllerBufferSize - UnacknowledgedBytesSent);
         }
 
-        public void AddStatusMessage(StatusMessageTypes type, string message)
+        public void AddStatusMessage(StatusMessageTypes type, string message, MessageVerbosityLevels verbosityLevel = MessageVerbosityLevels.Normal)
         {
             Services.DispatcherServices.Invoke(() =>
             {

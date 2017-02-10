@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 using LagoVista.Core.PlatformSupport;
 using LagoVista.Core.Models.Drawing;
 using LagoVista.Core.GCode.Commands;
+using System.Diagnostics;
 
 namespace LagoVista.Core.GCode.Parser
 {
@@ -48,7 +49,12 @@ namespace LagoVista.Core.GCode.Parser
                 if (command != null)
                 {
                     Commands.Add(command);
+                    Debug.WriteLine(command.LineNumber + " " + command.Command + " " + command.Line + " " + line);
                     lineIndex++;
+                }
+                else
+                {
+                    Debug.WriteLine(line);
                 }
             }
 

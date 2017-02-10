@@ -1,4 +1,5 @@
 ﻿using LagoVista.Core.Models.Drawing;
+using LagoVista.GCode.Sender.Interfaces;
 using LagoVista.GCode.Sender.Models;
 using LagoVista.GCode.Sender.ViewModels;
 using System;
