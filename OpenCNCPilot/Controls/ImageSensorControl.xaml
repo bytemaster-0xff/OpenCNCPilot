@@ -4,6 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:fa="http://schemas.fontawesome.io/icons/"
+             xmlns:emui="clr-namespace:Emgu.CV.UI;assembly=Emgu.CV.UI"
+
              mc:Ignorable="d" 
              d:DesignHeight="480" d:DesignWidth="640">
     <Grid>
@@ -12,7 +14,13 @@
             <RowDefinition Height="36"/>
         </Grid.RowDefinitions>
         
+        
         <Image x:Name="WebCamImage" Stretch="UniformToFill"  Source="/Imgs/TestPattern.jpg" Grid.RowSpan="2" />
+        <Image x:Name="ImageOverlay1" Stretch="UniformToFill" Grid.RowSpan="2" />
+        <Image x:Name="ImageOverlay2" Stretch="UniformToFill" Grid.RowSpan="2" />
+        <Image x:Name="ImageOverlay3" Stretch="UniformToFill" Grid.RowSpan="2" />
+
+        <TextBlock x:Name="MessageText" Text="Hello World" FontSize="33" Foreground="White" />
 
         <Rectangle Grid.Row="1" Fill="Black" Opacity="0.5">
             

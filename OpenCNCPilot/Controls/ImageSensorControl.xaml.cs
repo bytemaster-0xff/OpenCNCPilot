@@ -1,7 +1,10 @@
 ﻿using Emgu.CV;
 using Emgu.CV.Structure;
+using Emgu.CV.Util;
 using LagoVista.GCode.Sender.ViewModels;
 using System;
+using System.Collections.Generic;
+using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -56,6 +59,92 @@ namespace LagoVista.GCode.Sender.Application.Controls
             }
         }
 
+        public bool CameraHasData;
+        /*
+        private void FinishProcessing(Image<Gray, Byte> cannyEdges, Image<Bgr, Byte> frame)
+        {
+            List<Triangle2DF> triangleList = new List<Triangle2DF>();
+            var boxList = new List<Emgu.CV.Structure.MCvBox2D>(); //a box is a rotated rectangle
+            using (var storage = new MemStorage()) //allocate storage for contour approximation
+            {
+                var rectangles = new List<Rectangle>();
+
+                var contoursDetected = new VectorOfVectorOfPoint();
+                CvInvoke.FindContours(cannyEdges, contoursDetected,null, Emgu.CV.CvEnum.RetrType.List, Emgu.CV.CvEnum.ChainApproxMethod.ChainApproxSimple);
+                var contoursArray = new List<VectorOfPoint>();
+                int count = contoursDetected.Size;
+                for (int i = 0; i < count; i++)
+                {
+                    CvInvoke.ApproxPolyDP()
+                    rectangles.Add(CvInvoke.BoundingRectangle(contoursArray[i]));
+
+                    using (VectorOfPoint currContour = contoursDetected[i])
+                    {
+                        contoursArray.Add(currContour);
+                    }
+                }
+                
+                foreach(var contour in contoursArray)
+                { 
+                    var currentContour = contour.ApproxPoly(contour.Perimeter * 0.05, storage);
+
+                    if (currentContour.Area > 400 && currentContour.Area < 20000) //only consider contours with area greater than 250
+                    {
+                        if (currentContour.Total == 4) //The contour has 4 vertices.
+                        {
+                            // determine if all the angles in the contour are within [80, 100] degree
+                            bool isRectangle = true;
+                            var pts = currentContour.ToArray();
+                            var edges = PointCollection.PolyLine(pts, true);
+
+                            for (int i = 0; i < edges.Length; i++)
+                            {
+                                double angle = Math.Abs(
+                                   edges[(i + 1) % edges.Length].GetExteriorAngleDegree(edges[i]));
+                                if (angle < 80 || angle > 100)
+                                {
+                                    isRectangle = false;
+                                    break;
+                                }
+                            }
+
+                            if (isRectangle) boxList.Add(currentContour.GetMinAreaRect());
+                        }
+                    }
+                    
+                }
+            Image<Bgr, Byte> triangleRectangleImage = frame.CopyBlank();
+            foreach (Triangle2DF triangle in triangleList)
+                triangleRectangleImage.Draw(triangle, new Bgr(Color.DarkBlue), 2);
+            foreach (var box in boxList)
+            {*/
+                /*
+                frm.SetText(frm.Controls["textBoxImageY"], box.center.Y.ToString());
+                frm.SetText(frm.Controls["textBoxDeg"], box.angle.ToString());
+                frm.SetText(frm.Controls["textBoxImageX"], box.center.X.ToString());
+                 * */
+/*                CameraHasData = true;
+
+                triangleRectangleImage.Draw(box, new Bgr(Color.DarkOrange), 2);
+            }
+            // add cross hairs to image
+            int totalwidth = frame.Width;
+            int totalheight = frame.Height;
+            PointF[] linepointshor = new PointF[] {
+                    new PointF(0, totalheight/2),
+                    new PointF(totalwidth, totalheight/2)
+
+                };
+            PointF[] linepointsver = new PointF[] {
+                    new PointF(totalwidth/2, 0),
+                    new PointF(totalwidth/2, totalheight)
+
+                };
+            triangleRectangleImage.DrawPolyline(Array.ConvertAll<PointF, System.Drawing.Point>(linepointshor, System.Drawing.Point.Round), false, new Bgr(Color.AntiqueWhite), 1);
+            triangleRectangleImage.DrawPolyline(Array.ConvertAll<PointF, System.Drawing.Point>(linepointsver, System.Drawing.Point.Round), false, new Bgr(Color.AntiqueWhite), 1);
+            ImageOverlay.Source = Emgu.CV.WPF.BitmapSourceConvert.ToBitmapSource(triangleRectangleImage);            
+        }*/
+
         private void ProcessFrame(Object state)
         {
             if (_timerStopped)
@@ -70,6 +159,7 @@ namespace LagoVista.GCode.Sender.Application.Controls
                     if (_videoCapture != null)
                     {
                         using (var originalFrame = _videoCapture.QueryFrame())
+
                         using (var gray = new Image<Gray, byte>(originalFrame.Bitmap))
                         using (var blurredGray = new Mat())
                         using (var finalOutput = new Mat())
@@ -77,6 +167,10 @@ namespace LagoVista.GCode.Sender.Application.Controls
                             CvInvoke.GaussianBlur(gray, blurredGray, new System.Drawing.Size(7, 7), 0);
                             CvInvoke.Canny(blurredGray, finalOutput, 0, 50, 5, false);
                             CvInvoke.Threshold(finalOutput, finalOutput, 100, 255, Emgu.CV.CvEnum.ThresholdType.Binary);
+
+                            double cannyThreshold = 180.0;
+                            double cannyThresholdLinking = 120.0;
+                            var cannyEdges = gray.Canny(cannyThreshold, cannyThresholdLinking);
 
                             var segments = CvInvoke.HoughLinesP(finalOutput, 1, Math.PI / 2, 50, 5, 5);
 
@@ -87,8 +181,8 @@ namespace LagoVista.GCode.Sender.Application.Controls
                                     segment.P2,
                                     new MCvScalar(0x00, 0x00, 0xFF), 2, Emgu.CV.CvEnum.LineType.AntiAlias);
                             }
-
-                            WebCamImage.Source = Emgu.CV.WPF.BitmapSourceConvert.ToBitmapSource(finalOutput);
+                            PerformShapeDetection(originalFrame);
+                            WebCamImage.Source = Emgu.CV.WPF.BitmapSourceConvert.ToBitmapSource(originalFrame);
                         }
                     }
                 }
@@ -102,6 +196,12 @@ namespace LagoVista.GCode.Sender.Application.Controls
                try
                {
                    _videoCapture = new VideoCapture(cameraIndex);
+
+                   _videoCapture.SetCaptureProperty(Emgu.CV.CvEnum.CapProp.AutoExposure, 0);
+
+                   _videoCapture.SetCaptureProperty(Emgu.CV.CvEnum.CapProp.Brightness, 33);
+                   _videoCapture.SetCaptureProperty(Emgu.CV.CvEnum.CapProp.Contrast, 54);
+                   _videoCapture.SetCaptureProperty(Emgu.CV.CvEnum.CapProp.Exposure, -7);
                }
                catch(Exception ex)
                {

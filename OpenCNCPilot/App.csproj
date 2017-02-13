@@ -120,6 +120,7 @@
       <DependentUpon>MachineStatusControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\ScrollListBox.cs" />
+    <Compile Include="Controls\ShapeDetection.cs" />
     <Compile Include="Converters\ColorConverters.cs" />
     <Compile Include="Converters\GCodeSendStatusTypeConverters.cs" />
     <Compile Include="Converters\MessageTypeConverter.cs" />
