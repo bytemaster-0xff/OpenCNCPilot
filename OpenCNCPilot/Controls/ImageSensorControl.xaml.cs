@@ -99,7 +99,14 @@ namespace LagoVista.GCode.Sender.Application.Controls
         {
             await Task.Run(() =>
            {
-               _videoCapture = new VideoCapture(cameraIndex);
+               try
+               {
+                   _videoCapture = new VideoCapture(cameraIndex);
+               }
+               catch(Exception ex)
+               {
+
+               }
            });
         }
 

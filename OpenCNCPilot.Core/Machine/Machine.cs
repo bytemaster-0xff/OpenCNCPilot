@@ -26,6 +26,10 @@ namespace LagoVista.GCode.Sender
             Messages = new System.Collections.ObjectModel.ObservableCollection<Models.StatusMessage>();
             AddStatusMessage(StatusMessageTypes.Info, "Startup.");
 
+            JobManager = new Managers.JobManager(this, Core.PlatformSupport.Services.Logger);
+            HeightMapProbingManager = new Managers.HeightMapProbingManager(this, Core.PlatformSupport.Services.Logger);
+
+
             /* Have defaults loaded until the real settings come in */
             _settings = Settings.Default;
         }

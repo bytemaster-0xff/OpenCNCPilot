@@ -1,4 +1,5 @@
-﻿using LagoVista.GCode.Sender.Interfaces;
+﻿using LagoVista.Core.PlatformSupport;
+using LagoVista.GCode.Sender.Interfaces;
 using LagoVista.GCode.Sender.Models;
 using System;
 using System.Collections.Generic;
@@ -20,6 +21,8 @@ namespace LagoVista.GCode.Sender.Managers
                 RaisePropertyChanged();
             }
         }
+
+        public ILogger  Logger { get; private set; }
 
         public IMachine Machine { get; private set; }
     }

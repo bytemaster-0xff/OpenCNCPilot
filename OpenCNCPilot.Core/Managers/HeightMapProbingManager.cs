@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using LagoVista.GCode.Sender.Models;
 using LagoVista.GCode.Sender.Interfaces;
+using LagoVista.Core.PlatformSupport;
 
 namespace LagoVista.GCode.Sender.Managers
 {
@@ -23,10 +24,10 @@ namespace LagoVista.GCode.Sender.Managers
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        public HeightMapProbingManager(IMachine machine)
+        public HeightMapProbingManager(IMachine machine, ILogger logger)
         {
             Machine = machine;
+            Logger = logger;
         }
-
     }
 }

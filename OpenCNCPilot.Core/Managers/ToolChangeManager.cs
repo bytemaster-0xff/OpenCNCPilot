@@ -1,4 +1,5 @@
-﻿using LagoVista.GCode.Sender.Interfaces;
+﻿using LagoVista.Core.PlatformSupport;
+using LagoVista.GCode.Sender.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,9 +10,10 @@ namespace LagoVista.GCode.Sender.Managers
 {
     public partial class ToolChangeManager
     {
-        public ToolChangeManager(IMachine machine)
+        public ToolChangeManager(IMachine machine, ILogger logger)
         {
             Machine = machine;
+            Logger = logger;
         }
     }
 }
