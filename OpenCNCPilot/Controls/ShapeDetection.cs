@@ -13,51 +13,42 @@ namespace LagoVista.GCode.Sender.Application.Controls
 {
     public partial class ImageSensorControl
     {
-        public void PerformShapeDetection(Mat img)
+        public Result PerformShapeDetection(Mat img)
         {
             StringBuilder msgBuilder = new StringBuilder("Performance: ");
 
             //Convert the image to grayscale and filter out the noise
-            UMat uimage = new UMat();
-            CvInvoke.CvtColor(img, uimage, ColorConversion.Bgr2Gray);
+            //UMat uimage = new UMat();
+            //CvInvoke.CvtColor(img, uimage, ColorConversion.Bgr2Gray);
 
             //use image pyr to remove noise
             UMat pyrDown = new UMat();
-            CvInvoke.PyrDown(uimage, pyrDown);
-            CvInvoke.PyrUp(pyrDown, uimage);
+            CvInvoke.PyrDown(img, pyrDown);
+            CvInvoke.PyrUp(pyrDown, img);
 
             //Image<Gray, Byte> gray = img.Convert<Gray, Byte>().PyrDown().PyrUp();
 
-            #region circle detection
             var watch = Stopwatch.StartNew();
             double cannyThreshold = 180.0;
-            double circleAccumulatorThreshold = 120;
-            var circles = CvInvoke.HoughCircles(uimage, HoughType.Gradient, 2.0, 20.0, cannyThreshold, circleAccumulatorThreshold, 5);
+            double circleAccumulatorThreshold = 140;
+            var circles = CvInvoke.HoughCircles(img, HoughType.Gradient, 2.0, 50.0, cannyThreshold, circleAccumulatorThreshold, 50, 150);
 
             watch.Stop();
             msgBuilder.Append(String.Format("Hough circles - {0} ms; ", watch.ElapsedMilliseconds));
-            #endregion
-
-            #region Canny and edge detection
             watch.Reset(); watch.Start();
             double cannyThresholdLinking = 120.0;
             UMat cannyEdges = new UMat();
-            CvInvoke.Canny(uimage, cannyEdges, cannyThreshold, cannyThresholdLinking);
+            CvInvoke.Canny(img, cannyEdges, cannyThreshold, cannyThresholdLinking);
 
             var lines = CvInvoke.HoughLinesP(
                cannyEdges,
                1, //Distance resolution in pixel-related units
                Math.PI / 45.0, //Angle resolution measured in radians.
-               20, //threshold
-               30, //min Line width
-               10); //gap between lines
+               10, //threshold
+               200, //min Line width
+               50); //gap between lines
 
-            watch.Stop();
-            msgBuilder.Append(String.Format("Canny & Hough lines - {0} ms; ", watch.ElapsedMilliseconds));
-            #endregion
-
-            #region Find triangles and rectangles
-            watch.Reset(); watch.Start();
+            
             List<Triangle2DF> triangleList = new List<Triangle2DF>();
             List<RotatedRect> boxList = new List<RotatedRect>(); //a box is a rotated rectangle
 
@@ -108,44 +99,24 @@ namespace LagoVista.GCode.Sender.Application.Controls
                 }
             }
 
-            watch.Stop();
-            msgBuilder.Append(String.Format("Triangles & Rectangles - {0} ms; ", watch.ElapsedMilliseconds));
-            #endregion
+            
+            var results = new Result();
+            results.Triangles = triangleList;
+            results.Rects = boxList;
+            results.Circles = circles.ToList();
+            results.Lines = lines.ToList();
 
-            MessageText.Text = msgBuilder.ToString();
+            return results;
+        }
 
-            #region draw triangles and rectangles
-            Mat triangleRectangleImage = new Mat(img.Size, DepthType.Cv8U, 3);
-            triangleRectangleImage.SetTo(new MCvScalar(0));
-            foreach (Triangle2DF triangle in triangleList)
-            {
-                CvInvoke.Polylines(triangleRectangleImage, Array.ConvertAll(triangle.GetVertices(), System.Drawing.Point.Round), true, new Bgr(System.Drawing.Color.Silver).MCvScalar, 2);
-            }
-            foreach (RotatedRect box in boxList)
-            {
-                CvInvoke.Polylines(triangleRectangleImage, Array.ConvertAll(box.GetVertices(), System.Drawing.Point.Round), true, new Bgr(System.Drawing.Color.White).MCvScalar, 2);
-            }
+        public class Result
+        {
+            public List<LineSegment2D> Lines { get; set; }
+            public List<CircleF> Circles { get; set; }
 
-            ImageOverlay1.Source = Emgu.CV.WPF.BitmapSourceConvert.ToBitmapSource(triangleRectangleImage);
-            #endregion
+            public List<Triangle2DF> Triangles { get; set; }
 
-            #region draw circles
-            Mat circleImage = new Mat(img.Size, DepthType.Cv8U, 3);
-            circleImage.SetTo(new MCvScalar(0));
-            foreach (CircleF circle in circles)
-                CvInvoke.Circle(circleImage, System.Drawing.Point.Round(circle.Center), (int)circle.Radius, new Bgr(System.Drawing.Color.Yellow).MCvScalar, 2);
-
-            ImageOverlay2.Source = Emgu.CV.WPF.BitmapSourceConvert.ToBitmapSource(circleImage); ;
-            #endregion
-
-            #region draw lines
-            Mat lineImage = new Mat(img.Size, DepthType.Cv8U, 3);
-            lineImage.SetTo(new MCvScalar(0));
-            foreach (LineSegment2D line in lines)
-                CvInvoke.Line(lineImage, line.P1, line.P2, new Bgr(System.Drawing.Color.LightBlue).MCvScalar, 2);
-
-            //ImageOverlay3.Source = Emgu.CV.WPF.BitmapSourceConvert.ToBitmapSource(lineImage);
-            #endregion
+            public List<RotatedRect> Rects { get; set; }
         }
     }
 }
