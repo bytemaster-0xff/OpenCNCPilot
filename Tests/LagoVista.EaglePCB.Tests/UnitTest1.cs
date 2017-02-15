@@ -14,7 +14,7 @@ namespace LagoVista.EaglePCB.Tests
 
             var doc = XDocument.Load("./KegeratorController.brd");
 
-            EagleParser.ReadPCB(doc);
+            var pcb = EagleParser.ReadPCB(doc);
         }
     }
 }

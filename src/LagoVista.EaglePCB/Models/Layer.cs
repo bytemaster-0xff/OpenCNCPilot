@@ -24,6 +24,16 @@ namespace LagoVista.EaglePCB.Models
                 Fill = element.GetInt32("fill")
             };
         }
+
+        public List<Circle> Circles { get; set; }
+        public List<Hole> Holes { get; set; }
+        public List<Rect> Rects { get; set; }
+
+        public List<Wire> Wires { get; set; }
+
+        public List<SMD> SMDs { get; set; }
+        public List<Pad> Pads { get; set; }
+
     }
 
 

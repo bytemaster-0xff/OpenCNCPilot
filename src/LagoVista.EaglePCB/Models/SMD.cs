@@ -15,6 +15,8 @@ namespace LagoVista.EaglePCB.Models
         public double? Roundness { get; set; }
         public string RotateStr { get; set; }
 
+        public Package Package { get; set; }
+
         public static SMD Create(XElement element)
         {
             return new SMD()

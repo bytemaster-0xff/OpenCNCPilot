@@ -15,6 +15,8 @@ namespace LagoVista.EaglePCB.Models
         public double Radius { get; set; }
         public double Width { get; set; }
 
+        public Package Package { get; set; }
+
         public static Circle Create(XElement element)
         {
             return new Circle()

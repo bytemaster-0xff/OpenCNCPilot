@@ -13,6 +13,8 @@ namespace LagoVista.EaglePCB.Models
         public double Y { get; set; }
         public double Drill { get; set; }
 
+        public Package Package { get; set; }
+
         public static Hole Create(XElement element)
         {
             return new Models.Hole()

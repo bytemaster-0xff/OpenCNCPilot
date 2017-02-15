@@ -50,6 +50,27 @@ namespace LagoVista.EaglePCB.Managers
                          in doc.Descendants("plain")
                          select Models.Plain.Create(eles)).First();
 
+            foreach(var layer in pcb.Layers)
+            {
+                foreach(var element in pcb.Components)
+                {
+                    var package = pcb.Packages.Where(pkg => pkg.LibraryName == element.LibraryName && pkg.Name == element.PackageName).FirstOrDefault();
+                    layer.SMDs = new List<Models.SMD>();
+                    foreach(var smd in package.SMDs.Where(smd => smd.Layer == layer.Number))
+                    {
+                        smd.Package = package;
+                        layer.SMDs.Add(smd);
+                    }
+
+                    layer.Circles = new List<Models.Circle>();
+                    foreach (var circle in package.Circles.Where(smd => smd.Layer == layer.Number))
+                    {
+                        circle.Package = package;
+                        layer.Circles.Add(circle);
+                    }
+                }
+            }
+
             return pcb;
         }
     }
