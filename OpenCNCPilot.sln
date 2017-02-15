@@ -11,6 +11,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GCode Tests", "LagoVista.GC
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GCode Core", "LagoVista.Core.GCode\GCode Core.csproj", "{26A18C19-479E-495B-A8F2-1BAA591D7DF8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LagoVista.EaglePCB", "src\LagoVista.EaglePCB\LagoVista.EaglePCB.csproj", "{B60C5358-D6AE-469A-8BEB-78CE5C434952}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LagoVista.EaglePCB.Tests", "Tests\LagoVista.EaglePCB.Tests\LagoVista.EaglePCB.Tests.csproj", "{8AF32689-4D56-4DE7-85B1-324FC7AC9723}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +37,14 @@ Global
 		{26A18C19-479E-495B-A8F2-1BAA591D7DF8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{26A18C19-479E-495B-A8F2-1BAA591D7DF8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{26A18C19-479E-495B-A8F2-1BAA591D7DF8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B60C5358-D6AE-469A-8BEB-78CE5C434952}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B60C5358-D6AE-469A-8BEB-78CE5C434952}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B60C5358-D6AE-469A-8BEB-78CE5C434952}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B60C5358-D6AE-469A-8BEB-78CE5C434952}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8AF32689-4D56-4DE7-85B1-324FC7AC9723}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8AF32689-4D56-4DE7-85B1-324FC7AC9723}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8AF32689-4D56-4DE7-85B1-324FC7AC9723}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8AF32689-4D56-4DE7-85B1-324FC7AC9723}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
