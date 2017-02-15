@@ -9,16 +9,19 @@
     <h:HelixViewport3D Name="viewport" ShowViewCube="False" Panel.ZIndex="0"  >
         <h:HelixViewport3D.Camera>
             <PerspectiveCamera
-             		Position="150, -300,250" 
-					LookDirection="0, 35,-20"
+             		Position="50, -60,100" 
+					LookDirection="0, 18,-22"
 					UpDirection="0,0,1"/>
         </h:HelixViewport3D.Camera>
 
         <h:DefaultLights/>
         <h:CoordinateSystemVisual3D ArrowLengths="5"/>
+        <h:RectangleVisual3D Fill="Red" x:Name="ModelSchematic"/>
         <h:LinesVisual3D Thickness="0.5" Color="Gray" x:Name="ModelRapid"/>
         <h:LinesVisual3D Thickness="1" Color="Black" x:Name="ModelLine"/>
         <h:LinesVisual3D Thickness="1" Color="Blue" x:Name="ModelArc"/>
+
+        <ModelVisual3D x:Name="PadsLayer"/>
         <h:ArrowVisual3D 
             x:Name="ModelTool" Direction="0,0,-10"
            Fill="Red"

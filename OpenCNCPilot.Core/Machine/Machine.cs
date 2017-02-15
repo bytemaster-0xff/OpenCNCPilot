@@ -129,5 +129,15 @@ namespace LagoVista.GCode.Sender
 
             Services.DispatcherServices.Invoke(action);
         }
+
+        public bool CanSetMode(OperatingMode mode)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool SetMode(OperatingMode mode)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

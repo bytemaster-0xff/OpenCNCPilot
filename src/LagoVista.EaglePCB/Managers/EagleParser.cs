@@ -10,9 +10,9 @@ namespace LagoVista.EaglePCB.Managers
 {
     public class EagleParser
     {
-        private static string GetString (XElement element, string name)
+        private static string GetString(XElement element, string name)
         {
-            if(element.Attributes(XName.Get(name)).Any())
+            if (element.Attributes(XName.Get(name)).Any())
             {
                 return element.Attribute(XName.Get(name)).Value;
             }
@@ -36,7 +36,7 @@ namespace LagoVista.EaglePCB.Managers
 
             pcb.Components = (from eles
                            in doc.Descendants("element")
-                           select Models.Component.Create(eles)).ToList();
+                              select Models.Component.Create(eles)).ToList();
 
             pcb.Layers = (from eles
                            in doc.Descendants("layer")
@@ -44,29 +44,30 @@ namespace LagoVista.EaglePCB.Managers
 
             pcb.Packages = (from eles
                            in doc.Descendants("package")
-                           select Models.Package.Create(eles)).ToList();
+                            select Models.Package.Create(eles)).ToList();
 
             pcb.Plain = (from eles
                          in doc.Descendants("plain")
                          select Models.Plain.Create(eles)).First();
 
-            foreach(var layer in pcb.Layers)
+            foreach (var layer in pcb.Layers)
             {
-                foreach(var element in pcb.Components)
+                layer.SMDs = new List<Models.SMD>();
+                layer.Circles = new List<Models.Circle>();
+                foreach (var element in pcb.Components)
                 {
-                    var package = pcb.Packages.Where(pkg => pkg.LibraryName == element.LibraryName && pkg.Name == element.PackageName).FirstOrDefault();
-                    layer.SMDs = new List<Models.SMD>();
-                    foreach(var smd in package.SMDs.Where(smd => smd.Layer == layer.Number))
-                    {
-                        smd.Package = package;
-                        layer.SMDs.Add(smd);
-                    }
+                    element.Package = pcb.Packages.Where(pkg => pkg.LibraryName == element.LibraryName && pkg.Name == element.PackageName).FirstOrDefault();
+                }
+            }
 
-                    layer.Circles = new List<Models.Circle>();
-                    foreach (var circle in package.Circles.Where(smd => smd.Layer == layer.Number))
+            foreach (var element in pcb.Components)
+            {
+                if (element.SMDPads.Any())
+                {
+                    Debug.WriteLine(element.Name + " " + element.Value);
+                    foreach (var pad in element.SMDPads)
                     {
-                        circle.Package = package;
-                        layer.Circles.Add(circle);
+                        Debug.WriteLine("\t" + pad.X + " " + pad.Y + " " + pad.DX + " " + pad.DY);
                     }
                 }
             }

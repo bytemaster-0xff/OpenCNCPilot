@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Xml.Linq;
+using System.Linq;
 using LagoVista.EaglePCB.Managers;
 
 namespace LagoVista.EaglePCB.Tests
@@ -15,6 +16,8 @@ namespace LagoVista.EaglePCB.Tests
             var doc = XDocument.Load("./KegeratorController.brd");
 
             var pcb = EagleParser.ReadPCB(doc);
+
+            
         }
     }
 }

@@ -17,6 +17,31 @@ namespace LagoVista.EaglePCB.Models
         public double? Y { get; set; }
         public string Rotate { get; set; }
 
+        public Package Package { get; set; }
+
+        public List<SMD> SMDPads
+        {
+            get
+            {
+
+                var smdPads = new List<SMD>();
+
+                foreach(var smd in Package.SMDs)
+                {
+                    smdPads.Add(new SMD()
+                    {
+                         X = X.Value + smd.X,
+                         Y = Y.Value + smd.Y,
+                         DX = smd.DX,
+                         DY = smd.DY                         
+                    });
+                }
+
+
+                return smdPads;
+            }
+        }
+
         public static Component Create(XElement element)
         {
             return new Component()
