@@ -37,13 +37,21 @@
     <!-- A reference to the entire .NET Framework is automatically included -->
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Extensions\XElementExtensions.cs" />
     <Compile Include="Managers\EagleParser.cs" />
+    <Compile Include="Models\Circle.cs" />
     <Compile Include="Models\Component.cs" />
     <Compile Include="Models\Drill.cs" />
-    <Compile Include="Models\Element.cs" />
+    <Compile Include="Models\Hole.cs" />
+    <Compile Include="Models\Layer.cs" />
+    <Compile Include="Models\Package.cs" />
     <Compile Include="Models\Pad.cs" />
     <Compile Include="Models\PCB.cs" />
+    <Compile Include="Models\Plain.cs" />
     <Compile Include="Models\Rect.cs" />
+    <Compile Include="Models\SMD.cs" />
+    <Compile Include="Models\Text.cs" />
+    <Compile Include="Models\Wire.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />

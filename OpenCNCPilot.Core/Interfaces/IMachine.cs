@@ -116,7 +116,20 @@ namespace LagoVista.GCode.Sender.Interfaces
 
         void ClearAlarm();
 
-
+        /// <summary>
+        /// This method can be called to ensure that the machine can transition to the specified operating mode, if it can't a message will be added to the output and false will be returned.
+        /// </summary>
+        /// <param name="mode">The new desired transition mode.</param>
+        /// <returns>True if you can transition into the mode, false if you can not.</returns>
+        bool CanSetMode(OperatingMode mode);
+    
+        /// <summary>
+        /// Transition the machine to the new mode.
+        /// </summary>
+        /// <param name="mode">The new mode</param>
+        /// <returns>True if you can transition occurred, false if it did not, if it did not a warning message will be written to the message output.</returns>
+        bool SetMode(OperatingMode mode);
+        
         /// <summary>
         /// Determine if there are enough bytes in the estimated machine buffer to send the next command based on the bytes required to send that command
         /// </summary>

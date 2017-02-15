@@ -120,7 +120,9 @@ namespace LagoVista.GCode.Sender
             return true;
         }
 
-
+        /// <summary>
+        /// Send CTRL-X to the machine
+        /// </summary>
         public void SoftReset()
         {
             if (AssertConnected())

@@ -15,6 +15,8 @@ namespace LagoVista.GCode.Sender.Interfaces
 
         HeightMap HeightMap { get; set; }
 
+        void ProbeCompleted(string line);
+
         void StartProbing();
         void PauseProbing();
 

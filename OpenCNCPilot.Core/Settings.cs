@@ -147,6 +147,8 @@ namespace LagoVista.GCode.Sender
             return errs;
         }
 
+        public double ProbeOffset { get; set; }
+
         public async Task SaveAsync()
         {
             await Services.Storage.StoreAsync(this, "Settings.json");
@@ -159,10 +161,12 @@ namespace LagoVista.GCode.Sender
                 return new Settings()
                 {
                     MachineName = "",
+                    ProbeOffset = 0.0,
                     ControllerBufferSize = 120,
                     StatusPollIntervalIdle = 1000,
                     StatusPollIntervalRunning = 100,
                     JogFeedRate = 2000,
+                    MessageVerbosity = MessageVerbosityLevels.Normal,
                     MachineOrigin = MachineOrigin.Bottom_Left,
                     JogGCodeCommand = JogGCodeCommand.G0,
                     ViewportArcSplit = 1,

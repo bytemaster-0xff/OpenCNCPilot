@@ -34,23 +34,21 @@ namespace LagoVista.EaglePCB.Managers
         {
             var pcb = new Models.PCB();
 
-            var elements = from eles
+            pcb.Components = (from eles
                            in doc.Descendants("element")
-                           select new Models.Element()
-                           {
-                               Name = GetString(eles, "name"),
-                               Package = GetString(eles, "package"),
-                               X = GetDouble(eles, "x"),
-                               Y = GetDouble(eles, "y"),
-                               Value = GetString(eles, "value"),
-                               Roate = GetString(eles, "rot")
-                           };                           
+                           select Models.Component.Create(eles)).ToList();
 
-            foreach(var ele in elements)
-            {
-                Debug.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}\t{5}", ele.Name, ele.Package, ele.X, ele.Y, ele.Value, ele.Roate);
-            }
+            pcb.Layers = (from eles
+                           in doc.Descendants("layer")
+                          select Models.Layer.Create(eles)).ToList();
 
+            pcb.Packages = (from eles
+                           in doc.Descendants("package")
+                           select Models.Package.Create(eles)).ToList();
+
+            pcb.Plain = (from eles
+                         in doc.Descendants("plain")
+                         select Models.Plain.Create(eles)).First();
 
             return pcb;
         }

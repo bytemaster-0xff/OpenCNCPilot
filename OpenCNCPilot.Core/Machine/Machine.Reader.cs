@@ -89,6 +89,17 @@ namespace LagoVista.GCode.Sender
                     RaiseEvent(ParseStatus, line);
                 else if (line.StartsWith("[PRB:"))
                 {
+                    switch(Mode)
+                    {
+                        case OperatingMode.ProbingHeight:
+                            break;
+                        case OperatingMode.ProbingHeightMap:
+                            HeightMapProbingManager.ProbeCompleted(line);
+                            break;
+                        default:
+                            AddStatusMessage(StatusMessageTypes.Warning, "Unexpected PRM return message.");
+                            break;
+                    }
                     RaiseEvent(ParseProbe, line);
                 }
                 else if (line.StartsWith("["))

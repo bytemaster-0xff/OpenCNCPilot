@@ -7,25 +7,19 @@ using System.Xml.Linq;
 
 namespace LagoVista.EaglePCB.Models
 {
-    public class Pad
+    public class Hole
     {
-        public string Name { get; set; }
         public double X { get; set; }
         public double Y { get; set; }
         public double Drill { get; set; }
-        public string Shape { get; set; }
-        public string RotateStr { get; set; }
 
-        public static Pad Create(XElement element)
+        public static Hole Create(XElement element)
         {
-            return new Pad()
+            return new Models.Hole()
             {
                 X = element.GetDouble("x"),
                 Y = element.GetDouble("y"),
-                Drill = element.GetDouble("drill"),
-                Name = element.GetString("name"),
-                Shape = element.GetString("shape"),
-                RotateStr = element.GetString("rot")
+                Drill = element.GetDouble("drill")
             };
         }
     }

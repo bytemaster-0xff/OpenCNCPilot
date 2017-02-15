@@ -9,7 +9,10 @@ namespace LagoVista.EaglePCB.Models
 {
     public class PCB
     {
-        public ObservableCollection<Drill> Drills { get; private set; }
-
+        public List<Drill> Drills { get; private set; }
+        public Plain Plain { get; set; }
+        public List<Layer> Layers { get; set; }
+        public List<Package> Packages { get; set; }
+        public List<Component> Components { get; set; }
     }
 }
