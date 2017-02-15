@@ -16,11 +16,6 @@
         
         
         <Image x:Name="WebCamImage" Stretch="UniformToFill"  Source="/Imgs/TestPattern.jpg" Grid.RowSpan="2" />
-        <Image x:Name="ImageOverlay1" Stretch="UniformToFill" Grid.RowSpan="2" />
-        <Image x:Name="ImageOverlay2" Stretch="UniformToFill" Grid.RowSpan="2" />
-        <Image x:Name="ImageOverlay3" Stretch="UniformToFill" Grid.RowSpan="2" />
-
-        <TextBlock x:Name="MessageText" Text="Hello World" FontSize="33" Foreground="White" />
 
         <Rectangle Grid.Row="1" Fill="Black" Opacity="0.5">
             

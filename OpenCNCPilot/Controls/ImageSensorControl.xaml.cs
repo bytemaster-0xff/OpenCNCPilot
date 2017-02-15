@@ -118,32 +118,32 @@ namespace LagoVista.GCode.Sender.Application.Controls
                 triangleRectangleImage.Draw(triangle, new Bgr(Color.DarkBlue), 2);
             foreach (var box in boxList)
             {*/
-                /*
-                frm.SetText(frm.Controls["textBoxImageY"], box.center.Y.ToString());
-                frm.SetText(frm.Controls["textBoxDeg"], box.angle.ToString());
-                frm.SetText(frm.Controls["textBoxImageX"], box.center.X.ToString());
-                 * */
-/*                CameraHasData = true;
+        /*
+        frm.SetText(frm.Controls["textBoxImageY"], box.center.Y.ToString());
+        frm.SetText(frm.Controls["textBoxDeg"], box.angle.ToString());
+        frm.SetText(frm.Controls["textBoxImageX"], box.center.X.ToString());
+         * */
+        /*                CameraHasData = true;
 
-                triangleRectangleImage.Draw(box, new Bgr(Color.DarkOrange), 2);
-            }
-            // add cross hairs to image
-            int totalwidth = frame.Width;
-            int totalheight = frame.Height;
-            PointF[] linepointshor = new PointF[] {
-                    new PointF(0, totalheight/2),
-                    new PointF(totalwidth, totalheight/2)
+                        triangleRectangleImage.Draw(box, new Bgr(Color.DarkOrange), 2);
+                    }
+                    // add cross hairs to image
+                    int totalwidth = frame.Width;
+                    int totalheight = frame.Height;
+                    PointF[] linepointshor = new PointF[] {
+                            new PointF(0, totalheight/2),
+                            new PointF(totalwidth, totalheight/2)
 
-                };
-            PointF[] linepointsver = new PointF[] {
-                    new PointF(totalwidth/2, 0),
-                    new PointF(totalwidth/2, totalheight)
+                        };
+                    PointF[] linepointsver = new PointF[] {
+                            new PointF(totalwidth/2, 0),
+                            new PointF(totalwidth/2, totalheight)
 
-                };
-            triangleRectangleImage.DrawPolyline(Array.ConvertAll<PointF, System.Drawing.Point>(linepointshor, System.Drawing.Point.Round), false, new Bgr(Color.AntiqueWhite), 1);
-            triangleRectangleImage.DrawPolyline(Array.ConvertAll<PointF, System.Drawing.Point>(linepointsver, System.Drawing.Point.Round), false, new Bgr(Color.AntiqueWhite), 1);
-            ImageOverlay.Source = Emgu.CV.WPF.BitmapSourceConvert.ToBitmapSource(triangleRectangleImage);            
-        }*/
+                        };
+                    triangleRectangleImage.DrawPolyline(Array.ConvertAll<PointF, System.Drawing.Point>(linepointshor, System.Drawing.Point.Round), false, new Bgr(Color.AntiqueWhite), 1);
+                    triangleRectangleImage.DrawPolyline(Array.ConvertAll<PointF, System.Drawing.Point>(linepointsver, System.Drawing.Point.Round), false, new Bgr(Color.AntiqueWhite), 1);
+                    ImageOverlay.Source = Emgu.CV.WPF.BitmapSourceConvert.ToBitmapSource(triangleRectangleImage);            
+                }*/
 
         private void ProcessFrame(Object state)
         {
@@ -164,8 +164,11 @@ namespace LagoVista.GCode.Sender.Application.Controls
                         using (var blurredGray = new Mat())
                         using (var finalOutput = new Mat())
                         {
+
                             CvInvoke.GaussianBlur(gray, blurredGray, new System.Drawing.Size(7, 7), 0);
-                            CvInvoke.Canny(blurredGray, finalOutput, 0, 50, 5, false);
+                            var results = PerformShapeDetection(blurredGray);
+
+                            /*CvInvoke.Canny(blurredGray, finalOutput, 0, 50, 5, false);
                             CvInvoke.Threshold(finalOutput, finalOutput, 100, 255, Emgu.CV.CvEnum.ThresholdType.Binary);
 
                             double cannyThreshold = 180.0;
@@ -174,15 +177,47 @@ namespace LagoVista.GCode.Sender.Application.Controls
 
                             var segments = CvInvoke.HoughLinesP(finalOutput, 1, Math.PI / 2, 50, 5, 5);
 
-                            foreach (var segment in segments)
+    */
+
+                            /*foreach (var segment in results.Lines)
                             {
                                 CvInvoke.Line(blurredGray,
                                     segment.P1,
                                     segment.P2,
-                                    new MCvScalar(0x00, 0x00, 0xFF), 2, Emgu.CV.CvEnum.LineType.AntiAlias);
+                                    new Bgr(System.Drawing.Color.White).MCvScalar, 2, Emgu.CV.CvEnum.LineType.AntiAlias);
+                            }*/
+
+                            foreach (var circle in results.Circles)
+                            {
+                                /*CvInvoke.Circle(blurredGray,
+                                     new   System.Drawing.Point((int)circle.Center.X, (int)circle.Center.Y), (int)circle.Radius,
+                                     new Bgr(System.Drawing.Color.White).MCvScalar, 2, Emgu.CV.CvEnum.LineType.AntiAlias);*/
+
+                                var pt1 = new System.Drawing.Point(0, (int)circle.Center.Y);
+                                var pt2 = new System.Drawing.Point(1024, (int)circle.Center.Y);
+
+                                CvInvoke.Line(blurredGray,
+                                   pt1,
+                                   pt2,
+                                   new Bgr(System.Drawing.Color.White).MCvScalar, 2, Emgu.CV.CvEnum.LineType.AntiAlias);
+
+                                var vpt1 = new System.Drawing.Point((int)circle.Center.X, 0);
+                                var vpt2 = new System.Drawing.Point((int)circle.Center.X, 1024);
+
+                                CvInvoke.Line(blurredGray,
+                                   vpt1,
+                                   vpt2,
+                                   new Bgr(System.Drawing.Color.White).MCvScalar, 2, Emgu.CV.CvEnum.LineType.AntiAlias);
                             }
-                            PerformShapeDetection(originalFrame);
-                            WebCamImage.Source = Emgu.CV.WPF.BitmapSourceConvert.ToBitmapSource(originalFrame);
+
+                            /*        foreach(var box in results.Rects)
+                                    {
+                                        CvInvoke.Polylines(blurredGray, Array.ConvertAll(box.GetVertices(), System.Drawing.Point.Round), 
+                                            true, 
+                                            new Bgr(System.Drawing.Color.White).MCvScalar, 2);
+                                    }*/
+
+                            WebCamImage.Source = Emgu.CV.WPF.BitmapSourceConvert.ToBitmapSource(blurredGray);
                         }
                     }
                 }
@@ -203,7 +238,7 @@ namespace LagoVista.GCode.Sender.Application.Controls
                    _videoCapture.SetCaptureProperty(Emgu.CV.CvEnum.CapProp.Contrast, 54);
                    _videoCapture.SetCaptureProperty(Emgu.CV.CvEnum.CapProp.Exposure, -7);
                }
-               catch(Exception ex)
+               catch (Exception ex)
                {
 
                }
@@ -237,7 +272,7 @@ namespace LagoVista.GCode.Sender.Application.Controls
 
                 ProcessFrame(null);
 
-                _timer = new Timer(ProcessFrame, _videoCapture, 0, 500);
+                _timer = new Timer(ProcessFrame, _videoCapture, 0, 1000);
                 _timerStopped = false;
             }
             catch (NullReferenceException excpt)
@@ -266,7 +301,6 @@ namespace LagoVista.GCode.Sender.Application.Controls
                 if (_videoCapture != null)
                 {
                     _videoCapture.Stop();
-                    _videoCapture.Dispose();
                     _videoCapture = null;
                 }
             }
@@ -294,7 +328,14 @@ namespace LagoVista.GCode.Sender.Application.Controls
 
         public void ShutDown()
         {
-            StopCapture();
+            lock (_videoCaptureLocker)
+            {
+                if (_videoCapture != null)
+                {
+                    _videoCapture.Stop();
+                    _videoCapture = null;
+                }
+            }
         }
 
         private void Settings_Click(object sender, RoutedEventArgs e)
