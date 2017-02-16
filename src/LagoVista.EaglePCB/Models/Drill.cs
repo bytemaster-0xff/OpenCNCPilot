@@ -10,5 +10,12 @@ namespace LagoVista.EaglePCB.Models
     {
         public double X { get; set; }
         public double Y { get; set; }
+
+        public double Diameter { get; set; }
+
+        public override string ToString()
+        {
+            return $"Drill X={X}, Y={Y}, Diameter={Diameter}";
+        }
     }
 }

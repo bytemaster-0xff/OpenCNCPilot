@@ -7,27 +7,20 @@ using System.Xml.Linq;
 
 namespace LagoVista.EaglePCB.Models
 {
-    public class Hole
+    public class Via
     {
         public double X { get; set; }
         public double Y { get; set; }
         public double Drill { get; set; }
 
-        public Package Package { get; set; }
-
-        public static Hole Create(XElement element)
+        public static Via Create(XElement element)
         {
-            return new Models.Hole()
+            return new Via()
             {
+                Drill = element.GetDouble("drill"),
                 X = element.GetDouble("x"),
-                Y = element.GetDouble("y"),
-                Drill = element.GetDouble("drill")
+                Y = element.GetDouble("y")
             };
-        }
-
-        public override string ToString()
-        {
-            return $"Hole => X={X}, Y={Y}, Diameter={Drill};";
         }
     }
 }

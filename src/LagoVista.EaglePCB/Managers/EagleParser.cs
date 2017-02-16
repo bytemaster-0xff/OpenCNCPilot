@@ -50,26 +50,47 @@ namespace LagoVista.EaglePCB.Managers
                          in doc.Descendants("plain")
                          select Models.Plain.Create(eles)).First();
 
-            foreach (var layer in pcb.Layers)
+            pcb.Vias = (from eles
+                        in doc.Descendants("via")
+                        select Models.Via.Create(eles)).ToList();
+
+            /* FIrst assign packages to components */
+            foreach (var element in pcb.Components)
             {
-                layer.SMDs = new List<Models.SMD>();
-                layer.Circles = new List<Models.Circle>();
-                foreach (var element in pcb.Components)
+                element.Package = pcb.Packages.Where(pkg => pkg.LibraryName == element.LibraryName && pkg.Name == element.PackageName).FirstOrDefault();
+
+                foreach (var layer in pcb.Layers)
                 {
-                    element.Package = pcb.Packages.Where(pkg => pkg.LibraryName == element.LibraryName && pkg.Name == element.PackageName).FirstOrDefault();
+                    layer.Wires = pcb.Plain.Wires.Where(wire => wire.Layer == layer.Number).ToList();
+                    if (layer.Number == 17)
+                    {
+                        foreach (var pad in element.Package.Pads)
+                        {
+                            layer.Pads.Add(new Models.Pad() { Drill = pad.Drill, X = element.X.Value + pad.X, Y = element.Y.Value + pad.Y, RotateStr = pad.RotateStr });
+                        }
+                    }
+
+                    if (layer.Number == 44)
+                    {
+                        foreach (var hole in element.Package.Pads)
+                        {
+                            layer.Drills.Add(new Models.Drill() { Diameter = hole.Drill, X = element.X.Value + hole.X, Y = element.Y.Value });
+                        }
+                    }
+
+                    if (layer.Number == 45)
+                    {
+                        foreach (var hole in element.Package.Holes)
+                        {
+                            layer.Holes.Add(new Models.Hole() { Drill = hole.Drill, X = element.X.Value + hole.X, Y = element.Y.Value });
+                        }
+                    }
                 }
             }
 
-            foreach (var element in pcb.Components)
+            foreach (var via in pcb.Vias)
             {
-                if (element.SMDPads.Any())
-                {
-                    Debug.WriteLine(element.Name + " " + element.Value);
-                    foreach (var pad in element.SMDPads)
-                    {
-                        Debug.WriteLine("\t" + pad.X + " " + pad.Y + " " + pad.DX + " " + pad.DY);
-                    }
-                }
+                pcb.Layers.Where(layer => layer.Number == 18).First().Vias.Add(via);
             }
 
             return pcb;

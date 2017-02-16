@@ -14,5 +14,6 @@ namespace LagoVista.EaglePCB.Models
         public List<Layer> Layers { get; set; }
         public List<Package> Packages { get; set; }
         public List<Component> Components { get; set; }
+        public List<Via> Vias { get; set; }
     }
 }

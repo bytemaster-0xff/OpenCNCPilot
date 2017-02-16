@@ -25,5 +25,10 @@ namespace LagoVista.EaglePCB.Models
                 Layer = element.GetInt32("layer")
             };
         }
+
+        public override string ToString()
+        {
+            return $"Wire => X1={Rect.X1}, Y1={Rect.Y1}, X2={Rect.X2}, Y2={Rect.Y2}, Width={Width}";
+        }
     }
 }
