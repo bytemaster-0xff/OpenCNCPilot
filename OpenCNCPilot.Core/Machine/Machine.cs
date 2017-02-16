@@ -137,7 +137,8 @@ namespace LagoVista.GCode.Sender
 
         public bool SetMode(OperatingMode mode)
         {
-            throw new NotImplementedException();
+            Mode = mode;
+            return true;
         }
     }
 }

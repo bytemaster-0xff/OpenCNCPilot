@@ -53,6 +53,10 @@ namespace LagoVista.GCode.Sender.Managers
 
         }
 
+        public void ProbeCompleted(string line)
+        {
+            throw new NotImplementedException();
+        }
 
         private void HeightMapProbeNextPoint()
         {

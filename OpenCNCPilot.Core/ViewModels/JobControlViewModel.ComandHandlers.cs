@@ -10,12 +10,12 @@ namespace LagoVista.GCode.Sender.ViewModels
     {
         public void Kill()
         {
-         
+
         }
 
         public void StopJob()
         {
-
+            
         }
 
 
@@ -31,13 +31,14 @@ namespace LagoVista.GCode.Sender.ViewModels
 
         public void StartJob()
         {
-          }
+            Machine.SetMode(OperatingMode.SendingJob);
+        }
 
         public void PauseJob()
         {
             switch (Machine.Mode)
             {
-         //       case OperatingMode.SendingJob: Machine.FilePause(); break;
+                //       case OperatingMode.SendingJob: Machine.FilePause(); break;
             }
         }
 

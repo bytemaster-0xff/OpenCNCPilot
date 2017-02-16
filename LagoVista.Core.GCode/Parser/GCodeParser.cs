@@ -49,7 +49,6 @@ namespace LagoVista.Core.GCode.Parser
                 if (command != null)
                 {
                     Commands.Add(command);
-                    Debug.WriteLine(command.LineNumber + " " + command.Command + " " + command.Line + " " + line);
                     lineIndex++;
                 }
                 else

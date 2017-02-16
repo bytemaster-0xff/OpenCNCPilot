@@ -123,6 +123,7 @@
     <Compile Include="Controls\ShapeDetection.cs" />
     <Compile Include="Converters\ColorConverters.cs" />
     <Compile Include="Converters\GCodeSendStatusTypeConverters.cs" />
+    <Compile Include="Converters\Lines2Visual3DConverter.cs" />
     <Compile Include="Converters\MessageTypeConverter.cs" />
     <Compile Include="Converters\PointConverter.cs" />
     <Compile Include="Extensions\Vector3DExtensions.cs" />

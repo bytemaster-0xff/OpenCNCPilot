@@ -4,6 +4,7 @@
     <cvtrs:ColorEnabledConverter x:Key="ColorEnabledConverter" />
     <cvtrs:PointConverter x:Key="PointConverter" />
     <cvtrs:ToolTopPointConverter x:Key="ToolTopPointConverter" />
+    <cvtrs:Lines2Visual3DConverter x:Key="Lines2Visual3DConverter" />
     <cvtrs:MessageTypeBackgroundColorConverter x:Key="MessageTypeBackgroundColorConverter" />
     <cvtrs:MessageTypeForegroundColorConverter x:Key="MessageTypeForegroundColorConverter" />
 </ResourceDictionary>

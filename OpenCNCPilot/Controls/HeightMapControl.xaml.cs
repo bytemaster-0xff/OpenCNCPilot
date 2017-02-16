@@ -30,7 +30,6 @@ namespace LagoVista.GCode.Sender.Application.Controls
 
             var doc = XDocument.Load("./KegeratorController.brd");
             var pcb = EagleParser.ReadPCB(doc);
-
             
             var modelGroup = new Model3DGroup();
             var redMaterial = MaterialHelper.CreateMaterial(Colors.Red);
@@ -55,9 +54,6 @@ namespace LagoVista.GCode.Sender.Application.Controls
             ModelHeightMap.MeshGeometry = new System.Windows.Media.Media3D.MeshGeometry3D();
             ModelHeightMapBoundary.Points.Clear();
             ModelHeightMapPoints.Points.Clear();
-            ModelLine.Points.Clear();
-            ModelRapid.Points.Clear();
-            ModelArc.Points.Clear();
         }
 
         public MainViewModel ViewModel
@@ -71,29 +67,6 @@ namespace LagoVista.GCode.Sender.Application.Controls
             set { ModelTool.Visible = value; }
         }
 
-        public static readonly DependencyProperty CurrentJobProperty =
-                DependencyProperty.Register("CurrentJob", typeof(IJobManager),
-                    typeof(HeightMapControl),
-                    new PropertyMetadata(PropChangeCallback));
-
-        private static void PropChangeCallback(DependencyObject obj, DependencyPropertyChangedEventArgs args)
-        {
-            var ctl = obj as HeightMapControl;
-            ctl.CurrentJob = args.NewValue as IJobManager;
-        }
-
-        public IJobManager CurrentJob
-        {
-            get { return GetValue(CurrentJobProperty) as IJobManager; }
-            set
-            {
-                SetValue(CurrentJobProperty, value);
-                if (value != null)
-                    Presentation.HeightMapServices.GetModel(value.Commands, ViewModel.Machine.Settings.ViewportArcSplit, ModelLine, ModelRapid, ModelArc);
-                else
-                    Clear();
-            }
-        }
 
         public static readonly DependencyProperty HeightMapProperty
             = DependencyProperty.Register("HeightMap", typeof(HeightMap), typeof(HeightMapControl), new PropertyMetadata(HeightMapChangedCallback));

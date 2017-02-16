@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace LagoVista.GCode.Sender.Managers
 {
-    public class JobManager : Core.Models.ModelBase, IJobManager
+    public partial class JobManager : Core.Models.ModelBase, IJobManager
     {
         IMachine _machine;
         ILogger _logger;
@@ -27,12 +27,26 @@ namespace LagoVista.GCode.Sender.Managers
         {
             _machine = machine;
             _logger = logger;
+
+            Lines = new System.Collections.ObjectModel.ObservableCollection<Line3D>();
+            RapidMoves = new System.Collections.ObjectModel.ObservableCollection<Line3D>();
+            Arcs = new System.Collections.ObjectModel.ObservableCollection<Line3D>();
+
+            HasValidFile = true;
         }
 
 
         public Task OpenFileAsync(string path)
         {
             _file = GCodeFile.Load(path);
+            if (_file != null)
+            {
+                RenderPaths();
+            }
+            else
+            {
+                ClearPaths();
+            }
 
             return Task.FromResult(default(object));
         }

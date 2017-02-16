@@ -24,11 +24,6 @@ namespace LagoVista.GCode.Sender.Managers
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        public void ProbeCompleted(string line)
-        {
-            throw new NotImplementedException();
-        }
-
         public HeightMapProbingManager(IMachine machine, ILogger logger)
         {
             Machine = machine;

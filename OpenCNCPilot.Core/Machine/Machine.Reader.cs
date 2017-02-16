@@ -92,6 +92,7 @@ namespace LagoVista.GCode.Sender
                     switch(Mode)
                     {
                         case OperatingMode.ProbingHeight:
+                            ProbingManager.ProbeCompleted(line);
                             break;
                         case OperatingMode.ProbingHeightMap:
                             HeightMapProbingManager.ProbeCompleted(line);

@@ -10,8 +10,8 @@ using System.Xml;
 namespace LagoVista.GCode.Sender.Application.Presentation
 {
     public class HeightMapServices
-    {        
-        public static  void GetModel(HeightMap map, MeshGeometryVisual3D mesh)
+    {
+        public static void GetModel(HeightMap map, MeshGeometryVisual3D mesh)
         {
             MeshBuilder mb = new MeshBuilder(false, true);
 
@@ -29,7 +29,7 @@ namespace LagoVista.GCode.Sender.Application.Presentation
                         new System.Windows.Media.Media3D.Point3D(map.Min.X + (x + 1) * map.Delta.X / (map.SizeX - 1), map.Min.Y + (y + 1) * map.Delta.Y / (map.SizeY - 1), map.Points[x + 1, y + 1].Value),
                         new System.Windows.Media.Media3D.Point3D(map.Min.X + (x) * map.Delta.X / (map.SizeX - 1), map.Min.Y + (y + 1) * map.Delta.Y / (map.SizeY - 1), map.Points[x, y + 1].Value),
                         new System.Windows.Media.Media3D.Point3D(map.Min.X + (x) * map.Delta.X / (map.SizeX - 1), map.Min.Y + (y) * map.Delta.Y / (map.SizeY - 1), map.Points[x, y].Value),
-                        new System.Windows.Point(0, Convert.ToInt32( (map.Points[x + 1, y].Value - map.MinHeight) * Hdelta)),
+                        new System.Windows.Point(0, Convert.ToInt32((map.Points[x + 1, y].Value - map.MinHeight) * Hdelta)),
                         new System.Windows.Point(0, Convert.ToInt32((map.Points[x + 1, y + 1].Value - map.MinHeight) * Hdelta)),
                         new System.Windows.Point(0, Convert.ToInt32((map.Points[x, y + 1].Value - map.MinHeight) * Hdelta)),
                         new System.Windows.Point(0, Convert.ToInt32((map.Points[x, y].Value - map.MinHeight) * Hdelta))
@@ -105,7 +105,7 @@ namespace LagoVista.GCode.Sender.Application.Presentation
         }
 
         public static void GetModel(IEnumerable<GCodeCommand> toolPath, double viewPortArcSplit, LinesVisual3D line, LinesVisual3D rapid, LinesVisual3D arc)
-        {  
+        {
             Point3DCollection linePoints = new Point3DCollection();
             Point3DCollection rapidPoints = new Point3DCollection();
             Point3DCollection arcPoints = new Point3DCollection();

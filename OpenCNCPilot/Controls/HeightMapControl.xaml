@@ -9,17 +9,17 @@
     <h:HelixViewport3D Name="viewport" ShowViewCube="False" Panel.ZIndex="0"  >
         <h:HelixViewport3D.Camera>
             <PerspectiveCamera
-             		Position="50, -60,100" 
-					LookDirection="0, 18,-22"
+             		Position="55, -80,160" 
+					LookDirection="0, 3,-4"
 					UpDirection="0,0,1"/>
         </h:HelixViewport3D.Camera>
 
         <h:DefaultLights/>
         <h:CoordinateSystemVisual3D ArrowLengths="5"/>
         <h:RectangleVisual3D Fill="Red" x:Name="ModelSchematic"/>
-        <h:LinesVisual3D Thickness="0.5" Color="Gray" x:Name="ModelRapid"/>
-        <h:LinesVisual3D Thickness="1" Color="Black" x:Name="ModelLine"/>
-        <h:LinesVisual3D Thickness="1" Color="Blue" x:Name="ModelArc"/>
+        <h:LinesVisual3D Thickness="0.5" Color="Gray" Points="{Binding Path=Machine.JobManager.RapidMoves, Converter={StaticResource Lines2Visual3DConverter}}" />
+        <h:LinesVisual3D Thickness="1" Color="Black" Points="{Binding Path=Machine.JobManager.Lines, Converter={StaticResource Lines2Visual3DConverter}}"/>
+        <h:LinesVisual3D Thickness="1" Color="Blue" Points="{Binding Path=Machine.JobManager.Arcs, Converter={StaticResource Lines2Visual3DConverter}}"/>
 
         <ModelVisual3D x:Name="PadsLayer"/>
         <h:ArrowVisual3D 
@@ -34,8 +34,8 @@
                 MinorDistance="10"
                 MajorDistance="100"
             Origin="BottomLeft"
-           	Width="{Binding Machine.Settings.WorkAreaHeight, FallbackValue=300}"
-            Length ="{Binding Machine.Settings.WorkAreaWidth, FallbackValue=300}" >
+           	Width="{Binding Machine.Settings.WorkAreaHeight, FallbackValue=80}"
+            Length ="{Binding Machine.Settings.WorkAreaWidth, FallbackValue=100}" >
         </h:GridLinesVisual3D>
         <h:MeshGeometryVisual3D x:Name="ModelHeightMap">
             <h:MeshGeometryVisual3D.Material>
