@@ -37,6 +37,11 @@ namespace LagoVista.GCode.Sender.ViewModels
             AssertInManualMode(() => Machine.SendCommand("G21"));
         }
 
+        public void OpenEagleBoardFile()
+        {
+
+        }
+
 
         public void ClearHeightMap()
         {

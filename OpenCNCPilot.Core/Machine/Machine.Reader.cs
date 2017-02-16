@@ -95,7 +95,7 @@ namespace LagoVista.GCode.Sender
                             ProbingManager.ProbeCompleted(line);
                             break;
                         case OperatingMode.ProbingHeightMap:
-                            HeightMapProbingManager.ProbeCompleted(line);
+                            HeightMapManager.ProbeCompleted(line);
                             break;
                         default:
                             AddStatusMessage(StatusMessageTypes.Warning, "Unexpected PRM return message.");

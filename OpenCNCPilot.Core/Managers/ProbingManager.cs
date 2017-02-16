@@ -7,11 +7,14 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using LagoVista.Core.Commanding;
 
 namespace LagoVista.GCode.Sender.Managers
 {
-    public partial class ToolChangeManager
+    public partial class ProbingManager : IProbingManager
     {
+        
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         public void RaisePropertyChanged([CallerMemberName]string propertyName = "")
@@ -19,7 +22,12 @@ namespace LagoVista.GCode.Sender.Managers
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        public ToolChangeManager(IMachine machine, ILogger logger)
+        public void ProbeCompleted(string line)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ProbingManager(IMachine machine, ILogger logger, Settings settings)
         {
             Machine = machine;
             Logger = logger;

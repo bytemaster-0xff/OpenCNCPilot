@@ -12,6 +12,6 @@ namespace LagoVista.GCode.Sender.ViewModels
         public bool IsProbingHeight { get { return Machine.Mode == OperatingMode.ProbingHeight; } }
         public bool IsRunningJob { get { return Machine.Mode == OperatingMode.SendingJob; } }
 
-        public Managers.HeightMapProbingManager HeightMapProbingManager { get; private set; }
+        public Managers.HeightMapManager HeightMapProbingManager { get; private set; }
     }
 }

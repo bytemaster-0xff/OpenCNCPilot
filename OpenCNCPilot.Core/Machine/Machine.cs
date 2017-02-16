@@ -26,8 +26,6 @@ namespace LagoVista.GCode.Sender
             Messages = new System.Collections.ObjectModel.ObservableCollection<Models.StatusMessage>();
             AddStatusMessage(StatusMessageTypes.Info, "Startup.");
 
-            JobManager = new Managers.JobManager(this, Core.PlatformSupport.Services.Logger);
-            HeightMapManager = new Managers.HeightMapManager(this, Core.PlatformSupport.Services.Logger);
 
             /* Have defaults loaded until the real settings come in */
             _settings = Settings.Default;
@@ -37,6 +35,12 @@ namespace LagoVista.GCode.Sender
         {
             _settings = await Settings.LoadAsync();
             RaisePropertyChanged(nameof(Settings));
+
+            JobManager = new Managers.JobManager(this, Core.PlatformSupport.Services.Logger);
+            HeightMapManager = new Managers.HeightMapManager(this, Core.PlatformSupport.Services.Logger);
+            BoardManager = new Managers.BoardManager(this, Core.PlatformSupport.Services.Logger, HeightMapManager);
+            ProbingManager = new Managers.ProbingManager(this, Core.PlatformSupport.Services.Logger, _settings);
+
             IsInitialized = true;
         }
 

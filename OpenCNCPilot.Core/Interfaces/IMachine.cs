@@ -34,7 +34,7 @@ namespace LagoVista.GCode.Sender.Interfaces
         /// <summary>
         /// Will be set as soon as machine initialization has been completed.
         /// </summary>
-        bool IsInitialized { get; set; }
+        bool IsInitialized { get; }
 
         /// <summary>
         /// The current XYZ position of the machien with respect to the specified origin of the physical machine (0,0,0)

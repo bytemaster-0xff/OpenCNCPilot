@@ -34,9 +34,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Interfaces\IBoardManager.cs" />
     <Compile Include="Interfaces\IJobManager.cs" />
     <Compile Include="Interfaces\IMachine.cs" />
     <Compile Include="Interfaces\IProbingManager.cs" />
+    <Compile Include="Interfaces\IToolChangeManager.cs" />
     <Compile Include="Machine\Machine.cs" />
     <Compile Include="Machine\Machine.Interface.cs">
       <DependentUpon>Machine.cs</DependentUpon>
@@ -63,13 +65,19 @@
       <DependentUpon>Machine.cs</DependentUpon>
     </Compile>
     <Compile Include="Machine\SimulatedMachine.cs" />
-    <Compile Include="Managers\HeightMapProbingManager.Actions.cs" />
-    <Compile Include="Managers\HeightMapProbingManager.cs" />
-    <Compile Include="Managers\HeightMapProbingManager.Properties.cs" />
-    <Compile Include="Interfaces\IHeightMapProbingManager.cs" />
+    <Compile Include="Managers\BoardManager.Actions.cs" />
+    <Compile Include="Managers\BoardManager.cs" />
+    <Compile Include="Managers\BoardManager.Properties.cs" />
+    <Compile Include="Managers\HeightMapManager.Actions.cs" />
+    <Compile Include="Managers\HeightMapManager.cs" />
+    <Compile Include="Managers\HeightMapManager.Properties.cs" />
+    <Compile Include="Interfaces\IHeightMapManager.cs" />
     <Compile Include="Managers\JobManager.cs" />
     <Compile Include="Managers\JobManager.Properties.cs" />
     <Compile Include="Managers\JobManager.Visual.cs" />
+    <Compile Include="Managers\ProbingManager.Actions.cs" />
+    <Compile Include="Managers\ProbingManager.cs" />
+    <Compile Include="Managers\ProbingManager.Properties.cs" />
     <Compile Include="Managers\ToolChangeManager.Actions.cs" />
     <Compile Include="Managers\ToolChangeManager.cs" />
     <Compile Include="Managers\ToolChangeManager.Properties.cs" />
@@ -169,6 +177,10 @@
     <ProjectReference Include="..\LagoVista.Core.GCode\GCode Core.csproj">
       <Project>{26a18c19-479e-495b-a8f2-1baa591d7df8}</Project>
       <Name>GCode Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\src\LagoVista.EaglePCB\LagoVista.EaglePCB.csproj">
+      <Project>{b60c5358-d6ae-469a-8beb-78ce5c434952}</Project>
+      <Name>LagoVista.EaglePCB</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />

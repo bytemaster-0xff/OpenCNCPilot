@@ -25,7 +25,7 @@ namespace LagoVista.GCode.Sender.ViewModels
             }
         }
 
-        public Managers.HeightMapProbingManager HeightMapProbingManager { get; private set; }
+        public Managers.HeightMapManager HeightMapProbingManager { get; private set; }
 
     }
 }

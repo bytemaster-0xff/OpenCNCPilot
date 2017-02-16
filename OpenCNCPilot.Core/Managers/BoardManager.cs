@@ -1,16 +1,11 @@
-﻿using LagoVista.Core.PlatformSupport;
-using LagoVista.GCode.Sender.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
+﻿using LagoVista.GCode.Sender.Interfaces;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel;
+using LagoVista.Core.PlatformSupport;
 
 namespace LagoVista.GCode.Sender.Managers
 {
-    public partial class ToolChangeManager
+    public partial class BoardManager : IBoardManager
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -19,10 +14,11 @@ namespace LagoVista.GCode.Sender.Managers
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        public ToolChangeManager(IMachine machine, ILogger logger)
+        public BoardManager(IMachine machine, ILogger logger, IHeightMapManager heightMapManager)
         {
             Machine = machine;
             Logger = logger;
+            HeightMapManager = heightMapManager;
         }
     }
 }

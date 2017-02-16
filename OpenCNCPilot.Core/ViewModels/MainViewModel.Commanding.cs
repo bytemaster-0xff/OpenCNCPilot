@@ -18,6 +18,8 @@ namespace LagoVista.GCode.Sender.ViewModels
             SetMetricUnitsCommand = new RelayCommand(SetMetricUnits, CanChangeUnits);
             SetImperialUnitsCommand = new RelayCommand(SetImperialUnits, CanChangeUnits);
 
+            OpenEagleBoardFileCommand = new RelayCommand(OpenEagleBoardFile);
+
             SetAbsolutePositionModeCommand = new RelayCommand(SetAbsolutePositionMode, CanSetPositionMode);
             SetIncrementalPositionModeCommand = new RelayCommand(SetIncrementalPositionMode, CanSetPositionMode);
 
@@ -74,6 +76,8 @@ namespace LagoVista.GCode.Sender.ViewModels
         {
             return HeightMap != null;
         }
+
+        public RelayCommand OpenEagleBoardFileCommand { get; private set; }
 
         public RelayCommand SetImperialUnitsCommand { get; private set; }
         public RelayCommand SetMetricUnitsCommand { get; private set; }

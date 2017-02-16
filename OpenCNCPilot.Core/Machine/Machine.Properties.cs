@@ -10,26 +10,81 @@ namespace LagoVista.GCode.Sender
 {
     public partial class Machine
     {
-        public IJobManager JobManager { get; private set; }
+        private IJobManager _jobManager;
+        public IJobManager JobManager
+        {
+            get { return _jobManager; }
+            set
+            {
+                _jobManager = value;
+                RaisePropertyChanged();
+            }
+        }
 
-        public IHeightMapManager HeightMapManager { get; private set; }
+        IHeightMapManager _heightMapManager;
+        public IHeightMapManager HeightMapManager
+        {
+            get { return _heightMapManager; }
+            private set
+            {
+                _heightMapManager = value;
+                RaisePropertyChanged();
+            }
+        }
 
-        public IProbingManager ProbingManager { get;  private set;}
+        IProbingManager _probingManager;
+        public IProbingManager ProbingManager
+        {
+            get { return _probingManager; }
+            private set
+            {
+                _probingManager = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        IBoardManager _boardManager;
+        public IBoardManager BoardManager
+        {
+            get { return _boardManager; }
+            private set
+            {
+                _boardManager = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        IToolChangeManager _toolChangeManager;
+        public IToolChangeManager ToolChangeManager
+        {
+            get { return _toolChangeManager; }
+            private set
+            {
+                _toolChangeManager = value;
+                RaisePropertyChanged();
+            }
+        }
 
         private bool _isInitialized = false;
         public bool IsInitialized
         {
             get { return _isInitialized; }
-            set
+            private set
             {
                 _isInitialized = value;
                 RaisePropertyChanged();
             }
         }
 
+        ObservableCollection<Models.StatusMessage> _messages;
         public ObservableCollection<Models.StatusMessage> Messages
         {
-            get; private set;
+            get { return _messages; }
+            private set
+            {
+                _messages = value;
+                RaisePropertyChanged();
+            }
         }
 
 
@@ -44,7 +99,6 @@ namespace LagoVista.GCode.Sender
 
                 return Messages.Count - 1;
             }
-            set { }
         }
 
         public Settings Settings { get { return _settings; } }

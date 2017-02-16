@@ -9,7 +9,7 @@ namespace LagoVista.GCode.Sender.ViewModels
 {
     public partial class JobControlViewModel : GCodeAppViewModel
     {
-        public JobControlViewModel(IMachine machine, Managers.HeightMapProbingManager probingManager) : base(machine)
+        public JobControlViewModel(IMachine machine, Managers.HeightMapManager probingManager) : base(machine)
         {
             HeightMapProbingManager = probingManager;
             InitCommands();
