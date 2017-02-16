@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace LagoVista.GCode.Sender.Managers
 {
-    public partial class HeightMapProbingManager
+    public partial class HeightMapManager
     {
         private HeightMap _heightMap;
         public HeightMap HeightMap
@@ -19,7 +19,13 @@ namespace LagoVista.GCode.Sender.Managers
             {
                 _heightMap = value;
                 RaisePropertyChanged();
+                RaisePropertyChanged(nameof(HasHeightMap));
             }
+        }
+
+        public bool HasHeightMap
+        {
+            get { return _heightMap != null; }
         }
 
         public ILogger  Logger { get; private set; }

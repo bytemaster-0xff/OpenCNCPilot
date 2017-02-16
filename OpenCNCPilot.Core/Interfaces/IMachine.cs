@@ -80,7 +80,7 @@ namespace LagoVista.GCode.Sender.Interfaces
         /// <summary>
         /// Business logic for capturing a height map that can be applied to a GCode file to correct for warpage of material
         /// </summary>
-        IHeightMapProbingManager HeightMapProbingManager { get; }
+        IHeightMapManager HeightMapManager { get; }
 
         /// <summary>
         /// Business logic for probe function to find the ZAxis where it comes in contact with the material to be machined.

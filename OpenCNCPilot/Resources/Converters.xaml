@@ -5,6 +5,7 @@
     <cvtrs:PointConverter x:Key="PointConverter" />
     <cvtrs:ToolTopPointConverter x:Key="ToolTopPointConverter" />
     <cvtrs:Lines2Visual3DConverter x:Key="Lines2Visual3DConverter" />
+    <cvtrs:HeightMap2MeshConverter x:Key="HeightMap2MeshConverter" />
     <cvtrs:MessageTypeBackgroundColorConverter x:Key="MessageTypeBackgroundColorConverter" />
     <cvtrs:MessageTypeForegroundColorConverter x:Key="MessageTypeForegroundColorConverter" />
 </ResourceDictionary>

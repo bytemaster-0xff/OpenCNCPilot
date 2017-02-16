@@ -8,12 +8,14 @@ using System.Threading.Tasks;
 
 namespace LagoVista.GCode.Sender.Interfaces
 {
-    public interface IHeightMapProbingManager : INotifyPropertyChanged
+    public interface IHeightMapManager : INotifyPropertyChanged
     {
         event EventHandler ProbingCompleted;
         event EventHandler ProbingCancelled;
 
-        HeightMap HeightMap { get; set; }
+        HeightMap HeightMap { get; }
+
+        bool HasHeightMap { get; }
 
         void ProbeCompleted(string line);
 

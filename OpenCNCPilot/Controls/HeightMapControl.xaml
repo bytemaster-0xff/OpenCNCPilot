@@ -37,26 +37,7 @@
            	Width="{Binding Machine.Settings.WorkAreaHeight, FallbackValue=80}"
             Length ="{Binding Machine.Settings.WorkAreaWidth, FallbackValue=100}" >
         </h:GridLinesVisual3D>
-        <h:MeshGeometryVisual3D x:Name="ModelHeightMap">
-            <h:MeshGeometryVisual3D.Material>
-                <MaterialGroup>
-                    <DiffuseMaterial>
-                        <DiffuseMaterial.Brush>
-                            <LinearGradientBrush StartPoint="0,0" EndPoint="0, 1">
-                                <LinearGradientBrush.GradientStops>
-                                    <GradientStop Color="Blue" Offset="0"/>
-                                    <GradientStop Color="Cyan" Offset="0.2"/>
-                                    <GradientStop Color="Green" Offset="0.4"/>
-                                    <GradientStop Color="Yellow" Offset="0.6"/>
-                                    <GradientStop Color="Red" Offset="0.8"/>
-                                    <GradientStop Color="Purple" Offset="1"/>
-                                </LinearGradientBrush.GradientStops>
-                            </LinearGradientBrush>
-                        </DiffuseMaterial.Brush>
-                    </DiffuseMaterial>
-                </MaterialGroup>
-            </h:MeshGeometryVisual3D.Material>
-        </h:MeshGeometryVisual3D>
+        <h:MeshGeometryVisual3D Material="{StaticResource HeightMapMediaGroup}" MeshGeometry="{Binding Machine.HeightMapManager.HeightMap, Converter={StaticResource HeightMap2MeshConverter}}" />
         <h:LinesVisual3D x:Name="ModelHeightMapBoundary" Thickness="2" Color="Lime"/>
         <h:PointsVisual3D x:Name="ModelHeightMapPoints" Color="Red" Size="4"/>
     </h:HelixViewport3D>

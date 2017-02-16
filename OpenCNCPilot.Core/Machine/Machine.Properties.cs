@@ -12,7 +12,7 @@ namespace LagoVista.GCode.Sender
     {
         public IJobManager JobManager { get; private set; }
 
-        public IHeightMapProbingManager HeightMapProbingManager { get; private set; }
+        public IHeightMapManager HeightMapManager { get; private set; }
 
         public IProbingManager ProbingManager { get;  private set;}
 

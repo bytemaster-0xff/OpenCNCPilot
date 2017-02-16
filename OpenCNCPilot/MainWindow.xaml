@@ -56,7 +56,7 @@
 
                 <ctls:JobControl Grid.ColumnSpan="2" DataContext="{Binding JobControlVM}" />
 
-                <ctls:HeightMapControl  HeightMap="{Binding HeightMap}" Grid.Row="1" Grid.ColumnSpan="2"  />
+                <ctls:HeightMapControl  Grid.Row="1" Grid.ColumnSpan="2"  />
 
                 <ctls:CurrentFileControl x:Name="CurrentFile"  Grid.Row="2"/>
                 <ctls:MachineResponseControl x:Name="MachineResponse" Grid.Row="2" Grid.Column="1" />

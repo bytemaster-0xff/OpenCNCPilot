@@ -11,7 +11,7 @@ using LagoVista.Core.PlatformSupport;
 
 namespace LagoVista.GCode.Sender.Managers
 {
-    public partial class HeightMapProbingManager : IHeightMapProbingManager
+    public partial class HeightMapManager : IHeightMapManager
     {
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -24,7 +24,7 @@ namespace LagoVista.GCode.Sender.Managers
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        public HeightMapProbingManager(IMachine machine, ILogger logger)
+        public HeightMapManager(IMachine machine, ILogger logger)
         {
             Machine = machine;
             Logger = logger;

@@ -27,8 +27,7 @@ namespace LagoVista.GCode.Sender
             AddStatusMessage(StatusMessageTypes.Info, "Startup.");
 
             JobManager = new Managers.JobManager(this, Core.PlatformSupport.Services.Logger);
-            HeightMapProbingManager = new Managers.HeightMapProbingManager(this, Core.PlatformSupport.Services.Logger);
-
+            HeightMapManager = new Managers.HeightMapManager(this, Core.PlatformSupport.Services.Logger);
 
             /* Have defaults loaded until the real settings come in */
             _settings = Settings.Default;

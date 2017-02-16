@@ -15,5 +15,10 @@ namespace LagoVista.EaglePCB.Models
         public List<Package> Packages { get; set; }
         public List<Component> Components { get; set; }
         public List<Via> Vias { get; set; }
+
+        public double Width { get; set; }
+        public double Height { get; set; }
+
+        public List<Fiducial> Fiducials { get; set; }
     }
 }

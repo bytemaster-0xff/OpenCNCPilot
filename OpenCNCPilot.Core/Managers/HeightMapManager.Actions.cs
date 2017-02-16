@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace LagoVista.GCode.Sender.Managers
 {
-    public partial class HeightMapProbingManager
+    public partial class HeightMapManager
     {
         public void ProbingFinished(Vector3 position, bool success)
         {

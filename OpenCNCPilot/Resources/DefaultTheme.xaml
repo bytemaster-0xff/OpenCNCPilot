@@ -1,5 +1,21 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:local="clr-namespace:LagoVista.GCode.Sender.Application.Resources">
-    
-</ResourceDictionary>
+                           xmlns:h="http://helix-toolkit.org/wpf"
+                    xmlns:med="clr-namespace:System.Windows.Media.Media3D;assembly=PresentationCore"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+        <med:MaterialGroup x:Key="HeightMapMediaGroup">
+            <DiffuseMaterial>
+                <DiffuseMaterial.Brush>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="0, 1">
+                        <LinearGradientBrush.GradientStops>
+                            <GradientStop Color="Blue" Offset="0"/>
+                            <GradientStop Color="Cyan" Offset="0.2"/>
+                            <GradientStop Color="Green" Offset="0.4"/>
+                            <GradientStop Color="Yellow" Offset="0.6"/>
+                            <GradientStop Color="Red" Offset="0.8"/>
+                            <GradientStop Color="Purple" Offset="1"/>
+                        </LinearGradientBrush.GradientStops>
+                    </LinearGradientBrush>
+                </DiffuseMaterial.Brush>
+            </DiffuseMaterial>
+        </med:MaterialGroup>
+ </ResourceDictionary>
