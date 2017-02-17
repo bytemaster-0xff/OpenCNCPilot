@@ -186,37 +186,6 @@ namespace LagoVista.GCode.Sender
         {
             Enqueue("~", true);
         }
-
-        public void ProbeStart()
-        {
-            if (AssertConnected())
-            {
-                if (Mode != OperatingMode.Manual)
-                {
-                    AddStatusMessage(StatusMessageTypes.Warning, "Busy");
-                    return;
-                }
-
-                AddStatusMessage(StatusMessageTypes.Info, "Probe Height Map Started.");
-
-                Mode = OperatingMode.ProbingHeightMap;
-            }
-        }
-
-        public void ProbeStop()
-        {
-            if (AssertConnected())
-            {
-                if (Mode != OperatingMode.ProbingHeightMap)
-                {
-                    AddStatusMessage(StatusMessageTypes.Warning, "Not in Probe Mode.");
-                    return;
-                }
-
-                AddStatusMessage(StatusMessageTypes.Info, "Probe Height Map Completed.");
-
-                Mode = OperatingMode.Manual;
-            }
-        }
+       
     }
 }

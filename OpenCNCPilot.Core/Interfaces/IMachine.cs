@@ -10,9 +10,6 @@ namespace LagoVista.GCode.Sender.Interfaces
 {
     public interface IMachine : INotifyPropertyChanged
     {
-        event Action<Vector3, bool> ProbeFinished;
-
-
         /// <summary>
         /// As commands are sent to the machine the number of bytes for that command are added to 
         /// the UnacknowledgedByteSet property, once the command has been acknowledged the number 

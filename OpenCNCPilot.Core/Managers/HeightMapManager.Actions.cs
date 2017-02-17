@@ -1,4 +1,5 @@
 ﻿using LagoVista.Core.Models.Drawing;
+using LagoVista.GCode.Sender.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,38 +10,69 @@ namespace LagoVista.GCode.Sender.Managers
 {
     public partial class HeightMapManager
     {
-        public void ProbingFinished(Vector3 position, bool success)
+        public void ProbeCompleted(Vector3 position)
         {
             if (Machine.Mode != OperatingMode.ProbingHeightMap)
                 return;
 
             if (!Machine.Connected || HeightMap == null || HeightMap.NotProbed.Count == 0)
             {
-                ProbeStop();
+                CancelProbing();
                 return;
             }
 
-            if (!success && Machine.Settings.AbortOnProbeFail)
-            {
-                Machine.AddStatusMessage(StatusMessageTypes.FatalError, "Probe Failed! aborting");
-                ProbeStop();
-                return;
-            }
-
-            Tuple<int, int> lastPoint = HeightMap.NotProbed.Dequeue();
+            var lastPoint = HeightMap.NotProbed.Dequeue();
 
             HeightMap.AddPoint(lastPoint.Item1, lastPoint.Item2, position.Z);
 
             if (HeightMap.NotProbed.Count == 0)
             {
                 Machine.SendCommand($"G0Z{Machine.Settings.ProbeSafeHeight.ToString(Constants.DecimalOutputFormat)}");
-                ProbeStop();
+                CancelProbing();
 
-                ProbingCompleted?.Invoke(this, null);
                 return;
             }
 
             HeightMapProbeNextPoint();
+        }
+
+        public void NewHeightMap(HeightMap heightMap)
+        {
+            HeightMap = heightMap;
+        }
+
+        public async Task OpenHeightMapAsync(string path)
+        {
+            HeightMap = await Core.PlatformSupport.Services.Storage.GetAsync<HeightMap>(path);
+        }
+
+        public async Task SaveHeightMapAsync(string path)
+        {
+            await Core.PlatformSupport.Services.Storage.StoreAsync(HeightMap, path);
+        }
+
+        public async Task SaveHeightMapAsync()
+        {
+            var fileName = "foo";
+            await Core.PlatformSupport.Services.Storage.StoreAsync(HeightMap, fileName);
+
+        }
+
+        public void CreateTestPattern()
+        {
+            HeightMap = new Models.HeightMap();
+            HeightMap.FillWithTestPattern();
+        }
+
+        public void CloseHeightMap()
+        {
+            HeightMap = null;
+        }
+
+        public void ProbeFailed()
+        {
+            Machine.AddStatusMessage(StatusMessageTypes.FatalError, "Probe Failed! aborting");
+            CancelProbing();
         }
 
         public void ProbeStart()
@@ -48,14 +80,9 @@ namespace LagoVista.GCode.Sender.Managers
 
         }
 
-        private void ProbeStop()
+        public void CancelProbing()
         {
 
-        }
-
-        public void ProbeCompleted(string line)
-        {
-            throw new NotImplementedException();
         }
 
         private void HeightMapProbeNextPoint()
@@ -66,7 +93,7 @@ namespace LagoVista.GCode.Sender.Managers
 
             if (!Machine.Connected || HeightMap == null || HeightMap.NotProbed.Count == 0)
             {
-                ProbeStop();
+                CancelProbing();
                 return;
             }
 
@@ -81,7 +108,6 @@ namespace LagoVista.GCode.Sender.Managers
             Machine.SendCommand("G90");
         }
 
-
         public void StartProbing()
         {
             if (!Machine.Connected || Machine.Mode != OperatingMode.Manual || HeightMap == null)
@@ -89,9 +115,7 @@ namespace LagoVista.GCode.Sender.Managers
 
             if (HeightMap.Progress == HeightMap.TotalPoints)
                 return;
-
-            ProbeStart();
-
+            
             if (Machine.Mode != OperatingMode.ProbingHeightMap)
                 return;
 
@@ -105,8 +129,6 @@ namespace LagoVista.GCode.Sender.Managers
         {
             if (Machine.Mode != OperatingMode.ProbingHeightMap)
                 return;
-          
-            ProbeStop();
-        }
+       }
     }
 }

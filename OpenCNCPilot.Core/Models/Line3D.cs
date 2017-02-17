@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace LagoVista.GCode.Sender.Models
 {
-    public class PCBoard
+    public class Line3D
     {
-        public double Width { get; set; }
-        public double Height { get; set; }
+        public LagoVista.Core.Models.Drawing.Vector3 Start { get; set; }
+        public LagoVista.Core.Models.Drawing.Vector3 End { get; set; }
     }
 }

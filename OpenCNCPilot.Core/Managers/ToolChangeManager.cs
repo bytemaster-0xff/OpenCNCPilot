@@ -10,19 +10,11 @@ using System.Threading.Tasks;
 
 namespace LagoVista.GCode.Sender.Managers
 {
-    public partial class ToolChangeManager
+    public partial class ToolChangeManager : ManagerBase, IToolChangeManager
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        public void RaisePropertyChanged([CallerMemberName]string propertyName = "")
+        public ToolChangeManager(IMachine machine, ILogger logger) : base(machine, logger)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
 
-        public ToolChangeManager(IMachine machine, ILogger logger)
-        {
-            Machine = machine;
-            Logger = logger;
         }
     }
 }

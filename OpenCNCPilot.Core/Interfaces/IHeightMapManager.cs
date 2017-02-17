@@ -1,27 +1,28 @@
-﻿using LagoVista.GCode.Sender.Models;
-using System;
-using System.Collections.Generic;
+﻿using LagoVista.Core.Models.Drawing;
+using LagoVista.GCode.Sender.Models;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace LagoVista.GCode.Sender.Interfaces
 {
     public interface IHeightMapManager : INotifyPropertyChanged
     {
-        event EventHandler ProbingCompleted;
-        event EventHandler ProbingCancelled;
-
         HeightMap HeightMap { get; }
 
         bool HasHeightMap { get; }
+        bool HeightMapDirty { get; }
 
-        void ProbeCompleted(string line);
+        void ProbeCompleted(Vector3 probeResult);
+        void NewHeightMap(HeightMap heightMap);
+        Task OpenHeightMapAsync(string path);
+        Task SaveHeightMapAsync(string path);
+        Task SaveHeightMapAsync();
+        void CloseHeightMap();
+
+        void CreateTestPattern();
 
         void StartProbing();
         void PauseProbing();
-
-        IMachine Machine { get; }
+        void CancelProbing();
     }
 }

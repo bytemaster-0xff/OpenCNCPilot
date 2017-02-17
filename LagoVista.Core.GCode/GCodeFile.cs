@@ -81,25 +81,25 @@ namespace LagoVista.Core.GCode
 
         public GCodeFile ArcsToLines(double length)
         {
-            List<GCodeCommand> newFile = new List<GCodeCommand>();
+            var newFile = new List<GCodeCommand>();
 
-            foreach (GCodeCommand c in Commands)
+            foreach (var cmd in Commands)
             {
-                if (c is GCodeArc)
+                if (cmd is GCodeArc)
                 {
-                    foreach (var segment in ((GCodeArc)c).Split(length).Cast<GCodeArc>())
+                    foreach (var segment in ((GCodeArc)cmd).Split(length).Cast<GCodeArc>())
                     {
-                        var l = new GCodeLine();
-                        l.Start = segment.Start;
-                        l.End = segment.End;
-                        l.Feed = segment.Feed;
-                        l.Rapid = false;
-                        newFile.Add(l);
+                        var ilne = new GCodeLine();
+                        ilne.Start = segment.Start;
+                        ilne.End = segment.End;
+                        ilne.Feed = segment.Feed;
+                        ilne.Rapid = false;
+                        newFile.Add(ilne);
                     }
                 }
                 else
                 {
-                    newFile.Add(c);
+                    newFile.Add(cmd);
                 }
             }
 

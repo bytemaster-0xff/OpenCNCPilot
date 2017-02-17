@@ -23,9 +23,7 @@ namespace LagoVista.GCode.Sender.ViewModels
 
         private void InitChildViewModels()
         {
-           
-            HeightMapProbingManager = new Managers.HeightMapManager(Machine, Core.PlatformSupport.Services.Logger);
-            JobControlVM = new JobControlViewModel(Machine, HeightMapProbingManager);
+            JobControlVM = new JobControlViewModel(Machine);
             ManualSendVM = new ManualSendViewModel(Machine);
             MachineControlVM = new MachineControlViewModel(Machine);
         }

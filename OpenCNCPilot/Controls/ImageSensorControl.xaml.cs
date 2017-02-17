@@ -240,7 +240,7 @@ namespace LagoVista.GCode.Sender.Application.Controls
                }
                catch (Exception ex)
                {
-
+                   Core.PlatformSupport.Services.Logger.LogException("ImageSensor_InitCapture", ex);
                }
            });
         }

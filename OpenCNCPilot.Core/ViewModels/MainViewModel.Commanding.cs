@@ -64,7 +64,9 @@ namespace LagoVista.GCode.Sender.ViewModels
        
         public bool CanApplyHeightMap()
         {
-            return Machine.JobManager.HasValidFile && HeightMap != null && HeightMap.Status == Models.HeightMap.HeightMapStatus.Populated ;
+            return Machine.JobManager.HasValidFile &&
+                   Machine.HeightMapManager.HasHeightMap &&
+                   Machine.HeightMapManager.HeightMap.Status == Models.HeightMap.HeightMapStatus.Populated ;
         }
 
         private bool CanPerformFileOperation(Object instance)
@@ -74,7 +76,7 @@ namespace LagoVista.GCode.Sender.ViewModels
 
         public bool CanClearHeightMap()
         {
-            return HeightMap != null;
+            return Machine.HeightMapManager.HeightMap != null;
         }
 
         public RelayCommand OpenEagleBoardFileCommand { get; private set; }

@@ -1,17 +1,11 @@
-﻿using LagoVista.Core;
-using LagoVista.Core.Commanding;
-using LagoVista.Core.IOC;
-using LagoVista.Core.ViewModels;
-using LagoVista.GCode.Sender.Interfaces;
-using System;
+﻿using LagoVista.GCode.Sender.Interfaces;
 
 namespace LagoVista.GCode.Sender.ViewModels
 {
     public partial class JobControlViewModel : GCodeAppViewModel
     {
-        public JobControlViewModel(IMachine machine, Managers.HeightMapManager probingManager) : base(machine)
+        public JobControlViewModel(IMachine machine) : base(machine)
         {
-            HeightMapProbingManager = probingManager;
             InitCommands();
         }
     }

@@ -27,11 +27,5 @@ namespace LagoVista.GCode.Sender.Managers
         {
             get { return _board != null; }
         }
-
-        public IHeightMapManager HeightMapManager { get; private set; }
-
-        public ILogger Logger { get; private set; }
-
-        public IMachine Machine { get; private set; }
     }
 }

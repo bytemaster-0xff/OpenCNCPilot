@@ -14,8 +14,6 @@ namespace LagoVista.GCode.Sender.Interfaces
 
         PCB Board { get; }
 
-        IHeightMapManager HeightMapManager { get; }
-
         Task LoadBoardAsync(string boardFile);
     }
 }

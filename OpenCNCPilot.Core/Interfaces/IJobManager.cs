@@ -109,21 +109,21 @@ namespace LagoVista.GCode.Sender.Interfaces
         /// <summary>
         /// STart a job if one is ready
         /// </summary>
-        RelayCommand StartJobCommand { get; }
+        void StartJob();
 
         /// <summary>
-        /// Put the current job on hold.  Note that command are already queued up on the machine so it will not stop immediately, also reset the pointers and indexes.
+        /// Stops the current job on hold.  Note that command are already queued up on the machine so it will not stop immediately, also reset the pointers and indexes.
         /// </summary>
-        RelayCommand StopJobCommand { get; }
+        void CancelJob();
 
         /// <summary>
         /// Pause the current job, the machine will continue to execute any commands that have currently been sent.  All the pointers and indexes are maitained so the job can be restarted.
         /// </summary>
-        RelayCommand PauseJobCommand { get; }
+        void PauseJob();
 
         /// <summary>
         /// Reset all the pointers and indexes for the current job, can only be done when the job is not running.  If job is paused it will stop the job.  This leaves the job in a state where it can be restarted from the beginning 
         /// </summary>
-        RelayCommand ResetJobCommand { get; }
+        void ResetJob();
     }
 }

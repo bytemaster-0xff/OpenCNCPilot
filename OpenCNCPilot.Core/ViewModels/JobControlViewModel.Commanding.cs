@@ -23,7 +23,7 @@ namespace LagoVista.GCode.Sender.ViewModels
             EmergencyStopCommand = new RelayCommand(Kill, CanKill);
 
             Machine.PropertyChanged += _machine_PropertyChanged;
-            HeightMapProbingManager.PropertyChanged += HeightMapProbingManager_PropertyChanged; 
+            Machine.HeightMapManager.PropertyChanged += HeightMapProbingManager_PropertyChanged; 
         }
 
         private void RefreshCommandExecuteStatus()
@@ -39,8 +39,8 @@ namespace LagoVista.GCode.Sender.ViewModels
 
         private void HeightMapProbingManager_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if(e.PropertyName == nameof(HeightMapProbingManager.HeightMap) ||
-               e.PropertyName == nameof(HeightMapProbingManager.HeightMap.Status))
+            if(e.PropertyName == nameof(Machine.HeightMapManager.HeightMap) ||
+               e.PropertyName == nameof(Machine.HeightMapManager.HeightMap.Status))
             {
                 DispatcherServices.Invoke(RefreshCommandExecuteStatus); 
             }
@@ -80,8 +80,7 @@ namespace LagoVista.GCode.Sender.ViewModels
         {
             return Machine.Connected
                 && Machine.Mode == OperatingMode.Manual 
-                && HeightMapProbingManager.HeightMap != null
-                && HeightMapProbingManager.HeightMap.Status == Models.HeightMap.HeightMapStatus.Populated;
+                && Machine.HeightMapManager.HeightMap != null;
         }
 
         public bool CanStartProbeHeight()

@@ -65,13 +65,24 @@ namespace LagoVista.GCode.Sender
             }
         }
 
-        private bool _isInitialized = false;
+        bool _isInitialized = false;
         public bool IsInitialized
         {
             get { return _isInitialized; }
             private set
             {
                 _isInitialized = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        IMachineVisionManager _machineVisionManager;
+        public IMachineVisionManager MachineVisionManager
+        {
+            get { return _machineVisionManager; }
+            private set
+            {
+                _machineVisionManager = value;
                 RaisePropertyChanged();
             }
         }

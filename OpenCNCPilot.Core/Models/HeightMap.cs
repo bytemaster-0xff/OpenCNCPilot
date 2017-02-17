@@ -75,7 +75,7 @@ namespace LagoVista.GCode.Sender.Models
             return new Vector2(x * (Delta.X / (SizeX - 1)) + Min.X, y * (Delta.Y / (SizeY - 1)) + Min.Y);
         }
 
-        public void FillWithTestPattern(string pattern)
+        public void FillWithTestPattern()
         {
             for (var x = 0; x < SizeX; x++)
             {

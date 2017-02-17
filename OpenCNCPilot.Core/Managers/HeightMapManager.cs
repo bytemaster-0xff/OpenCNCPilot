@@ -1,33 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-using LagoVista.GCode.Sender.Models;
-using LagoVista.GCode.Sender.Interfaces;
+﻿using LagoVista.GCode.Sender.Interfaces;
 using LagoVista.Core.PlatformSupport;
 
 namespace LagoVista.GCode.Sender.Managers
 {
-    public partial class HeightMapManager : IHeightMapManager
+    public partial class HeightMapManager : ManagerBase, IHeightMapManager
     {
+        IBoardManager _boardManager;
 
-        public event PropertyChangedEventHandler PropertyChanged;
-        public event EventHandler ProbingCompleted;
-
-        public event EventHandler ProbingCancelled;
-
-        public void RaisePropertyChanged([CallerMemberName]string propertyName = "")
+        public HeightMapManager(IMachine machine, ILogger logger, IBoardManager boardManager) : base (machine, logger)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        public HeightMapManager(IMachine machine, ILogger logger)
-        {
-            Machine = machine;
-            Logger = logger;
+            _boardManager = boardManager;
         }
     }
 }

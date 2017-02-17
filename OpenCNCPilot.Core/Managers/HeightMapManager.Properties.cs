@@ -1,11 +1,4 @@
-﻿using LagoVista.Core.PlatformSupport;
-using LagoVista.GCode.Sender.Interfaces;
-using LagoVista.GCode.Sender.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using LagoVista.GCode.Sender.Models;
 
 namespace LagoVista.GCode.Sender.Managers
 {
@@ -28,8 +21,15 @@ namespace LagoVista.GCode.Sender.Managers
             get { return _heightMap != null; }
         }
 
-        public ILogger  Logger { get; private set; }
-
-        public IMachine Machine { get; private set; }
+        private bool _heightMapDirty = false;
+        public bool HeightMapDirty
+        {
+            get { return _heightMapDirty; }
+            set
+            {
+                _heightMapDirty = value;
+                RaisePropertyChanged();
+            }
+        }
     }
 }

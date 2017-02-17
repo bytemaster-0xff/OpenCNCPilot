@@ -100,36 +100,6 @@ namespace LagoVista.GCode.Sender
             return true;
         }
 
-        private static Regex ProbeEx = new Regex(@"\[PRB:(?'MX'-?[0-9]+\.?[0-9]*),(?'MY'-?[0-9]+\.?[0-9]*),(?'MZ'-?[0-9]+\.?[0-9]*):(?'Success'0|1)\]");
-
-        /// <summary>
-        /// Parses a recevied probe report
-        /// </summary>
-        private void ParseProbe(string line)
-        {
-            if (ProbeFinished == null)
-                return;
-
-            Match probeMatch = ProbeEx.Match(line);
-            Group mx = probeMatch.Groups["MX"];
-            Group my = probeMatch.Groups["MY"];
-            Group mz = probeMatch.Groups["MZ"];
-            Group success = probeMatch.Groups["Success"];
-
-            if (!probeMatch.Success || !(mx.Success & my.Success & mz.Success & success.Success))
-            {
-                AddStatusMessage(StatusMessageTypes.Warning, $"Received Bad Probe: '{line}'");
-                return;
-            }
-
-            Vector3 ProbePos = new Vector3(double.Parse(mx.Value, Constants.DecimalParseFormat), double.Parse(my.Value, Constants.DecimalParseFormat), double.Parse(mz.Value, Constants.DecimalParseFormat));
-
-            ProbePos += WorkPosition - MachinePosition;     //Mpos, Wpos only get updated by the same dispatcher, so this should be thread safe
-
-            bool ProbeSuccess = success.Value == "1";
-
-            ProbeFinished.Invoke(ProbePos, ProbeSuccess);
-        }
-
+      
     }
 }

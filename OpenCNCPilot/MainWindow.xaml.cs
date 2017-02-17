@@ -56,7 +56,7 @@ namespace LagoVista.GCode.Sender.Application
            
             if(newHeightMapWindow.ShowDialog().HasValue && newHeightMapWindow.DialogResult.Value)
             {
-                ViewModel.HeightMap = newHeightMapWindow.HeightMap;
+                ViewModel.Machine.HeightMapManager.NewHeightMap(newHeightMapWindow.HeightMap);
             }
         }
 

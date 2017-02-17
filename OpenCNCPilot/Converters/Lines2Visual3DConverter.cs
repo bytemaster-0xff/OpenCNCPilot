@@ -1,4 +1,5 @@
 ﻿using LagoVista.GCode.Sender.Managers;
+using LagoVista.GCode.Sender.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

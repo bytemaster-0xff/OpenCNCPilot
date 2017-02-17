@@ -12,20 +12,5 @@ namespace LagoVista.GCode.Sender.ViewModels
         public JobControlViewModel JobControlVM { get; private set; }
         public MachineControlViewModel MachineControlVM { get; private set; }
         public ManualSendViewModel ManualSendVM { get; private set; }
-       
-        HeightMap _heightMap;
-        public HeightMap HeightMap
-        {
-            get { return _heightMap; }
-            set
-            {
-                Set(ref _heightMap, value);
-                HeightMapProbingManager.HeightMap = value;
-                JobControlVM.StartProbeHeightMapCommand.RaiseCanExecuteChanged();
-            }
-        }
-
-        public Managers.HeightMapManager HeightMapProbingManager { get; private set; }
-
     }
 }

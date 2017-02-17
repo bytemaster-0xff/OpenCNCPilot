@@ -17,8 +17,6 @@ namespace LagoVista.GCode.Sender
         Settings _settings;
         CancellationToken _cancelToken;
 
-        public event Action<Vector3, bool> ProbeFinished;
-
         public event PropertyChangedEventHandler PropertyChanged;
 
         public Machine()
@@ -36,10 +34,12 @@ namespace LagoVista.GCode.Sender
             _settings = await Settings.LoadAsync();
             RaisePropertyChanged(nameof(Settings));
 
-            JobManager = new Managers.JobManager(this, Core.PlatformSupport.Services.Logger);
-            HeightMapManager = new Managers.HeightMapManager(this, Core.PlatformSupport.Services.Logger);
-            BoardManager = new Managers.BoardManager(this, Core.PlatformSupport.Services.Logger, HeightMapManager);
-            ProbingManager = new Managers.ProbingManager(this, Core.PlatformSupport.Services.Logger, _settings);
+            ToolChangeManager = new Managers.ToolChangeManager(this, Core.PlatformSupport.Services.Logger);
+            JobManager = new Managers.JobManager(this, Core.PlatformSupport.Services.Logger, ToolChangeManager);
+            BoardManager = new Managers.BoardManager(this, Core.PlatformSupport.Services.Logger);
+            HeightMapManager = new Managers.HeightMapManager(this, Core.PlatformSupport.Services.Logger, BoardManager);
+            ProbingManager = new Managers.ProbingManager(this, Core.PlatformSupport.Services.Logger);
+            MachineVisionManager = new Managers.MachineVisionManager(this, Core.PlatformSupport.Services.Logger, BoardManager);
 
             IsInitialized = true;
         }
@@ -103,34 +103,6 @@ namespace LagoVista.GCode.Sender
                 if (code == 91)
                     DistanceMode = ParseDistanceMode.Incremental;
             }
-        }
-
-
-
-        /// <summary>
-        /// Reports error. This is there to offload the ExpandError function from the "Real-Time" worker thread to the application thread
-        /// </summary>
-        private void ReportError(string error)
-        {
-        }
-
-        private void RaiseEvent(Action<string> action, string param)
-        {
-            if (action == null)
-                return;
-
-            Services.DispatcherServices.Invoke(() =>
-            {
-                action(param);
-            });
-        }
-
-        private void RaiseEvent(Action action)
-        {
-            if (action == null)
-                return;
-
-            Services.DispatcherServices.Invoke(action);
         }
 
         public bool CanSetMode(OperatingMode mode)

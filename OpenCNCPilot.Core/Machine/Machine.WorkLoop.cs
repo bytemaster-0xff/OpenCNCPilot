@@ -195,7 +195,7 @@ namespace LagoVista.GCode.Sender
             {
                 Debug.WriteLine(ex.Message);
                 Debug.WriteLine(ex.StackTrace);
-                RaiseEvent(ReportError, $"Fatal Error: {ex.Message}");
+                AddStatusMessage(StatusMessageTypes.FatalError, $"Fatal Error: {ex.Message}");
                 await DisconnectAsync();
             }
         }

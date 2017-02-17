@@ -72,13 +72,15 @@ namespace LagoVista.GCode.Sender
                     {
                         var errorline = _sentQueue.Dequeue();
 
-                        RaiseEvent(ReportError, $"{line}: {errorline}");
+                        AddStatusMessage(StatusMessageTypes.Warning, $"{line}: {errorline}", MessageVerbosityLevels.Normal);
                         UnacknowledgedBytesSent -= errorline.Length + 1;
                     }
                     else
                     {
                         if ((DateTime.Now - _connectTime).TotalMilliseconds > 200)
-                            RaiseEvent(ReportError, $"Received <{line}> without anything in the Sent Buffer");
+                        {
+                            AddStatusMessage(StatusMessageTypes.Warning, $"Received <{line}> without anything in the Sent Buffer", MessageVerbosityLevels.Normal);
+                        }
 
                         UnacknowledgedBytesSent = 0;
                     }
@@ -86,22 +88,25 @@ namespace LagoVista.GCode.Sender
                     Mode = OperatingMode.Manual;
                 }
                 else if (line.StartsWith("<"))
-                    RaiseEvent(ParseStatus, line);
+                {
+                    AddStatusMessage(StatusMessageTypes.ReceviedLine, line, MessageVerbosityLevels.Normal);
+                }
                 else if (line.StartsWith("[PRB:"))
                 {
-                    switch(Mode)
+                    var probeResult = ProbingManager.ParseProbeLine(line);
+
+                    switch (Mode)
                     {
                         case OperatingMode.ProbingHeight:
-                            ProbingManager.ProbeCompleted(line);
+                            ProbingManager.ProbeCompleted(probeResult.Value);
                             break;
                         case OperatingMode.ProbingHeightMap:
-                            HeightMapManager.ProbeCompleted(line);
+                            HeightMapManager.ProbeCompleted(probeResult.Value);
                             break;
                         default:
                             AddStatusMessage(StatusMessageTypes.Warning, "Unexpected PRM return message.");
                             break;
                     }
-                    RaiseEvent(ParseProbe, line);
                 }
                 else if (line.StartsWith("["))
                 {
@@ -132,7 +137,7 @@ namespace LagoVista.GCode.Sender
             }
             else
             {
-                RaiseEvent(ReportError, $"Empty Response From Machine.");
+                AddStatusMessage(StatusMessageTypes.Warning, $"Empty Response From Machine.", MessageVerbosityLevels.Normal);
             }
         }
     }
