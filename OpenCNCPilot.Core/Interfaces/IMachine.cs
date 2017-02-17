@@ -19,7 +19,7 @@ namespace LagoVista.GCode.Sender.Interfaces
         /// send additional bytes for future commands and have them ready for the machine.  These
         /// can then be queued so the machine doesn't have to wait for the next communications.
         /// </summary>
-        int UnacknowledgedBytesSent { get; set; }
+        int UnacknowledgedBytesSent { get; }
 
         /// <summary>
         /// Perform any additional tasks to initialize the machine, should be called as soon 
@@ -72,7 +72,7 @@ namespace LagoVista.GCode.Sender.Interfaces
         /// <summary>
         /// Business logic to manage the sending of GCode files to the machien.
         /// </summary>
-        IJobManager JobManager { get; }
+        IGCodeFileManager GCodeFileManager { get; }
 
         /// <summary>
         /// Business logic for capturing a height map that can be applied to a GCode file to correct for warpage of material
@@ -114,6 +114,11 @@ namespace LagoVista.GCode.Sender.Interfaces
         void ClearAlarm();
 
         /// <summary>
+        /// Send a message to the machine to immediately stop any motion operation
+        /// </summary>
+        void EmergencyStop();
+
+        /// <summary>
         /// This method can be called to ensure that the machine can transition to the specified operating mode, if it can't a message will be added to the output and false will be returned.
         /// </summary>
         /// <param name="mode">The new desired transition mode.</param>
@@ -131,8 +136,8 @@ namespace LagoVista.GCode.Sender.Interfaces
         /// Determine if there are enough bytes in the estimated machine buffer to send the next command based on the bytes required to send that command
         /// </summary>
         /// <param name="bytes"></param>
-        /// <returns></returns>
-        bool BufferSpaceAvailable(int bytes);
+        /// <returns>True if there is space available to send bytes</returns>
+        bool HasBufferSpaceAvailableForByteCount(int bytes);
 
         /// <summary>
         /// Send a GCode Command to the machine

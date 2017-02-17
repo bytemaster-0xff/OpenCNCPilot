@@ -1,4 +1,5 @@
-﻿using LagoVista.Core.GCode.Commands;
+﻿using LagoVista.Core.GCode;
+using LagoVista.Core.GCode.Commands;
 using LagoVista.GCode.Sender.Models;
 using System;
 using System.Collections.Generic;
@@ -6,7 +7,7 @@ using System.Collections.ObjectModel;
 
 namespace LagoVista.GCode.Sender.Managers
 {
-    public partial class JobManager
+    public partial class GCodeFileManager
     {
         public ObservableCollection<Line3D> Lines { get; private set; }
 
@@ -36,9 +37,25 @@ namespace LagoVista.GCode.Sender.Managers
             set { Set(ref _tail, value); }
         }
 
+        public GCodeFile File
+        {
+            get { return _file; }
+            set
+            {
+                _file = value;
+                RaisePropertyChanged(nameof(HasValidFile));
+                RaisePropertyChanged(nameof(Commands));
+                RaisePropertyChanged(nameof(EstimatedTimeRemaining));
+                RaisePropertyChanged(nameof(ElapsedTime));
+                RaisePropertyChanged(nameof(EstimatedCompletion));
+                RaisePropertyChanged(nameof(TotalLines));
+                RaisePropertyChanged(nameof(CurrentIndex));
+            }
+        }
+
         public IEnumerable<GCodeCommand> Commands
         {
-            get { return _file.Commands; }
+            get { return _file == null ? null : _file.Commands; }
         }
 
         private bool _hasValidFile = false;

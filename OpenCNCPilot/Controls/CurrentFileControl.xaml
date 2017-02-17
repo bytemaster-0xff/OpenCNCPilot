@@ -23,26 +23,26 @@
                 <ColumnDefinition Width="100" />
             </Grid.ColumnDefinitions>
             <StackPanel Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Left"  >
-                <Label Content="{Binding Path=Machine.CurrentJob.CurrentIndex, FallbackValue=-}" Margin="0,0,-6,0"/>
+                <Label Content="{Binding Path=Machine.GCodeFileManager.Head, FallbackValue=-}" Margin="0,0,-6,0"/>
                 <Label Content="/"/>
-                <Label Content="{Binding Path=Machine.CurrentJob.TotalLines, FallbackValue=-}" Margin="-8,0,0,0"/>
+                <Label Content="{Binding Path=Machine.GCodeFileManager.TotalLines, FallbackValue=-}" Margin="-8,0,0,0"/>
             </StackPanel>
 
             <StackPanel Grid.Column="1" Orientation="Horizontal">
-                <Label Content="{Binding Path=Machine.CurrentJob.TimeRemaining.Minutes, FallbackValue=0}"  />
+                <Label Content="{Binding Path=Machine.GCodeFileManager.EstimatedTimeRemaining.Minutes, FallbackValue=0}"  />
                 <Label Content=":" />
-                <Label Content="{Binding Path=Machine.CurrentJob.TimeRemaining.Seconds, FallbackValue=00, StringFormat=00}"  />
+                <Label Content="{Binding Path=Machine.GCodeFileManager.EstimatedTimeRemaining.Seconds, FallbackValue=00, StringFormat=00}"  />
             </StackPanel>
             <StackPanel Grid.Column="2" Orientation="Horizontal">
                 <Label Content="Feed Rate: " />
-                <Label Content="{Binding Path=Machine.CurrentJob.CurrentCommand.Feed}" />
+                <Label Content="{Binding Path=Machine.GCodeFileManager.CurrentCommand.Feed}" />
             </StackPanel>
         </Grid>
 
         <ctls:ListBoxScroll Grid.Row="1" x:Name="ListViewFile"
-                            SelectedIndex="{Binding Path=Machine.CurrentJob.Tail}" 
+                            SelectedIndex="{Binding Path=Machine.GCodeFileManager.Tail}" 
                             HorizontalContentAlignment="Stretch" 
-                            ItemsSource="{Binding Path=Machine.CurrentJob.Commands}"
+                            ItemsSource="{Binding Path=Machine.GCodeFileManager.Commands}"
                             IsHitTestVisible="False" BorderThickness="0"
                             ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
                             ScrollViewer.VerticalScrollBarVisibility="Disabled">

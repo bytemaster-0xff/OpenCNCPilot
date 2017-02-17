@@ -35,7 +35,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Interfaces\IBoardManager.cs" />
-    <Compile Include="Interfaces\IJobManager.cs" />
+    <Compile Include="Interfaces\IGCodeFileManager.cs" />
     <Compile Include="Interfaces\IMachine.cs" />
     <Compile Include="Interfaces\IMachineVisionManager.cs" />
     <Compile Include="Interfaces\IProbingManager.cs" />
@@ -73,6 +73,18 @@
     <Compile Include="Managers\BoardManager.Properties.cs">
       <DependentUpon>BoardManager.cs</DependentUpon>
     </Compile>
+    <Compile Include="Managers\GCodeFileManager.Actions.cs">
+      <DependentUpon>GCodeFileManager.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Managers\GCodeFileManager.FileOperations.cs">
+      <DependentUpon>GCodeFileManager.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Managers\GCodeFileManager.Properties.cs">
+      <DependentUpon>GCodeFileManager.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Managers\GCodeFileManager.Visual.cs">
+      <DependentUpon>GCodeFileManager.cs</DependentUpon>
+    </Compile>
     <Compile Include="Managers\HeightMapManager.Actions.cs">
       <DependentUpon>HeightMapManager.cs</DependentUpon>
     </Compile>
@@ -81,19 +93,7 @@
     <Compile Include="Managers\HeightMapManager.Properties.cs">
       <DependentUpon>HeightMapManager.cs</DependentUpon>
     </Compile>
-    <Compile Include="Managers\JobManager.Actions.cs">
-      <DependentUpon>JobManager.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Managers\JobManager.cs" />
-    <Compile Include="Managers\JobManager.FileOperations.cs">
-      <DependentUpon>JobManager.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Managers\JobManager.Properties.cs">
-      <DependentUpon>JobManager.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Managers\JobManager.Visual.cs">
-      <DependentUpon>JobManager.cs</DependentUpon>
-    </Compile>
+    <Compile Include="Managers\GCodeFileManager.cs" />
     <Compile Include="Managers\MachineVisionManager.Actions.cs" />
     <Compile Include="Managers\MachineVisionManager.Properties.cs" />
     <Compile Include="Managers\MachineVisionManager.cs" />
@@ -125,7 +125,7 @@
     </Compile>
     <Compile Include="Models\Line3D.cs" />
     <Compile Include="Models\StatusMessage.cs" />
-    <Compile Include="ViewModels\GCodeAppViewModel.cs" />
+    <Compile Include="ViewModels\GCodeAppViewModelBase.cs" />
     <Compile Include="ViewModels\JobControlViewModel.ComandHandlers.cs">
       <DependentUpon>JobControlViewModel.cs</DependentUpon>
     </Compile>

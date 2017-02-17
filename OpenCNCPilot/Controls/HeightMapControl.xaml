@@ -17,9 +17,9 @@
         <h:DefaultLights/>
         <h:CoordinateSystemVisual3D ArrowLengths="5"/>
         <h:RectangleVisual3D Fill="Red" x:Name="ModelSchematic"/>
-        <h:LinesVisual3D Thickness="0.5" Color="Gray" Points="{Binding Path=Machine.JobManager.RapidMoves, Converter={StaticResource Lines2Visual3DConverter}}" />
-        <h:LinesVisual3D Thickness="1" Color="Black" Points="{Binding Path=Machine.JobManager.Lines, Converter={StaticResource Lines2Visual3DConverter}}"/>
-        <h:LinesVisual3D Thickness="1" Color="Blue" Points="{Binding Path=Machine.JobManager.Arcs, Converter={StaticResource Lines2Visual3DConverter}}"/>
+        <h:LinesVisual3D Thickness="0.5" Color="Gray" Points="{Binding Path=Machine.GCodeFileManager.RapidMoves, Converter={StaticResource Lines2Visual3DConverter}}" />
+        <h:LinesVisual3D Thickness="1" Color="Black" Points="{Binding Path=Machine.GCodeFileManager.Lines, Converter={StaticResource Lines2Visual3DConverter}}"/>
+        <h:LinesVisual3D Thickness="1" Color="Blue" Points="{Binding Path=Machine.GCodeFileManager.Arcs, Converter={StaticResource Lines2Visual3DConverter}}"/>
 
         <ModelVisual3D x:Name="PadsLayer"/>
         <h:ArrowVisual3D 

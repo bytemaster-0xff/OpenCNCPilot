@@ -1,5 +1,4 @@
-﻿using LagoVista.Core.Commanding;
-using LagoVista.Core.GCode.Commands;
+﻿using LagoVista.Core.GCode.Commands;
 using LagoVista.GCode.Sender.Models;
 using System;
 using System.Collections.Generic;
@@ -7,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace LagoVista.GCode.Sender.Interfaces
 {
-    public interface IJobManager
+    public interface IGCodeFileManager
     {
-
         /// <summary>
         /// Give a path, open a file that has GCode Commands
         /// </summary>
@@ -58,6 +56,11 @@ namespace LagoVista.GCode.Sender.Interfaces
         /// Pointer to the last item that has been sent to the machine.
         /// </summary>
         int Tail { get; }
+
+        /// <summary>
+        /// Pointer to the currently executing command, alias for Head
+        /// </summary>
+        int CurrentIndex { get; }
 
         /// <summary>
         /// Reset all the pointers and indexes for the current job, can only be done when the job is not running.  If job is paused it will stop the job.  This leaves the job in a state where it can be restarted from the beginning 

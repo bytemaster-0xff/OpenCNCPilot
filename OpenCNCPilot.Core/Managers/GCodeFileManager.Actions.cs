@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace LagoVista.GCode.Sender.Managers
 {
-    public partial class JobManager
+    public partial class GCodeFileManager
     {
         public void Reset()
         {
@@ -32,7 +32,7 @@ namespace LagoVista.GCode.Sender.Managers
         {
             if (_file == null)
             {
-                _logger.Log(Core.PlatformSupport.LogLevel.Error, "JobManager_ApplyHeightMap", "Attempt to apply height map to empty gcode file.");
+                _logger.Log(Core.PlatformSupport.LogLevel.Error, "GCodeFileManager_ApplyHeightMap", "Attempt to apply height map to empty gcode file.");
                 _machine.AddStatusMessage(StatusMessageTypes.Warning, "Attempt to apply height map to empty gcode file");
             }
             else
@@ -46,7 +46,7 @@ namespace LagoVista.GCode.Sender.Managers
         {
             if (_file == null)
             {
-                _logger.Log(Core.PlatformSupport.LogLevel.Error, "JobManager_ArcToLines", "Attempt to convert arc to lines with empty gcode file.");
+                _logger.Log(Core.PlatformSupport.LogLevel.Error, "GCodeFileManager_ArcToLines", "Attempt to convert arc to lines with empty gcode file.");
                 _machine.AddStatusMessage(StatusMessageTypes.Warning, "Attempt to convert arc to lines with an empty gcode file");
             }
             else
@@ -59,7 +59,7 @@ namespace LagoVista.GCode.Sender.Managers
 
         public void StartJob()
         {
-            _machine.SetMode(OperatingMode.SendingJob);
+            _machine.SetMode(OperatingMode.SendingGCodeFile);
         }
 
         public void CancelJob()

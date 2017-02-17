@@ -104,7 +104,7 @@ namespace LagoVista.GCode.Sender
             }
         }
        
-        public bool BufferSpaceAvailable(int bytes)
+        public bool HasBufferSpaceAvailableForByteCount(int bytes)
         {
             return bytes < (_settings.ControllerBufferSize - UnacknowledgedBytesSent);
         }

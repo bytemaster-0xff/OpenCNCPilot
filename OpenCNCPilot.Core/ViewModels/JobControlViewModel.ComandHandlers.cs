@@ -8,9 +8,9 @@ namespace LagoVista.GCode.Sender.ViewModels
 {
     public partial class JobControlViewModel
     {
-        public void Kill()
+        public void EmergencyStop()
         {
-
+            Machine.EmergencyStop();
         }
 
         public void StopJob()
@@ -18,24 +18,24 @@ namespace LagoVista.GCode.Sender.ViewModels
             
         }
 
-
-        public void StartProbeJob()
+        public void StartProbe()
         {
-
+            Machine.HeightMapManager.StartProbing();
         }
 
-        public void StartProbeHeight()
+        public void StartHeightMap()
         {
-
+            Machine.ProbingManager.StartProbe();
         }
 
-        public void StartJob()
+        public void SendGCodeFile()
         {
-            Machine.SetMode(OperatingMode.SendingJob);
+            Machine.GCodeFileManager.StartJob();
         }
 
         public void PauseJob()
         {
+            Machine.SetMode(OperatingMode.Manual);
         }
 
 

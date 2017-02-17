@@ -1,38 +1,142 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
-  <Interface Name="LagoVista.GCode.Sender.Interfaces.IMachine">
-    <Position X="1.75" Y="2" Width="2.25" />
+  <Class Name="LagoVista.GCode.Sender.ViewModels.SettingsViewModel">
+    <Position X="0.5" Y="7" Width="2.5" />
+    <Members>
+      <Method Name="Cancel" Hidden="true" />
+      <Method Name="Init" Hidden="true" />
+      <Method Name="InitAsync" Hidden="true" />
+      <Method Name="InitComamnds" Hidden="true" />
+      <Method Name="SettingsViewModel" Hidden="true" />
+    </Members>
     <TypeIdentifier>
-      <HashCode>gAAEAAAIAIAAQgAEJBAAAIUAAAggACgQiIIABAgAAAE=</HashCode>
+      <HashCode>QYAAABAQQAAAAEEIAAAAAAAAAEAAAKAAAgACACAEAAA=</HashCode>
+      <FileName>ViewModels\SettingsViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LagoVista.GCode.Sender.ViewModels.NewHeightMapViewModel">
+    <Position X="3" Y="6.5" Width="2.5" />
+    <Members>
+      <Field Name="_heightMap" Hidden="true" />
+      <Method Name="InitCommands" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>MIAAAAAwAACAEAAAQQAAAAAAAAAAAAAQAAAAAAIAAAA=</HashCode>
+      <FileName>ViewModels\NewHeightMapViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LagoVista.GCode.Sender.ViewModels.ManualSendViewModel">
+    <Position X="5.75" Y="6.75" Width="2.5" />
+    <Members>
+      <Field Name="_commandBuffer" Hidden="true" />
+      <Field Name="_commandBufferLocation" Hidden="true" />
+      <Field Name="_manualCommandText" Hidden="true" />
+      <Method Name="CanManualSend" Hidden="true" />
+      <Method Name="CanShowNext" Hidden="true" />
+      <Method Name="CanShowPrevious" Hidden="true" />
+      <Method Name="InitCommands" Hidden="true" />
+      <Property Name="ManualCommandText" Hidden="true" />
+      <Property Name="ManualSendCommand" Hidden="true" />
+      <Method Name="ManualSendViewModel" Hidden="true" />
+      <Property Name="ShowNextCommand" Hidden="true" />
+      <Property Name="ShowPreviousCommand" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAABAAgABgAAAAAAAQAABAAAQAAgAgABAAAAgCAAEgA=</HashCode>
+      <FileName>ViewModels\ManualSendViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LagoVista.GCode.Sender.ViewModels.MainViewModel">
+    <Position X="8.5" Y="6.75" Width="2.25" />
+    <Members>
+      <Method Name="_machine_PropertyChanged" Hidden="true" />
+      <Method Name="CanApplyHeightMap" Hidden="true" />
+      <Method Name="CanChangeUnits" Hidden="true" />
+      <Method Name="CanClearHeightMap" Hidden="true" />
+      <Method Name="CanConvertArcToLine" Hidden="true" />
+      <Method Name="CanPerformFileOperation" Hidden="true" />
+      <Method Name="CanSetPositionMode" Hidden="true" />
+      <Method Name="ClearHeightMap" Hidden="true" />
+      <Method Name="InitChildViewModels" Hidden="true" />
+      <Method Name="InitCommands" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>IkAAAKEAJAAQCJAAwwAAEqgKgAAAAyAAAAAQAYgCABI=</HashCode>
+      <FileName>ViewModels\MainViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LagoVista.GCode.Sender.ViewModels.MachineControlViewModel">
+    <Position X="11" Y="6.75" Width="2.25" />
+    <Members>
+      <Field Name="_xySizeStepSlider" Hidden="true" />
+      <Field Name="_xyStepInterval" Hidden="true" />
+      <Field Name="_xyStepMax" Hidden="true" />
+      <Field Name="_xyStepMin" Hidden="true" />
+      <Field Name="_zSizeStepSlider" Hidden="true" />
+      <Field Name="_zStepInterval" Hidden="true" />
+      <Field Name="_zStepMax" Hidden="true" />
+      <Field Name="_zStepMin" Hidden="true" />
+      <Method Name="CanClearAlarm" Hidden="true" />
+      <Method Name="CanCycleStart" Hidden="true" />
+      <Method Name="CanFeedHold" Hidden="true" />
+      <Method Name="CanJog" Hidden="true" />
+      <Method Name="CanResetAxis" Hidden="true" />
+      <Method Name="CanSoftReset" Hidden="true" />
+      <Method Name="ClearAlarm" Hidden="true" />
+      <Method Name="CycleStart" Hidden="true" />
+      <Method Name="FeedHold" Hidden="true" />
+      <Method Name="InitCommands" Hidden="true" />
+      <Method Name="Jog" Hidden="true" />
+      <Method Name="Machine_PropertyChanged" Hidden="true" />
+      <Method Name="MachineControlViewModel" Hidden="true" />
+      <Method Name="ResetAxis" Hidden="true" />
+      <Method Name="SoftReset" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>VgAAAACQwK4AAABABRgrAISKAhCCAAKAAIAgACwoAAE=</HashCode>
+      <FileName>ViewModels\MachineControlViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Interface Name="LagoVista.GCode.Sender.Interfaces.IMachine">
+    <Position X="0.5" Y="0.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>gIAEAAAIAIAAQgAEJBAAAIQAAAggACgQiIIABAgAAAE=</HashCode>
       <FileName>Interfaces\IMachine.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="LagoVista.GCode.Sender.Interfaces.IBoardManager">
-    <Position X="5.75" Y="2.25" Width="1.5" />
+    <Position X="6.5" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAASAAAAA=</HashCode>
       <FileName>Interfaces\IBoardManager.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="LagoVista.GCode.Sender.Interfaces.IHeightMapManager">
-    <Position X="5.75" Y="5" Width="1.5" />
+    <Position X="6.5" Y="2.5" Width="2.25" />
     <TypeIdentifier>
-      <HashCode>AAAAAAACAAAIEBAAAEAAAAAACAAAAAAAAAAAAAAAAAI=</HashCode>
+      <HashCode>AAEAAAQCAAAIEBAAAEAQAAAACAAgAAAAAAAAAAgAAAI=</HashCode>
       <FileName>Interfaces\IHeightMapManager.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="LagoVista.GCode.Sender.Interfaces.IJobManager">
-    <Position X="8.5" Y="1.25" Width="1.5" />
+    <Position X="9.75" Y="0.5" Width="2.5" />
     <TypeIdentifier>
       <HashCode>CAEBAgABABAEBIAAAAMgAAAAAGAACBQIAAAHAAAAAAA=</HashCode>
       <FileName>Interfaces\IJobManager.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="LagoVista.GCode.Sender.Interfaces.IProbingManager">
-    <Position X="8.5" Y="7" Width="1.5" />
+    <Position X="3.75" Y="0.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAgAAAAAAAAAAAQABAAAAAAAAAAAgAAAAAI=</HashCode>
       <FileName>Interfaces\IProbingManager.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="LagoVista.GCode.Sender.Interfaces.IMachineVisionManager">
+    <Position X="3.75" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Interfaces\IMachineVisionManager.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Font Name="Segoe UI" Size="9" />

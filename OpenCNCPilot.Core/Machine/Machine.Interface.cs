@@ -172,6 +172,11 @@ namespace LagoVista.GCode.Sender
             }
         }
 
+        public void EmergencyStop()
+        {
+
+        }
+
         public void FeedHold()
         {
             Enqueue("!", true);

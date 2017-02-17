@@ -14,7 +14,16 @@ namespace LagoVista.GCode.Sender.Application.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
+            if(value == null)
+            {
+                return null;
+            }
+
             var map = value as HeightMap;
+            if(map == null)
+            {
+                throw new Exception("Invalid Height Map Type.");
+            }
 
             var mb = new MeshBuilder(false, true);
 

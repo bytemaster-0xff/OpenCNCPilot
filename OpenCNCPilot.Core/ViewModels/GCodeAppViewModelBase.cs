@@ -4,16 +4,16 @@ using System;
 
 namespace LagoVista.GCode.Sender.ViewModels
 {
-    public class GCodeAppViewModel : ViewModelBase
+    public class GCodeAppViewModelBase : ViewModelBase
     {
         private IMachine _machine;
 
-        public GCodeAppViewModel(IMachine machine)
+        public GCodeAppViewModelBase(IMachine machine)
         {
             _machine = machine;
         }
 
-        public GCodeAppViewModel()
+        public GCodeAppViewModelBase()
         {
 
         }

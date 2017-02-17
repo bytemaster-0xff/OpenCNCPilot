@@ -11,46 +11,47 @@ namespace LagoVista.GCode.Sender.ViewModels
     {
         private void InitCommands()
         {
-            StartJobCommand = new RelayCommand(StartJob, CanStartJob);
-            StartProbeJobCommand = new RelayCommand(StartProbeJob, CanProbeHeightMap);
-            StartProbeHeightMapCommand = new RelayCommand(StartProbeHeight, CanStartProbeHeight);
-            StopJobCommand = new RelayCommand(StopJob, CanStopJob);
+            SendGCodeFileCommand = new RelayCommand(SendGCodeFile, CanSendGcodeFile);
+            StartProbeCommand = new RelayCommand(StartProbe, CanProbe);
+            StartProbeHeightMapCommand = new RelayCommand(StartHeightMap, CanProbeHeightMap);
+            StopCommand = new RelayCommand(StopJob, CanStopJob);
+            PauseCommand = new RelayCommand(PauseJob, CanPauseJob);
 
             ConnectCommand = new RelayCommand(Connect, CanChangeConnectionStatus);
 
-            PauseJobCommand = new RelayCommand(PauseJob, CanPauseJob);
-
-            EmergencyStopCommand = new RelayCommand(Kill, CanKill);
+            EmergencyStopCommand = new RelayCommand(EmergencyStop, CanSendEmergencyStop);
 
             Machine.PropertyChanged += _machine_PropertyChanged;
-            Machine.HeightMapManager.PropertyChanged += HeightMapProbingManager_PropertyChanged; 
+            Machine.HeightMapManager.PropertyChanged += HeightMapManager_PropertyChanged;
         }
 
         private void RefreshCommandExecuteStatus()
         {
             ConnectCommand.RaiseCanExecuteChanged();
-            StartJobCommand.RaiseCanExecuteChanged();
-            StartProbeJobCommand.RaiseCanExecuteChanged();
+
+            SendGCodeFileCommand.RaiseCanExecuteChanged();
+            StartProbeCommand.RaiseCanExecuteChanged();
             StartProbeHeightMapCommand.RaiseCanExecuteChanged();
-            StopJobCommand.RaiseCanExecuteChanged();
-            PauseJobCommand.RaiseCanExecuteChanged();
+            StopCommand.RaiseCanExecuteChanged();
+            PauseCommand.RaiseCanExecuteChanged();
+
             EmergencyStopCommand.RaiseCanExecuteChanged();
         }
 
-        private void HeightMapProbingManager_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void HeightMapManager_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if(e.PropertyName == nameof(Machine.HeightMapManager.HeightMap) ||
+            if (e.PropertyName == nameof(Machine.HeightMapManager.HeightMap) ||
                e.PropertyName == nameof(Machine.HeightMapManager.HeightMap.Status))
             {
-                DispatcherServices.Invoke(RefreshCommandExecuteStatus); 
+                DispatcherServices.Invoke(RefreshCommandExecuteStatus);
             }
         }
 
         private void _machine_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(Machine.Mode) ||
-                e.PropertyName == nameof(Machine.JobManager.HasValidFile) ||
-                e.PropertyName == nameof(Machine.IsInitialized) ||
+            if (e.PropertyName == nameof(Machine.IsInitialized) ||
+                e.PropertyName == nameof(Machine.Mode) ||
+                e.PropertyName == nameof(Machine.GCodeFileManager.HasValidFile) ||
                 e.PropertyName == nameof(Machine.Connected))
             {
                 DispatcherServices.Invoke(RefreshCommandExecuteStatus);
@@ -59,55 +60,60 @@ namespace LagoVista.GCode.Sender.ViewModels
 
         public bool CanChangeConnectionStatus()
         {
-            return Machine.IsInitialized &&  Machine.Settings.CurrentSerialPort != null && Machine.Settings.CurrentSerialPort.Id != "empty";
+            return Machine.IsInitialized && Machine.Settings.CurrentSerialPort != null && Machine.Settings.CurrentSerialPort.Id != "empty";
         }
 
-        public bool CanStartJob()
+        public bool CanSendGcodeFile()
         {
-            return Machine.JobManager.HasValidFile &&
+            return Machine.IsInitialized && 
+                Machine.GCodeFileManager.HasValidFile &&
                 Machine.Connected &&
                 Machine.Mode == OperatingMode.Manual;
         }
 
         public bool CanPauseJob()
         {
-            return Machine.Mode == OperatingMode.SendingJob ||
+            return Machine.IsInitialized && 
+                Machine.Mode == OperatingMode.SendingGCodeFile ||
                 Machine.Mode == OperatingMode.ProbingHeightMap ||
                 Machine.Mode == OperatingMode.ProbingHeight;
         }
 
         public bool CanProbeHeightMap()
         {
-            return Machine.Connected
-                && Machine.Mode == OperatingMode.Manual 
-                && Machine.HeightMapManager.HeightMap != null;
+            return Machine.IsInitialized && 
+                Machine.Connected
+                && Machine.Mode == OperatingMode.Manual
+                && Machine.HeightMapManager.HasHeightMap;
         }
 
-        public bool CanStartProbeHeight()
+        public bool CanProbe()
         {
-            return Machine.Connected
+            return Machine.IsInitialized && 
+                Machine.Connected
                 && Machine.Mode == OperatingMode.Manual;
         }
 
         public bool CanStopJob()
         {
-            return Machine.Mode == OperatingMode.SendingJob ||
+            return Machine.IsInitialized && 
+                Machine.Mode == OperatingMode.SendingGCodeFile ||
                 Machine.Mode == OperatingMode.ProbingHeightMap ||
                 Machine.Mode == OperatingMode.ProbingHeight;
         }
 
-        public bool CanKill()
+        public bool CanSendEmergencyStop()
         {
-            return Machine.Connected;
+            return Machine.IsInitialized && Machine.Connected;
         }
 
-        public RelayCommand StopJobCommand { get; private set; }
+        public RelayCommand StopCommand { get; private set; }
 
-        public RelayCommand PauseJobCommand { get; private set; }
+        public RelayCommand PauseCommand { get; private set; }
 
-        public RelayCommand StartProbeJobCommand { get; private set; }
+        public RelayCommand StartProbeCommand { get; private set; }
         public RelayCommand StartProbeHeightMapCommand { get; private set; }
-        public RelayCommand StartJobCommand { get; private set; }
+        public RelayCommand SendGCodeFileCommand { get; private set; }
         public RelayCommand EmergencyStopCommand { get; private set; }
 
         public RelayCommand ConnectCommand { get; private set; }

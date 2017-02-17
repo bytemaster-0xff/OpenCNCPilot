@@ -67,7 +67,7 @@ namespace LagoVista.GCode.Sender
                 Mode = OperatingMode.PendingToolChange;
                 var machineCommand = sendCommand as MCode;
                 await Services.Popups.ShowAsync("Tool Change " + machineCommand.DrillSize.ToString());
-                Mode = OperatingMode.SendingJob;
+                Mode = OperatingMode.SendingGCodeFile;
             }
 
             _writer.Write(sendCommand.Line);
@@ -104,12 +104,12 @@ namespace LagoVista.GCode.Sender
                     _lastPollTime = Now;
                 }
             }
-            else if (Mode == OperatingMode.SendingJob)
+            else if (Mode == OperatingMode.SendingGCodeFile)
             {
                 if ((Now - _lastPollTime).TotalMilliseconds > _settings.StatusPollIntervalRunning)
                 {
-                    MachinePosition = JobManager.CurrentCommand.CurrentPosition;
-                    WorkPosition = JobManager.CurrentCommand.CurrentPosition;
+                    MachinePosition = GCodeFileManager.CurrentCommand.CurrentPosition;
+                    WorkPosition = GCodeFileManager.CurrentCommand.CurrentPosition;
                     _lastPollTime = Now;
                 }
             }
@@ -131,12 +131,12 @@ namespace LagoVista.GCode.Sender
         {
             SendHighPriorityItems();
 
-            if (Mode == OperatingMode.SendingJob)
+            if (Mode == OperatingMode.SendingGCodeFile)
             {
-                JobManager.ProcessNextLines();
+                GCodeFileManager.ProcessNextLines();
             }
 
-            if(ShouldSendJobItems() && Mode == OperatingMode.SendingJob)
+            if(ShouldSendJobItems() && Mode == OperatingMode.SendingGCodeFile)
             {
                 SendJobItems();
             }

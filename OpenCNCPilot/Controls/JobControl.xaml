@@ -53,7 +53,7 @@
             </Button.Content>
         </Button>
 
-        <Button Command="{Binding StopJobCommand}" Grid.Column="1" >
+        <Button Command="{Binding StopCommand}" Grid.Column="1" >
             <Button.Content>
                 <StackPanel>
                     <fa:ImageAwesome Icon="Stop" Foreground="{Binding IsCreatingHeightMap, Converter={StaticResource ColorEnabledConverter}, ConverterParameter=Black, FallbackValue=LightGray}" />
@@ -62,7 +62,7 @@
             </Button.Content>
         </Button>
 
-        <Button Command="{Binding PauseJobCommand}" Grid.Column="2" >
+        <Button Command="{Binding PauseCommand}" Grid.Column="2" >
             <Button.Content>
                 <StackPanel>
                     <fa:ImageAwesome Icon="Pause" Foreground="{Binding IsCreatingHeightMap, Converter={StaticResource ColorEnabledConverter}, ConverterParameter=Gray, FallbackValue=LightGray}" />
@@ -70,7 +70,7 @@
                 </StackPanel>
             </Button.Content>
         </Button>
-        <Button Command="{Binding StartJobCommand}" Grid.Column="3" >
+        <Button Command="{Binding SendGCodeFileCommand}" Grid.Column="3" >
             <Button.Content>
                 <StackPanel>
                     <Grid>
@@ -92,7 +92,7 @@
                 </StackPanel>
             </Button.Content>
         </Button>
-        <Button Command="{Binding StartProbeJobCommand}" Grid.Column="5" >
+        <Button Command="{Binding StartProbeCommand}" Grid.Column="5" >
             <Button.Content>
                 <StackPanel>
                     <Grid>

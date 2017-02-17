@@ -30,6 +30,8 @@ namespace LagoVista.GCode.Sender
         public double ProbeMaxDepth { get; set; }
         public double ProbeMinimumHeight { get; set; }
 
+        public int ProbeTimeoutSeconds { get; private set; }
+
         int _workAreaWidth;
         public int WorkAreaWidth
         {
@@ -166,6 +168,7 @@ namespace LagoVista.GCode.Sender
                     StatusPollIntervalIdle = 1000,
                     StatusPollIntervalRunning = 100,
                     JogFeedRate = 2000,
+                    ProbeTimeoutSeconds = 30,
                     MessageVerbosity = MessageVerbosityLevels.Normal,
                     MachineOrigin = MachineOrigin.Bottom_Left,
                     JogGCodeCommand = JogGCodeCommand.G0,

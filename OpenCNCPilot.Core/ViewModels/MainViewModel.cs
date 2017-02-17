@@ -3,7 +3,7 @@ using LagoVista.Core.ViewModels;
 
 namespace LagoVista.GCode.Sender.ViewModels
 {
-    public partial class MainViewModel : GCodeAppViewModel
+    public partial class MainViewModel : GCodeAppViewModelBase
     {
         public MainViewModel() : base()
         {
@@ -18,7 +18,7 @@ namespace LagoVista.GCode.Sender.ViewModels
             await Machine.InitAsync();
             //Machine.Settings.PropertyChanged += _settings_PropertyChanged;
 
-            await base.InitAsync();            
+            await base.InitAsync();
         }
 
         private void InitChildViewModels()

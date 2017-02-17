@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace LagoVista.GCode.Sender.Managers
 {
-    public partial class JobManager : Core.Models.ModelBase, IJobManager
+    public partial class GCodeFileManager : Core.Models.ModelBase, IGCodeFileManager
     {
         IMachine _machine;
         ILogger _logger;
@@ -25,7 +25,7 @@ namespace LagoVista.GCode.Sender.Managers
 
         DateTime? _started;
        
-        public JobManager(IMachine machine, ILogger logger, IToolChangeManager toolChangeManager)
+        public GCodeFileManager(IMachine machine, ILogger logger, IToolChangeManager toolChangeManager)
         {
             _machine = machine;
             _logger = logger;
@@ -44,7 +44,7 @@ namespace LagoVista.GCode.Sender.Managers
                 _started = DateTime.Now;
 
             while (Head < _file.Commands.Count && 
-                _machine.BufferSpaceAvailable(_file.Commands[Head].MessageLength))
+                _machine.HasBufferSpaceAvailableForByteCount(_file.Commands[Head].MessageLength))
             {
                 _machine.SendCommand(_file.Commands[Head]);
                 _file.Commands[Head++].Status = GCodeCommand.StatusTypes.Sent;
@@ -53,7 +53,7 @@ namespace LagoVista.GCode.Sender.Managers
 
         public GCodeCommand CurrentCommand
         {
-            get { return _file.Commands[Tail]; }
+            get { return _file == null ? null : _file.Commands[Tail]; }
         }
 
         public int CommandAcknowledged()

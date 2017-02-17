@@ -59,7 +59,7 @@ namespace LagoVista.GCode.Sender
     {
         Manual,
         Alarm,
-        SendingJob,
+        SendingGCodeFile,
         PendingToolChange,
         ProbingHeightMap,
         ProbingHeight,

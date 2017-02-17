@@ -24,6 +24,12 @@ namespace LagoVista.GCode.Sender
             Messages = new System.Collections.ObjectModel.ObservableCollection<Models.StatusMessage>();
             AddStatusMessage(StatusMessageTypes.Info, "Startup.");
 
+            ToolChangeManager = new Managers.ToolChangeManager(this, Core.PlatformSupport.Services.Logger);
+            GCodeFileManager = new Managers.GCodeFileManager(this, Core.PlatformSupport.Services.Logger, ToolChangeManager);
+            BoardManager = new Managers.BoardManager(this, Core.PlatformSupport.Services.Logger);
+            HeightMapManager = new Managers.HeightMapManager(this, Core.PlatformSupport.Services.Logger, BoardManager);
+            ProbingManager = new Managers.ProbingManager(this, Core.PlatformSupport.Services.Logger);
+            MachineVisionManager = new Managers.MachineVisionManager(this, Core.PlatformSupport.Services.Logger, BoardManager);
 
             /* Have defaults loaded until the real settings come in */
             _settings = Settings.Default;
@@ -33,14 +39,7 @@ namespace LagoVista.GCode.Sender
         {
             _settings = await Settings.LoadAsync();
             RaisePropertyChanged(nameof(Settings));
-
-            ToolChangeManager = new Managers.ToolChangeManager(this, Core.PlatformSupport.Services.Logger);
-            JobManager = new Managers.JobManager(this, Core.PlatformSupport.Services.Logger, ToolChangeManager);
-            BoardManager = new Managers.BoardManager(this, Core.PlatformSupport.Services.Logger);
-            HeightMapManager = new Managers.HeightMapManager(this, Core.PlatformSupport.Services.Logger, BoardManager);
-            ProbingManager = new Managers.ProbingManager(this, Core.PlatformSupport.Services.Logger);
-            MachineVisionManager = new Managers.MachineVisionManager(this, Core.PlatformSupport.Services.Logger, BoardManager);
-
+       
             IsInitialized = true;
         }
 

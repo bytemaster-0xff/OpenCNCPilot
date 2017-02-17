@@ -7,6 +7,19 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="120" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
         <Grid.Resources>
             <Style TargetType="TextBlock" x:Key="Label">
                 <Setter Property="Width" Value="120" />
@@ -14,36 +27,24 @@
             <Style TargetType="TextBlock" x:Key="Value">
                 <Setter Property="FontWeight" Value="Bold" />
             </Style>
-        </Grid.Resources>
-        <Rectangle Fill="Gray" Opacity="0.15" />
-        <StackPanel Grid.Row="0" Margin="4">
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Text="Connected" Style="{StaticResource Label}" />
-                <TextBlock Text="{Binding Machine.Connected}" Style="{StaticResource Value}"  />
-            </StackPanel>
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Text="Status" Style="{StaticResource Label}" />
-                <TextBlock Text="{Binding Machine.Status}" Style="{StaticResource Value}"  />
-            </StackPanel>
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Text="Units" Style="{StaticResource Label}"  />
-                <TextBlock Text="{Binding Machine.Unit}" Style="{StaticResource Value}"  />
-            </StackPanel>
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Text="Operating Mode" Style="{StaticResource Label}" />
-                <TextBlock Text="{Binding Machine.Mode}" Style="{StaticResource Value}"  />
-            </StackPanel>
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Text="Distance Mode" Style="{StaticResource Label}" />
-                <TextBlock Text="{Binding Machine.DistanceMode}" Style="{StaticResource Value}" />
-            </StackPanel>
-            <TextBlock Text="Send Buffer" FontSize="18"/>
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Text="{Binding Machine.BufferState, FallbackValue=20}"/>
-                <TextBlock Text="/"/>
-                <TextBlock Text="{Binding Machine.Settings.ControllerBufferSize, FallbackValue=128}"/>
-            </StackPanel>
-            <ProgressBar Maximum="{Binding Machine.Settings.ControllerBufferSize, FallbackValue=128}" Value="{Binding Machine.BufferState, FallbackValue=20}" Height="20" />
-        </StackPanel>      
+         </Grid.Resources>
+        <Rectangle Fill="Gray" Opacity="0.15" Grid.RowSpan="7" Grid.ColumnSpan="2" />
+        <TextBlock Text="Buffer:" Margin="0,0,5,0" />
+        <StackPanel Orientation="Horizontal" Grid.Column="1">
+            <TextBlock Style="{StaticResource Value}" Text="{Binding Machine.UnacknowledgedBytesSent, Mode=OneWay, FallbackValue=20}"/>
+            <TextBlock Style="{StaticResource Value}" Text="/"/>
+            <TextBlock Style="{StaticResource Value}" Text="{Binding Machine.Settings.ControllerBufferSize, FallbackValue=128}"/>
+        </StackPanel>
+        <ProgressBar Grid.Row="1" Grid.ColumnSpan="2" Maximum="{Binding Machine.Settings.ControllerBufferSize, FallbackValue=128}" Value="{Binding Machine.UnacknowledgedBytesSent, Mode=OneWay, FallbackValue=20}" Height="20" />
+        <TextBlock Grid.Row="2" Text="Connected" Style="{StaticResource Label}" />
+        <TextBlock Grid.Row="2" Grid.Column="1"  Text="{Binding Machine.Connected, FallbackValue=True}" Style="{StaticResource Value}" />
+        <TextBlock Grid.Row="3" Text="Operating Mode" Style="{StaticResource Label}" />
+        <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding Machine.Mode, FallbackValue=Idle}" Style="{StaticResource Value}" />
+        <TextBlock Grid.Row="4" Text="Status" Style="{StaticResource Label}" />
+        <TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding Machine.Status, FallbackValue=Ok}" Style="{StaticResource Value}" />
+        <TextBlock Grid.Row="5" Text="Units" Style="{StaticResource Label}"  />
+        <TextBlock Grid.Row="5" Grid.Column="1" Text="{Binding Machine.Unit, FallbackValue=MM}" Style="{StaticResource Value}" />
+        <TextBlock Grid.Row="6" Text="Distance Mode" Style="{StaticResource Label}" />
+        <TextBlock  Grid.Row="6" Grid.Column="1" Text="{Binding Machine.DistanceMode, FallbackValue=Absolute}" Style="{StaticResource Value}" />
     </Grid>
 </UserControl>

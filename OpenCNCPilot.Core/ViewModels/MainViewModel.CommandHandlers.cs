@@ -50,11 +50,11 @@ namespace LagoVista.GCode.Sender.ViewModels
 
         public async void ArcToLine()
         {
-            if (Machine.JobManager.HasValidFile)
+            if (Machine.GCodeFileManager.HasValidFile)
             {
                 var result = await Popups.PromptForDoubleAsync("Convert Line to Arch", Machine.Settings.ArcToLineSegmentLength, "Enter Arc Width", true);
                 if (result.HasValue)
-                    Machine.JobManager.ArcToLines(result.Value);
+                    Machine.GCodeFileManager.ArcToLines(result.Value);
             }
         }
 
@@ -62,7 +62,7 @@ namespace LagoVista.GCode.Sender.ViewModels
         {
             if (CanApplyHeightMap())
             {
-                Machine.JobManager.ApplyHeightMap(Machine.HeightMapManager.HeightMap);
+                Machine.GCodeFileManager.ApplyHeightMap(Machine.HeightMapManager.HeightMap);
             }
         }
 
@@ -71,7 +71,7 @@ namespace LagoVista.GCode.Sender.ViewModels
             var file = await Popups.ShowOpenFileAsync(Constants.FileFilterGCode);
             if (!String.IsNullOrEmpty(file))
             {
-                await Machine.JobManager.OpenFileAsync(file); 
+                await Machine.GCodeFileManager.OpenFileAsync(file); 
             }
         }
 
@@ -86,7 +86,7 @@ namespace LagoVista.GCode.Sender.ViewModels
 
         public void CloseFile(object instance)
         {
-            Machine.JobManager.CloseFileAsync();
+            Machine.GCodeFileManager.CloseFileAsync();
         }
     }
 }

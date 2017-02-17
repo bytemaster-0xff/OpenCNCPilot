@@ -21,11 +21,11 @@ namespace LagoVista.GCode.Sender
 
             if (line == "ok")
             {
-                if (JobManager.HasValidFile)
+                if (GCodeFileManager.HasValidFile)
                 {
                     lock (this)
                     {
-                        JobManager.CommandAcknowledged();
+                        GCodeFileManager.CommandAcknowledged();
 
                         lock (_queueAccessLocker)
                         {
@@ -36,10 +36,9 @@ namespace LagoVista.GCode.Sender
                             }
                         }
 
-                        if (JobManager.IsCompleted)
+                        if (GCodeFileManager.IsCompleted)
                         {
                             Mode = OperatingMode.Manual;
-                            JobManager = null;
                         }
                     }
                 }

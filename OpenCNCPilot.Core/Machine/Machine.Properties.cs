@@ -10,13 +10,13 @@ namespace LagoVista.GCode.Sender
 {
     public partial class Machine
     {
-        private IJobManager _jobManager;
-        public IJobManager JobManager
+        private IGCodeFileManager _gcodeFileManager;
+        public IGCodeFileManager GCodeFileManager
         {
-            get { return _jobManager; }
+            get { return _gcodeFileManager; }
             set
             {
-                _jobManager = value;
+                _gcodeFileManager = value;
                 RaisePropertyChanged();
             }
         }

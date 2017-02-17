@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace LagoVista.GCode.Sender.ViewModels
 {
-    public partial class SettingsViewModel : GCodeAppViewModel
+    public partial class SettingsViewModel : GCodeAppViewModelBase
     {
         public SettingsViewModel(IMachine machine) : base(machine)
         {

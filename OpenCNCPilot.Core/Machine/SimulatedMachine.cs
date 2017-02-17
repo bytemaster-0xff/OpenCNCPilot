@@ -108,7 +108,7 @@ namespace LagoVista.GCode.Sender
 
         public override int Read(byte[] buffer, int offset, int count)
         {
-            while(_outputArray.Count == 0)
+            while (_outputArray.Count == 0)
             {
                 _bufferEmptySpinWait.SpinOnce();
             }
@@ -169,30 +169,52 @@ namespace LagoVista.GCode.Sender
 
             var finishTime = DateTime.Now + parsedLine.EstimatedRunTime;
 
-            SpinWait.SpinUntil(() => DateTime.Now > finishTime);
-
-            var parts = cmd.Split(' ');
-            foreach (var part in parts.Where(itm => !String.IsNullOrEmpty(itm)))
+            switch (parsedLine.Command)
             {
-                switch (part.Substring(0, 1))
-                {
-                    case "X":
-                        _machine.X = GetParamValue(part);
-                        _work.X = GetParamValue(part);
+                case "G91":
+                    AddResponse("ok");
+                    return;
+                case "G90":
+                    AddResponse("ok");
+                    return;
+                case "G21":
+                    AddResponse("ok");
+                    return;
+                case "G20":
+                    AddResponse("ok");
                         break;
-                    case "Y":
-                        _machine.Y = GetParamValue(part);
-                        _work.Y = GetParamValue(part);
-                        break;
-                    case "Z":
-                        _machine.Z = GetParamValue(part);
-                        _work.Z = GetParamValue(part);
-                        break;
-                }
             }
 
-            AddResponse("ok");
+            SpinWait.SpinUntil(() => DateTime.Now > finishTime);
+            if (parsedLine.Command == "G0" || parsedLine.Command == "G1")
+            {
+                var parts = cmd.Split(' ');
+                foreach (var part in parts.Where(itm => !String.IsNullOrEmpty(itm)))
+                {
+                    switch (part.Substring(0, 1))
+                    {
+                        case "X":
+                            _machine.X = GetParamValue(part);
+                            _work.X = GetParamValue(part);
+                            break;
+                        case "Y":
+                            _machine.Y = GetParamValue(part);
+                            _work.Y = GetParamValue(part);
+                            break;
+                        case "Z":
+                            _machine.Z = GetParamValue(part);
+                            _work.Z = GetParamValue(part);
+                            break;
+                    }
+                }
+                AddResponse("ok");
+            }
+            else if (parsedLine.Command.StartsWith("G38"))
+            {
+                AddResponse("[PRB:0.00,0.00,-3.23:1]");
+            }
         }
+
 
         private void HandleMCode(string cmd)
         {

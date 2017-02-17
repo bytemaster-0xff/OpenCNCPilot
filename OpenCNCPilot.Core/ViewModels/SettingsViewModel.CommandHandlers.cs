@@ -9,7 +9,7 @@ namespace LagoVista.GCode.Sender.ViewModels
     public partial class SettingsViewModel
     {
 
-        public async void Save()
+        public async void SaveSettingsAsync()
         {
             await Machine.Settings.SaveAsync();
         }

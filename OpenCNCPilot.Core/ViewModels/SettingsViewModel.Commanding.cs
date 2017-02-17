@@ -11,7 +11,7 @@ namespace LagoVista.GCode.Sender.ViewModels
     {
         private void InitComamnds()
         {
-            SaveCommand = new RelayCommand(Save);
+            SaveCommand = new RelayCommand(SaveSettingsAsync);
             CancelCommand = new RelayCommand(Cancel);
         }
 
