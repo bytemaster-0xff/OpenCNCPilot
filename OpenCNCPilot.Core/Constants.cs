@@ -79,36 +79,36 @@ namespace LagoVista.GCode.Sender
 
     public enum MessageVerbosityLevels
     {
-        Quiet,
-        Normal,
+        Diagnostics,
         Verbose,
-        Diagnostics
+        Normal,
+        Quiet,
     }
 
 
     public class Constants
-	{
-		public static NumberFormatInfo DecimalParseFormat = new NumberFormatInfo() { NumberDecimalSeparator = "."};
+    {
+        public static NumberFormatInfo DecimalParseFormat = new NumberFormatInfo() { NumberDecimalSeparator = "." };
 
         public static NumberFormatInfo DecimalOutputFormat
-		{
-			get
-			{
-				return new NumberFormatInfo() { NumberDecimalSeparator = "."};
-			}
-		}
+        {
+            get
+            {
+                return new NumberFormatInfo() { NumberDecimalSeparator = "." };
+            }
+        }
 
-		public static string FileFilterGCode = "GCode|*.g;*.tap;*.nc;*.ngc|All Files|*.*";
-		public static string FileFilterHeightMap = "Height Maps|*.hmap|All Files|*.*";
+        public static string FileFilterGCode = "GCode|*.g;*.tap;*.nc;*.ngc|All Files|*.*";
+        public static string FileFilterHeightMap = "Height Maps|*.hmap|All Files|*.*";
 
-		public static string FilePathErrors = "Resources\\GrblErrors.txt";
-		public static string FilePathWebsite = "Resources\\index.html";
+        public static string FilePathErrors = "Resources\\GrblErrors.txt";
+        public static string FilePathWebsite = "Resources\\index.html";
 
-		public static char[] NewLines = new char[] {'\n', '\r'};
+        public static char[] NewLines = new char[] { '\n', '\r' };
 
-		static Constants()
-		{
-			
-		}
-	}
+        static Constants()
+        {
+
+        }
+    }
 }

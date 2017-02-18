@@ -19,7 +19,9 @@ namespace LagoVista.GCode.Sender
 
             try
             {
-                var outputStream = await port.OpenAsync();
+                await port.OpenAsync();
+
+                var outputStream = port.OutputStream;
                 if (outputStream == null)
                 {
                     AddStatusMessage(StatusMessageTypes.Warning, $"Could not open serial port");
@@ -45,7 +47,7 @@ namespace LagoVista.GCode.Sender
 
                 await Task.Run(() =>
                 {
-                    Work(outputStream);
+                    Work(port.InputStream, port.OutputStream);
                 }, _cancelToken);
             }
             catch (Exception ex)

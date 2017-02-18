@@ -32,6 +32,16 @@ namespace LagoVista.GCode.Sender.ViewModels
         public ObservableCollection<String> MachineTypes { get; private set; }
         public ObservableCollection<String> GCodeJogCommands { get; private set; }
         public ObservableCollection<String> MachineOrigins { get; private set; }
+        public ObservableCollection<String> MessageOutputLevels { get; private set; }
+
+        public string MessgeOutputLevel
+        {
+            get { return Machine.Settings.MessageVerbosity.ToString(); }
+            set
+            {
+                Machine.Settings.MessageVerbosity = (MessageVerbosityLevels)Enum.Parse(typeof(MessageVerbosityLevels), value);
+            }
+        }
 
         public String GCodeJogCommand
         {

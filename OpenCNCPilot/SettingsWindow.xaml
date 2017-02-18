@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="SettingsWindow" Height="300" Width="392.161">
+        Title="SettingsWindow" Height="350" Width="400">
     <Window.Resources>
         <Style TargetType="TextBox">
             <Setter Property="Margin" Value="4" />
@@ -41,6 +41,7 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="140" />
                     <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="80" />
                 </Grid.ColumnDefinitions>
                 <Label Grid.Row="0" Grid.Column="0" Content="Name" />
                 <TextBox Text="{Binding Machine.Settings.MachineName, Mode=TwoWay}" Grid.Column="1" />
@@ -59,14 +60,22 @@
 
                 <Label Grid.Row="3" Content="Work Area Width" />
                 <TextBox  Text="{Binding Machine.Settings.WorkAreaWidth}" Grid.Row="3" />
+                <Label Content="mm" Grid.Row="3" Grid.Column="2" />
 
                 <Label Grid.Row="4" Content="Work Area Height" />
                 <TextBox Text="{Binding Machine.Settings.WorkAreaHeight}"  Grid.Row="4" />
+                <Label Content="mm" Grid.Row="4" Grid.Column="2" />
+
                 <Label Grid.Row="5" Content="GCode Jog Command" />
                 <ComboBox Grid.Row="5"  
                           IsEnabled="{Binding CanChangeMachineConfig}"
                           SelectedValue="{Binding Path=GCodeJogCommand, Mode=TwoWay}"
                           ItemsSource="{Binding Path=GCodeJogCommands}"  />
+                
+                <Label Grid.Row="6" Content="Msg Output Level" />
+                <ComboBox Grid.Row="6"  
+                          SelectedValue="{Binding Path=MessgeOutputLevel, Mode=TwoWay}"
+                          ItemsSource="{Binding Path=MessageOutputLevels}"  />
             </Grid>
         </TabItem>
 
@@ -169,22 +178,22 @@
                     <RowDefinition Height="auto" />
                 </Grid.RowDefinitions>
                 <Label  Content="Probe Plunge Feedrate (mm/min)" />
-                <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding Machine.Settings.ProbeFeed, Mode=TwoWay}"/>
+                <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding Machine.Settings.ProbeFeed, FallbackValue=10, Mode=TwoWay}"/>
                 <Label Content="mm/min" Grid.Column="2" />
                 
                 <Label Content="Abort on Fail"  Grid.Row="1" />
                 <CheckBox VerticalAlignment="Center" Margin="4" Grid.Column="1"  Grid.Row="1" IsChecked="{Binding Settings.AbortOnProbeFail, Mode=TwoWay}"/>
 
                 <Label Content="Timeout" Grid.Row="2" />
-                <TextBox Grid.Row="2" Grid.Column="1" TextAlignment="Right" Text="{Binding Machine.Settings.ProbeTimeoutSeconds, Mode=TwoWay}"/>
+                <TextBox Grid.Row="2" Grid.Column="1" TextAlignment="Right" Text="{Binding Machine.Settings.ProbeTimeoutSeconds, FallbackValue=30, Mode=TwoWay}"/>
                 <Label Content="seconds" Grid.Row="2" Grid.Column="2" />
 
                 <Label Content="Safe Height" Grid.Row="3" />
-                <TextBox Grid.Row="3" TextAlignment="Right" Text="{Binding Machine.Settings.ProbeSafeHeight, Mode=TwoWay}"/>
+                <TextBox Grid.Row="3" TextAlignment="Right" Text="{Binding Machine.Settings.ProbeSafeHeight, FallbackValue=10, Mode=TwoWay}"/>
                 <Label Content="mm" Grid.Row="3" Grid.Column="2" />
 
                 <Label Grid.Row="4" Content="Minimum Height" />
-                <TextBox TextAlignment="Right" Grid.Row="4" Grid.Column="1" Text="{Binding Machine.Settings.ProbeMinimumHeight, Mode=TwoWay}" 
+                <TextBox TextAlignment="Right" Grid.Row="4" Grid.Column="1" Text="{Binding Machine.Settings.ProbeMinimumHeight, FallbackValue=5, Mode=TwoWay}" 
                          ToolTip="This height will be added to the height of the last probe point to prevent crashes on highly tilted surfaces"/>
                 <Label Content="mm" Grid.Row="4" Grid.Column="2" />
 

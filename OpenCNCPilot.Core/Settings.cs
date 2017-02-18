@@ -30,7 +30,7 @@ namespace LagoVista.GCode.Sender
         public double ProbeMaxDepth { get; set; }
         public double ProbeMinimumHeight { get; set; }
 
-        public int ProbeTimeoutSeconds { get; private set; }
+        public int ProbeTimeoutSeconds { get; set; }
 
         int _workAreaWidth;
         public int WorkAreaWidth

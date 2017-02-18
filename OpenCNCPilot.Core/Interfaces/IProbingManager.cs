@@ -30,7 +30,7 @@ namespace LagoVista.GCode.Sender.Interfaces
         /// <summary>
         /// Send a command to the machine to set the new Z-Axis based on completion of probing
         /// </summary>
-        void SetZAxis();
+        void SetZAxis(double zOffset);
 
         /// <summary>
         /// Utility method to read in a line of text from machine and return probe information.

@@ -88,7 +88,18 @@ namespace LagoVista.GCode.Sender
                 }
                 else if (line.StartsWith("<"))
                 {
-                    AddStatusMessage(StatusMessageTypes.ReceviedLine, line, MessageVerbosityLevels.Normal);
+                    if (ParseStatus(line))
+                    {
+                        AddStatusMessage(StatusMessageTypes.ReceviedLine, line, MessageVerbosityLevels.Diagnostics);
+                    }
+                    else if (ParseLine(line))
+                    {
+                        AddStatusMessage(StatusMessageTypes.ReceviedLine, line, MessageVerbosityLevels.Diagnostics);
+                    }
+                    else
+                    {
+                        AddStatusMessage(StatusMessageTypes.ReceviedLine, line);
+                    }
                 }
                 else if (line.StartsWith("[PRB:"))
                 {

@@ -15,16 +15,21 @@ namespace LagoVista.GCode.Sender
     public class SimulatedMachine : ISerialPort
     {
         FirmwareTypes _firmwareType;
+        Stream _simulatedStream;
 
         public SimulatedMachine(FirmwareTypes firmwareType)
         {
             _firmwareType = firmwareType;
         }
 
+        public Stream InputStream { get { return _simulatedStream; } }
+
         public bool IsConnected
         {
             get; set;
         }
+
+        public Stream OutputStream { get { return _simulatedStream; } }
 
         public Task CloseAsync()
         {
@@ -37,10 +42,11 @@ namespace LagoVista.GCode.Sender
 
         }
 
-        public Task<Stream> OpenAsync()
+        public Task OpenAsync()
         {
             IsConnected = true;
-            return Task.FromResult((new SimulatedGCodeMachine(_firmwareType) as Stream));
+            _simulatedStream = (new SimulatedGCodeMachine(_firmwareType) as Stream);
+            return Task.FromResult(default(object));
         }
     }
 
@@ -167,8 +173,6 @@ namespace LagoVista.GCode.Sender
             var line = _parser.CleanupLine(cmd, idx);
             var parsedLine = _parser.ParseMotionLine(line, idx);
 
-            var finishTime = DateTime.Now + parsedLine.EstimatedRunTime;
-
             switch (parsedLine.Command)
             {
                 case "G91":
@@ -182,12 +186,14 @@ namespace LagoVista.GCode.Sender
                     return;
                 case "G20":
                     AddResponse("ok");
-                        break;
+                    break;
             }
 
-            SpinWait.SpinUntil(() => DateTime.Now > finishTime);
             if (parsedLine.Command == "G0" || parsedLine.Command == "G1")
             {
+                var finishTime = DateTime.Now + parsedLine.EstimatedRunTime;
+                SpinWait.SpinUntil(() => DateTime.Now > finishTime);
+
                 var parts = cmd.Split(' ');
                 foreach (var part in parts.Where(itm => !String.IsNullOrEmpty(itm)))
                 {
@@ -207,14 +213,22 @@ namespace LagoVista.GCode.Sender
                             break;
                     }
                 }
+
                 AddResponse("ok");
             }
             else if (parsedLine.Command.StartsWith("G38"))
             {
+                AddResponse("ok");
+                var finishTime = DateTime.Now + TimeSpan.FromSeconds(3);
+                SpinWait.SpinUntil(() => DateTime.Now > finishTime);
+
                 AddResponse("[PRB:0.00,0.00,-3.23:1]");
             }
+            else if(parsedLine.Command.StartsWith("G92"))
+            {
+                AddResponse("ok");
+            }
         }
-
 
         private void HandleMCode(string cmd)
         {

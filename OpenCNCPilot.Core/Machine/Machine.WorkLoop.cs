@@ -168,7 +168,7 @@ namespace LagoVista.GCode.Sender
             ProcessResponseLine(lineTask.Result);
         }
 
-        private async void Work(Stream stream)
+        private async void Work(Stream inputStream, Stream outputStream)
         {
             try
             {
@@ -176,8 +176,8 @@ namespace LagoVista.GCode.Sender
                 _lastPollTime = DateTime.Now + TimeSpan.FromSeconds(0.5);
                 _connectTime = DateTime.Now;
 
-                _reader = new StreamReader(stream);
-                _writer = new StreamWriter(stream);
+                _reader = new StreamReader(inputStream);
+                _writer = new StreamWriter(outputStream);
 
                 UnacknowledgedBytesSent = 0;
 

@@ -14,14 +14,13 @@ namespace LagoVista.GCode.Sender
         /// <summary>
         /// Parses a recevied status report (answer to '?')
         /// </summary>
-        private void ParseStatus(string line)
+        private bool ParseStatus(string line)
         {
             Match grblStatusMatch = StatusEx.Match(line);
 
             if (!grblStatusMatch.Success)
             {
-                AddStatusMessage(StatusMessageTypes.Warning, $"Recieved Bad Status: {line}");
-                return;
+                return false;
             }
 
             Group status = grblStatusMatch.Groups["State"];
@@ -64,6 +63,8 @@ namespace LagoVista.GCode.Sender
                     WorkPosition = newWorkPosition;
                 }
             }
+
+            return true;
         }
 
         public bool ParseLine(String line)

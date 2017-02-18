@@ -111,13 +111,16 @@ namespace LagoVista.GCode.Sender
 
         public void AddStatusMessage(StatusMessageTypes type, string message, MessageVerbosityLevels verbosityLevel = MessageVerbosityLevels.Normal)
         {
-            Services.DispatcherServices.Invoke(() =>
+            if (Settings != null && verbosityLevel >= Settings.MessageVerbosity)
             {
-                Debug.WriteLine($"{DateTime.Now.ToString()}  {type} - {message}");
+                Services.DispatcherServices.Invoke(() =>
+                {
+                    Debug.WriteLine($"{DateTime.Now.ToString()}  {type} - {message}");
 
-                Messages.Add(Models.StatusMessage.Create(type, message));
-                RaisePropertyChanged(nameof(MessageCount));
-            });
+                    Messages.Add(Models.StatusMessage.Create(type, message));
+                    RaisePropertyChanged(nameof(MessageCount));
+                });
+            }
         }
     }
 }

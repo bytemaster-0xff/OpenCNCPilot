@@ -20,12 +20,12 @@ namespace LagoVista.GCode.Sender.ViewModels
 
         public void StartProbe()
         {
-            Machine.HeightMapManager.StartProbing();
+            Machine.ProbingManager.StartProbe();
         }
 
         public void StartHeightMap()
         {
-            Machine.ProbingManager.StartProbe();
+            Machine.HeightMapManager.StartProbing();
         }
 
         public void SendGCodeFile()

@@ -1,4 +1,5 @@
 ﻿using LagoVista.Core.Models.Drawing;
+using LagoVista.Core.PlatformSupport;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,8 @@ namespace LagoVista.GCode.Sender.Managers
 {
     public partial class ProbingManager
     {
+        ITimer _timer;
+
         private static Regex ProbeEx = new Regex(@"\[PRB:(?'MX'-?[0-9]+\.?[0-9]*),(?'MY'-?[0-9]+\.?[0-9]*),(?'MZ'-?[0-9]+\.?[0-9]*):(?'Success'0|1)\]");
 
         /// <summary>
@@ -37,27 +40,68 @@ namespace LagoVista.GCode.Sender.Managers
 
         public void StartProbe()
         {
+            if (Machine.SetMode(OperatingMode.ProbingHeight))
+            {
+                _timer = Core.PlatformSupport.Services.TimerFactory.Create(TimeSpan.FromSeconds(Machine.Settings.ProbeTimeoutSeconds));
+                _timer.Interval = TimeSpan.FromDays(Machine.Settings.ProbeTimeoutSeconds);
+                _timer.Start();
+                _timer.Tick += _timer_Tick;
+                Machine.SendCommand($"G38.3Z-{Machine.Settings.ProbeMaxDepth.ToString("0.###", Constants.DecimalOutputFormat)}F{Machine.Settings.ProbeFeed.ToString("0.#", Constants.DecimalOutputFormat)}");
+            }
+        }
 
+        private void _timer_Tick(object sender, EventArgs e)
+        {
+            Machine.SetMode(OperatingMode.Manual);
+            Machine.AddStatusMessage(StatusMessageTypes.Warning, $"Probing timed out after {Machine.Settings.ProbeTimeoutSeconds} sec.");
+
+            if (_timer != null)
+            {
+                _timer.Stop();
+                _timer = null;
+            }
         }
 
         public void CancelProbe()
         {
+            Machine.AddStatusMessage(StatusMessageTypes.Info, $"Probing Manually Cancelled");
 
+            if (_timer != null)
+            {
+                _timer.Stop();
+                _timer = null;
+            }
+
+            Machine.SetMode(OperatingMode.Manual);
         }
 
-        public void SetZAxis()
+        public void SetZAxis(double z)
         {
-
-        }
+            Machine.SendCommand($"G92 Z{Machine.Settings.ProbeOffset.ToString("0.###", Constants.DecimalOutputFormat)}");
+       }
 
         public void ProbeCompleted(Vector3 position)
         {
-            throw new NotImplementedException();
+            Machine.AddStatusMessage(StatusMessageTypes.Info, $"Probing Completed Offset {position.Z}");
+
+            if (_timer != null)
+            {
+                _timer.Stop();
+                _timer = null;
+            }
+                SetZAxis(position.Z);
+            Machine.SetMode(OperatingMode.Manual);
         }
 
         public void ProbeFailed()
         {
+            Machine.AddStatusMessage(StatusMessageTypes.Info, $"Probing Failed, Invalid Response");
 
+            if (_timer != null)
+            {
+                _timer.Stop();
+                _timer = null;
+            }
         }
     }
 }

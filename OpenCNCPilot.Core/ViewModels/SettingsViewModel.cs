@@ -72,6 +72,16 @@ namespace LagoVista.GCode.Sender.ViewModels
 
             MachineOrigins = originOptions;
             RaisePropertyChanged(nameof(MachineOrigins));
+
+            var outputLevels = Enum.GetValues(typeof(MessageVerbosityLevels));
+            var outputLevelOptions = new ObservableCollection<string>();
+            foreach (var outputLevel in outputLevels)
+            {
+                outputLevelOptions.Add(outputLevel.ToString().Replace("_", " "));
+            }
+
+            MessageOutputLevels = outputLevelOptions;
+            RaisePropertyChanged(nameof(MessageOutputLevels));
         }
     }
 }
