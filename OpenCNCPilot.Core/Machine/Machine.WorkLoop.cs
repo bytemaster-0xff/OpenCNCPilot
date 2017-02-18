@@ -113,6 +113,22 @@ namespace LagoVista.GCode.Sender
                     _lastPollTime = Now;
                 }
             }
+            else if(Mode == OperatingMode.ProbingHeightMap)
+            {
+                if ((Now - _lastPollTime).TotalMilliseconds > _settings.StatusPollIntervalRunning)
+                {
+                    if (_settings.MachineType == FirmwareTypes.GRBL1_1)
+                    {
+                        Enqueue("?", true);
+                    }
+                    else
+                    {
+                        Enqueue("M114");
+                    }
+
+                    _lastPollTime = Now;
+                }
+            }
 
             await Task.Delay(_waitTime);
         }
@@ -136,7 +152,7 @@ namespace LagoVista.GCode.Sender
                 GCodeFileManager.ProcessNextLines();
             }
 
-            if(ShouldSendJobItems() && Mode == OperatingMode.SendingGCodeFile)
+            if (ShouldSendJobItems() && Mode == OperatingMode.SendingGCodeFile)
             {
                 SendJobItems();
             }

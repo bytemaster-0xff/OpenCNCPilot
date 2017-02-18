@@ -181,9 +181,6 @@ namespace LagoVista.GCode.Sender
             var line = _parser.CleanupLine(cmd, idx);
             var parsedLine = _parser.ParseMotionLine(line, idx);
             
-
-            
-
             if (parsedLine.Command == "G0" || parsedLine.Command == "G1")
             {
                 var finishTime = DateTime.Now + parsedLine.EstimatedRunTime;
@@ -214,16 +211,23 @@ namespace LagoVista.GCode.Sender
             else if (parsedLine.Command.StartsWith("G38"))
             {
                 AddResponse("ok");
+
+                Debug.WriteLine("Sent OK");
+
                 var finishTime = DateTime.Now + TimeSpan.FromSeconds(3);
                 SpinWait.SpinUntil(() => DateTime.Now > finishTime);
+                Debug.WriteLine("Done Waiting");
+                var newHeight = _rnd.NextDouble();
 
-                AddResponse("[PRB:0.00,0.00,-3.23:1]");
+                AddResponse($"[PRB:0.00,0.00,{newHeight}:1]");
             }
             else if(parsedLine.Command.StartsWith("G92"))
             {
                 AddResponse("ok");
             }
         }
+
+        Random _rnd = new Random(DateTime.Now.Millisecond);
 
         private void HandleMCode(string cmd)
         {

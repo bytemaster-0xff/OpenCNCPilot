@@ -159,12 +159,12 @@ namespace LagoVista.GCode.Sender.Managers
 
             Machine.AddStatusMessage(StatusMessageTypes.Info, $"Probing Point X={_currentPoint.Point.X}, Y={_currentPoint.Point.Y}");
 
-            Machine.SendCommand($"G0 X{_currentPoint.Point.X.ToString("0.###", Constants.DecimalOutputFormat)} Y{_currentPoint.Point.Y.ToString("0.###", Constants.DecimalOutputFormat)}");
+            Machine.SendCommand($"G0 X{_currentPoint.Point.X.ToString("0.###", Constants.DecimalOutputFormat)} Y{_currentPoint.Point.Y.ToString("0.###", Constants.DecimalOutputFormat)} F{Machine.Settings.ProbeHeightMovementFeed}"); 
 
             Machine.SendCommand($"G38.3 Z-{Machine.Settings.ProbeMaxDepth.ToString("0.###", Constants.DecimalOutputFormat)}F{Machine.Settings.ProbeFeed.ToString("0.#", Constants.DecimalOutputFormat)}");
 
             Machine.SendCommand("G91");
-            Machine.SendCommand($"G0 Z{Machine.Settings.ProbeMinimumHeight.ToString("0.###", Constants.DecimalOutputFormat)}");
+            Machine.SendCommand($"G0 Z{Machine.Settings.ProbeMinimumHeight.ToString("0.###", Constants.DecimalOutputFormat)} F{Machine.Settings.ProbeHeightMovementFeed}");
             Machine.SendCommand("G90");
         }
 

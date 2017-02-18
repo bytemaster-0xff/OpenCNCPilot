@@ -30,6 +30,8 @@ namespace LagoVista.GCode.Sender
         public double ProbeMaxDepth { get; set; }
         public double ProbeMinimumHeight { get; set; }
 
+        public double ProbeHeightMovementFeed { get; set; }
+
         public int ProbeTimeoutSeconds { get; set; }
 
         int _workAreaWidth;
@@ -179,6 +181,7 @@ namespace LagoVista.GCode.Sender
                     ProbeMaxDepth = 5,
                     AbortOnProbeFail = false,
                     ProbeFeed = 20,
+                    ProbeHeightMovementFeed = 1000,
                     ArcToLineSegmentLength = 1,
                     SplitSegmentLength = 5,
                     XYStepSize = 1,

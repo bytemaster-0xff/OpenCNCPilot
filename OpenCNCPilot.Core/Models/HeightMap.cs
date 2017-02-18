@@ -156,6 +156,7 @@ namespace LagoVista.GCode.Sender.Models
             MinHeight = Math.Min(height, MinHeight);
             RaisePropertyChanged(nameof(MinHeight));
             RaisePropertyChanged(nameof(MaxHeight));
+            RaisePropertyChanged(nameof(Points));
         }
     }
 }
