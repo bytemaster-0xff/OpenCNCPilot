@@ -1,9 +1,7 @@
-﻿using LagoVista.GCode.Sender.Models;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 using System.Windows;
 using System.Linq;
 using LagoVista.GCode.Sender.ViewModels;
-using LagoVista.GCode.Sender.Interfaces;
 using System.Windows.Media.Media3D;
 using System.Xml.Linq;
 using LagoVista.EaglePCB.Managers;
@@ -12,9 +10,7 @@ using System.Windows.Media;
 
 namespace LagoVista.GCode.Sender.Application.Controls
 {
-    /// <summary>
-    /// Interaction logic for HeightMapRenderer.xaml
-    /// </summary>
+    
     public partial class HeightMapControl : UserControl
     {
         public HeightMapControl()

@@ -24,13 +24,14 @@
             <MenuItem Header="File"  >
                 <MenuItem Header="New HeightMap" x:Name="NewHeigtMap" Click="NewHeigtMap_Click" />
                 <MenuItem Header="New Generated HeightMap" x:Name="NewGeneratedHeigtMap" Click="NewGeneratedHeigtMap_Click" />
+                <MenuItem Header="Edit HeightMap" x:Name="EditHeightMap" Click="EditHeightMap_Click"/>
                 <Separator />
                 <MenuItem Header="Open Eagle Board File" Command="{Binding OpenGCodeFileCommand}" />
                 <MenuItem Header="Open GCode File" Command="{Binding OpenGCodeFileCommand}" />
                 <MenuItem Header="Open HeightMap"  Command="{Binding OpenHeightMapCommand}" />
                 <MenuItem Header="Close GCode File" Command="{Binding CloseFileCommand}" />
                 <Separator />
-                <MenuItem  Header="Close" Command="{Binding Close}" />
+                <MenuItem  Header="Close" Click="CloseMenu_Click" />
             </MenuItem>
             <MenuItem Header="Settings" >
                 <MenuItem x:Name="SettingsMenu" Click="SettingsMenu_Click" Header="Machine Settings" />

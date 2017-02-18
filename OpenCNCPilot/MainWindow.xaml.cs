@@ -5,7 +5,6 @@ using LagoVista.Core.GCode;
 using LagoVista.GCode.Sender;
 using LagoVista.GCode.Sender.Models;
 using LagoVista.GCode.Sender.ViewModels;
-using LagoVista.GCode.Sender.Application.Presentation;
 using LagoVista.GCode.Sender.Util;
 
 namespace LagoVista.GCode.Sender.Application
@@ -57,7 +56,7 @@ namespace LagoVista.GCode.Sender.Application
         {
             var vm = DataContext as MainViewModel;
             
-           var newHeightMapWindow = new NewHeightMapWindow(this, ViewModel.Machine);
+           var newHeightMapWindow = new NewHeightMapWindow(this, ViewModel.Machine, false);
            
             if(newHeightMapWindow.ShowDialog().HasValue && newHeightMapWindow.DialogResult.Value)
             {
@@ -75,6 +74,17 @@ namespace LagoVista.GCode.Sender.Application
             var heightMap = new HeightMap(ViewModel.Machine, ViewModel.Logger);
             heightMap.FillWithTestPattern();
             ViewModel.Machine.HeightMapManager.NewHeightMap(heightMap);
+        }
+
+        private void EditHeightMap_Click(object sender, RoutedEventArgs e)
+        {
+            var newHeightMapWindow = new NewHeightMapWindow(this, ViewModel.Machine, true);
+            newHeightMapWindow.ShowDialog();
+        }
+
+        private void CloseMenu_Click(object sender, RoutedEventArgs e)
+        {        
+            Close();
         }
     }
 }

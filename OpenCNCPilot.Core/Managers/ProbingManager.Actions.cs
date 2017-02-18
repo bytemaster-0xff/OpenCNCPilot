@@ -43,7 +43,7 @@ namespace LagoVista.GCode.Sender.Managers
             if (Machine.SetMode(OperatingMode.ProbingHeight))
             {
                 _timer = Core.PlatformSupport.Services.TimerFactory.Create(TimeSpan.FromSeconds(Machine.Settings.ProbeTimeoutSeconds));
-                _timer.Interval = TimeSpan.FromDays(Machine.Settings.ProbeTimeoutSeconds);
+                _timer.Interval = TimeSpan.FromSeconds(Machine.Settings.ProbeTimeoutSeconds);
                 _timer.Start();
                 _timer.Tick += _timer_Tick;
                 Machine.SendCommand($"G38.3Z-{Machine.Settings.ProbeMaxDepth.ToString("0.###", Constants.DecimalOutputFormat)}F{Machine.Settings.ProbeFeed.ToString("0.#", Constants.DecimalOutputFormat)}");

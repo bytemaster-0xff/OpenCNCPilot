@@ -21,7 +21,7 @@ namespace LagoVista.GCode.Sender.Managers
                 return;
             }
 
-            if(HeightMap == null)
+            if (HeightMap == null)
             {
                 Logger.Log(Core.PlatformSupport.LogLevel.Error, "HeightMap_ProbeCompleted", "Probe Completed without valid Height Map.");
                 Machine.AddStatusMessage(StatusMessageTypes.Warning, "Probe Height Map Completed without valid Height Map");
@@ -36,6 +36,8 @@ namespace LagoVista.GCode.Sender.Managers
                 CancelProbing();
                 return;
             }
+
+            Machine.AddStatusMessage(StatusMessageTypes.Info, $"Completed Point X={_currentPoint.Point.X}, Y={_currentPoint.Point.Y}, Z={position.Z}");
 
             HeightMap.SetPointHeight(_currentPoint, position.Z);
             _currentPoint = null;
@@ -60,7 +62,7 @@ namespace LagoVista.GCode.Sender.Managers
 
         private void ConstructVisuals()
         {
-            if(!HasHeightMap)
+            if (!HasHeightMap)
             {
                 Logger.Log(Core.PlatformSupport.LogLevel.Error, "HeightMapManager_ConstructVisuals", "Attempt to construct visual w/o a height map.");
                 Machine.AddStatusMessage(StatusMessageTypes.Warning, "Attempt to construct visual w/o a height map.");
@@ -123,37 +125,85 @@ namespace LagoVista.GCode.Sender.Managers
         private void HeightMapProbeNextPoint()
         {
             if (Machine.Mode != OperatingMode.ProbingHeightMap)
-                return;
-
-            if (!Machine.Connected || HeightMap == null || HeightMap.Status == HeightMapStatus.Populated)
             {
+                Machine.AddStatusMessage(StatusMessageTypes.Warning, "No Longer in Probing Mode - Can't Continue.");
                 CancelProbing();
                 return;
             }
 
+            if (!Machine.Connected)
+            {
+                Machine.AddStatusMessage(StatusMessageTypes.Warning, "Machine No Longer Connected - Can't Continue.");
+                CancelProbing();
+                return;
+            }
+
+            if (HeightMap == null)
+            {
+                Machine.AddStatusMessage(StatusMessageTypes.Warning, "Height Map Empty - Can't Continue.");
+                CancelProbing();
+                return;
+            }
+
+            if (HeightMap.Status == HeightMapStatus.Populated)
+            {
+                Machine.AddStatusMessage(StatusMessageTypes.Warning, "Unexpected Completion, Please Review before Continuing");
+            }
+
             _currentPoint = HeightMap.GetNextPoint();
+            if (_currentPoint == null)
+            {
+                Machine.AddStatusMessage(StatusMessageTypes.Warning, "No Point Available - Can't Continue.");
+                return;
+            }
 
-            Machine.SendCommand($"G0X{_currentPoint.Point.X.ToString("0.###", Constants.DecimalOutputFormat)}Y{_currentPoint.Point.Y.ToString("0.###", Constants.DecimalOutputFormat)}");
+            Machine.AddStatusMessage(StatusMessageTypes.Info, $"Probing Point X={_currentPoint.Point.X}, Y={_currentPoint.Point.Y}");
 
-            Machine.SendCommand($"G38.3Z-{Machine.Settings.ProbeMaxDepth.ToString("0.###", Constants.DecimalOutputFormat)}F{Machine.Settings.ProbeFeed.ToString("0.#", Constants.DecimalOutputFormat)}");
+            Machine.SendCommand($"G0 X{_currentPoint.Point.X.ToString("0.###", Constants.DecimalOutputFormat)} Y{_currentPoint.Point.Y.ToString("0.###", Constants.DecimalOutputFormat)}");
+
+            Machine.SendCommand($"G38.3 Z-{Machine.Settings.ProbeMaxDepth.ToString("0.###", Constants.DecimalOutputFormat)}F{Machine.Settings.ProbeFeed.ToString("0.#", Constants.DecimalOutputFormat)}");
 
             Machine.SendCommand("G91");
-            Machine.SendCommand($"G0Z{Machine.Settings.ProbeMinimumHeight.ToString("0.###", Constants.DecimalOutputFormat)}");
+            Machine.SendCommand($"G0 Z{Machine.Settings.ProbeMinimumHeight.ToString("0.###", Constants.DecimalOutputFormat)}");
             Machine.SendCommand("G90");
         }
 
         public void StartProbing()
         {
-            if (!Machine.Connected || Machine.Mode != OperatingMode.Manual || HeightMap == null)
+            if (!Machine.Connected)
+            {
+                Machine.AddStatusMessage(StatusMessageTypes.Warning, "Not Connected - Can't start.");
                 return;
+            }
 
-            if (HeightMap.Progress == HeightMap.TotalPoints)
+            if (Machine.Mode != OperatingMode.Manual)
+            {
+                Machine.AddStatusMessage(StatusMessageTypes.Warning, "Machine Busy - Can't start.");
                 return;
-            
-            if (Machine.Mode != OperatingMode.ProbingHeightMap)
+            }
+
+            if (!Machine.Connected || Machine.Mode != OperatingMode.Manual || HeightMap == null)
+            {
+                Machine.AddStatusMessage(StatusMessageTypes.Warning, "No Height Map - Can't start.");
                 return;
+            }
+
+            if (HeightMap.TotalPoints == 0)
+            {
+                Machine.AddStatusMessage(StatusMessageTypes.Warning, "Empty Height Map - Can't Start");
+                return;
+            }
+
+            if (!Machine.SetMode(OperatingMode.ProbingHeightMap))
+            {
+                Machine.AddStatusMessage(StatusMessageTypes.Warning, "Machine Couldn't Transition to Probe Mode.");
+                return;
+            }
+
+            Machine.AddStatusMessage(StatusMessageTypes.Info, "Creating Height Map - Started");
 
             Machine.SendCommand("G90");
+
             Machine.SendCommand($"G0Z{Machine.Settings.ProbeSafeHeight.ToString("0.###", Constants.DecimalOutputFormat)}");
 
             HeightMapProbeNextPoint();
@@ -163,6 +213,6 @@ namespace LagoVista.GCode.Sender.Managers
         {
             if (Machine.Mode != OperatingMode.ProbingHeightMap)
                 return;
-       }
+        }
     }
 }

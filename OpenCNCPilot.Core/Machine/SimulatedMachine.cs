@@ -170,24 +170,19 @@ namespace LagoVista.GCode.Sender
 
         private void HandleGCode(String cmd)
         {
+            switch (cmd)
+            {
+                case "G91": AddResponse("ok"); return;
+                case "G90": AddResponse("ok"); return;
+                case "G21": AddResponse("ok"); return;
+                case "G20": AddResponse("ok"); break;
+            }
+
             var line = _parser.CleanupLine(cmd, idx);
             var parsedLine = _parser.ParseMotionLine(line, idx);
+            
 
-            switch (parsedLine.Command)
-            {
-                case "G91":
-                    AddResponse("ok");
-                    return;
-                case "G90":
-                    AddResponse("ok");
-                    return;
-                case "G21":
-                    AddResponse("ok");
-                    return;
-                case "G20":
-                    AddResponse("ok");
-                    break;
-            }
+            
 
             if (parsedLine.Command == "G0" || parsedLine.Command == "G1")
             {

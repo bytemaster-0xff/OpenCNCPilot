@@ -8,4 +8,5 @@
     <cvtrs:HeightMap2MeshConverter x:Key="HeightMap2MeshConverter" />
     <cvtrs:MessageTypeBackgroundColorConverter x:Key="MessageTypeBackgroundColorConverter" />
     <cvtrs:MessageTypeForegroundColorConverter x:Key="MessageTypeForegroundColorConverter" />
+    <cvtrs:HeightMapProbePoint2PointConverter x:Key="HeightMapProbePoint2PointConverter" />
 </ResourceDictionary>

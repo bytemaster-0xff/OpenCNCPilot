@@ -124,6 +124,7 @@
     <Compile Include="Converters\ColorConverters.cs" />
     <Compile Include="Converters\GCodeSendStatusTypeConverters.cs" />
     <Compile Include="Converters\HeightMap2MeshConverter.cs" />
+    <Compile Include="Converters\HeightMapProbePoint2PointConverter.cs" />
     <Compile Include="Converters\Lines2Visual3DConverter.cs" />
     <Compile Include="Converters\MessageTypeConverter.cs" />
     <Compile Include="Converters\PointConverter.cs" />
@@ -131,7 +132,6 @@
     <Compile Include="NewHeightMapWindow.xaml.cs">
       <DependentUpon>NewHeightMapWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Presentation\HeightMapServices.cs" />
     <Compile Include="SettingsWindow.xaml.cs">
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
     </Compile>

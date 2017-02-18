@@ -25,7 +25,7 @@
             Length ="{Binding Machine.Settings.WorkAreaWidth, FallbackValue=100}" />
 
         <h:MeshGeometryVisual3D Material="{StaticResource HeightMapMediaGroup}" MeshGeometry="{Binding Machine.HeightMapManager.HeightMap, Converter={StaticResource HeightMap2MeshConverter}}" />
-        <h:LinesVisual3D x:Name="ModelHeightMapBoundary" Thickness="2" Color="Lime"/>
-        <h:PointsVisual3D x:Name="ModelHeightMapPoints" Color="Red" Size="4"/>
+        <h:LinesVisual3D x:Name="ModelHeightMapBoundary" Thickness="2" Color="Lime"  Points="{Binding Path=Machine.HeightMapManager.HeightMap.RawBoardOutline, Converter={StaticResource Lines2Visual3DConverter}}"/>
+        <h:PointsVisual3D Points="{Binding Path=Machine.HeightMapManager.HeightMap.Points, Converter={StaticResource HeightMapProbePoint2PointConverter}}" x:Name="ModelHeightMapPoints" Color="Red" Size="4"/>
     </h:HelixViewport3D>
 </UserControl>

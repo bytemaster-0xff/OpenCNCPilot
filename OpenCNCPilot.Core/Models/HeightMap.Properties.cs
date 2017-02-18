@@ -20,23 +20,31 @@ namespace LagoVista.GCode.Sender.Models
         public int SizeY { get; set; }
 
         public int Progress { get { return Points.Count - Points.Where(prb => prb.Status == HeightMapProbePointStatus.Probed).Count(); } }
-            
-        public int TotalPoints { get { return SizeX * SizeY; } }
-        
+
+        public int TotalPoints { get { return Points.Count; } }
+
         public bool Completed { get { return Points.Where(prb => prb.Status == HeightMapProbePointStatus.Probed).Count() == Points.Count; } }
 
         private Vector2 _min;
         public Vector2 Min
         {
             get { return _min; }
-            set { Set(ref _min, value); }
+            set
+            {
+                Set(ref _min, value);
+                Refresh();
+            }
         }
 
         private Vector2 _max;
         public Vector2 Max
         {
             get { return _max; }
-            set { Set(ref _max, value); }
+            set
+            {
+                Set(ref _max, value);
+                Refresh();
+            }
         }
 
         private double _gridSize;
@@ -71,6 +79,6 @@ namespace LagoVista.GCode.Sender.Models
 
         public ObservableCollection<Line3D> RawBoardOutline { get; private set; }
 
-        public ObservableCollection<HeightMapProbePoint> Points {get; private set; }
+        public ObservableCollection<HeightMapProbePoint> Points { get; private set; }
     }
 }

@@ -22,9 +22,9 @@ namespace LagoVista.GCode.Sender.Models
 
             _machine = machine;
             _logger = logger;
-            Min = new Vector2(0, 0);
-            Max = new Vector2(100, 80);
-            GridSize = 10;
+            _min = new Vector2(0, 0);
+            _max = new Vector2(100, 80);
+            _gridSize = 10;
             Refresh();
         }
 
@@ -39,7 +39,7 @@ namespace LagoVista.GCode.Sender.Models
             var min = Min;
             var max = Max;
             var gridSize = GridSize;
-            if (min.X == max.X || min.Y == max.Y)
+            if (min.X == max.X)
             {
                 _machine.AddStatusMessage(StatusMessageTypes.Warning, $"Min X must not equal Max X, both are {min.X}");
                 _logger.Log(LogLevel.Warning, "HeightMap_Refresh", $"Min X must not equal Max X, both are {min.X}");
@@ -50,6 +50,20 @@ namespace LagoVista.GCode.Sender.Models
             {
                 _machine.AddStatusMessage(StatusMessageTypes.Warning, $"Min Y must not equal Max Y, both are {min.Y}");
                 _logger.Log(LogLevel.Warning, "HeightMap_Refresh", $"Min Y must not equal Max Y, both are {min.Y}");
+                return;
+            }
+
+            if (min.X > max.X)
+            {
+                _machine.AddStatusMessage(StatusMessageTypes.Warning, $"Min X [{min.X}] must be greater than Max X [{max.X}]");
+                _logger.Log(LogLevel.Warning, "HeightMap_Refresh", $"Min X [{min.X}] must be greater than Max X [{max.X}]");
+                return;
+            }
+
+            if (min.Y > max.Y)
+            {
+                _machine.AddStatusMessage(StatusMessageTypes.Warning, $"Min Y [{min.Y}] must be greater than Max Y [{max.Y}]");
+                _logger.Log(LogLevel.Warning, "HeightMap_Refresh", $"Min Y [{min.Y}] must be greater than Max Y [{max.Y}]");
                 return;
             }
 
@@ -68,24 +82,7 @@ namespace LagoVista.GCode.Sender.Models
                 _machine.AddStatusMessage(StatusMessageTypes.Warning, $"Grid Size too large for board size.");
                 _logger.Log(LogLevel.Warning, "HeightMap_Refresh", $"Grid Size too large for board size..");
                 return;
-            }
-
-            if (max.X < min.X)
-            {
-                double a = min.X;
-                min.X = max.X;
-                max.X = a;
-            }
-
-            if (max.Y < min.Y)
-            {
-                double a = min.Y;
-                min.Y = max.Y;
-                max.Y = a;
-            }
-
-            Min = min;
-            Max = max;
+            }         
 
             SizeX = pointsX;
             SizeY = pointsY;
@@ -94,8 +91,8 @@ namespace LagoVista.GCode.Sender.Models
             {
                 for (var y = 0; y < SizeY; y++)
                 {
-                    var yPosition = (x * (Max.X - Min.X)) / (SizeX - 1) + Min.X;
-                    var xPosition = (y * (Max.Y - Min.Y)) / (SizeY - 1) + Min.Y;
+                    var xPosition = (x * (Max.X - Min.X)) / (SizeX - 1) + Min.X;
+                    var yPosition = (y * (Max.Y - Min.Y)) / (SizeY - 1) + Min.Y;
 
                     Points.Add(new HeightMapProbePoint() { XIndex = x, YIndex = y, Point = new Vector3(xPosition, yPosition, 0), Status = HeightMapProbePointStatus.NotProbed });
                 }
@@ -110,7 +107,6 @@ namespace LagoVista.GCode.Sender.Models
             RaisePropertyChanged(nameof(Points));
             RaisePropertyChanged(nameof(Min));
             RaisePropertyChanged(nameof(Max));
-
         }
 
         public HeightMapProbePoint GetNextPoint()
