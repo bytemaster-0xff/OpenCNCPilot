@@ -15,17 +15,32 @@ namespace LagoVista.GCode.Sender.Managers
             if (Machine.Mode != OperatingMode.ProbingHeightMap)
                 return;
 
-            if (!Machine.Connected || HeightMap == null || HeightMap.NotProbed.Count == 0)
+            if (!Machine.Connected || HeightMap == null)
             {
                 CancelProbing();
                 return;
             }
 
-            var lastPoint = HeightMap.NotProbed.Dequeue();
+            if(HeightMap == null)
+            {
+                Logger.Log(Core.PlatformSupport.LogLevel.Error, "HeightMap_ProbeCompleted", "Probe Completed without valid Height Map.");
+                Machine.AddStatusMessage(StatusMessageTypes.Warning, "Probe Height Map Completed without valid Height Map");
+                CancelProbing();
+                return;
+            }
 
-            HeightMap.AddPoint(lastPoint.Item1, lastPoint.Item2, position.Z);
+            if (_currentPoint == null)
+            {
+                Logger.Log(Core.PlatformSupport.LogLevel.Error, "HeightMap_ProbeCompleted", "Probe Completed without Current Point.");
+                Machine.AddStatusMessage(StatusMessageTypes.Warning, "Probe Height Map Completed without valid Current Point");
+                CancelProbing();
+                return;
+            }
 
-            if (HeightMap.NotProbed.Count == 0)
+            HeightMap.SetPointHeight(_currentPoint, position.Z);
+            _currentPoint = null;
+
+            if (HeightMap.Status == HeightMapStatus.Populated)
             {
                 Machine.SendCommand($"G0Z{Machine.Settings.ProbeSafeHeight.ToString(Constants.DecimalOutputFormat)}");
                 CancelProbing();
@@ -39,6 +54,24 @@ namespace LagoVista.GCode.Sender.Managers
         public void NewHeightMap(HeightMap heightMap)
         {
             HeightMap = heightMap;
+
+            ConstructVisuals();
+        }
+
+        private void ConstructVisuals()
+        {
+            if(!HasHeightMap)
+            {
+                Logger.Log(Core.PlatformSupport.LogLevel.Error, "HeightMapManager_ConstructVisuals", "Attempt to construct visual w/o a height map.");
+                Machine.AddStatusMessage(StatusMessageTypes.Warning, "Attempt to construct visual w/o a height map.");
+            }
+
+            if (HeightMap.GridSize == 2.5)
+            {
+                Machine.AddStatusMessage(StatusMessageTypes.Warning, $"Grid size must be creater than 2.5, current grid size {HeightMap.GridSize}.");
+                return;
+            }
+
         }
 
         public async Task OpenHeightMapAsync(string path)
@@ -60,7 +93,7 @@ namespace LagoVista.GCode.Sender.Managers
 
         public void CreateTestPattern()
         {
-            HeightMap = new Models.HeightMap();
+            HeightMap = new Models.HeightMap(Machine, Logger);
             HeightMap.FillWithTestPattern();
         }
 
@@ -85,21 +118,22 @@ namespace LagoVista.GCode.Sender.Managers
 
         }
 
+        HeightMapProbePoint _currentPoint;
+
         private void HeightMapProbeNextPoint()
         {
-
             if (Machine.Mode != OperatingMode.ProbingHeightMap)
                 return;
 
-            if (!Machine.Connected || HeightMap == null || HeightMap.NotProbed.Count == 0)
+            if (!Machine.Connected || HeightMap == null || HeightMap.Status == HeightMapStatus.Populated)
             {
                 CancelProbing();
                 return;
             }
 
-            var nextPoint = HeightMap.GetCoordinates(HeightMap.NotProbed.Peek().Item1, HeightMap.NotProbed.Peek().Item2);
+            _currentPoint = HeightMap.GetNextPoint();
 
-            Machine.SendCommand($"G0X{nextPoint.X.ToString("0.###", Constants.DecimalOutputFormat)}Y{nextPoint.Y.ToString("0.###", Constants.DecimalOutputFormat)}");
+            Machine.SendCommand($"G0X{_currentPoint.Point.X.ToString("0.###", Constants.DecimalOutputFormat)}Y{_currentPoint.Point.Y.ToString("0.###", Constants.DecimalOutputFormat)}");
 
             Machine.SendCommand($"G38.3Z-{Machine.Settings.ProbeMaxDepth.ToString("0.###", Constants.DecimalOutputFormat)}F{Machine.Settings.ProbeFeed.ToString("0.#", Constants.DecimalOutputFormat)}");
 

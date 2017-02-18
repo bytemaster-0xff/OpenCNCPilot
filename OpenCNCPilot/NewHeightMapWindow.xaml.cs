@@ -12,7 +12,7 @@ namespace LagoVista.GCode.Sender.Application
 		public NewHeightMapWindow(Window owner, IMachine machine)
 		{
             var vm = new NewHeightMapViewModel(machine);
-            vm.HeightMap = new HeightMap();
+            vm.HeightMap = new HeightMap(ViewModel.Machine, ViewModel.Logger);
             Owner = owner;            
 
             WindowStartupLocation = WindowStartupLocation.CenterOwner;

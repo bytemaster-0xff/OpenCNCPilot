@@ -1,28 +1,29 @@
 ﻿using LagoVista.Core.Models.Drawing;
 using System;
+using System.Linq;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace LagoVista.GCode.Sender.Models
 {
+    public enum HeightMapStatus
+    {
+        NotPopulated,
+        Populating,
+        Populated,
+    }
+
     public partial class HeightMap
     {
-        public enum HeightMapStatus
-        {
-            NotPopulated,
-            Populating,
-            Populated,
-        }
-
-        public double?[,] Points { get; set; }
-
 
         public int SizeX { get; set; }
         public int SizeY { get; set; }
 
-        public int Progress { get { return TotalPoints - NotProbed.Count; } }
+        public int Progress { get { return Points.Count - Points.Where(prb => prb.Status == HeightMapProbePointStatus.Probed).Count(); } }
+            
         public int TotalPoints { get { return SizeX * SizeY; } }
-
-        public Queue<Tuple<int, int>> NotProbed { get; private set; } = new Queue<Tuple<int, int>>();
+        
+        public bool Completed { get { return Points.Where(prb => prb.Status == HeightMapProbePointStatus.Probed).Count() == Points.Count; } }
 
         private Vector2 _min;
         public Vector2 Min
@@ -67,5 +68,9 @@ namespace LagoVista.GCode.Sender.Models
 
         public double GridX { get { return (Max.X - Min.X) / (SizeX - 1); } }
         public double GridY { get { return (Max.Y - Min.Y) / (SizeY - 1); } }
+
+        public ObservableCollection<Line3D> RawBoardOutline { get; private set; }
+
+        public ObservableCollection<HeightMapProbePoint> Points {get; private set; }
     }
 }

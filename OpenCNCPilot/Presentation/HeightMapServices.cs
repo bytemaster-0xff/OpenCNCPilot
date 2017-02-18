@@ -11,35 +11,6 @@ namespace LagoVista.GCode.Sender.Application.Presentation
 {
     public class HeightMapServices
     {
-        public static void GetModel(HeightMap map, MeshGeometryVisual3D mesh)
-        {
-            MeshBuilder mb = new MeshBuilder(false, true);
-
-            double Hdelta = map.MaxHeight - map.MinHeight;
-
-            for (int x = 0; x < map.SizeX - 1; x++)
-            {
-                for (int y = 0; y < map.SizeY - 1; y++)
-                {
-                    if (!map.Points[x, y].HasValue || !map.Points[x, y + 1].HasValue || !map.Points[x + 1, y].HasValue || !map.Points[x + 1, y + 1].HasValue)
-                        continue;
-
-                    mb.AddQuad(
-                        new System.Windows.Media.Media3D.Point3D(map.Min.X + (x + 1) * map.Delta.X / (map.SizeX - 1), map.Min.Y + (y) * map.Delta.Y / (map.SizeY - 1), map.Points[x + 1, y].Value),
-                        new System.Windows.Media.Media3D.Point3D(map.Min.X + (x + 1) * map.Delta.X / (map.SizeX - 1), map.Min.Y + (y + 1) * map.Delta.Y / (map.SizeY - 1), map.Points[x + 1, y + 1].Value),
-                        new System.Windows.Media.Media3D.Point3D(map.Min.X + (x) * map.Delta.X / (map.SizeX - 1), map.Min.Y + (y + 1) * map.Delta.Y / (map.SizeY - 1), map.Points[x, y + 1].Value),
-                        new System.Windows.Media.Media3D.Point3D(map.Min.X + (x) * map.Delta.X / (map.SizeX - 1), map.Min.Y + (y) * map.Delta.Y / (map.SizeY - 1), map.Points[x, y].Value),
-                        new System.Windows.Point(0, Convert.ToInt32((map.Points[x + 1, y].Value - map.MinHeight) * Hdelta)),
-                        new System.Windows.Point(0, Convert.ToInt32((map.Points[x + 1, y + 1].Value - map.MinHeight) * Hdelta)),
-                        new System.Windows.Point(0, Convert.ToInt32((map.Points[x, y + 1].Value - map.MinHeight) * Hdelta)),
-                        new System.Windows.Point(0, Convert.ToInt32((map.Points[x, y].Value - map.MinHeight) * Hdelta))
-                        );
-                }
-            }
-
-            mesh.MeshGeometry = mb.ToMesh();
-        }
-
         public static void GetPreviewModel(HeightMap map, LinesVisual3D border, PointsVisual3D pointv)
         {
             GetPreviewModel(map.Min, map.Max, map.SizeX, map.SizeY, border, pointv);
@@ -93,57 +64,18 @@ namespace LagoVista.GCode.Sender.Application.Presentation
             Point3DCollection b = new Point3DCollection();
             b.Add(new System.Windows.Media.Media3D.Point3D(min.X, min.Y, 0));
             b.Add(new System.Windows.Media.Media3D.Point3D(min.X, max.Y, 0));
+
             b.Add(new System.Windows.Media.Media3D.Point3D(min.X, max.Y, 0));
             b.Add(new System.Windows.Media.Media3D.Point3D(max.X, max.Y, 0));
+
             b.Add(new System.Windows.Media.Media3D.Point3D(max.X, max.Y, 0));
             b.Add(new System.Windows.Media.Media3D.Point3D(max.X, min.Y, 0));
+
             b.Add(new System.Windows.Media.Media3D.Point3D(max.X, min.Y, 0));
             b.Add(new System.Windows.Media.Media3D.Point3D(min.X, min.Y, 0));
 
             border.Points.Clear();
             border.Points = b;
-        }
-
-        public static void GetModel(IEnumerable<GCodeCommand> toolPath, double viewPortArcSplit, LinesVisual3D line, LinesVisual3D rapid, LinesVisual3D arc)
-        {
-            Point3DCollection linePoints = new Point3DCollection();
-            Point3DCollection rapidPoints = new Point3DCollection();
-            Point3DCollection arcPoints = new Point3DCollection();
-
-            foreach (GCodeCommand c in toolPath)
-            {
-                var l = c as GCodeLine;
-
-                if (l != null)
-                {
-                    if (l.Rapid)
-                    {
-                        rapidPoints.Add(l.Start.ToPoint3D().ToMedia3D());
-                        rapidPoints.Add(l.End.ToPoint3D().ToMedia3D());
-                    }
-                    else
-                    {
-                        linePoints.Add(l.Start.ToPoint3D().ToMedia3D());
-                        linePoints.Add(l.End.ToPoint3D().ToMedia3D());
-                    }
-                    continue;
-                }
-
-                var a = c as GCodeArc;
-
-                if (a != null)
-                {
-                    foreach (GCodeMotion sub in a.Split(viewPortArcSplit))
-                    {
-                        arcPoints.Add(sub.Start.ToPoint3D().ToMedia3D());
-                        arcPoints.Add(sub.End.ToPoint3D().ToMedia3D());
-                    }
-                }
-            }
-
-            line.Points = linePoints;
-            rapid.Points = rapidPoints;
-            arc.Points = arcPoints;
-        }
+        }      
     }
 }

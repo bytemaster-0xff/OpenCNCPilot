@@ -72,7 +72,7 @@ namespace LagoVista.GCode.Sender.Application
 
         private void NewGeneratedHeigtMap_Click(object sender, RoutedEventArgs e)
         {
-            var heightMap = new HeightMap();
+            var heightMap = new HeightMap(ViewModel.Machine, ViewModel.Logger);
             heightMap.FillWithTestPattern();
             ViewModel.Machine.HeightMapManager.NewHeightMap(heightMap);
         }

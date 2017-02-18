@@ -66,7 +66,7 @@ namespace LagoVista.GCode.Sender.ViewModels
         {
             return Machine.GCodeFileManager.HasValidFile &&
                    Machine.HeightMapManager.HasHeightMap &&
-                   Machine.HeightMapManager.HeightMap.Status == Models.HeightMap.HeightMapStatus.Populated ;
+                   Machine.HeightMapManager.HeightMap.Status == Models.HeightMapStatus.Populated ;
         }
 
         private bool CanPerformFileOperation(Object instance)

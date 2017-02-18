@@ -3,15 +3,10 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:h="http://helix-toolkit.org/wpf"
-             mc:Ignorable="d" 
-             d:DesignHeight="500" d:DesignWidth="1000">
+             xmlns:h="http://helix-toolkit.org/wpf" mc:Ignorable="d" d:DesignHeight="500" d:DesignWidth="1000">
     <h:HelixViewport3D Name="viewport" ShowViewCube="False" Panel.ZIndex="0"  >
         <h:HelixViewport3D.Camera>
-            <PerspectiveCamera
-             		Position="55, -80,160" 
-					LookDirection="0, 3,-4"
-					UpDirection="0,0,1"/>
+            <PerspectiveCamera Position="55, -80,160" LookDirection="0, 3,-4" UpDirection="0,0,1"/>
         </h:HelixViewport3D.Camera>
 
         <h:DefaultLights/>
@@ -20,26 +15,17 @@
         <h:LinesVisual3D Thickness="0.5" Color="Gray" Points="{Binding Path=Machine.GCodeFileManager.RapidMoves, Converter={StaticResource Lines2Visual3DConverter}}" />
         <h:LinesVisual3D Thickness="1" Color="Black" Points="{Binding Path=Machine.GCodeFileManager.Lines, Converter={StaticResource Lines2Visual3DConverter}}"/>
         <h:LinesVisual3D Thickness="1" Color="Blue" Points="{Binding Path=Machine.GCodeFileManager.Arcs, Converter={StaticResource Lines2Visual3DConverter}}"/>
-
         <ModelVisual3D x:Name="PadsLayer"/>
-        <h:ArrowVisual3D 
-            x:Name="ModelTool" Direction="0,0,-10"
-           Fill="Red"
-           
+        <h:ArrowVisual3D  x:Name="ModelTool" Direction="0,0,-10" Fill="Red"
             Point2="{Binding Machine.WorkPosition, Converter={StaticResource PointConverter}}"
             Point1="{Binding Machine.WorkPosition, Converter={StaticResource ToolTopPointConverter}}" />
         <!-- Note: Width and Height seem to have different meanings on GridLinesVisual3D-->
-        <h:GridLinesVisual3D 
-         		x:Name="ModelGrid"
-                MinorDistance="10"
-                MajorDistance="100"
-            Origin="BottomLeft"
+        <h:GridLinesVisual3D x:Name="ModelGrid" MinorDistance="10"  MajorDistance="100" Origin="BottomLeft"
            	Width="{Binding Machine.Settings.WorkAreaHeight, FallbackValue=80}"
-            Length ="{Binding Machine.Settings.WorkAreaWidth, FallbackValue=100}" >
-        </h:GridLinesVisual3D>
+            Length ="{Binding Machine.Settings.WorkAreaWidth, FallbackValue=100}" />
+
         <h:MeshGeometryVisual3D Material="{StaticResource HeightMapMediaGroup}" MeshGeometry="{Binding Machine.HeightMapManager.HeightMap, Converter={StaticResource HeightMap2MeshConverter}}" />
         <h:LinesVisual3D x:Name="ModelHeightMapBoundary" Thickness="2" Color="Lime"/>
         <h:PointsVisual3D x:Name="ModelHeightMapPoints" Color="Red" Size="4"/>
     </h:HelixViewport3D>
-
 </UserControl>

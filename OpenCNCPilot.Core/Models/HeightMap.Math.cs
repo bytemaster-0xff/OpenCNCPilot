@@ -8,6 +8,17 @@ namespace LagoVista.GCode.Sender.Models
 {
     public partial class HeightMap
     {
+        /// <summary>
+        /// Returns a point based on it's X, Y index
+        /// </summary>
+        /// <param name="xIndex">X Index into list</param>
+        /// <param name="yIndex">Y Index into list</param>
+        /// <returns></returns>
+        private HeightMapProbePoint GetPoint(int xIndex, int yIndex)
+        {
+            return Points.Where(pnt => pnt.XIndex == xIndex && pnt.YIndex == yIndex).FirstOrDefault();
+        }
+
         public double InterpolateZ(double x, double y)
         {
             if (x > Max.X || x < Min.X || y > Max.Y || y < Min.Y)
@@ -19,23 +30,29 @@ namespace LagoVista.GCode.Sender.Models
             x /= GridX;
             y /= GridY;
 
-            int iLX = (int)Math.Floor(x);   //lower integer part
-            int iLY = (int)Math.Floor(y);
+            var iLX = (int)Math.Floor(x);   //lower integer part
+            var iLY = (int)Math.Floor(y);
 
-            int iHX = (int)Math.Ceiling(x); //upper integer part
-            int iHY = (int)Math.Ceiling(y);
+            var iHX = (int)Math.Ceiling(x); //upper integer part
+            var iHY = (int)Math.Ceiling(y);
 
-            double fX = x - iLX;             //fractional part
-            double fY = y - iLY;
+            var fX = x - iLX;             //fractional part
+            var fY = y - iLY;
 
-            double linUpper = Points[iHX, iHY].Value * fX + Points[iLX, iHY].Value * (1 - fX);       //linear immediates
-            double linLower = Points[iHX, iLY].Value * fX + Points[iLX, iLY].Value * (1 - fX);
+            //TODO: Should be able to use Linq and pull via position
+            var linUpper = GetPoint(iHX,iHY).Point.Z * fX + GetPoint(iLX, iHY).Point.Z * (1 - fX);       //linear immediates
+            var linLower = GetPoint(iHX, iLY).Point.Z * fX + GetPoint(iLX, iLY).Point.Z  * (1 - fX);
 
             return linUpper * fY + linLower * (1 - fY);     //bilinear result
         }
 
         public Core.GCode.GCodeFile ApplyHeightMap(Core.GCode.GCodeFile file)
         {
+            if(!Completed)
+            {
+                
+            }
+
             double segmentLength = Math.Min(GridX, GridY);
 
             var newToolPath = new List<Core.GCode.Commands.GCodeCommand>();
@@ -66,6 +83,5 @@ namespace LagoVista.GCode.Sender.Models
 
             return Core.GCode.GCodeFile.FromCommands(newToolPath);
         }
-
     }
 }

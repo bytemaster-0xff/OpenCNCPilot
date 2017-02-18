@@ -1,4 +1,6 @@
-﻿using LagoVista.GCode.Sender.Models;
+﻿using LagoVista.Core.Models.Drawing;
+using LagoVista.GCode.Sender.Models;
+using System.Collections.ObjectModel;
 
 namespace LagoVista.GCode.Sender.Managers
 {
@@ -31,5 +33,12 @@ namespace LagoVista.GCode.Sender.Managers
                 RaisePropertyChanged();
             }
         }
+
+        public ObservableCollection<Line3D> RawBoardOutline { get; private set; }
+
+        /// <summary>
+        /// The XY Coordinates of the points that will be probed.
+        /// </summary>
+        public ObservableCollection<Vector3> ProbePoints { get; private set; }
     }
 }
