@@ -21,7 +21,11 @@ namespace LagoVista.GCode.Sender.Application.Controls
         {
             InitializeComponent();
 
-            Loaded += HeightMapControl_Loaded;
+            bool designTime = System.ComponentModel.DesignerProperties.GetIsInDesignMode(new DependencyObject());
+            if (!designTime)
+            {
+                Loaded += HeightMapControl_Loaded;
+            }
         }
 
         private void HeightMapControl_Loaded(object sender, RoutedEventArgs e)

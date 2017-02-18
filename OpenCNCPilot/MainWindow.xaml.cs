@@ -14,17 +14,22 @@ namespace LagoVista.GCode.Sender.Application
 	{        
 		public MainWindow()
 		{
-            ViewModel = new MainViewModel();
-            DataContext = ViewModel;
-			InitializeComponent();
-            this.Loaded += MainWindow_Loaded;
+            bool designTime = System.ComponentModel.DesignerProperties.GetIsInDesignMode(
+                new DependencyObject());
+            if (!designTime)
+            {
+                ViewModel = new MainViewModel();
+                DataContext = ViewModel;
+                InitializeComponent();
+                this.Loaded += MainWindow_Loaded;
+            }
 		}
 
         private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
+
             await ViewModel.InitAsync();
             await GrblErrorProvider.InitAsync();
-
         }
 	
         private void SettingsMenu_Click(object sender, RoutedEventArgs e)
@@ -63,6 +68,13 @@ namespace LagoVista.GCode.Sender.Application
         private async void Window_Closed(object sender, EventArgs e)
         {
             await ViewModel.Machine.Settings.SaveAsync();
+        }
+
+        private void NewGeneratedHeigtMap_Click(object sender, RoutedEventArgs e)
+        {
+            var heightMap = new HeightMap();
+            heightMap.FillWithTestPattern();
+            ViewModel.Machine.HeightMapManager.NewHeightMap(heightMap);
         }
     }
 }
