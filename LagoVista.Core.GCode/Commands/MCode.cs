@@ -35,7 +35,14 @@ namespace LagoVista.Core.GCode.Commands
             {
                 case "M6":
                 case "M06":
-                    DrillSize = double.Parse(comment);
+                    if (String.IsNullOrEmpty(comment))
+                    {
+                        DrillSize = -1;
+                    }
+                    else
+                    {
+                        DrillSize = double.Parse(comment);
+                    }
                     break;
             }
         }

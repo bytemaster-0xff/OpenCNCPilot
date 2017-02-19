@@ -11,8 +11,8 @@ namespace LagoVista.GCode.Sender.Managers
     {
         public Task OpenFileAsync(string path)
         {
-            _file = GCodeFile.Load(path);
-            if (_file != null)
+            File = GCodeFile.Load(path);
+            if (File != null)
             {
                 RenderPaths();
             }

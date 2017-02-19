@@ -16,7 +16,7 @@ namespace LagoVista.Core.GCode.Parser
 
         //TODO: Removed compiled options
         private Regex GCodeSplitter = new Regex(@"([A-Z])\s*(\-?\d+\.?\d*)");
-        private double[] MotionCommands = new double[] { 0, 1, 2, 3 };
+        private double[] MotionCommands = new double[] { 0, 1, 2, 3, 20, 21, 90, 91 };
         private string ValidWords = "GMXYZSTPIJKFR";
         public List<GCodeCommand> Commands;
 
@@ -49,12 +49,19 @@ namespace LagoVista.Core.GCode.Parser
                 if (command != null)
                 {
                     Commands.Add(command);
+                    Debug.WriteLine($"{command.LineNumber}. {lineIndex} {command.Command}");
+
                     lineIndex++;
                 }
                 else
                 {
                     Debug.WriteLine(line);
                 }
+            }
+
+            foreach(var cmd in Commands)
+            {
+                Debug.WriteLine($"{cmd.LineNumber}. {cmd.Command}");
             }
 
             sw.Stop();
@@ -86,9 +93,12 @@ namespace LagoVista.Core.GCode.Parser
                         return machineLine;
                     }
                 }
-                else
+                else if(cleanedLine.StartsWith("S"))
                 {
-
+                    var machineLine = new OtherCode();
+                    machineLine.LineNumber = lineIndex;
+                    machineLine.Line = cleanedLine;
+                    return machineLine;
                 }
             }
             return null;
@@ -149,7 +159,7 @@ namespace LagoVista.Core.GCode.Parser
             };
         }
 
-        public GCodeMotion ParseMotionLine(string line, int lineNumber)
+        public GCodeCommand ParseMotionLine(string line, int lineNumber)
         {
             var words = FindWords(line);
 
@@ -174,6 +184,8 @@ namespace LagoVista.Core.GCode.Parser
                     throw new ParseException("No Motion Mode active", lineNumber);
             }
 
+
+
             var UnitMultiplier = (State.Unit == ParseUnit.Metric) ? 1 : 25.4;
 
             var EndPos = FindEndPosition(words, UnitMultiplier);
@@ -185,16 +197,26 @@ namespace LagoVista.Core.GCode.Parser
                 words.Remove(feedRateCommand);
             }
 
-            var dwellCommand = words.Where(wrd => wrd.Command == 'P').FirstOrDefault();
-            if (dwellCommand != null)
+            double pauseTime = 0.0;
+
+            var pauseParameter = words.Where(wrd => wrd.Command == 'P').FirstOrDefault();
+            if (pauseParameter != null)
             {
-                //TODO: Do we care?
-               // State.Feed = feedRateCommand.Parameter;
-                words.Remove(dwellCommand);
+                pauseTime = Convert.ToDouble(pauseParameter.Parameter);
+                words.Remove(pauseParameter);
             }
 
             try
             {
+                if(motionMode == 4)
+                {
+                    return new OtherCode()
+                    {
+                        PauseTime = pauseTime,
+                        Line = line,
+                    };
+                }
+
                 var motion = (motionMode <= 1) ? ParseLine(words, motionMode, EndPos) : ParseArc(words, motionMode, EndPos, UnitMultiplier);
                 motion.Line = line;
                 motion.Feed = State.Feed;

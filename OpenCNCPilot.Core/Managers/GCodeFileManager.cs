@@ -23,8 +23,10 @@ namespace LagoVista.GCode.Sender.Managers
         int _tail = 0;
         int _head = 0;
 
+        bool _pendingToolChange = false;
+
         DateTime? _started;
-       
+
         public GCodeFileManager(IMachine machine, ILogger logger, IToolChangeManager toolChangeManager)
         {
             _machine = machine;
@@ -43,8 +45,9 @@ namespace LagoVista.GCode.Sender.Managers
             if (_started == null)
                 _started = DateTime.Now;
 
-            while (Head < _file.Commands.Count && 
-                _machine.HasBufferSpaceAvailableForByteCount(_file.Commands[Head].MessageLength))
+            while (Head < _file.Commands.Count &&
+                _machine.HasBufferSpaceAvailableForByteCount(_file.Commands[Head].MessageLength) &&
+                !_pendingToolChange)
             {
                 _machine.SendCommand(_file.Commands[Head]);
                 _file.Commands[Head++].Status = GCodeCommand.StatusTypes.Sent;
@@ -71,5 +74,5 @@ namespace LagoVista.GCode.Sender.Managers
 
             return sentCommandLength;
         }
-     }
+    }
 }

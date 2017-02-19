@@ -43,6 +43,7 @@ namespace LagoVista.GCode.Sender.Managers
             set
             {
                 _file = value;
+                HasValidFile = _file != null;
                 RaisePropertyChanged(nameof(HasValidFile));
                 RaisePropertyChanged(nameof(Commands));
                 RaisePropertyChanged(nameof(EstimatedTimeRemaining));

@@ -12,19 +12,6 @@ namespace LagoVista.Core.GCode.Parser
         {
             while (words.Count > 0)
             {
-                if (words.First().Command == 'M')
-                {
-                    int param = (int)words.First().Parameter;
-
-                    if (param != words.First().Parameter || param < 0)
-                        throw new ParseException("MCode can only have integer parameters", lineNumber);
-
-                    Commands.Add(new MCode() { Code = param, LineNumber = lineNumber, Line = line });
-
-                    words.RemoveAt(0);
-                    continue;
-                }
-
                 /* Ignore for now,  
                    From comment that generates parameter:
                         #If we're using pronterface, we need to change raster data / and + in the base64 alphabet to letter 9. This loses a little intensity in pure blacks but keeps pronterface happy.

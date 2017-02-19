@@ -35,6 +35,8 @@ namespace LagoVista.Core.GCode.Commands
 
         public virtual void SetComment(string comment) { }
 
+        public double PauseTime { get; set; }
+
         public string Command
         {
             get

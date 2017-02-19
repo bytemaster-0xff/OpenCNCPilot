@@ -178,11 +178,29 @@ namespace LagoVista.GCode.Sender
                 case "G20": AddResponse("ok"); break;
             }
 
+            if (cmd.StartsWith("G10"))
+            {
+                var parts = cmd.Split(' ');
+                foreach (var part in parts)
+                {
+                    if (part.StartsWith("X")) _work.X = _machine.X;
+                    if (part.StartsWith("Y")) _work.X = _machine.X;
+                    if (part.StartsWith("Z")) _work.X = _machine.X;
+                }
+                AddResponse("ok");
+                return;
+            }
+
             var line = _parser.CleanupLine(cmd, idx);
             var parsedLine = _parser.ParseMotionLine(line, idx);
-            
-            if (parsedLine.Command == "G0" || parsedLine.Command == "G1")
+
+         
+            if (parsedLine.Command == "G0" || 
+                parsedLine.Command == "G1" || 
+                parsedLine.Command == "G00" ||
+                parsedLine.Command == "G01")
             {
+                Debug.WriteLine("Pausing For: " + parsedLine.EstimatedRunTime.ToString());
                 var finishTime = DateTime.Now + parsedLine.EstimatedRunTime;
                 SpinWait.SpinUntil(() => DateTime.Now > finishTime);
 
@@ -193,18 +211,22 @@ namespace LagoVista.GCode.Sender
                     {
                         case "X":
                             _machine.X = GetParamValue(part);
-                            _work.X = GetParamValue(part);
                             break;
                         case "Y":
                             _machine.Y = GetParamValue(part);
-                            _work.Y = GetParamValue(part);
                             break;
                         case "Z":
                             _machine.Z = GetParamValue(part);
-                            _work.Z = GetParamValue(part);
                             break;
                     }
                 }
+
+                AddResponse("ok");
+            }
+            else if(parsedLine.Command.StartsWith("G04"))
+            {
+                var finishTime = DateTime.Now + TimeSpan.FromSeconds(parsedLine.PauseTime);
+                SpinWait.SpinUntil(() => DateTime.Now > finishTime);
 
                 AddResponse("ok");
             }
@@ -212,16 +234,13 @@ namespace LagoVista.GCode.Sender
             {
                 AddResponse("ok");
 
-                Debug.WriteLine("Sent OK");
-
                 var finishTime = DateTime.Now + TimeSpan.FromSeconds(3);
                 SpinWait.SpinUntil(() => DateTime.Now > finishTime);
-                Debug.WriteLine("Done Waiting");
-                var newHeight = _rnd.NextDouble();
+                var newHeight = _rnd.NextDouble() - 0.5;
 
                 AddResponse($"[PRB:0.00,0.00,{newHeight}:1]");
             }
-            else if(parsedLine.Command.StartsWith("G92"))
+            else if (parsedLine.Command.StartsWith("G92"))
             {
                 AddResponse("ok");
             }
@@ -263,7 +282,7 @@ namespace LagoVista.GCode.Sender
             var cmdLetter = command.First();
             switch (cmdLetter)
             {
-                case '$': AddResponse("Status: Blah, Blah"); break;
+                case '$': AddResponse("Status: OK"); break;
                 case 'G':
                     HandleGCode(command);
                     break;

@@ -58,17 +58,9 @@ namespace LagoVista.GCode.Sender
             _toSend.Dequeue();
         }
 
-        private async void SendJobItems()
+        private void SendJobItems()
         {
             var sendCommand = _jobToSend.Peek();
-
-            if (sendCommand.Command == "M06")
-            {
-                Mode = OperatingMode.PendingToolChange;
-                var machineCommand = sendCommand as MCode;
-                await Services.Popups.ShowAsync("Tool Change " + machineCommand.DrillSize.ToString());
-                Mode = OperatingMode.SendingGCodeFile;
-            }
 
             _writer.Write(sendCommand.Line);
             _writer.Write('\n');
@@ -109,7 +101,6 @@ namespace LagoVista.GCode.Sender
                 if ((Now - _lastPollTime).TotalMilliseconds > _settings.StatusPollIntervalRunning)
                 {
                     MachinePosition = GCodeFileManager.CurrentCommand.CurrentPosition;
-                    WorkPosition = GCodeFileManager.CurrentCommand.CurrentPosition;
                     _lastPollTime = Now;
                 }
             }

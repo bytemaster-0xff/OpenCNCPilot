@@ -25,6 +25,15 @@ namespace LagoVista.GCode.Sender.ViewModels
 
             Machine.PropertyChanged += _machine_PropertyChanged;
             Machine.HeightMapManager.PropertyChanged += HeightMapManager_PropertyChanged;
+            Machine.GCodeFileManager.PropertyChanged += GCodeFileManager_PropertyChanged;
+        }
+
+        private void GCodeFileManager_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(Machine.GCodeFileManager.HasValidFile))
+            {
+                DispatcherServices.Invoke(RefreshCommandExecuteStatus);
+            }
         }
 
         private void RefreshCommandExecuteStatus()
@@ -56,7 +65,6 @@ namespace LagoVista.GCode.Sender.ViewModels
             if (e.PropertyName == nameof(Machine.IsInitialized) ||
                 e.PropertyName == nameof(Machine.Mode) ||
                 e.PropertyName == nameof(Machine.Status) ||
-                e.PropertyName == nameof(Machine.GCodeFileManager.HasValidFile) ||
                 e.PropertyName == nameof(Machine.Connected))
             {
                 DispatcherServices.Invoke(RefreshCommandExecuteStatus);

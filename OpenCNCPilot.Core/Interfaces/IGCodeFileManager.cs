@@ -2,11 +2,12 @@
 using LagoVista.GCode.Sender.Models;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Threading.Tasks;
 
 namespace LagoVista.GCode.Sender.Interfaces
 {
-    public interface IGCodeFileManager
+    public interface IGCodeFileManager : INotifyPropertyChanged
     {
         /// <summary>
         /// Give a path, open a file that has GCode Commands

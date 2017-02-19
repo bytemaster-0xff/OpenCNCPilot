@@ -39,7 +39,7 @@ namespace LagoVista.GCode.Sender.Application.Converters
             {
                 case Core.GCode.Commands.GCodeCommand.StatusTypes.Ready: return "DarkGray";
                 case Core.GCode.Commands.GCodeCommand.StatusTypes.Queued: return "Black";
-                case Core.GCode.Commands.GCodeCommand.StatusTypes.Sent: return "Yellow";
+                case Core.GCode.Commands.GCodeCommand.StatusTypes.Sent: return "Blue";
                 case Core.GCode.Commands.GCodeCommand.StatusTypes.Acknowledged: return "Green";
             }
 

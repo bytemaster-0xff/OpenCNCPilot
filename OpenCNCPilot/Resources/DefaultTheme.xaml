@@ -12,7 +12,6 @@
                             <GradientStop Color="Green" Offset="0"/>
                             <GradientStop Color="Yellow" Offset="0.25"/>
                             <GradientStop Color="Red" Offset="0.5"/>
-                            <GradientStop Color="Purple" Offset="0.75"/>
                         </LinearGradientBrush.GradientStops>
                     </LinearGradientBrush>
                 </DiffuseMaterial.Brush>

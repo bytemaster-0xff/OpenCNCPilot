@@ -34,6 +34,8 @@ G3 - CCW ARC
 G4 - Dwell S or P
 G10 - retract filament according to settings of M207
 G11 - retract recover filament according to settings of M208
+G20 - Inches Mode
+G21 - Metric Mode
 G28 - Home all Axis
 G90 - Use Absolute Coordinates
 G91 - Use Relative Coordinates
@@ -42,6 +44,9 @@ G92 - Set current position to cordinates given
 M-Codes:
 M0 - Unconditional stop - Wait for user to press a button on the LCD (Only if ULTRA_LCD is enabled)
 M1 - Same as M0
+M03 - Spindle On CW
+M04 - Spindle On CCW
+M05 - Spindle Stop
 M17 - Enable/Power all stepper motors
 M18 - Disable all stepper motors; same as M84
 M20 - List SD card
