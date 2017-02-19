@@ -40,6 +40,7 @@ namespace LagoVista.GCode.Sender.Managers
             Machine.AddStatusMessage(StatusMessageTypes.Info, $"Completed Point X={_currentPoint.Point.X}, Y={_currentPoint.Point.Y}, Z={position.Z}");
 
             HeightMap.SetPointHeight(_currentPoint, position.Z - Machine.WorkPosition.Z);
+            RaisePropertyChanged(nameof(HeightMap));
             _currentPoint = null;
 
             if (HeightMap.Status == HeightMapStatus.Populated)
