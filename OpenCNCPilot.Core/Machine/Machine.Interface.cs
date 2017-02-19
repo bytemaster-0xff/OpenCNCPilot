@@ -33,6 +33,7 @@ namespace LagoVista.GCode.Sender
                 lock (_queueAccessLocker)
                 {
                     _toSend.Clear();
+                    _jobToSend.Clear();
                     _sentQueue.Clear();
                     _toSendPriority.Clear();
                 }
@@ -84,6 +85,8 @@ namespace LagoVista.GCode.Sender
 
                 lock (_queueAccessLocker)
                 {
+                    _jobToSend.Clear();
+
                     _toSend.Clear();
                     _toSendPriority.Clear();
                     _sentQueue.Clear();
@@ -137,6 +140,7 @@ namespace LagoVista.GCode.Sender
                     _toSend.Clear();
                     _toSendPriority.Clear();
                     _sentQueue.Clear();
+                    _jobToSend.Clear();
                     _toSendPriority.Enqueue(((char)0x18).ToString());
                 }
 
@@ -158,6 +162,7 @@ namespace LagoVista.GCode.Sender
                     else
                     {
                         _toSend.Enqueue(cmd);
+                        UnacknowledgedBytesSent += cmd.Length + 1;
                     }
                 }
             }
@@ -170,6 +175,7 @@ namespace LagoVista.GCode.Sender
                 lock (_queueAccessLocker)
                 {
                     _jobToSend.Enqueue(cmd);
+                    UnacknowledgedBytesSent += cmd.Line.Length + 1;
                 }
             }
         }

@@ -23,7 +23,7 @@ namespace LagoVista.GCode.Sender.Managers
         int _tail = 0;
         int _head = 0;
 
-        bool _pendingToolChange = false;
+        int? _pendingToolChangeLine = null;
 
         DateTime? _started;
 
@@ -40,15 +40,36 @@ namespace LagoVista.GCode.Sender.Managers
             HasValidFile = false;
         }
 
+        private async void HandleToolChange(MCode mcode)
+        {
+            await _toolChangeManager.HandleToolChange(mcode);
+            _pendingToolChangeLine = null;
+            Tail++;
+        }
+
         public void ProcessNextLines()
         {
             if (_started == null)
                 _started = DateTime.Now;
 
-            while (Head < _file.Commands.Count &&
-                _machine.HasBufferSpaceAvailableForByteCount(_file.Commands[Head].MessageLength) &&
-                !_pendingToolChange)
+            /* If we have queued up a pending tool change, don't send any more lines until tool change completed */
+            if (_pendingToolChangeLine != null)
             {
+                return;
+            }
+
+            while (Head < _file.Commands.Count &&
+                _machine.HasBufferSpaceAvailableForByteCount(_file.Commands[Head].MessageLength))
+            {
+                /* If Next Command up is a Tool Change, set the nullable property to that line and bail. */
+                if (Head  < _file.Commands.Count &&
+                     (_file.Commands[Head].Command == "M06" || _file.Commands[Head].Command == "M6"))
+                {
+                    _pendingToolChangeLine = Head;
+                    Head++;
+                    return;
+                }
+
                 _machine.SendCommand(_file.Commands[Head]);
                 _file.Commands[Head++].Status = GCodeCommand.StatusTypes.Sent;
             }
@@ -70,6 +91,11 @@ namespace LagoVista.GCode.Sender.Managers
             else
             {
                 RaisePropertyChanged(nameof(IsCompleted));
+            }
+
+            if (_pendingToolChangeLine != null && _pendingToolChangeLine.Value == Tail)
+            {
+                HandleToolChange(_file.Commands[Tail] as MCode);
             }
 
             return sentCommandLength;

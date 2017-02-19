@@ -52,7 +52,7 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto" />
                     <RowDefinition Height="*" />
-                    <RowDefinition Height="150" />
+                    <RowDefinition Height="160" />
                     <RowDefinition Height="36" />
                 </Grid.RowDefinitions>
                 <ctls:MachineStatusControl Grid.Row="1" Grid.Column="1" Width="170" Height="160" HorizontalAlignment="RIght" VerticalAlignment="Bottom" />

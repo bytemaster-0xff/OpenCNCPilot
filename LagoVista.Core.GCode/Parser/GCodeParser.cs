@@ -49,19 +49,13 @@ namespace LagoVista.Core.GCode.Parser
                 if (command != null)
                 {
                     Commands.Add(command);
-                    Debug.WriteLine($"{command.LineNumber}. {lineIndex} {command.Command}");
-
+            
                     lineIndex++;
                 }
                 else
                 {
-                    Debug.WriteLine(line);
+                    Debug.WriteLine("Skipping Line: " + line);
                 }
-            }
-
-            foreach(var cmd in Commands)
-            {
-                Debug.WriteLine($"{cmd.LineNumber}. {cmd.Command}");
             }
 
             sw.Stop();

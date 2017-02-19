@@ -69,9 +69,6 @@ namespace LagoVista.GCode.Sender
             UpdateStatus(sendCommand.Line.ToString());
             AddStatusMessage(StatusMessageTypes.SentLine, sendCommand.Line.ToString());
 
-            UnacknowledgedBytesSent += sendCommand.Line.Length;
-            UnacknowledgedBytesSent += 1;
-
             _sentQueue.Enqueue(sendCommand.Line);
             _jobToSend.Dequeue();
         }
@@ -131,7 +128,8 @@ namespace LagoVista.GCode.Sender
 
         private bool ShouldSendJobItems()
         {
-            return _jobToSend.Count > 0 && ((_jobToSend.Peek().ToString()).Length + 1) < (_settings.ControllerBufferSize - UnacknowledgedBytesSent);
+            //  return _jobToSend.Count > 0 && ((_jobToSend.Peek().ToString()).Length + 1) < (_settings.ControllerBufferSize - UnacknowledgedBytesSent);
+            return _jobToSend.Count > 0;
         }
 
         private async Task Send()

@@ -19,7 +19,7 @@ namespace LagoVista.GCode.Sender
 
             Debug.WriteLine(DateTime.Now.ToString() + "  >>> " + line);
 
-            if (line == "ok")
+            if (line.StartsWith("ok"))
             {
                 if (GCodeFileManager.HasValidFile)
                 {
@@ -32,6 +32,7 @@ namespace LagoVista.GCode.Sender
                             if (_sentQueue.Any())
                             {
                                 var sentLine = _sentQueue.Dequeue();
+                                Debug.WriteLine("<<<<< " + sentLine);
                                 UnacknowledgedBytesSent -= (sentLine.Length + 1);
                             }
                         }
