@@ -39,7 +39,7 @@ namespace LagoVista.GCode.Sender.Managers
 
             Machine.AddStatusMessage(StatusMessageTypes.Info, $"Completed Point X={_currentPoint.Point.X}, Y={_currentPoint.Point.Y}, Z={position.Z}");
 
-            HeightMap.SetPointHeight(_currentPoint, position.Z);
+            HeightMap.SetPointHeight(_currentPoint, position.Z - Machine.WorkPosition.Z);
             _currentPoint = null;
 
             if (HeightMap.Status == HeightMapStatus.Populated)
@@ -148,6 +148,7 @@ namespace LagoVista.GCode.Sender.Managers
             if (HeightMap.Status == HeightMapStatus.Populated)
             {
                 Machine.AddStatusMessage(StatusMessageTypes.Warning, "Unexpected Completion, Please Review before Continuing");
+                Machine.SetMode(OperatingMode.Manual);
             }
 
             _currentPoint = HeightMap.GetNextPoint();

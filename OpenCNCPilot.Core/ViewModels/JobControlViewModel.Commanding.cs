@@ -17,6 +17,8 @@ namespace LagoVista.GCode.Sender.ViewModels
             StopCommand = new RelayCommand(StopJob, CanStopJob);
             PauseCommand = new RelayCommand(PauseJob, CanPauseJob);
 
+            ClearAlarmCommand = new RelayCommand(ClearAlarm, CanClearAlarm);
+
             ConnectCommand = new RelayCommand(Connect, CanChangeConnectionStatus);
 
             EmergencyStopCommand = new RelayCommand(EmergencyStop, CanSendEmergencyStop);
@@ -28,6 +30,8 @@ namespace LagoVista.GCode.Sender.ViewModels
         private void RefreshCommandExecuteStatus()
         {
             ConnectCommand.RaiseCanExecuteChanged();
+
+            ClearAlarmCommand.RaiseCanExecuteChanged();
 
             SendGCodeFileCommand.RaiseCanExecuteChanged();
             StartProbeCommand.RaiseCanExecuteChanged();
@@ -51,6 +55,7 @@ namespace LagoVista.GCode.Sender.ViewModels
         {
             if (e.PropertyName == nameof(Machine.IsInitialized) ||
                 e.PropertyName == nameof(Machine.Mode) ||
+                e.PropertyName == nameof(Machine.Status) ||
                 e.PropertyName == nameof(Machine.GCodeFileManager.HasValidFile) ||
                 e.PropertyName == nameof(Machine.Connected))
             {
@@ -69,6 +74,13 @@ namespace LagoVista.GCode.Sender.ViewModels
                 Machine.GCodeFileManager.HasValidFile &&
                 Machine.Connected &&
                 Machine.Mode == OperatingMode.Manual;
+        }
+
+        public bool CanClearAlarm()
+        {
+            return Machine.IsInitialized &&
+                   Machine.Connected &&
+                   Machine.Status.ToLower() == "alarm";
         }
 
         public bool CanPauseJob()
@@ -115,6 +127,8 @@ namespace LagoVista.GCode.Sender.ViewModels
         public RelayCommand StartProbeHeightMapCommand { get; private set; }
         public RelayCommand SendGCodeFileCommand { get; private set; }
         public RelayCommand EmergencyStopCommand { get; private set; }
+
+        public RelayCommand ClearAlarmCommand { get; private set; }
 
         public RelayCommand ConnectCommand { get; private set; }
 

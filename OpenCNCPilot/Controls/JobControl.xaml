@@ -104,6 +104,19 @@
             </Button.Content>
         </Button>
 
+        <Button Command="{Binding ClearAlarmCommand}" Grid.Column="6" >
+            <Button.Content>
+                <StackPanel>
+                    <Grid>
+                        <fa:ImageAwesome Icon="Play"  Foreground="{Binding IsProbingHeight, Converter={StaticResource ColorEnabledConverter}, ConverterParameter=Green, FallbackValue=LightGray}"  />
+                        <fa:ImageAwesome Icon="LongArrowDown" Style="{StaticResource StartType}" Foreground="{Binding IsProbingHeight, Converter={StaticResource ColorEnabledConverter}, ConverterParameter=LightGray, FallbackValue=LightGray}"/>
+                    </Grid>
+                    <TextBlock Text="Clear Alarm" />
+                </StackPanel>
+            </Button.Content>
+        </Button>
+
+
         <Button Command="{Binding EmergencyStopCommand}" Grid.Column="7" >
             <Button.Content>
                 <StackPanel>

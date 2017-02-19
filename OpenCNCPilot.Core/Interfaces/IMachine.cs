@@ -70,6 +70,11 @@ namespace LagoVista.GCode.Sender.Interfaces
         ArcPlane Plane { get; }
 
         /// <summary>
+        /// Status as reported by machine.
+        /// </summary>
+        String Status { get; }
+
+        /// <summary>
         /// Business logic to manage the sending of GCode files to the machien.
         /// </summary>
         IGCodeFileManager GCodeFileManager { get; }

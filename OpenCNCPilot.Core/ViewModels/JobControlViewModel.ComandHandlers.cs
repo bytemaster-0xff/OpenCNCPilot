@@ -38,6 +38,10 @@ namespace LagoVista.GCode.Sender.ViewModels
             Machine.SetMode(OperatingMode.Manual);
         }
 
+        public void ClearAlarm()
+        {
+            Machine.ClearAlarm();
+        }
 
         public async void Connect()
         {

@@ -186,7 +186,7 @@ namespace LagoVista.GCode.Sender
 
         public void ClearAlarm()
         {
-            Enqueue("$X", true);
+            Enqueue("$X\n", true);
         }
 
         public void CycleStart()

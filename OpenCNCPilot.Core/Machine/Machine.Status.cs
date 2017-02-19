@@ -15,6 +15,7 @@ namespace LagoVista.GCode.Sender
             {
                 _machinePosition = value;
                 RaisePropertyChanged();
+                RaisePropertyChanged(nameof(NormalizedPosition));
             }
         }
 
@@ -26,6 +27,7 @@ namespace LagoVista.GCode.Sender
             {
                 _workPosition = value;
                 RaisePropertyChanged();
+                RaisePropertyChanged(nameof(NormalizedPosition));
             }
         }
 
