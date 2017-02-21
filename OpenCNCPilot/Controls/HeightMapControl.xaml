@@ -4,28 +4,153 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:h="http://helix-toolkit.org/wpf" mc:Ignorable="d" d:DesignHeight="500" d:DesignWidth="1000">
-    <h:HelixViewport3D Name="viewport" ShowViewCube="False" Panel.ZIndex="0"  >
-        <h:HelixViewport3D.Camera>
-            <PerspectiveCamera Position="55, -80,160" LookDirection="0, 3,-4" UpDirection="0,0,1"/>
-        </h:HelixViewport3D.Camera>
+    <Grid>
+        <h:HelixViewport3D Name="viewport" ShowViewCube="False" Panel.ZIndex="0"  >
 
-        <h:DefaultLights/>
-        <h:CoordinateSystemVisual3D ArrowLengths="5"/>
-        <h:RectangleVisual3D Fill="Red" x:Name="ModelSchematic"/>
-        <h:LinesVisual3D Thickness="0.5" Color="Gray" Points="{Binding Path=Machine.GCodeFileManager.RapidMoves, Converter={StaticResource Lines2Visual3DConverter}}" />
-        <h:LinesVisual3D Thickness="1" Color="Black" Points="{Binding Path=Machine.GCodeFileManager.Lines, Converter={StaticResource Lines2Visual3DConverter}}"/>
-        <h:LinesVisual3D Thickness="1" Color="Blue" Points="{Binding Path=Machine.GCodeFileManager.Arcs, Converter={StaticResource Lines2Visual3DConverter}}"/>
-        <ModelVisual3D x:Name="PadsLayer"/>
-        <h:ArrowVisual3D  x:Name="ModelTool" Direction="0,0,-10" Fill="Red"
+            <h:HelixViewport3D.Camera >
+                <PerspectiveCamera x:Name="Camera" Position="50, -140,80" LookDirection="0, 4,-1.5" UpDirection="0,0,1"/>
+            </h:HelixViewport3D.Camera>
+
+            <h:DefaultLights/>
+            <h:CoordinateSystemVisual3D ArrowLengths="5"/>
+            <h:RectangleVisual3D Fill="Red" x:Name="ModelSchematic"/>
+            <h:LinesVisual3D Thickness="0.5" Color="Gray" Points="{Binding Path=Machine.GCodeFileManager.RapidMoves, Converter={StaticResource Lines2Visual3DConverter}}" />
+            <h:LinesVisual3D Thickness="1" Color="Black" Points="{Binding Path=Machine.GCodeFileManager.Lines, Converter={StaticResource Lines2Visual3DConverter}}"/>
+            <h:LinesVisual3D Thickness="1" Color="Blue" Points="{Binding Path=Machine.GCodeFileManager.Arcs, Converter={StaticResource Lines2Visual3DConverter}}"/>
+            <ModelVisual3D x:Name="PadsLayer"/>
+            <h:ArrowVisual3D  x:Name="ModelTool" Direction="0,0,-10" Fill="Red"
             Point2="{Binding Machine.NormalizedPosition, Converter={StaticResource PointConverter}}"
             Point1="{Binding Machine.NormalizedPosition, Converter={StaticResource ToolTopPointConverter}}" />
-        <!-- Note: Width and Height seem to have different meanings on GridLinesVisual3D-->
-        <h:GridLinesVisual3D x:Name="ModelGrid" MinorDistance="10"  MajorDistance="100" Origin="BottomLeft"
+            <!-- Note: Width and Height seem to have different meanings on GridLinesVisual3D-->
+            <h:GridLinesVisual3D x:Name="ModelGrid" MinorDistance="10"  MajorDistance="100" Origin="BottomLeft"
            	Width="{Binding Machine.Settings.WorkAreaHeight, FallbackValue=80}"
             Length ="{Binding Machine.Settings.WorkAreaWidth, FallbackValue=100}" />
 
-        <h:MeshGeometryVisual3D Material="{StaticResource HeightMapMediaGroup}" MeshGeometry="{Binding Machine.HeightMapManager.HeightMap, Converter={StaticResource HeightMap2MeshConverter}}" />
-        <h:LinesVisual3D x:Name="ModelHeightMapBoundary" Thickness="2" Color="Lime"  Points="{Binding Path=Machine.HeightMapManager.HeightMap.RawBoardOutline, Converter={StaticResource Lines2Visual3DConverter}}"/>
-        <h:PointsVisual3D Points="{Binding Path=Machine.HeightMapManager.HeightMap.Points, Converter={StaticResource HeightMapProbePoint2PointConverter}}" x:Name="ModelHeightMapPoints" Color="Red" Size="4"/>
-    </h:HelixViewport3D>
+            <h:MeshGeometryVisual3D Material="{StaticResource HeightMapMediaGroup}" MeshGeometry="{Binding Machine.HeightMapManager.HeightMap, Converter={StaticResource HeightMap2MeshConverter}}" />
+            <h:LinesVisual3D x:Name="ModelHeightMapBoundary" Thickness="2" Color="Lime"  Points="{Binding Path=Machine.HeightMapManager.HeightMap.RawBoardOutline, Converter={StaticResource Lines2Visual3DConverter}}"/>
+            <h:PointsVisual3D Points="{Binding Path=Machine.HeightMapManager.HeightMap.Points, Converter={StaticResource HeightMapProbePoint2PointConverter}}" x:Name="ModelHeightMapPoints" Color="Red" Size="4"/>
+        </h:HelixViewport3D>
+
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top">
+
+            <Button Width="32" Background="Transparent" Tag="Perspective" Click="ChangeView_Handler">
+                <Button.Content>
+                    <Image Source="/imgs/Perspective2.png" />
+                </Button.Content>
+            </Button>
+            <Button Width="32" Background="Transparent" Tag="Top" Click="ChangeView_Handler">
+                <Button.Content>
+                    <Image Source="/imgs/TopView.png" />
+                </Button.Content>
+            </Button>
+            <Button Width="32" Background="Transparent" Tag="Front" Click="ChangeView_Handler">
+                <Button.Content>
+                    <Image Source="/imgs/FrontView.png" />
+                </Button.Content>
+            </Button>
+            <Button Width="32" Background="Transparent" Tag="Left" Click="ChangeView_Handler">
+                <Button.Content>
+                    <Image Source="/imgs/LeftView.png" />
+                </Button.Content>
+            </Button>
+            <Button Width="32" Background="Transparent" Tag="ZoomIn" Click="ChangeView_Handler">
+                <Button.Content>
+                    <Image Source="/imgs/ZoomIn.png" />
+                </Button.Content>
+            </Button>
+            <Button Width="32" Background="Transparent" Tag="ZoomOut" Click="ChangeView_Handler">
+                <Button.Content>
+                    <Image Source="/imgs/ZoomOut.png" />
+                </Button.Content>
+            </Button>
+            <Button Width="32" Background="Transparent" Tag="ShowObject" Click="ChangeView_Handler">
+                <Button.Content>
+                    <Image Source="/imgs/ShowObject.png" />
+                </Button.Content>
+            </Button>
+            <Button Width="32" Background="Transparent" Tag="ShowAll" Click="ChangeView_Handler">
+                <Button.Content>
+                    <Image Source="/imgs/ShowAll.png" />
+                </Button.Content>
+            </Button>
+        </StackPanel>
+
+        <Grid HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,32,0,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="32" />
+                <RowDefinition Height="32" />
+                <RowDefinition Height="32" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="32" />
+                <ColumnDefinition Width="32" />
+                <ColumnDefinition Width="32" />
+                <ColumnDefinition Width="32" />
+            </Grid.ColumnDefinitions>
+            <Button Width="32" Background="Transparent" Tag="UpLeft" Click="ChangeView_Handler">
+                <Button.Content>
+                    <Image Source="/imgs/UpLeft.png" />
+                </Button.Content>
+            </Button>
+            <Button Width="32" Grid.Column="1" Background="Transparent" Tag="Up" Click="ChangeView_Handler">
+                <Button.Content>
+                    <Image Source="/imgs/Up.png" />
+                </Button.Content>
+            </Button>
+
+            <Button Width="32" Grid.Column="2" Background="Transparent" Tag="UpRight" Click="ChangeView_Handler">
+                <Button.Content>
+                    <Image Source="/imgs/UpRight.png" />
+                </Button.Content>
+            </Button>
+
+            <Button Width="32" Grid.Column="0" Grid.Row="1" Background="Transparent" Tag="MoveLeft" Click="ChangeView_Handler">
+                <Button.Content>
+                    <Image Source="/imgs/Left.png" />
+                </Button.Content>
+            </Button>
+
+            <Button Width="32" Grid.Column="1" Grid.Row="1" Background="Transparent" Tag="Center" Click="ChangeView_Handler">
+                <Button.Content>
+                    <Image Source="/imgs/Center.png" />
+                </Button.Content>
+            </Button>
+            
+            <Button Width="32" Grid.Column="2" Grid.Row="1" Background="Transparent" Tag="Right" Click="ChangeView_Handler">
+                <Button.Content>
+                    <Image Source="/imgs/Right.png" />
+                </Button.Content>
+            </Button>
+            <Button Width="32" Grid.Column="0" Grid.Row="2" Background="Transparent" Tag="DownLeft" Click="ChangeView_Handler">
+                <Button.Content>
+                    <Image Source="/imgs/DownLeft.png" />
+                </Button.Content>
+            </Button>
+
+            <Button Width="32" Grid.Column="1" Grid.Row="2" Background="Transparent" Tag="Down" Click="ChangeView_Handler">
+                <Button.Content>
+                    <Image Source="/imgs/Down.png" />
+                </Button.Content>
+            </Button>
+
+            <Button Width="32" Grid.Column="2" Grid.Row="2" Background="Transparent" Tag="DownRight" Click="ChangeView_Handler">
+                <Button.Content>
+                    <Image Source="/imgs/DownRight.png" />
+                </Button.Content>
+            </Button>
+            <Button Width="32" Grid.Column="3" Grid.Row="0" Background="Transparent" Tag="Forwards" Click="ChangeView_Handler">
+                <Button.Content>
+                    <Image Source="/imgs/Forward.png" />
+                </Button.Content>
+            </Button>
+            <Button Width="32" Grid.Column="3" Grid.Row="2" Background="Transparent" Tag="Backwards" Click="ChangeView_Handler">
+                <Button.Content>
+                    <Image Source="/imgs/Backwards.png" />
+                </Button.Content>
+            </Button>
+        </Grid>
+
+     
+    </Grid>
+
 </UserControl>

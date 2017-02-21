@@ -98,6 +98,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="About.xaml.cs">
+      <DependentUpon>About.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\CurrentFileControl.xaml.cs">
       <DependentUpon>CurrentFileControl.xaml</DependentUpon>
     </Compile>
@@ -136,6 +139,10 @@
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Util\BitmapSourceConverter.cs" />
+    <Page Include="About.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\CurrentFileControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -218,6 +225,26 @@
     <None Include="App.config">
       <DependentUpon>App.xaml</DependentUpon>
     </None>
+    <Resource Include="Imgs\FrontView.png" />
+    <Resource Include="Imgs\LeftView.png" />
+    <Resource Include="Imgs\Perspective.png" />
+    <Resource Include="Imgs\Perspective2.png" />
+    <Resource Include="Imgs\TopView.png" />
+    <Resource Include="Imgs\ZoomIn.png" />
+    <Resource Include="Imgs\ZoomOut.png" />
+    <Resource Include="Imgs\ShowObject.png" />
+    <Resource Include="Imgs\ShowAll.png" />
+    <Resource Include="Imgs\Down.png" />
+    <Resource Include="Imgs\DownLeft.png" />
+    <Resource Include="Imgs\DownRight.png" />
+    <Resource Include="Imgs\Left.png" />
+    <Resource Include="Imgs\UpLeft.png" />
+    <Resource Include="Imgs\Up.png" />
+    <Resource Include="Imgs\UpRight.png" />
+    <Resource Include="Imgs\Right.png" />
+    <Resource Include="Imgs\Center.png" />
+    <Resource Include="Imgs\Backwards.png" />
+    <Resource Include="Imgs\Forward.png" />
     <Content Include="KegeratorController.brd">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
