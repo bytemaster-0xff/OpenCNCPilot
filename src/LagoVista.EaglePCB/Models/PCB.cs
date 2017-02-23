@@ -9,7 +9,6 @@ namespace LagoVista.EaglePCB.Models
 {
     public class PCB
     {
-        public List<Drill> Drills { get; private set; }
         public Plain Plain { get; set; }
         public List<Layer> Layers { get; set; }
         public List<Package> Packages { get; set; }
@@ -20,5 +19,18 @@ namespace LagoVista.EaglePCB.Models
         public double Height { get; set; }
 
         public List<Fiducial> Fiducials { get; set; }
+
+        public List<Drill> Drills
+        {
+            get { return Layers.Where(layer => layer.Number == 44).FirstOrDefault().Drills; }
+        }
+
+        public List<Hole> Holes
+        {
+            get { return Layers.Where(layer => layer.Number == 45).FirstOrDefault().Holes; }
+        }
+
+        
+
     }
 }

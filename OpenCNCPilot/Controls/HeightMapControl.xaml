@@ -8,23 +8,22 @@
         <h:HelixViewport3D Name="viewport" ShowViewCube="False" Panel.ZIndex="0"  >
 
             <h:HelixViewport3D.Camera >
-                <PerspectiveCamera x:Name="Camera" Position="50, -140,80" LookDirection="0, 4,-1.5" UpDirection="0,0,1"/>
+                <PerspectiveCamera x:Name="Camera" Position="50, -120,70" LookDirection="0, 4,-1.7" UpDirection="0,0,1"/>
             </h:HelixViewport3D.Camera>
 
             <h:DefaultLights/>
             <h:CoordinateSystemVisual3D ArrowLengths="5"/>
-            <h:RectangleVisual3D Fill="Red" x:Name="ModelSchematic"/>
             <h:LinesVisual3D Thickness="0.5" Color="Gray" Points="{Binding Path=Machine.GCodeFileManager.RapidMoves, Converter={StaticResource Lines2Visual3DConverter}}" />
             <h:LinesVisual3D Thickness="1" Color="Black" Points="{Binding Path=Machine.GCodeFileManager.Lines, Converter={StaticResource Lines2Visual3DConverter}}"/>
             <h:LinesVisual3D Thickness="1" Color="Blue" Points="{Binding Path=Machine.GCodeFileManager.Arcs, Converter={StaticResource Lines2Visual3DConverter}}"/>
-            <ModelVisual3D x:Name="PadsLayer"/>
+            <ModelVisual3D x:Name="PadsLayer" />
             <h:ArrowVisual3D  x:Name="ModelTool" Direction="0,0,-10" Fill="Red"
             Point2="{Binding Machine.NormalizedPosition, Converter={StaticResource PointConverter}}"
             Point1="{Binding Machine.NormalizedPosition, Converter={StaticResource ToolTopPointConverter}}" />
             <!-- Note: Width and Height seem to have different meanings on GridLinesVisual3D-->
             <h:GridLinesVisual3D x:Name="ModelGrid" MinorDistance="10"  MajorDistance="100" Origin="BottomLeft"
-           	Width="{Binding Machine.Settings.WorkAreaHeight, FallbackValue=80}"
-            Length ="{Binding Machine.Settings.WorkAreaWidth, FallbackValue=100}" />
+           	    Width="{Binding Machine.Settings.WorkAreaHeight, FallbackValue=80}"
+                Length ="{Binding Machine.Settings.WorkAreaWidth, FallbackValue=100}" />
 
             <h:MeshGeometryVisual3D Material="{StaticResource HeightMapMediaGroup}" MeshGeometry="{Binding Machine.HeightMapManager.HeightMap, Converter={StaticResource HeightMap2MeshConverter}}" />
             <h:LinesVisual3D x:Name="ModelHeightMapBoundary" Thickness="2" Color="Lime"  Points="{Binding Path=Machine.HeightMapManager.HeightMap.RawBoardOutline, Converter={StaticResource Lines2Visual3DConverter}}"/>
@@ -32,12 +31,6 @@
         </h:HelixViewport3D>
 
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top">
-
-            <Button Width="32" Background="Transparent" Tag="Perspective" Click="ChangeView_Handler">
-                <Button.Content>
-                    <Image Source="/imgs/Perspective2.png" />
-                </Button.Content>
-            </Button>
             <Button Width="32" Background="Transparent" Tag="Top" Click="ChangeView_Handler">
                 <Button.Content>
                     <Image Source="/imgs/TopView.png" />

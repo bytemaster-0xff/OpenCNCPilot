@@ -14,7 +14,7 @@ namespace LagoVista.EaglePCB.Tests
         public void TestMethod1()
         {
 
-            var doc = XDocument.Load("./KegeratorController.brd");
+            var doc = XDocument.Load("./EagleSample.brd");
 
             var pcb = EagleParser.ReadPCB(doc);
 
@@ -39,6 +39,8 @@ namespace LagoVista.EaglePCB.Tests
             {
                 Debug.WriteLine($"\t{drill}");
             }
+
+            Debug.Write($"Width={pcb.Width}  Height={pcb.Height}");
         }
     }
 }

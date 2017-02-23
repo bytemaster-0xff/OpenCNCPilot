@@ -32,22 +32,55 @@ namespace LagoVista.GCode.Sender.Application.Controls
             var pcb = EagleParser.ReadPCB(doc);
 
             var modelGroup = new Model3DGroup();
+            var silverMaterial = MaterialHelper.CreateMaterial(Colors.Silver);
             var redMaterial = MaterialHelper.CreateMaterial(Colors.Red);
+            var greenMaterial = MaterialHelper.CreateMaterial(Colors.Green);
+            var blueMaterial = MaterialHelper.CreateMaterial(Colors.Blue);
+            var blackMaterial = MaterialHelper.CreateMaterial(Colors.Black);
+
             foreach (var element in pcb.Components)
             {
                 if (element.SMDPads.Any())
                 {
                     foreach (var pad in element.SMDPads)
                     {
-                        var meshBuilder = new MeshBuilder(false, false);
-                        meshBuilder.AddBox(new Point3D(pad.X, pad.Y, 0), pad.DX, pad.DY, 1);
-                        modelGroup.Children.Add(new GeometryModel3D() { Geometry = meshBuilder.ToMesh(true), Material = redMaterial });
+                        var padMeshBuilder = new MeshBuilder(false, false);
+                        padMeshBuilder.AddBox(new Point3D(pad.X, pad.Y, 1), pad.DX, pad.DY, 1);
+                        modelGroup.Children.Add(new GeometryModel3D() { Geometry = padMeshBuilder.ToMesh(true), Material = silverMaterial });
                     }
                 }
+
+                /*
+                foreach (var circle in element.Package.Circles)
+                {
+                    var circleMeshBuilder = new MeshBuilder(false, false);
+                    circleMeshBuilder.AddCylinder(new Point3D(circle.X, circle.Y, 0), new Point3D(circle.X, circle.Y, 3), circle.Radius);
+                    modelGroup.Children.Add(new GeometryModel3D() { Geometry = circleMeshBuilder.ToMesh(true), Material = blackMaterial });
+                }
+
+                foreach (var circle in element.Package.Holes)
+                {
+                    var circleMeshBuilder = new MeshBuilder(false, false);
+                    circleMeshBuilder.AddCylinder(new Point3D(circle.X, circle.Y, 0), new Point3D(circle.X, circle.Y, 3), circle.Drill);
+                    modelGroup.Children.Add(new GeometryModel3D() { Geometry = circleMeshBuilder.ToMesh(true), Material = blackMaterial });
+                }*/
+
+                var boardEdgeMeshBuilder = new MeshBuilder(false, false);
+                var outlineWires = pcb.Layers.Where(layer => layer.Number == 20).FirstOrDefault().Wires;
+
+                boardEdgeMeshBuilder.AddBox(new Point3D(50, 40, 0), 100, 68, 1);
+                boardEdgeMeshBuilder.AddBox(new Point3D(50, 3, 0), 88, 6, 1);
+                boardEdgeMeshBuilder.AddBox(new Point3D(50, 77, 0), 88, 6, 1);
+
+                boardEdgeMeshBuilder.AddCylinder(new Point3D(6, 6, -0.5),new Point3D(6,6,0.5),6, 50, true, true);
+                boardEdgeMeshBuilder.AddCylinder(new Point3D(6, 74, -0.5), new Point3D(6, 74, 0.5), 6, 50, true, true);
+                boardEdgeMeshBuilder.AddCylinder(new Point3D(94, 6, -0.5), new Point3D(94, 6, 0.5), 6, 50, true, true);
+                boardEdgeMeshBuilder.AddCylinder(new Point3D(94, 74, -0.5), new Point3D(94, 74, 0.5), 6, 50, true, true);
+                modelGroup.Children.Add(new GeometryModel3D() { Geometry = boardEdgeMeshBuilder.ToMesh(true), Material = greenMaterial });
+
             }
 
             PadsLayer.Content = modelGroup;
-            //viewport.ZoomExtents(1.5);
         }
 
         public void Clear()
@@ -80,10 +113,6 @@ namespace LagoVista.GCode.Sender.Application.Controls
             var btn = sender as Button;
             switch (btn.Tag.ToString())
             {
-                case "Perspective":
-                    Camera.Position = new Point3D(Camera.Position.X - CAMERA_MOVE_DELTA, Camera.Position.Y - CAMERA_MOVE_DELTA, Camera.Position.Z - CAMERA_MOVE_DELTA);
-                    _imageMode = ImageModes.Perspective;
-                    break;
                 case "Top":
                     //  Camera.Position = new Point3D(ViewModel.Machine.Settings.WorkAreaWidth / 2, ViewModel.Machine.Settings.WorkAreaHeight / 2, 3000);
                     Camera.Position = new Point3D(50, 40, 200);
@@ -96,7 +125,8 @@ namespace LagoVista.GCode.Sender.Application.Controls
                     _imageMode = ImageModes.Flat;
                     break;
                 case "Front":
-                    Camera.Position = new Point3D(Camera.Position.X - CAMERA_MOVE_DELTA, Camera.Position.Y - CAMERA_MOVE_DELTA, Camera.Position.Z - CAMERA_MOVE_DELTA);
+                    Camera.Position = new Point3D(50, -120, 70);
+                    Camera.LookDirection = new Vector3D(0, 4, -1.7);
                     _imageMode = ImageModes.Flat;
                     break;
                 case "ZoomIn":

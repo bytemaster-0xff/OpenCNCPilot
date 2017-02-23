@@ -11,6 +11,7 @@ namespace LagoVista.EaglePCB.Models
     {
         public string Name { get; set; }
         public double Width { get; set; }
+        public double? Curve { get; set; }
         public Rect Rect { get; set; }
 
         public int Layer { get; set; }
@@ -22,13 +23,14 @@ namespace LagoVista.EaglePCB.Models
                 Name = element.GetString("name"),
                 Rect = Rect.Create(element),
                 Width = element.GetDouble("width"),
-                Layer = element.GetInt32("layer")
+                Layer = element.GetInt32("layer"),
+                Curve = element.GetDoubleNullable("curve")
             };
         }
 
         public override string ToString()
         {
-            return $"Wire => X1={Rect.X1}, Y1={Rect.Y1}, X2={Rect.X2}, Y2={Rect.Y2}, Width={Width}";
+            return $"Wire => X1={Rect.X1}, Y1={Rect.Y1}, X2={Rect.X2}, Y2={Rect.Y2}, Width={Width}, Curve={Curve}";
         }
     }
 }

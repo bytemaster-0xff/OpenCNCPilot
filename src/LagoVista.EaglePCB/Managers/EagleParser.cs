@@ -1,34 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Linq;
 
 namespace LagoVista.EaglePCB.Managers
 {
     public class EagleParser
     {
-        private static string GetString(XElement element, string name)
-        {
-            if (element.Attributes(XName.Get(name)).Any())
-            {
-                return element.Attribute(XName.Get(name)).Value;
-            }
-
-            return String.Empty;
-        }
-
-        public static double? GetDouble(XElement element, string name)
-        {
-            if (element.Attributes(XName.Get(name)).Any())
-            {
-                return Convert.ToDouble(element.Attribute(XName.Get(name)).Value);
-            }
-
-            return null;
-        }
 
         public static Models.PCB ReadPCB(XDocument doc)
         {
@@ -88,10 +65,21 @@ namespace LagoVista.EaglePCB.Managers
                 }
             }
 
+            var outlineWires = pcb.Layers.Where(layer => layer.Number == 20).FirstOrDefault().Wires;
+
+            foreach (var outline in outlineWires)
+            {
+                pcb.Width = Math.Max(outline.Rect.X1, pcb.Width);
+                pcb.Width = Math.Max(outline.Rect.X2, pcb.Width);
+                pcb.Height = Math.Max(outline.Rect.Y1, pcb.Height);
+                pcb.Height = Math.Max(outline.Rect.Y2, pcb.Height);
+            }
+
             foreach (var via in pcb.Vias)
             {
                 pcb.Layers.Where(layer => layer.Number == 18).First().Vias.Add(via);
             }
+
 
             return pcb;
         }
