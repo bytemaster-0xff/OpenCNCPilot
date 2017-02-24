@@ -248,6 +248,9 @@
     <Content Include="KegeratorController.brd">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="EagleSample.brd">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="packages.config">
       <DependentUpon>App.xaml</DependentUpon>
     </None>
