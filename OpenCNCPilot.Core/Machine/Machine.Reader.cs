@@ -1,9 +1,11 @@
-﻿using System;
+﻿using LagoVista.GCode.Sender.Util;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace LagoVista.GCode.Sender
@@ -21,7 +23,7 @@ namespace LagoVista.GCode.Sender
 
             if (line.StartsWith("ok"))
             {
-                if (GCodeFileManager.HasValidFile)
+                if (GCodeFileManager.HasValidFile && Mode == OperatingMode.SendingGCodeFile)
                 {
                     lock (this)
                     {
@@ -65,14 +67,26 @@ namespace LagoVista.GCode.Sender
             }
             else if (line != null)
             {
-                if (line.StartsWith("error: "))
+                if (line.StartsWith("error:"))
                 {
+                    var errorline = _sentQueue.Dequeue();
+
+                    var errNumbRegEx = new Regex("error:(?'ErrorCode'-?[0-9\\.]*)?");
+
+                    var errMatch = errNumbRegEx.Match(line);
+                    if (errMatch.Success)
+                    {
+                        var strErrorCode = errMatch.Groups["ErrorCode"].Value;
+                        var err = GrblErrorProvider.Instance.GetErrorMessage(Convert.ToInt32(strErrorCode));
+                        AddStatusMessage(StatusMessageTypes.Warning, err, MessageVerbosityLevels.Normal);
+                    }
+                    else
+                        AddStatusMessage(StatusMessageTypes.Warning, $"{line}: {errorline}", MessageVerbosityLevels.Normal);
+
                     if (_sentQueue.Count != 0)
                     {
-                        var errorline = _sentQueue.Dequeue();
-
-                        AddStatusMessage(StatusMessageTypes.Warning, $"{line}: {errorline}", MessageVerbosityLevels.Normal);
-                        UnacknowledgedBytesSent -= errorline.Length + 1;
+                        var sentLine = _sentQueue.Dequeue();
+                        UnacknowledgedBytesSent -= sentLine.Length + 1;
                     }
                     else
                     {

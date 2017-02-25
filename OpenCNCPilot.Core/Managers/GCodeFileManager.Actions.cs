@@ -10,10 +10,11 @@ namespace LagoVista.GCode.Sender.Managers
 {
     public partial class GCodeFileManager
     {
-        public void Reset()
+        public void ResetJob()
         {
             Head = 0;
             Tail = 0;
+            
             foreach (var cmd in Commands)
             {
                 cmd.Status = GCodeCommand.StatusTypes.Ready;
@@ -70,11 +71,6 @@ namespace LagoVista.GCode.Sender.Managers
         public void PauseJob()
         {
 
-        }
-
-        public void ResetJob()
-        {
-
-        }
+        }        
     }
 }

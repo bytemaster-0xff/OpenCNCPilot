@@ -178,8 +178,6 @@ namespace LagoVista.Core.GCode.Parser
                     throw new ParseException("No Motion Mode active", lineNumber);
             }
 
-
-
             var UnitMultiplier = (State.Unit == ParseUnit.Metric) ? 1 : 25.4;
 
             var EndPos = FindEndPosition(words, UnitMultiplier);
@@ -191,6 +189,7 @@ namespace LagoVista.Core.GCode.Parser
                 words.Remove(feedRateCommand);
             }
 
+            //TODO: We likely care about this at some point, not today though
             var radiusCommand = words.Where(wrd => wrd.Command == 'R').FirstOrDefault();
             if (radiusCommand != null)
             {
@@ -209,22 +208,51 @@ namespace LagoVista.Core.GCode.Parser
 
             try
             {
-                if(motionMode == 4)
+                switch(motionMode)
                 {
-                    return new OtherCode()
-                    {
-                        PauseTime = pauseTime,
-                        Line = line,
-                    };
+                    case 0:
+                    case 1:
+                    case 2:
+                    case 3:
+                        var motion = (motionMode <= 1) ? ParseLine(words, motionMode, EndPos) : ParseArc(words, motionMode, EndPos, UnitMultiplier);
+                        motion.Line = line;
+                        motion.Feed = State.Feed;
+                        motion.LineNumber = lineNumber;
+                        State.Position = EndPos;
+
+                        return motion;
+
+                    case 4:
+                        return new OtherCode()
+                        {
+                            PauseTime = pauseTime,
+                            Line = line,
+                        };
+
+                    case 17: /* XY Plane Selection */
+                    case 80: /* Cancel Canned Cycle */
+                    case 98: /* Return to initial Z Position */
+                        return new OtherCode()
+                        {
+                            Line = line,
+                        };
+
+
+                    case 81:
+                        var drillCode = new GCodeDrill()
+                        {
+                             Start = State.Position,
+                             End = State.Position,
+                             LineNumber = lineNumber,
+                             Feed = State.Feed                             
+                        };
+                        break;
+
                 }
 
-                var motion = (motionMode <= 1) ? ParseLine(words, motionMode, EndPos) : ParseArc(words, motionMode, EndPos, UnitMultiplier);
-                motion.Line = line;
-                motion.Feed = State.Feed;
-                motion.LineNumber = lineNumber;
-                State.Position = EndPos;
+                return null;
 
-                return motion;
+             
             }
             catch (Exception ex)
             {

@@ -15,6 +15,7 @@ namespace LagoVista.GCode.Sender.ViewModels
 
         public void StopJob()
         {
+            Machine.GCodeFileManager.ResetJob();
             Machine.SetMode(OperatingMode.Manual);
         }
 
@@ -31,6 +32,10 @@ namespace LagoVista.GCode.Sender.ViewModels
         public void SoftReset()
         {
             Machine.SoftReset();
+            if(Machine.GCodeFileManager.HasValidFile)
+            {
+                Machine.GCodeFileManager.ResetJob();
+            }
         }
 
         public void HomingCycle()

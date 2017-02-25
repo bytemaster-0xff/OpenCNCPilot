@@ -62,12 +62,7 @@ namespace LagoVista.GCode.Sender.Interfaces
         /// Pointer to the currently executing command, alias for Head
         /// </summary>
         int CurrentIndex { get; }
-
-        /// <summary>
-        /// Reset all the pointers and indexes for the current job, can only be done when the job is not running.  If job is paused it will stop the job.  This leaves the job in a state where it can be restarted from the beginning 
-        /// </summary>
-        void Reset();
-
+        
         /// <summary>
         /// Time remaining for job completion
         /// </summary>
