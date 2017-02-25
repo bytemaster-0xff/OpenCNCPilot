@@ -7,6 +7,12 @@ namespace LagoVista.GCode.Sender.ViewModels
         private void InitCommands()
         {
             ManualSendCommand = new RelayCommand(ManualSend, CanManualSend);
+            Machine.PropertyChanged += Machine_PropertyChanged;
+        }
+
+        private void Machine_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            ManualSendCommand.RaiseCanExecuteChanged();
         }
 
         public bool CanManualSend()

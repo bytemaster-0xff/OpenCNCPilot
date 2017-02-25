@@ -29,6 +29,8 @@ namespace LagoVista.GCode.Sender.Application.Controls
 
         private void HeightMapControl_Loaded(object sender, RoutedEventArgs e)
         {
+
+            return;
             var linePoints = new Point3DCollection();
 
               var doc = XDocument.Load("./KegeratorController.brd");

@@ -51,9 +51,6 @@ namespace LagoVista.GCode.Sender
             UpdateStatus(send_line.ToString());
             AddStatusMessage(StatusMessageTypes.SentLine, send_line.ToString());
 
-            UnacknowledgedBytesSent += send_line.Length;
-            UnacknowledgedBytesSent += 1;
-
             _sentQueue.Enqueue(send_line);
             _toSend.Dequeue();
         }

@@ -56,7 +56,6 @@ namespace LagoVista.GCode.Sender
                     }
 
                     LagoVista.Core.PlatformSupport.Services.Logger.Log(LagoVista.Core.PlatformSupport.LogLevel.Warning, "Machine_Work", "Received OK without anything in the Sent Buffer");
-                    AddStatusMessage(StatusMessageTypes.Warning, "Unexpected OK");
                     UnacknowledgedBytesSent = 0;
                 }
             }

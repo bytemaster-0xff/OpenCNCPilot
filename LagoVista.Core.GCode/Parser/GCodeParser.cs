@@ -191,6 +191,13 @@ namespace LagoVista.Core.GCode.Parser
                 words.Remove(feedRateCommand);
             }
 
+            var radiusCommand = words.Where(wrd => wrd.Command == 'R').FirstOrDefault();
+            if (radiusCommand != null)
+            {
+                //State.Feed = feedRateCommand.Parameter;
+                words.Remove(radiusCommand);
+            }
+
             double pauseTime = 0.0;
 
             var pauseParameter = words.Where(wrd => wrd.Command == 'P').FirstOrDefault();

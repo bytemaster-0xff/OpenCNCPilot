@@ -210,12 +210,12 @@ namespace LagoVista.GCode.Sender.Application.Controls
                                    new Bgr(System.Drawing.Color.White).MCvScalar, 2, Emgu.CV.CvEnum.LineType.AntiAlias);
                             }
 
-                            /*        foreach(var box in results.Rects)
+                                    foreach(var box in results.Rects)
                                     {
                                         CvInvoke.Polylines(blurredGray, Array.ConvertAll(box.GetVertices(), System.Drawing.Point.Round), 
                                             true, 
                                             new Bgr(System.Drawing.Color.White).MCvScalar, 2);
-                                    }*/
+                                    }
 
                             WebCamImage.Source = Emgu.CV.WPF.BitmapSourceConvert.ToBitmapSource(blurredGray);
                         }
