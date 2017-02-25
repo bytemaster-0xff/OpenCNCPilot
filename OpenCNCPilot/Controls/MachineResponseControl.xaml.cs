@@ -1,4 +1,5 @@
-﻿using System.Windows.Controls;
+﻿using LagoVista.GCode.Sender.ViewModels;
+using System.Windows.Controls;
 
 namespace LagoVista.GCode.Sender.Application.Controls
 {
@@ -10,6 +11,14 @@ namespace LagoVista.GCode.Sender.Application.Controls
         public MachineResponseControl()
         {
             InitializeComponent();
+        }
+
+        private void ShowLogWindow_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            var vm = DataContext as MainViewModel;
+            var msgsWindow = new MessageWindow(vm.Machine);
+            msgsWindow.Show();
+
         }
     }
 }

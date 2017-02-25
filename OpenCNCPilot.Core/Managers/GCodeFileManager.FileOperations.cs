@@ -11,6 +11,15 @@ namespace LagoVista.GCode.Sender.Managers
     {
         public Task OpenFileAsync(string path)
         {
+            if(String.IsNullOrEmpty(path))
+            {
+                ClearPaths();
+                FileName = "<empty>";
+            }
+
+            var parts = path.Split('\\');
+            FileName = parts[parts.Length - 1];
+
             File = GCodeFile.Load(path);
             if (File != null)
             {

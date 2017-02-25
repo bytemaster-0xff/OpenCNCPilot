@@ -22,12 +22,12 @@ namespace LagoVista.GCode.Sender.ViewModels
 
         public bool CanShowPrevious()
         {
-            return _commandBufferLocation > 0;
+            return _commandBuffer.Count > 0 && _commandBufferLocation > 0;
         }
 
         public bool CanShowNext()
         {
-            return _commandBufferLocation < _commandBuffer.Count - 1;
+            return _commandBufferLocation < _commandBuffer.Count  - 1;
         }
 
         public RelayCommand ManualSendCommand { get; private set; }

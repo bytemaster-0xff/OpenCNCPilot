@@ -185,6 +185,32 @@ namespace LagoVista.GCode.Sender
 
         }
 
+        public void SetFavorite1()
+        {
+            Enqueue("G28.1");
+        }
+
+        public void SetFavorite2()
+        {
+
+            Enqueue("G30.1");
+        }
+
+        public void GotoFavorite1()
+        {
+            Enqueue("G28");
+        }
+
+        public void GotoFavorite2()
+        {
+            Enqueue("G30");
+        }
+
+        public void HomingCycle()
+        {
+            Enqueue("$H\n", true);
+        }
+
         public void FeedHold()
         {
             Enqueue("!", true);

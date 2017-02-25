@@ -13,9 +13,12 @@ namespace LagoVista.GCode.Sender.ViewModels
 
         public void ManualSend()
         {
-            if(!String.IsNullOrEmpty(ManualCommandText))
+            _commandBuffer.Add(ManualCommandText);
+            _commandBufferLocation = _commandBuffer.Count ;
+            if (!String.IsNullOrEmpty(ManualCommandText))
             {
                 Machine.SendCommand(ManualCommandText);
+                ManualCommandText = String.Empty;
             }
         }
 
@@ -23,7 +26,8 @@ namespace LagoVista.GCode.Sender.ViewModels
         {
             if (CanShowPrevious())
             {
-                ManualCommandText = _commandBuffer[_commandBufferLocation--];
+                --_commandBufferLocation;
+                ManualCommandText = _commandBuffer[_commandBufferLocation];
             }
         }
 
@@ -31,10 +35,15 @@ namespace LagoVista.GCode.Sender.ViewModels
         {
             if (CanShowNext())
             {
-                if (_commandBufferLocation < _commandBuffer.Count - 1)
-                    ManualCommandText = _commandBuffer[_commandBufferLocation++];
+                ++_commandBufferLocation;
+                ManualCommandText = _commandBuffer[_commandBufferLocation];
+            }
+            else
+            {
+                ++_commandBufferLocation;
+                _commandBufferLocation = Math.Min(_commandBufferLocation, _commandBuffer.Count);
+                ManualCommandText = string.Empty;
             }
         }
-
     }
 }

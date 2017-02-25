@@ -4,9 +4,11 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:cvts="clr-namespace:LagoVista.GCode.Sender.Application.Converters"
+             xmlns:fa="http://schemas.fontawesome.io/icons/"
+         
              xmlns:ctls="clr-namespace:LagoVista.GCode.Sender.Application.Controls"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="300" d:DesignWidth="400">
     <UserControl.Resources>
         <cvts:GCodeSendBackgroundConverter x:Key="GCodeSendBackgroundConverter" />
         <cvts:GCodeSendForegroundConverter x:Key="GCodeSendForegroundConverter" />
@@ -16,26 +18,43 @@
             <RowDefinition Height="auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <Grid>
+        <Grid Background="LightGray">
             <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="80" />
                 <ColumnDefinition Width="80" />
                 <ColumnDefinition Width="100" />
-                <ColumnDefinition Width="100" />
+                <ColumnDefinition Width="auto" />
             </Grid.ColumnDefinitions>
-            <StackPanel Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Left"  >
+
+            <TextBlock Text="{Binding Path=Machine.GCodeFileManager.FileName, FallbackValue=MyFile.nc}" VerticalAlignment="Center" />
+
+            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Top"   >
                 <Label Content="{Binding Path=Machine.GCodeFileManager.Head, FallbackValue=-}" Margin="0,0,-6,0"/>
                 <Label Content="/"/>
                 <Label Content="{Binding Path=Machine.GCodeFileManager.TotalLines, FallbackValue=-}" Margin="-8,0,0,0"/>
             </StackPanel>
 
-            <StackPanel Grid.Column="1" Orientation="Horizontal">
+            <StackPanel Grid.Column="2" Orientation="Horizontal" >
                 <Label Content="{Binding Path=Machine.GCodeFileManager.EstimatedTimeRemaining.Minutes, FallbackValue=0}"  />
                 <Label Content=":" />
                 <Label Content="{Binding Path=Machine.GCodeFileManager.EstimatedTimeRemaining.Seconds, FallbackValue=00, StringFormat=00}"  />
             </StackPanel>
-            <StackPanel Grid.Column="2" Orientation="Horizontal">
-                <Label Content="Feed Rate: " />
+            <StackPanel Grid.Column="3" Orientation="Horizontal">
+                <Label Content="Rate: " />
                 <Label Content="{Binding Path=Machine.GCodeFileManager.CurrentCommand.Feed}" />
+            </StackPanel>
+            <StackPanel Grid.Column="4" Orientation="Horizontal">
+                <Button BorderBrush="Transparent"  Background="Transparent"  x:Name="EditGCode" Click="EditGCode_Click"  >
+                    <Button.Content>
+                        <fa:ImageAwesome Margin="2" Width="18" Height="18" Icon="Edit" />
+                    </Button.Content>
+                </Button>
+                <Button BorderBrush="Transparent"  Background="Transparent"  x:Name="ShowGCodeWindow" Click="ShowGCodeWindow_Click"  >
+                    <Button.Content>
+                        <fa:ImageAwesome Margin="2" Width="18" Height="18" Icon="WindowMaximize" />
+                    </Button.Content>
+                </Button>
             </StackPanel>
         </Grid>
 

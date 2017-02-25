@@ -1,0 +1,13 @@
+﻿<Window x:Class="LagoVista.GCode.Sender.Application.GCodeWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+          xmlns:ctls="clr-namespace:LagoVista.GCode.Sender.Application.Controls"
+      xmlns:local="clr-namespace:LagoVista.GCode.Sender.Application"
+        mc:Ignorable="d"
+        Title="GCode Details" Height="480" Width="649">
+    <Grid>
+        <ctls:CurrentFileControl />
+    </Grid>
+</Window>

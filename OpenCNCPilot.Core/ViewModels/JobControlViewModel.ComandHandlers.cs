@@ -15,7 +15,27 @@ namespace LagoVista.GCode.Sender.ViewModels
 
         public void StopJob()
         {
-            
+            Machine.SetMode(OperatingMode.Manual);
+        }
+
+        public void FeedHold()
+        {
+            Machine.FeedHold();
+        }
+
+        public void CycleStart()
+        {
+            Machine.CycleStart();
+        }
+
+        public void SoftReset()
+        {
+            Machine.SoftReset();
+        }
+
+        public void HomingCycle()
+        {
+            Machine.HomingCycle();
         }
 
         public void StartProbe()
@@ -42,6 +62,7 @@ namespace LagoVista.GCode.Sender.ViewModels
         {
             Machine.ClearAlarm();
         }
+        
 
         public async void Connect()
         {

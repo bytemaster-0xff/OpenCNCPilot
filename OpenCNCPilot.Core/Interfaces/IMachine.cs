@@ -118,6 +118,16 @@ namespace LagoVista.GCode.Sender.Interfaces
 
         void ClearAlarm();
 
+        void HomingCycle();
+
+        void SetFavorite1();
+
+        void SetFavorite2();
+
+        void GotoFavorite1();
+
+        void GotoFavorite2();
+
         /// <summary>
         /// Send a message to the machine to immediately stop any motion operation
         /// </summary>

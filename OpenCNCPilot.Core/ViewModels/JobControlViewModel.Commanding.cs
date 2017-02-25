@@ -17,6 +17,11 @@ namespace LagoVista.GCode.Sender.ViewModels
             StopCommand = new RelayCommand(StopJob, CanStopJob);
             PauseCommand = new RelayCommand(PauseJob, CanPauseJob);
 
+            HomingCycleCommand = new RelayCommand(HomingCycle, CanHomeAndReset);
+            SoftResetCommand = new RelayCommand(SoftReset, CanHomeAndReset);
+            FeedHoldCommand = new RelayCommand(FeedHold, CanStopJob);
+            CycleStartCommand = new RelayCommand(CycleStart, CanStopJob);
+
             ClearAlarmCommand = new RelayCommand(ClearAlarm, CanClearAlarm);
 
             ConnectCommand = new RelayCommand(Connect, CanChangeConnectionStatus);
@@ -48,6 +53,11 @@ namespace LagoVista.GCode.Sender.ViewModels
             StopCommand.RaiseCanExecuteChanged();
             PauseCommand.RaiseCanExecuteChanged();
 
+            SoftResetCommand.RaiseCanExecuteChanged();
+            HomingCycleCommand.RaiseCanExecuteChanged();
+            FeedHoldCommand.RaiseCanExecuteChanged();
+            CycleStartCommand.RaiseCanExecuteChanged();
+
             EmergencyStopCommand.RaiseCanExecuteChanged();
         }
 
@@ -76,6 +86,11 @@ namespace LagoVista.GCode.Sender.ViewModels
             return Machine.IsInitialized && Machine.Settings.CurrentSerialPort != null && Machine.Settings.CurrentSerialPort.Id != "empty";
         }
 
+        public bool CanHomeAndReset()
+        {
+            return Machine.IsInitialized && Machine.Connected;
+        }
+
         public bool CanSendGcodeFile()
         {
             return Machine.IsInitialized && 
@@ -89,6 +104,13 @@ namespace LagoVista.GCode.Sender.ViewModels
             return Machine.IsInitialized &&
                    Machine.Connected &&
                    Machine.Status.ToLower() == "alarm";
+        }
+
+        public bool FavoritesAvailable()
+        {
+            return Machine.IsInitialized &&
+                Machine.Connected
+                && Machine.Mode == OperatingMode.Manual;
         }
 
         public bool CanPauseJob()
@@ -121,6 +143,7 @@ namespace LagoVista.GCode.Sender.ViewModels
                 Machine.Mode == OperatingMode.ProbingHeightMap ||
                 Machine.Mode == OperatingMode.ProbingHeight;
         }
+        
 
         public bool CanSendEmergencyStop()
         {
@@ -131,6 +154,14 @@ namespace LagoVista.GCode.Sender.ViewModels
 
         public RelayCommand PauseCommand { get; private set; }
 
+
+        public RelayCommand HomingCycleCommand { get; private set; }
+        public RelayCommand SoftResetCommand{ get; private set; }
+
+        public RelayCommand CycleStartCommand { get; private set; }
+        public RelayCommand FeedHoldCommand { get; private set; }
+
+
         public RelayCommand StartProbeCommand { get; private set; }
         public RelayCommand StartProbeHeightMapCommand { get; private set; }
         public RelayCommand SendGCodeFileCommand { get; private set; }
@@ -140,5 +171,9 @@ namespace LagoVista.GCode.Sender.ViewModels
 
         public RelayCommand ConnectCommand { get; private set; }
 
+        public RelayCommand SetFavorite1Command { get; private set; }
+        public RelayCommand SetFavorite2Command { get; private set; }
+        public RelayCommand GotoFavorite1Command { get; private set; }
+        public RelayCommand GotoFavorite2Command { get; private set; }
     }
 }

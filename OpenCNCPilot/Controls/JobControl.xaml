@@ -5,127 +5,152 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:fa="http://schemas.fontawesome.io/icons/"
              mc:Ignorable="d" 
-             d:DesignHeight="130" d:DesignWidth="1000">
+             d:DesignHeight="145" d:DesignWidth="1000">
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="auto" />
-            <ColumnDefinition Width="auto" />
-            <ColumnDefinition Width="auto" />
-            <ColumnDefinition Width="auto" />
-            <ColumnDefinition Width="auto" />
-            <ColumnDefinition Width="auto" />
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="auto" />
-        </Grid.ColumnDefinitions>
-        <Grid.Resources>
-            <Style TargetType="fa:ImageAwesome">
-                <Setter Property="Width"  Value="72"/>
-                <Setter Property="Height"  Value="72"/>
-                <Setter Property="Margin" Value="4" />
-                <Setter Property="Foreground" Value="LightGray" />
-            </Style>
-            <Style TargetType="fa:ImageAwesome" x:Key="StartType">
-                <Setter Property="Width"  Value="36"/>
-                <Setter Property="Height"  Value="36"/>
-                <Setter Property="Margin" Value="0,0,10,3" />
-                <Setter Property="Foreground" Value="#444" />
-                <Setter Property="HorizontalAlignment" Value="Right" />
-                <Setter Property="VerticalAlignment" Value="Bottom" />
-            </Style>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto" />
+                <ColumnDefinition Width="auto" />
+                <ColumnDefinition Width="auto" />
+                <ColumnDefinition Width="auto" />
+                <ColumnDefinition Width="auto" />
+                <ColumnDefinition Width="auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="auto" />
+            </Grid.ColumnDefinitions>
+            <Grid.Resources>
+                <Style TargetType="fa:ImageAwesome">
+                    <Setter Property="Width"  Value="72"/>
+                    <Setter Property="Height"  Value="72"/>
+                    <Setter Property="Margin" Value="4" />
+                    <Setter Property="Foreground" Value="LightGray" />
+                </Style>
+                <Style TargetType="fa:ImageAwesome" x:Key="StartType">
+                    <Setter Property="Width"  Value="36"/>
+                    <Setter Property="Height"  Value="36"/>
+                    <Setter Property="Margin" Value="0,0,10,3" />
+                    <Setter Property="Foreground" Value="#444" />
+                    <Setter Property="HorizontalAlignment" Value="Right" />
+                    <Setter Property="VerticalAlignment" Value="Bottom" />
+                </Style>
 
-            <Style TargetType="Button">
-                <Setter Property="Height"  Value="110"/>
-                <Setter Property="Width"  Value="100"/>
-                <Setter Property="Margin"  Value="2"/>
-            </Style>
-            <Style TargetType="TextBlock">
-                <Setter Property="Height"  Value="34"/>
-                <Setter Property="FontSize"  Value="18"/>
-                <Setter Property="TextAlignment" Value="Center" />
-            </Style>
-        </Grid.Resources>
-        <Button Command="{Binding ConnectCommand}" Grid.Column="0"  >
-            <Button.Content>
-                <StackPanel>
-                    <fa:ImageAwesome Icon="PowerOff" Foreground="{Binding Machine.Connected, Converter={StaticResource ColorEnabledConverter}, ConverterParameter=Green, FallbackValue=LightGray}" />
-                    <TextBlock Text="{Binding ConnectText, FallbackValue=On}" />
-                </StackPanel>
-            </Button.Content>
-        </Button>
+                <Style TargetType="Button">
+                    <Setter Property="Height"  Value="110"/>
+                    <Setter Property="Width"  Value="100"/>
+                    <Setter Property="Margin"  Value="2"/>
+                </Style>
+                <Style TargetType="TextBlock">
+                    <Setter Property="Height"  Value="34"/>
+                    <Setter Property="FontSize"  Value="18"/>
+                    <Setter Property="TextAlignment" Value="Center" />
+                </Style>
+            </Grid.Resources>
+            <Button Command="{Binding ConnectCommand}" Grid.Column="0"  >
+                <Button.Content>
+                    <StackPanel>
+                        <fa:ImageAwesome Icon="PowerOff" Foreground="{Binding Machine.Connected, Converter={StaticResource ColorEnabledConverter}, ConverterParameter=Green, FallbackValue=LightGray}" />
+                        <TextBlock Text="{Binding ConnectText, FallbackValue=On}" />
+                    </StackPanel>
+                </Button.Content>
+            </Button>
 
-        <Button Command="{Binding StopCommand}" Grid.Column="1" >
-            <Button.Content>
-                <StackPanel>
-                    <fa:ImageAwesome Icon="Stop" Foreground="{Binding IsCreatingHeightMap, Converter={StaticResource ColorEnabledConverter}, ConverterParameter=Black, FallbackValue=LightGray}" />
-                    <TextBlock Text="Stop" />
-                </StackPanel>
-            </Button.Content>
-        </Button>
+            <Button Command="{Binding StopCommand}" Grid.Column="1" >
+                <Button.Content>
+                    <StackPanel>
+                        <fa:ImageAwesome Icon="Stop" Foreground="{Binding IsCreatingHeightMap, Converter={StaticResource ColorEnabledConverter}, ConverterParameter=Black, FallbackValue=LightGray}" />
+                        <TextBlock Text="Stop" />
+                    </StackPanel>
+                </Button.Content>
+            </Button>
 
-        <Button Command="{Binding PauseCommand}" Grid.Column="2" >
-            <Button.Content>
-                <StackPanel>
-                    <fa:ImageAwesome Icon="Pause" Foreground="{Binding IsCreatingHeightMap, Converter={StaticResource ColorEnabledConverter}, ConverterParameter=Gray, FallbackValue=LightGray}" />
-                    <TextBlock Text="Pause" />
-                </StackPanel>
-            </Button.Content>
-        </Button>
-        <Button Command="{Binding SendGCodeFileCommand}" Grid.Column="3" >
-            <Button.Content>
-                <StackPanel>
-                    <Grid>
-                        <fa:ImageAwesome Icon="Play"  Foreground="{Binding IsRunningJob, Converter={StaticResource ColorEnabledConverter}, ConverterParameter=Green, FallbackValue=LightGray}"  />
-                        <fa:ImageAwesome Icon="FileTextOutline" Style="{StaticResource StartType}" Foreground="{Binding IsRunningJob, Converter={StaticResource ColorEnabledConverter}, ConverterParameter=LightGray, FallbackValue=LightGray}"/>
-                    </Grid>
-                    <TextBlock Text="Start Job" />
-                </StackPanel>
-            </Button.Content>
-        </Button>
-        <Button Command="{Binding StartProbeHeightMapCommand}" Grid.Column="4"  >
-            <Button.Content>
-                <StackPanel>
-                    <Grid>
-                        <fa:ImageAwesome Icon="Play" Foreground="{Binding IsCreatingHeightMap, Converter={StaticResource ColorEnabledConverter}, ConverterParameter=Green, FallbackValue=LightGray}"  />
-                        <fa:ImageAwesome Icon="Arrows" Style="{StaticResource StartType}" Foreground="{Binding IsCreatingHeightMap, Converter={StaticResource ColorEnabledConverter}, ConverterParameter=LightGray, FallbackValue=LightGray}"/>
-                    </Grid>
-                    <TextBlock Text="Height Map" />
-                </StackPanel>
-            </Button.Content>
-        </Button>
-        <Button Command="{Binding StartProbeCommand}" Grid.Column="5" >
-            <Button.Content>
-                <StackPanel>
-                    <Grid>
-                        <fa:ImageAwesome Icon="Play"  Foreground="{Binding IsProbingHeight, Converter={StaticResource ColorEnabledConverter}, ConverterParameter=Green, FallbackValue=LightGray}"  />
-                        <fa:ImageAwesome Icon="LongArrowDown" Style="{StaticResource StartType}" Foreground="{Binding IsProbingHeight, Converter={StaticResource ColorEnabledConverter}, ConverterParameter=LightGray, FallbackValue=LightGray}"/>
-                    </Grid>
-                    <TextBlock Text="Probe" />
-                </StackPanel>
-            </Button.Content>
-        </Button>
-
-        <Button Command="{Binding ClearAlarmCommand}" Grid.Column="6" >
-            <Button.Content>
-                <StackPanel>
-                    <Grid>
-                        <fa:ImageAwesome Icon="Play"  Foreground="{Binding IsProbingHeight, Converter={StaticResource ColorEnabledConverter}, ConverterParameter=Green, FallbackValue=LightGray}"  />
-                        <fa:ImageAwesome Icon="LongArrowDown" Style="{StaticResource StartType}" Foreground="{Binding IsProbingHeight, Converter={StaticResource ColorEnabledConverter}, ConverterParameter=LightGray, FallbackValue=LightGray}"/>
-                    </Grid>
-                    <TextBlock Text="Clear Alarm" />
-                </StackPanel>
-            </Button.Content>
-        </Button>
+            <Button Command="{Binding PauseCommand}" Grid.Column="2" >
+                <Button.Content>
+                    <StackPanel>
+                        <fa:ImageAwesome Icon="Pause" Foreground="{Binding IsCreatingHeightMap, Converter={StaticResource ColorEnabledConverter}, ConverterParameter=Gray, FallbackValue=LightGray}" />
+                        <TextBlock Text="Pause" />
+                    </StackPanel>
+                </Button.Content>
+            </Button>
+            <Button Command="{Binding SendGCodeFileCommand}" Grid.Column="3" >
+                <Button.Content>
+                    <StackPanel>
+                        <Grid>
+                            <fa:ImageAwesome Icon="Play"  Foreground="{Binding IsRunningJob, Converter={StaticResource ColorEnabledConverter}, ConverterParameter=Green, FallbackValue=LightGray}"  />
+                            <fa:ImageAwesome Icon="FileTextOutline" Style="{StaticResource StartType}" Foreground="{Binding IsRunningJob, Converter={StaticResource ColorEnabledConverter}, ConverterParameter=LightGray, FallbackValue=LightGray}"/>
+                        </Grid>
+                        <TextBlock Text="Start Job" />
+                    </StackPanel>
+                </Button.Content>
+            </Button>
+            <Button Command="{Binding StartProbeHeightMapCommand}" Grid.Column="4"  >
+                <Button.Content>
+                    <StackPanel>
+                        <Grid>
+                            <fa:ImageAwesome Icon="Play" Foreground="{Binding IsCreatingHeightMap, Converter={StaticResource ColorEnabledConverter}, ConverterParameter=Green, FallbackValue=LightGray}"  />
+                            <fa:ImageAwesome Icon="Arrows" Style="{StaticResource StartType}" Foreground="{Binding IsCreatingHeightMap, Converter={StaticResource ColorEnabledConverter}, ConverterParameter=LightGray, FallbackValue=LightGray}"/>
+                        </Grid>
+                        <TextBlock Text="Height Map" />
+                    </StackPanel>
+                </Button.Content>
+            </Button>
+            <Button Command="{Binding StartProbeCommand}" Grid.Column="5" >
+                <Button.Content>
+                    <StackPanel>
+                        <Grid>
+                            <fa:ImageAwesome Icon="Play"  Foreground="{Binding IsProbingHeight, Converter={StaticResource ColorEnabledConverter}, ConverterParameter=Green, FallbackValue=LightGray}"  />
+                            <fa:ImageAwesome Icon="LongArrowDown" Style="{StaticResource StartType}" Foreground="{Binding IsProbingHeight, Converter={StaticResource ColorEnabledConverter}, ConverterParameter=LightGray, FallbackValue=LightGray}"/>
+                        </Grid>
+                        <TextBlock Text="Probe" />
+                    </StackPanel>
+                </Button.Content>
+            </Button>
 
 
-        <Button Command="{Binding EmergencyStopCommand}" Grid.Column="7" >
-            <Button.Content>
-                <StackPanel>
-                    <fa:ImageAwesome Icon="Flash" Foreground="{Binding Machine.Connected, Converter={StaticResource ColorEnabledConverter}, ConverterParameter=Red, FallbackValue=LightGray}" />
-                    <TextBlock Text="Kill" />
-                </StackPanel>
-            </Button.Content>
-        </Button>
+            <Button Command="{Binding EmergencyStopCommand}" Grid.Column="7" >
+                <Button.Content>
+                    <StackPanel>
+                        <fa:ImageAwesome Icon="Flash" Foreground="{Binding Machine.Connected, Converter={StaticResource ColorEnabledConverter}, ConverterParameter=Red, FallbackValue=LightGray}" />
+                        <TextBlock Text="Kill" />
+                    </StackPanel>
+                </Button.Content>
+            </Button>
+        </Grid>
 
+        <Grid Grid.Row="1" Background="LightGray" Height="32">
+            <StackPanel Orientation="Horizontal" >
+                <Button BorderBrush="Transparent"  Background="Transparent"  Command="{Binding HomingCycleCommand}"  >
+                    <Button.Content>
+                        <fa:ImageAwesome Margin="2" Width="18" Height="18" Icon="Home" ToolTip="Homing Cycle" />
+                    </Button.Content>
+                </Button>
+                <Button BorderBrush="Transparent"  Background="Transparent"  ToolTip="Soft Reset"  Command="{Binding SoftResetCommand}" >
+                    <Button.Content>
+                        <fa:ImageAwesome Margin="2" Width="18" Height="18" Icon="Recycle" />
+                    </Button.Content>
+                </Button>
 
+                <Button BorderBrush="Transparent"  Background="Transparent"  Command="{Binding FeedHoldCommand}"  >
+                    <Button.Content>
+                        <fa:ImageAwesome Margin="2" Width="18" Height="18" Icon="Stop" />
+                    </Button.Content>
+                </Button>
+                
+                <Button BorderBrush="Transparent"  Background="Transparent"  Command="{Binding CycleStartCommand}"  >
+                    <Button.Content>
+                        <fa:ImageAwesome Margin="2" Width="18" Height="18" Icon="Play" />
+                    </Button.Content>
+                </Button>
+
+                <Button BorderBrush="Transparent"  Background="Transparent" Command="{Binding ClearAlarmCommand}"  ToolTip="Clear Alarm"  >
+                    <Button.Content>
+                        <fa:ImageAwesome Margin="2" Width="18" Height="18" Icon="Warning" />
+                    </Button.Content>
+                </Button>
+            </StackPanel>
+        </Grid>
     </Grid>
 </UserControl>

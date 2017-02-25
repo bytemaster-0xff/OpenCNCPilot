@@ -101,6 +101,11 @@ namespace LagoVista.GCode.Sender.Interfaces
         IEnumerable<GCodeCommand> Commands { get; }
 
         /// <summary>
+        /// The name of the current GCode File
+        /// </summary>
+        string FileName { get; }
+
+        /// <summary>
         /// Returns true if there is a file available to be started.
         /// </summary>
         bool HasValidFile { get; }

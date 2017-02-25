@@ -12,7 +12,10 @@ namespace LagoVista.GCode.Sender.ViewModels
         public String ManualCommandText
         {
             get { return _manualCommandText; }
-            set { Set(ref _manualCommandText, value); }
+            set
+            {
+                Set(ref _manualCommandText, value);
+            }
         }
     }
 }

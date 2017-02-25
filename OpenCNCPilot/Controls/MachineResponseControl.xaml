@@ -5,27 +5,47 @@
              xmlns:cvts="clr-namespace:LagoVista.GCode.Sender.Application.Converters"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:ctls="clr-namespace:LagoVista.GCode.Sender.Application.Controls"
+             xmlns:fa="http://schemas.fontawesome.io/icons/"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-    <ctls:ListBoxScroll  HorizontalContentAlignment="Stretch"
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid Background="LightGray">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="Responses" VerticalAlignment="Center" />
+            <Button BorderBrush="Transparent" Grid.Column="2" Background="Transparent" Tag="UpRight" x:Name="ShowLogWindow" Click="ShowLogWindow_Click">
+                <Button.Content>
+                    <fa:ImageAwesome Margin="2" Width="18" Height="18" Icon="WindowMaximize" />
+                </Button.Content>
+            </Button>
+        </Grid>
+        <ctls:ListBoxScroll  HorizontalContentAlignment="Stretch"
+                             Grid.Row="1"
                  SelectedIndex="{Binding Path=Machine.MessageCount, Mode=OneWay}"
                  ItemsSource="{Binding Path=Machine.Messages}"
                  IsHitTestVisible="False" BorderThickness="0"
                  ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
                  ScrollViewer.VerticalScrollBarVisibility="Disabled">
-        <ctls:ListBoxScroll.ItemTemplate>
-            <DataTemplate>
-                <Grid Background="{Binding MessageType, Converter={StaticResource MessageTypeBackgroundColorConverter}}" >
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="120" />
-                        <ColumnDefinition Width="90" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Text="{Binding DateStamp}" Foreground="{Binding MessageType, Converter={StaticResource MessageTypeForegroundColorConverter}}" />
-                    <TextBlock Text="{Binding MessageType}" Grid.Column="1" Foreground="{Binding MessageType, Converter={StaticResource MessageTypeForegroundColorConverter}}" />
-                    <TextBlock Text="{Binding Message}" Grid.Column="2" Foreground="{Binding MessageType, Converter={StaticResource MessageTypeForegroundColorConverter}}" />
-                </Grid>
-            </DataTemplate>
-        </ctls:ListBoxScroll.ItemTemplate>
-    </ctls:ListBoxScroll>
+            <ctls:ListBoxScroll.ItemTemplate>
+                <DataTemplate>
+                    <Grid Background="{Binding MessageType, Converter={StaticResource MessageTypeBackgroundColorConverter}}" >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="120" />
+                            <ColumnDefinition Width="90" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="{Binding DateStamp}" Foreground="{Binding MessageType, Converter={StaticResource MessageTypeForegroundColorConverter}}" />
+                        <TextBlock Text="{Binding MessageType}" Grid.Column="1" Foreground="{Binding MessageType, Converter={StaticResource MessageTypeForegroundColorConverter}}" />
+                        <TextBlock Text="{Binding Message}" Grid.Column="2" Foreground="{Binding MessageType, Converter={StaticResource MessageTypeForegroundColorConverter}}" />
+                    </Grid>
+                </DataTemplate>
+            </ctls:ListBoxScroll.ItemTemplate>
+        </ctls:ListBoxScroll>
+    </Grid>
 </UserControl>

@@ -54,6 +54,13 @@ namespace LagoVista.GCode.Sender.Managers
             }
         }
 
+        private string _fileName = "<empty>";
+        public string FileName
+        {
+            get { return _fileName; }
+            set { Set(ref _fileName, value); }
+        }
+
         public IEnumerable<GCodeCommand> Commands
         {
             get { return _file == null ? null : _file.Commands; }
