@@ -8,8 +8,8 @@ using LagoVista.Core.Models.Drawing;
 namespace LagoVista.Core.GCode.Commands
 {
     public class MCode : GCodeCommand
-	{
-		public int Code;
+    {
+        public int Code;
 
         public override string ToString()
         {
@@ -18,20 +18,17 @@ namespace LagoVista.Core.GCode.Commands
 
         public override TimeSpan EstimatedRunTime
         {
-            get
-            {
-                return TimeSpan.Zero;
-            }
+            get { return TimeSpan.Zero; }
         }
 
         public override Vector3 CurrentPosition
         {
-            get { return new Vector3(0,0,0); }
+            get { return new Vector3(0, 0, 0); }
         }
 
         public override void SetComment(string comment)
         {
-            switch(Command)
+            switch (Command)
             {
                 case "M6":
                 case "M06":

@@ -8,7 +8,8 @@ namespace LagoVista.Core.GCode
 {
     class Word
     {
-        public char Command;
-        public double Parameter;
+        public char Command { get; set; }
+        public double Parameter { get; set; }
+        public string FullWord { get; set; }
     }
 }

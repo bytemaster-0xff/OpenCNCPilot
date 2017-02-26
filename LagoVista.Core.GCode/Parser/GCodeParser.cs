@@ -14,6 +14,9 @@ namespace LagoVista.Core.GCode.Parser
     {
         public ParserState State { get; private set; }
 
+
+        private Dictionary<string, string> _tools = new Dictionary<string, string>();
+
         //TODO: Removed compiled options
         private Regex GCodeSplitter = new Regex(@"([A-Z])\s*(\-?\d+\.?\d*)");
         private double[] MotionCommands = new double[] { 0, 1, 2, 3, 20, 21, 90, 91 };
@@ -24,6 +27,7 @@ namespace LagoVista.Core.GCode.Parser
         {
             State = new ParserState();
             Commands = new List<GCodeCommand>(); //don't reuse, might be used elsewhere
+            _tools.Clear();
         }
 
         public GCodeParser()
@@ -49,7 +53,7 @@ namespace LagoVista.Core.GCode.Parser
                 if (command != null)
                 {
                     Commands.Add(command);
-            
+
                     lineIndex++;
                 }
                 else
@@ -78,16 +82,25 @@ namespace LagoVista.Core.GCode.Parser
                         return motionLine;
                     }
                 }
-                else if (cleanedLine.StartsWith("M"))
+                else if (cleanedLine.StartsWith("T") || cleanedLine.StartsWith("M06") || cleanedLine.StartsWith("M6"))
                 {
-                    var machineLine = ParseMachineCommand(cleanedLine.ToUpper(), lineIndex);
-                    if(machineLine != null)
+                    var machineLine = ParseToolChangeCommand(cleanedLine.ToUpper(), lineIndex);
+                    if (machineLine != null)
                     {
                         machineLine.SetComment(GetComment(line));
                         return machineLine;
                     }
                 }
-                else if(cleanedLine.StartsWith("S"))
+                else if (cleanedLine.StartsWith("M"))
+                {
+                    var machineLine = ParseMachineCommand(cleanedLine.ToUpper(), lineIndex);
+                    if (machineLine != null)
+                    {
+                        machineLine.SetComment(GetComment(line));
+                        return machineLine;
+                    }
+                }
+                else if (cleanedLine.StartsWith("S"))
                 {
                     var machineLine = new OtherCode();
                     machineLine.LineNumber = lineIndex;
@@ -113,6 +126,39 @@ namespace LagoVista.Core.GCode.Parser
                 line = line.Remove(commentIndex);
 
             int start = -1;
+
+            var toolRegEx1 = new Regex(@"\( (?'ToolNumber'-?T[0-9]*) : (?'ToolSize'-?[0-9\.]*) \)");
+            var toolMatch1 = toolRegEx1.Match(line);
+            if (toolMatch1.Success)
+            {
+                var toolNumber = toolMatch1.Groups["ToolNumber"].Value;
+                var toolSize = toolMatch1.Groups["ToolSize"].Value;
+                if (_tools.ContainsKey(toolNumber))
+                {
+                    _tools.Remove(toolNumber);
+                }
+
+                _tools.Add(toolNumber, toolSize);
+
+                return String.Empty;
+            }
+
+            var toolRegEx2 = new Regex(@"\( (?'ToolNumber'-?T[0-9]*) *(?'ToolSizeMM'-?[0-9\.]*)mm *(?'ToolSizeIN'-?[0-9\.]*)in.*\)");
+            var toolMatch2 = toolRegEx2.Match(line);
+            if (toolMatch2.Success)
+            {
+                var toolNumber = toolMatch2.Groups["ToolNumber"].Value;
+                var toolSize = toolMatch2.Groups["ToolSizeMM"].Value;
+                if (_tools.ContainsKey(toolNumber))
+                {
+                    _tools.Remove(toolNumber);
+                }
+
+                _tools.Add(toolNumber, toolSize);
+
+                return String.Empty;
+            }
+
 
             while ((start = line.IndexOf('(')) != -1)
             {
@@ -150,6 +196,40 @@ namespace LagoVista.Core.GCode.Parser
             {
                 Line = line,
                 LineNumber = lineNumber
+            };
+        }
+
+        public ToolChangeCommand ParseToolChangeCommand(string line, int lineNumber)
+        {
+            var words = FindWords(line);
+            Validate(words);
+            Prune(words, line, lineNumber);
+            if (words.Count == 0)
+            {
+                return null;
+            }
+
+            var toolName = "??";
+            var toolSize = "??";
+
+            foreach(var word in words)
+            {
+                if(word.Command == 'T')
+                {
+                    toolName = word.FullWord;
+                    if(_tools.ContainsKey(word.FullWord))
+                    {
+                        toolSize = _tools[toolName];
+                    }
+                }
+            }
+
+            return new ToolChangeCommand()
+            {
+                Line = line,
+                LineNumber = lineNumber,
+                ToolName = toolName,
+                ToolSize = toolSize
             };
         }
 
@@ -208,7 +288,7 @@ namespace LagoVista.Core.GCode.Parser
 
             try
             {
-                switch(motionMode)
+                switch (motionMode)
                 {
                     case 0:
                     case 1:
@@ -241,10 +321,10 @@ namespace LagoVista.Core.GCode.Parser
                     case 81:
                         var drillCode = new GCodeDrill()
                         {
-                             Start = State.Position,
-                             End = State.Position,
-                             LineNumber = lineNumber,
-                             Feed = State.Feed                             
+                            Start = State.Position,
+                            End = State.Position,
+                            LineNumber = lineNumber,
+                            Feed = State.Feed
                         };
                         break;
 
@@ -252,7 +332,7 @@ namespace LagoVista.Core.GCode.Parser
 
                 return null;
 
-             
+
             }
             catch (Exception ex)
             {

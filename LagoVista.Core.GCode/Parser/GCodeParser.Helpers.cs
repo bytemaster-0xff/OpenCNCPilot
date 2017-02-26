@@ -124,7 +124,12 @@ namespace LagoVista.Core.GCode.Parser
 
             foreach (Match match in matches)
             {
-                words.Add(new Word() { Command = match.Groups[1].Value[0], Parameter = double.Parse(match.Groups[2].Value, decimalFormat) });
+                words.Add(new Word()
+                {
+                    Command = match.Groups[1].Value[0],
+                    Parameter = double.Parse(match.Groups[2].Value, decimalFormat),
+                    FullWord = $"{match.Groups[1].Value}{match.Groups[2].Value}"
+                });
             }
 
             return words;
