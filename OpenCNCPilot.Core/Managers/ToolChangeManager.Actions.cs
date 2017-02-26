@@ -9,9 +9,9 @@ namespace LagoVista.GCode.Sender.Managers
 {
     public  partial class ToolChangeManager
     {
-        public async Task HandleToolChange(MCode mcode)
+        public async Task HandleToolChange(ToolChangeCommand mcode)
         {
-            await Core.PlatformSupport.Services.Popups.ShowAsync("Tool Change Required\nChange Tool to: " + mcode.DrillSize);
+            await Core.PlatformSupport.Services.Popups.ShowAsync("Tool Change Required\nChange Tool to: " + mcode.ToolSize);
         }
     }
 }
