@@ -180,9 +180,15 @@ namespace LagoVista.GCode.Sender
             }
         }
 
+        //TODO: Thinking we need a better "emergency stop"
         public void EmergencyStop()
         {
+            SoftReset();
+        }
 
+        public void GotoWorkspaceHome()
+        {
+            Enqueue("G0 X0 Y0 Z0");
         }
 
         public void SetFavorite1()
@@ -225,6 +231,25 @@ namespace LagoVista.GCode.Sender
         {
             Enqueue("~", true);
         }
-       
+
+        public void SpindleOn()
+        {
+            Enqueue("M3");
+        }
+
+        public void SpindleOff()
+        {
+            Enqueue("M3");
+        }
+
+        public void LaserOff()
+        {
+            Enqueue("M5");
+        }
+
+        public void LaserOn()
+        {
+            Enqueue("M3");
+        }
     }
 }

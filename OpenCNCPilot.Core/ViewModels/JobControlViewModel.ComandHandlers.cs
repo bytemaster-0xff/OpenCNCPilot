@@ -38,6 +38,51 @@ namespace LagoVista.GCode.Sender.ViewModels
             }
         }
 
+        public void SpindleOn()
+        {
+            Machine.SpindleOn();
+        }
+
+        public void SpindleOff()
+        {
+            Machine.SpindleOff();
+        }
+
+        public void LaserOn()
+        {
+            Machine.LaserOn();
+        }
+
+        public void LaserOff()
+        {
+            Machine.LaserOff();
+        }
+
+        public void GotoWorkspaceHome()
+        {
+            Machine.GotoWorkspaceHome();
+        }
+
+        public void SetFavorite1()
+        {
+            Machine.SetFavorite1();
+        }
+
+        public void SetFavorite2()
+        {
+            Machine.SetFavorite2();
+        }
+
+        public void GotoFavorite1()
+        {
+            Machine.GotoFavorite1();
+        }
+
+        public void GotoFavorite2()
+        {
+            Machine.GotoFavorite2();
+        }
+
         public void HomingCycle()
         {
             Machine.HomingCycle();

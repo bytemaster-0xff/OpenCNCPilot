@@ -128,6 +128,15 @@ namespace LagoVista.GCode.Sender.Interfaces
 
         void GotoFavorite2();
 
+        void SpindleOn();
+        void SpindleOff();
+
+        void LaserOn();
+
+        void LaserOff();
+
+        void GotoWorkspaceHome();
+
         /// <summary>
         /// Send a message to the machine to immediately stop any motion operation
         /// </summary>

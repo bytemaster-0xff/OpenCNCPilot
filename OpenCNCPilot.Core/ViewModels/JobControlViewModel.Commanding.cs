@@ -28,6 +28,19 @@ namespace LagoVista.GCode.Sender.ViewModels
 
             EmergencyStopCommand = new RelayCommand(EmergencyStop, CanSendEmergencyStop);
 
+            LaserOnCommand = new RelayCommand(LaserOn, CanManipulateLaser);
+            LaserOffCommand = new RelayCommand(LaserOff, CanManipulateLaser);
+
+            SpindleOnCommand = new RelayCommand(SpindleOn, CanManipulateSpindle);
+            SpindleOffCommand = new RelayCommand(SpindleOff, CanManipulateSpindle);
+
+            GotoFavorite1Command = new RelayCommand(GotoFavorite1, CanMove);
+            GotoFavorite2Command = new RelayCommand(GotoFavorite2, CanMove);
+            SetFavorite1Command = new RelayCommand(SetFavorite1, CanMove);
+            SetFavorite2Command = new RelayCommand(SetFavorite2, CanMove);
+
+            GotoWorkspaceHomeCommand = new RelayCommand(GotoWorkspaceHome, CanMove);
+
             Machine.PropertyChanged += _machine_PropertyChanged;
             Machine.HeightMapManager.PropertyChanged += HeightMapManager_PropertyChanged;
             Machine.GCodeFileManager.PropertyChanged += GCodeFileManager_PropertyChanged;
@@ -59,6 +72,48 @@ namespace LagoVista.GCode.Sender.ViewModels
             CycleStartCommand.RaiseCanExecuteChanged();
 
             EmergencyStopCommand.RaiseCanExecuteChanged();
+
+            LaserOnCommand.RaiseCanExecuteChanged();
+            LaserOffCommand.RaiseCanExecuteChanged();
+            SpindleOnCommand.RaiseCanExecuteChanged();
+            SpindleOffCommand.RaiseCanExecuteChanged();
+
+            GotoFavorite1Command.RaiseCanExecuteChanged();
+            GotoFavorite2Command.RaiseCanExecuteChanged();
+            SetFavorite1Command.RaiseCanExecuteChanged();
+            SetFavorite2Command.RaiseCanExecuteChanged();
+            GotoWorkspaceHomeCommand.RaiseCanExecuteChanged();
+        }
+
+        public bool CanManipulateLaser()
+        {
+            return Machine.IsInitialized &&
+                Machine.Settings.MachineType == FirmwareTypes.Marlin_Laser &&
+                Machine.Connected &&
+                Machine.Mode == OperatingMode.Manual;
+        }
+
+        public bool CanManipulateSpindle()
+        {
+            return Machine.IsInitialized &&
+                Machine.Settings.MachineType == FirmwareTypes.GRBL1_1 &&
+                Machine.Connected &&
+                Machine.Mode == OperatingMode.Manual;
+        }
+
+        public bool CanMove()
+        {
+            return Machine.IsInitialized &&
+                Machine.Connected &&
+                Machine.Mode == OperatingMode.Manual;
+        }
+
+        public bool CanMoveToWorkspaceHome()
+        {
+            return Machine.IsInitialized &&
+          Machine.Settings.MachineType == FirmwareTypes.GRBL1_1 &&
+          Machine.Connected &&
+          Machine.Mode == OperatingMode.Manual;
         }
 
         private void HeightMapManager_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -93,7 +148,7 @@ namespace LagoVista.GCode.Sender.ViewModels
 
         public bool CanSendGcodeFile()
         {
-            return Machine.IsInitialized && 
+            return Machine.IsInitialized &&
                 Machine.GCodeFileManager.HasValidFile &&
                 Machine.Connected &&
                 Machine.Mode == OperatingMode.Manual;
@@ -115,7 +170,7 @@ namespace LagoVista.GCode.Sender.ViewModels
 
         public bool CanPauseJob()
         {
-            return Machine.IsInitialized && 
+            return Machine.IsInitialized &&
                 Machine.Mode == OperatingMode.SendingGCodeFile ||
                 Machine.Mode == OperatingMode.ProbingHeightMap ||
                 Machine.Mode == OperatingMode.ProbingHeight;
@@ -123,7 +178,7 @@ namespace LagoVista.GCode.Sender.ViewModels
 
         public bool CanProbeHeightMap()
         {
-            return Machine.IsInitialized && 
+            return Machine.IsInitialized &&
                 Machine.Connected
                 && Machine.Mode == OperatingMode.Manual
                 && Machine.HeightMapManager.HasHeightMap;
@@ -131,19 +186,19 @@ namespace LagoVista.GCode.Sender.ViewModels
 
         public bool CanProbe()
         {
-            return Machine.IsInitialized && 
+            return Machine.IsInitialized &&
                 Machine.Connected
                 && Machine.Mode == OperatingMode.Manual;
         }
 
         public bool CanStopJob()
         {
-            return Machine.IsInitialized && 
+            return Machine.IsInitialized &&
                 Machine.Mode == OperatingMode.SendingGCodeFile ||
                 Machine.Mode == OperatingMode.ProbingHeightMap ||
                 Machine.Mode == OperatingMode.ProbingHeight;
         }
-        
+
 
         public bool CanSendEmergencyStop()
         {
@@ -156,7 +211,7 @@ namespace LagoVista.GCode.Sender.ViewModels
 
 
         public RelayCommand HomingCycleCommand { get; private set; }
-        public RelayCommand SoftResetCommand{ get; private set; }
+        public RelayCommand SoftResetCommand { get; private set; }
 
         public RelayCommand CycleStartCommand { get; private set; }
         public RelayCommand FeedHoldCommand { get; private set; }
@@ -175,5 +230,11 @@ namespace LagoVista.GCode.Sender.ViewModels
         public RelayCommand SetFavorite2Command { get; private set; }
         public RelayCommand GotoFavorite1Command { get; private set; }
         public RelayCommand GotoFavorite2Command { get; private set; }
+
+        public RelayCommand GotoWorkspaceHomeCommand { get; private set; }
+        public RelayCommand LaserOnCommand { get; private set; }
+        public RelayCommand LaserOffCommand { get; private set; }
+        public RelayCommand SpindleOnCommand { get; private set; }
+        public RelayCommand SpindleOffCommand { get; private set; }
     }
 }

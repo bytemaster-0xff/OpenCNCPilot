@@ -266,6 +266,15 @@
     <Resource Include="Imgs\Center.png" />
     <Resource Include="Imgs\Backwards.png" />
     <Resource Include="Imgs\Forward.png" />
+    <Resource Include="Imgs\GotoFavorite1.png" />
+    <Resource Include="Imgs\GotoFavorite2.png" />
+    <Resource Include="Imgs\LaserOff.png" />
+    <Resource Include="Imgs\LaserOn.png" />
+    <Resource Include="Imgs\SpindleOff.png" />
+    <Resource Include="Imgs\SpindleOn.png" />
+    <Resource Include="Imgs\AddFavorite1.png" />
+    <Resource Include="Imgs\AddFavorite2.png" />
+    <Resource Include="Imgs\GotoWorkspaceHome.png" />
     <Content Include="KegeratorController.brd">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:fa="http://schemas.fontawesome.io/icons/"
              mc:Ignorable="d" 
-             d:DesignHeight="145" d:DesignWidth="1000">
+             d:DesignHeight="196" d:DesignWidth="1000">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
@@ -120,34 +120,96 @@
             </Button>
         </Grid>
 
-        <Grid Grid.Row="1" Background="LightGray" Height="32">
+        <Grid Grid.Row="1" Background="LightGray" Height="64">
+            <Grid.Resources>
+                <Style TargetType="Button">
+                    <Setter Property="BorderBrush" Value="Transparent" />
+                    <Setter Property="Background" Value="Transparent" />
+                </Style>
+                <Style TargetType="Image">
+                    <Setter Property="Margin" Value="2" />
+                    <Setter Property="Width" Value="36" />
+                    <Setter Property="Height" Value="36" />
+                </Style>
+                <Style TargetType="fa:ImageAwesome">
+                    <Setter Property="Margin" Value="2" />
+                    <Setter Property="Width" Value="36" />
+                    <Setter Property="Height" Value="36" />
+                </Style>
+            </Grid.Resources>
             <StackPanel Orientation="Horizontal" >
-                <Button BorderBrush="Transparent"  Background="Transparent"  Command="{Binding HomingCycleCommand}"  >
+                <Button  Command="{Binding HomingCycleCommand}"  >
                     <Button.Content>
-                        <fa:ImageAwesome Margin="2" Width="18" Height="18" Icon="Home" ToolTip="Homing Cycle" />
+                        <fa:ImageAwesome Icon="Home" ToolTip="Homing Cycle" />
                     </Button.Content>
                 </Button>
-                <Button BorderBrush="Transparent"  Background="Transparent"  ToolTip="Soft Reset"  Command="{Binding SoftResetCommand}" >
+                <Button ToolTip="Soft Reset"  Command="{Binding SoftResetCommand}" >
                     <Button.Content>
-                        <fa:ImageAwesome Margin="2" Width="18" Height="18" Icon="Recycle" />
+                        <fa:ImageAwesome Icon="Recycle" />
                     </Button.Content>
                 </Button>
 
-                <Button BorderBrush="Transparent"  Background="Transparent"  Command="{Binding FeedHoldCommand}"  >
+                <Button ToolTip="Feed Stop" Command="{Binding FeedHoldCommand}"  >
                     <Button.Content>
-                        <fa:ImageAwesome Margin="2" Width="18" Height="18" Icon="Stop" />
+                        <fa:ImageAwesome Icon="Stop" />
                     </Button.Content>
                 </Button>
                 
-                <Button BorderBrush="Transparent"  Background="Transparent"  Command="{Binding CycleStartCommand}"  >
+                <Button ToolTip="Cycle/Start"  Command="{Binding CycleStartCommand}"  >
                     <Button.Content>
-                        <fa:ImageAwesome Margin="2" Width="18" Height="18" Icon="Play" />
+                        <fa:ImageAwesome Icon="Play" />
                     </Button.Content>
                 </Button>
 
-                <Button BorderBrush="Transparent"  Background="Transparent" Command="{Binding ClearAlarmCommand}"  ToolTip="Clear Alarm"  >
+                <Button ToolTip="Clear Alarm" Command="{Binding ClearAlarmCommand}"   Margin="0,0,20,0"  >
                     <Button.Content>
-                        <fa:ImageAwesome Margin="2" Width="18" Height="18" Icon="Warning" />
+                        <fa:ImageAwesome Icon="Warning" />
+                    </Button.Content>
+                </Button>
+
+                <Button BorderBrush="Transparent"  Background="Transparent" Command="{Binding LaserOnCommand}"  ToolTip="Laser On"   >
+                    <Button.Content>
+                        <Image Source="/imgs/LaserOn.png"/>
+                    </Button.Content>
+                </Button>
+                <Button BorderBrush="Transparent"  Background="Transparent" Command="{Binding LaserOffCommand}"  ToolTip="Laser Off" Margin="0,0,20,0"   >
+                    <Button.Content>
+                        <Image Source="/imgs/LaserOff.png"/>
+                    </Button.Content>
+                </Button>
+                <Button BorderBrush="Transparent"  Background="Transparent" Command="{Binding SpindleOnCommand}"  ToolTip="Spindle On"   >
+                    <Button.Content>
+                        <Image Source="/imgs/SpindleOn.png"/>
+                    </Button.Content>
+                </Button>
+                <Button BorderBrush="Transparent"  Background="Transparent" Command="{Binding SpindleOffCommand}"  ToolTip="Spindle Off" Margin="0,0,20,0"  >
+                    <Button.Content>
+                        <Image Source="/imgs/SpindleOff.png"/>
+                    </Button.Content>
+                </Button>
+                <Button BorderBrush="Transparent"  Background="Transparent" Command="{Binding GotoWorkspaceHomeCommand}"  ToolTip="Spindle On"   >
+                    <Button.Content>
+                        <Image Source="/imgs/GotoWorkspaceHome.png"/>
+                    </Button.Content>
+                </Button>
+                <Button BorderBrush="Transparent"  Background="Transparent" Command="{Binding SetFavorite1Command}"  ToolTip="Spindle On"   >
+                    <Button.Content>
+                        <Image Source="/imgs/AddFavorite1.png"/>
+                    </Button.Content>
+                </Button>
+                <Button BorderBrush="Transparent"  Background="Transparent" Command="{Binding GotoFavorite1Command}"   >
+                    <Button.Content>
+                        <Image Source="/imgs/GotoFavorite1.png"/>
+                    </Button.Content>
+                </Button>
+                <Button BorderBrush="Transparent"  Background="Transparent" Command="{Binding SetFavorite2Command}"  ToolTip="Spindle On"   >
+                    <Button.Content>
+                        <Image Source="/imgs/AddFavorite2.png"/>
+                    </Button.Content>
+                </Button>
+                <Button BorderBrush="Transparent"  Background="Transparent" Command="{Binding GotoFavorite2Command}"  ToolTip="Spindle Off" Margin="0,0,20,0"  >
+                    <Button.Content>
+                        <Image Source="/imgs/GotoFavorite2.png"/>
                     </Button.Content>
                 </Button>
             </StackPanel>
