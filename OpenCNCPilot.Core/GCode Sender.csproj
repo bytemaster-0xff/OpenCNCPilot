@@ -40,6 +40,7 @@
     <Compile Include="Interfaces\IMachineVisionManager.cs" />
     <Compile Include="Interfaces\IProbingManager.cs" />
     <Compile Include="Interfaces\IToolChangeManager.cs" />
+    <Compile Include="MachinesRepo.cs" />
     <Compile Include="Machine\Machine.cs" />
     <Compile Include="Machine\Machine.Interface.cs">
       <DependentUpon>Machine.cs</DependentUpon>
@@ -154,7 +155,7 @@
     </Compile>
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Settings.cs" />
+    <Compile Include="MachineSettings.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Util\GrblErrorProvider.cs" />
     <Compile Include="ViewModels\MachineControlViewModel.cs" />

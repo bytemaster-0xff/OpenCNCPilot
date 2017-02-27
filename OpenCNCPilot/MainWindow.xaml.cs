@@ -66,7 +66,7 @@ namespace LagoVista.GCode.Sender.Application
 
         private async void Window_Closed(object sender, EventArgs e)
         {
-            await ViewModel.Machine.Settings.SaveAsync();
+            await ViewModel.Machine.MachineRepo.SaveAsync();
         }
 
         private void NewGeneratedHeigtMap_Click(object sender, RoutedEventArgs e)
@@ -110,6 +110,11 @@ namespace LagoVista.GCode.Sender.Application
             {
                 TextBoxManual.CaretIndex = TextBoxManual.Text.Length;
             }
+        }
+
+        private void EditMachineMenu_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

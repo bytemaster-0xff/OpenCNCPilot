@@ -34,7 +34,7 @@ namespace LagoVista.GCode.Sender.Application.Controls
 
         private void ImageSensorControl_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            if (ViewModel != null)
+            if (ViewModel != null && ViewModel.Machine.IsInitialized)
             {
                 ViewModel.Machine.Settings.PropertyChanged += Settings_PropertyChanged;
                 ViewModel.Machine.PropertyChanged += (sndr, args) =>

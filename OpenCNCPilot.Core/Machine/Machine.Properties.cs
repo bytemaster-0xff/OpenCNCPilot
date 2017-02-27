@@ -116,7 +116,25 @@ namespace LagoVista.GCode.Sender
                 return Messages.Count - 1;
             }
         }
+        
+        public MachinesRepo MachineRepo
+        {
+            get { return _machineRepo; }
+        }
 
-        public Settings Settings { get { return _settings; } }
+        public MachineSettings Settings
+        {
+            get {
+                if (_machineRepo == null || _machineRepo.CurrentMachine == null)
+                    return MachineSettings.Default;
+
+                return _machineRepo.CurrentMachine;
+            }
+            set
+            {
+                _machineRepo.CurrentMachine = value;
+                RaisePropertyChanged();
+            }
+        }
     }
 }

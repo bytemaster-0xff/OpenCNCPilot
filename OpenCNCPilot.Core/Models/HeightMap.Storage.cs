@@ -34,7 +34,7 @@ namespace LagoVista.GCode.Sender.Models
             }
         }
 
-        public static async Task<HeightMap> OpenAsync(Settings settings)
+        public static async Task<HeightMap> OpenAsync(MachineSettings settings)
         {
             var popupService = SLWIOC.Get<IPopupServices>();
             var fileName = await popupService.ShowSaveFileAsync(Constants.FileFilterHeightMap);

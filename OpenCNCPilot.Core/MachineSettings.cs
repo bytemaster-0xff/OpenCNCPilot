@@ -8,8 +8,10 @@ using System.Threading.Tasks;
 
 namespace LagoVista.GCode.Sender
 {
-    public class Settings : ModelBase, INotifyPropertyChanged
+    public class MachineSettings : ModelBase, INotifyPropertyChanged
     {
+        public string Id { get; set; }
+
         public int StatusPollIntervalIdle { get; set; }
         public int StatusPollIntervalRunning { get; set; }
         public int ControllerBufferSize { get; set; }
@@ -123,18 +125,23 @@ namespace LagoVista.GCode.Sender
 
         public FirmwareTypes MachineType { get; set; }
 
-        public async static Task<Settings> LoadAsync()
+        private string _settingsName;
+
+        public async static Task<MachineSettings> LoadAsync(string settingsName)
         {
             try
             {
-                var settings = await Services.Storage.GetAsync<Settings>("Settings.json");
+                var settings = await Services.Storage.GetAsync<MachineSettings>("settingsName.json");
                 if (settings == null)
-                    settings = Settings.Default;
+                    settings = MachineSettings.Default;
+
+                settings._settingsName = settingsName;
+
                 return settings;
             }
             catch (Exception)
             {
-                return Settings.Default;
+                return MachineSettings.Default;
             }
         }
 
@@ -147,23 +154,19 @@ namespace LagoVista.GCode.Sender
                 errs.Add("Machine Name is Requried.");
             }
 
-          
             return errs;
         }
 
         public double ProbeOffset { get; set; }
 
-        public async Task SaveAsync()
-        {
-            await Services.Storage.StoreAsync(this, "Settings.json");
-        }
 
-        public static Settings Default
+        public static MachineSettings Default
         {
             get
             {
-                return new Settings()
+                return new MachineSettings()
                 {
+                    Id = Guid.NewGuid().ToString(),
                     MachineName = "",
                     ProbeOffset = 0.0,
                     ControllerBufferSize = 120,

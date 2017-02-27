@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
+        Closing="Window_Closing"
         WindowStartupLocation="CenterOwner"
         Title="SettingsWindow" Height="350" Width="400">
     <Window.Resources>
@@ -45,7 +46,7 @@
                     <ColumnDefinition Width="80" />
                 </Grid.ColumnDefinitions>
                 <Label Grid.Row="0" Grid.Column="0" Content="Name" />
-                <TextBox Text="{Binding Machine.Settings.MachineName, Mode=TwoWay}" Grid.Column="1" />
+                <TextBox Text="{Binding Machine.Settings.MachineName, Mode=TwoWay}" Grid.Column="1" x:Name="MachineName" />
 
                 <Label Grid.Row="1" Content="Machine Type" />
                 <ComboBox Grid.Row="1" 

@@ -9,6 +9,6 @@ namespace LagoVista.GCode.Sender.Interfaces
 {
     public interface IToolChangeManager
     {
-        Task HandleToolChange(MCode cmd);
+        Task HandleToolChange(ToolChangeCommand cmd);
     }
 }

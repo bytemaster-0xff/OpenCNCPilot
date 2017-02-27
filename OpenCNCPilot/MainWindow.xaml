@@ -22,24 +22,37 @@
         </Grid.RowDefinitions>
         <Menu>
             <MenuItem Header="File"  >
-                <MenuItem Header="New HeightMap" x:Name="NewHeigtMap" Click="NewHeigtMap_Click" />
-                <MenuItem Header="New Generated HeightMap" x:Name="NewGeneratedHeigtMap" Click="NewGeneratedHeigtMap_Click" />
-                <MenuItem Header="Edit HeightMap" x:Name="EditHeightMap" Click="EditHeightMap_Click"/>
-                <Separator />
-                <MenuItem Header="Open Eagle Board File" Command="{Binding OpenGCodeFileCommand}" />
                 <MenuItem Header="Open GCode File" Command="{Binding OpenGCodeFileCommand}" />
-                <MenuItem Header="Open HeightMap"  Command="{Binding OpenHeightMapCommand}" />
                 <MenuItem Header="Close GCode File" Command="{Binding CloseFileCommand}" />
                 <Separator />
-                <MenuItem  Header="Close" Click="CloseMenu_Click" />
+                <MenuItem  Header="Exit" Click="CloseMenu_Click" />
+            </MenuItem>
+            <MenuItem Header="PCB" >
+                <MenuItem Header="Open Eagle Board File" Command="{Binding OpenEagleBoardFileCommand}" />
+                <MenuItem Header="Close PCB" Command="{Binding OpenEagleBoardFileCommand}" />
+            </MenuItem>
+            <MenuItem Header="Height Map" >
+                <MenuItem Header="New HeightMap" x:Name="NewHeigtMap" Click="NewHeigtMap_Click" />
+                <MenuItem Header="New Generated HeightMap" x:Name="NewGeneratedHeigtMap" Click="NewGeneratedHeigtMap_Click" />
+                <MenuItem Header="Open HeightMap"  Command="{Binding OpenHeightMapCommand}" />
+                <Separator />
+                <MenuItem Header="Edit HeightMap" x:Name="EditHeightMap" Click="EditHeightMap_Click"/>
+                <MenuItem Header="Apply HeightMap"  Command="{Binding ApplyHeightMapCommand}" />
+                <MenuItem Header="Save Updated Board"  Command="{Binding SaveModifiedBoardCommand}" />
+                <Separator />
+                <MenuItem  Header="Close Height Map" Click="CloseMenu_Click" />
             </MenuItem>
             <MenuItem Header="Settings" >
                 <MenuItem x:Name="SettingsMenu" Click="SettingsMenu_Click" Header="Machine Settings" />
                 <MenuItem Header="Set Inches" Command="{Binding SetImperialUnitsCommand}" />
-                <MenuItem Header="Set Millimeters" Command="{Binding OpenGCodeFileCommand}" />
+                <MenuItem Header="Set Millimeters" Command="{Binding SetMetricUnitsCommand}" />
             </MenuItem>
 
-            <MenuItem Header="Machines" x:Name="MachinesMenu" />
+            <MenuItem Header="Machines" x:Name="MachinesMenu" >
+                <MenuItem Header="New Machine Profile" Command="{Binding NewMachineProfileCommand}" />
+                <MenuItem x:Name="EditMachineMenu" Header="New Machine Profile" Click="EditMachineMenu_Click" />
+
+            </MenuItem>
         </Menu>
 
         <Grid Grid.Row="2">
@@ -55,7 +68,6 @@
                     <RowDefinition Height="160" />
                     <RowDefinition Height="36" />
                 </Grid.RowDefinitions>
-                <ctls:MachineStatusControl Grid.Row="1" Grid.Column="1" Width="170" Height="160" HorizontalAlignment="RIght" VerticalAlignment="Bottom" />
 
                 <ctls:JobControl Grid.ColumnSpan="2" DataContext="{Binding JobControlVM}" />
 
@@ -63,6 +75,7 @@
 
                 <ctls:CurrentFileControl x:Name="CurrentFile"  Grid.Row="2"/>
                 <ctls:MachineResponseControl x:Name="MachineResponse" Grid.Row="2" Grid.Column="1" />
+                <ctls:MachineStatusControl Grid.Row="1" Grid.Column="1" Width="200" Height="130" HorizontalAlignment="RIght" VerticalAlignment="Bottom" />
 
                 <ctls:MachineControl  Grid.Column="2" Grid.RowSpan="2" DataContext="{Binding MachineControlVM}"  />
                 <ctls:ImageSensorControl x:Name="ImageSensor" HorizontalAlignment="Right" VerticalAlignment="Bottom" Grid.RowSpan="2" Grid.Column="2" Grid.Row="2" />

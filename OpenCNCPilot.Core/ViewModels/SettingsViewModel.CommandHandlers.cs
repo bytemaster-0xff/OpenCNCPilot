@@ -11,7 +11,7 @@ namespace LagoVista.GCode.Sender.ViewModels
 
         public async void SaveSettingsAsync()
         {
-            await Machine.Settings.SaveAsync();
+            await Machine.MachineRepo.SaveAsync();
         }
 
         public void Cancel()

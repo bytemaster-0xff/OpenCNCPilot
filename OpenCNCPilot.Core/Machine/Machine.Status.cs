@@ -108,12 +108,12 @@ namespace LagoVista.GCode.Sender
        
         public bool HasBufferSpaceAvailableForByteCount(int bytes)
         {
-            return bytes < (_settings.ControllerBufferSize - UnacknowledgedBytesSent);
+            return bytes < (Settings.ControllerBufferSize - UnacknowledgedBytesSent);
         }
 
         public void AddStatusMessage(StatusMessageTypes type, string message, MessageVerbosityLevels verbosityLevel = MessageVerbosityLevels.Normal)
         {
-            if (Settings != null && verbosityLevel >= Settings.MessageVerbosity)
+            if (IsInitialized &&  Settings != null && verbosityLevel >= Settings.MessageVerbosity)
             {
                 Services.DispatcherServices.Invoke(() =>
                 {
@@ -122,6 +122,17 @@ namespace LagoVista.GCode.Sender
                     Messages.Add(Models.StatusMessage.Create(type, message));
                     RaisePropertyChanged(nameof(MessageCount));
                 });
+            }
+            else
+            {
+                Services.DispatcherServices.Invoke(() =>
+                {
+                    Debug.WriteLine($"{DateTime.Now.ToString()}  {type} - {message}");
+
+                    Messages.Add(Models.StatusMessage.Create(type, message));
+                    RaisePropertyChanged(nameof(MessageCount));
+                });
+
             }
         }
     }

@@ -15,8 +15,9 @@ namespace LagoVista.GCode.Sender
 {
     public partial class Machine : IMachine
     {
-        Settings _settings;
         CancellationToken _cancelToken;
+
+        MachinesRepo _machineRepo;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -31,14 +32,12 @@ namespace LagoVista.GCode.Sender
             HeightMapManager = new Managers.HeightMapManager(this, Core.PlatformSupport.Services.Logger, BoardManager);
             ProbingManager = new Managers.ProbingManager(this, Core.PlatformSupport.Services.Logger);
             MachineVisionManager = new Managers.MachineVisionManager(this, Core.PlatformSupport.Services.Logger, BoardManager);
-
-            /* Have defaults loaded until the real settings come in */
-            _settings = Settings.Default;
         }
 
         public async Task InitAsync()
         {
-            _settings = await Settings.LoadAsync();
+            _machineRepo = await MachinesRepo.LoadAsync();
+
             RaisePropertyChanged(nameof(Settings));
        
             IsInitialized = true;

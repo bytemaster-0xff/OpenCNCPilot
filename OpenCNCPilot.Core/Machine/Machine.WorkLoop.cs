@@ -76,9 +76,9 @@ namespace LagoVista.GCode.Sender
 
             if (Mode == OperatingMode.Manual)
             {
-                if ((Now - _lastPollTime).TotalMilliseconds > _settings.StatusPollIntervalIdle)
+                if ((Now - _lastPollTime).TotalMilliseconds > Settings.StatusPollIntervalIdle)
                 {
-                    if (_settings.MachineType == FirmwareTypes.GRBL1_1)
+                    if (Settings.MachineType == FirmwareTypes.GRBL1_1)
                     {
                         Enqueue("?", true);
                     }
@@ -92,7 +92,7 @@ namespace LagoVista.GCode.Sender
             }
             else if (Mode == OperatingMode.SendingGCodeFile)
             {
-                if ((Now - _lastPollTime).TotalMilliseconds > _settings.StatusPollIntervalRunning)
+                if ((Now - _lastPollTime).TotalMilliseconds > Settings.StatusPollIntervalRunning)
                 {
                     MachinePosition = GCodeFileManager.CurrentCommand.CurrentPosition;
                     _lastPollTime = Now;
@@ -100,9 +100,9 @@ namespace LagoVista.GCode.Sender
             }
             else if(Mode == OperatingMode.ProbingHeightMap)
             {
-                if ((Now - _lastPollTime).TotalMilliseconds > _settings.StatusPollIntervalRunning)
+                if ((Now - _lastPollTime).TotalMilliseconds > Settings.StatusPollIntervalRunning)
                 {
-                    if (_settings.MachineType == FirmwareTypes.GRBL1_1)
+                    if (Settings.MachineType == FirmwareTypes.GRBL1_1)
                     {
                         Enqueue("?", true);
                     }
@@ -120,7 +120,7 @@ namespace LagoVista.GCode.Sender
 
         private bool ShouldSendNormalPriorityItems()
         {
-            return _toSend.Count > 0 && ((_toSend.Peek().ToString()).Length + 1) < (_settings.ControllerBufferSize - UnacknowledgedBytesSent);
+            return _toSend.Count > 0 && ((_toSend.Peek().ToString()).Length + 1) < (Settings.ControllerBufferSize - UnacknowledgedBytesSent);
         }
 
         private bool ShouldSendJobItems()
@@ -183,7 +183,7 @@ namespace LagoVista.GCode.Sender
 
                 UnacknowledgedBytesSent = 0;
 
-                if (_settings.MachineType == FirmwareTypes.GRBL1_1)
+                if (Settings.MachineType == FirmwareTypes.GRBL1_1)
                 {
                     Enqueue("\n$G\n", true);
                 }

@@ -40,7 +40,7 @@ namespace LagoVista.GCode.Sender.Managers
             HasValidFile = false;
         }
 
-        private async void HandleToolChange(MCode mcode)
+        private async void HandleToolChange(ToolChangeCommand mcode)
         {
             await _toolChangeManager.HandleToolChange(mcode);
             _pendingToolChangeLine = null;
@@ -62,8 +62,7 @@ namespace LagoVista.GCode.Sender.Managers
                 _machine.HasBufferSpaceAvailableForByteCount(_file.Commands[Head].MessageLength))
             {
                 /* If Next Command up is a Tool Change, set the nullable property to that line and bail. */
-                if (Head  < _file.Commands.Count &&
-                     (_file.Commands[Head].Command == "M06" || _file.Commands[Head].Command == "M6"))
+                if (Head  < _file.Commands.Count && _file.Commands[Head] is ToolChangeCommand)
                 {
                     _pendingToolChangeLine = Head;
                     Head++;
@@ -95,7 +94,7 @@ namespace LagoVista.GCode.Sender.Managers
 
             if (_pendingToolChangeLine != null && _pendingToolChangeLine.Value == Tail)
             {
-                HandleToolChange(_file.Commands[Tail] as MCode);
+                HandleToolChange(_file.Commands[Tail] as ToolChangeCommand);
             }
 
             return sentCommandLength;

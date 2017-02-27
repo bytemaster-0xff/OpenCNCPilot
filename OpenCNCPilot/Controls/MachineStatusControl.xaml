@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:LagoVista.GCode.Sender.Application.Controls"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="200" d:DesignWidth="200">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
@@ -14,10 +14,12 @@
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
+
             <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="120" />
+            <ColumnDefinition Width="95" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Grid.Resources>
@@ -28,7 +30,7 @@
                 <Setter Property="FontWeight" Value="Bold" />
             </Style>
          </Grid.Resources>
-        <Rectangle Fill="Gray" Opacity="0.15" Grid.RowSpan="7" Grid.ColumnSpan="2" />
+        <Rectangle Fill="Gray" Opacity="0.15" Grid.RowSpan="8" Grid.ColumnSpan="2" />
         <TextBlock Text="Buffer:" Margin="0,0,5,0" />
         <StackPanel Orientation="Horizontal" Grid.Column="1">
             <TextBlock Style="{StaticResource Value}" Text="{Binding Machine.UnacknowledgedBytesSent, Mode=OneWay, FallbackValue=20}"/>

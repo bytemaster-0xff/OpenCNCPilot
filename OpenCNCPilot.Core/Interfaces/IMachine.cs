@@ -89,6 +89,9 @@ namespace LagoVista.GCode.Sender.Interfaces
         /// </summary>
         IProbingManager ProbingManager { get; }
 
+        MachinesRepo MachineRepo { get; }
+
+
         /// <summary>
         /// Is the machine currently connected
         /// </summary>
@@ -185,6 +188,6 @@ namespace LagoVista.GCode.Sender.Interfaces
         /// <summary>
         /// Current settings as to be used by the machine.
         /// </summary>
-        Settings Settings { get; }
+        MachineSettings Settings { get; }
     }
 }

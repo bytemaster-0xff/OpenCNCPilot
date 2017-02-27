@@ -44,11 +44,31 @@ namespace LagoVista.GCode.Sender.Application
             get { return DataContext as SettingsViewModel; }
         }
 
+
         private async void SettingsWindow_Closed(object sender, EventArgs e)
         {
-            await _machine.Settings.SaveAsync();
+            await _machine.MachineRepo.SaveAsync();
         }
 
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if(String.IsNullOrEmpty(_machine.Settings.MachineName))
+            {
+                MessageBox.Show("Machine Name is a Required Field");
+                Tabs.TabIndex = 0;
+                MachineName.Focus();
+                e.Cancel = true;
+                return;
+            }
 
-	}
+            if (String.IsNullOrEmpty(ViewModel.MachineType))
+            {
+                MessageBox.Show("Machine Type is a Required Field");
+                Tabs.TabIndex = 0;
+                MachineName.Focus();
+                e.Cancel = true;
+                return;
+            }
+        }
+    }
 }
