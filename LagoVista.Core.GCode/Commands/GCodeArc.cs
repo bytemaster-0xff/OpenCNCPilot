@@ -11,6 +11,7 @@ namespace LagoVista.Core.GCode.Commands
         public double U;    //absolute position of center in first axis of plane
         public double V;    //absolute position of center in second axis of plane
 
+
         public override double Length
         {
             get

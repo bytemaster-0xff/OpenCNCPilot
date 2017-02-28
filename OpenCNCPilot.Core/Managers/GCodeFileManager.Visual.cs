@@ -1,4 +1,6 @@
 ﻿using LagoVista.Core.GCode.Commands;
+using System.Collections.Generic;
+using System;
 using LagoVista.GCode.Sender.Models;
 
 namespace LagoVista.GCode.Sender.Managers
@@ -11,10 +13,10 @@ namespace LagoVista.GCode.Sender.Managers
 
             foreach (var cmd in _file.Commands)
             {
-                if(cmd is GCodeLine)
+                if (cmd is GCodeLine)
                 {
                     var gcodeLine = cmd as GCodeLine;
-                    if(gcodeLine.Rapid)
+                    if (gcodeLine.Rapid)
                     {
                         RapidMoves.Add(new Line3D()
                         {
@@ -32,14 +34,19 @@ namespace LagoVista.GCode.Sender.Managers
                     }
                 }
 
-                if(cmd is GCodeArc)
+                if (cmd is GCodeArc)
                 {
-                    var gcodeArc = cmd as GCodeArc;
-                    Arcs.Add(new Line3D()
+                    var arc = cmd as GCodeArc;
+                    var segmentLength = arc.Length / 50;
+                    var segments = (cmd as GCodeArc).Split(segmentLength);
+                    foreach (var segment in segments)
                     {
-                        Start = gcodeArc.Start,
-                        End = gcodeArc.End
-                    });
+                        Arcs.Add(new Line3D()
+                        {
+                            Start = segment.Start,
+                            End = segment.End
+                        });
+                    }
                 }
             }
 
