@@ -9,40 +9,53 @@ namespace LagoVista.GCode.Sender
 {
     public class MachinesRepo
     {
+        public const string FileName = "Machines.json";
+
         public string CurrentMachineId { get; set; }
         public List<MachineSettings> Machines { get; set; }
 
-        public MachineSettings CurrentMachine { get; set; }
 
         public async static Task<MachinesRepo> LoadAsync()
         {
             try
             {
-                var machines = await Services.Storage.GetAsync<MachinesRepo>("machines.json");
+                var machines = await Services.Storage.GetAsync<MachinesRepo>(MachinesRepo.FileName);
 
                 if (machines == null)
                 {
-                    machines.Machines = new List<MachineSettings>();
-                    machines.CurrentMachine = MachineSettings.Default;
-                    machines.CurrentMachineId = machines.CurrentMachineId;
+                    machines = MachinesRepo.Default;
                 }
 
                 return machines;
             }
             catch (Exception)
             {
-                var machines = new MachinesRepo();
-                machines.Machines = new List<MachineSettings>();
-                machines.CurrentMachine = MachineSettings.Default;
-                return machines;
-
+                return MachinesRepo.Default;
             }
         }
 
+        public MachineSettings GetCurrentMachine()
+        {
+            return Machines.Where(machine => machine.Id == CurrentMachineId).First();
+        }
+
+        public static MachinesRepo Default
+        {
+            get
+            {
+                var repo = new MachinesRepo();
+                repo.Machines = new List<MachineSettings>();
+                var defaultMachine = MachineSettings.Default;
+                repo.Machines.Add(defaultMachine);
+                repo.CurrentMachineId = defaultMachine.Id;
+
+                return repo;
+            }
+        }
 
         public async Task SaveAsync()
         {
-            await Services.Storage.StoreAsync(this, "machines.json");
+            await Services.Storage.StoreAsync(this, MachinesRepo.FileName);
         }
 
     }

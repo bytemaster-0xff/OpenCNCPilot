@@ -15,12 +15,14 @@ namespace LagoVista.GCode.Sender.Application
 	/// </summary>
 	public partial class SettingsWindow : Window
 	{
-        IMachine _machine;
 
-        public SettingsWindow(IMachine machine, int index = 0)
+        MachineSettings _settings;
+
+        public SettingsWindow(IMachine machine, MachineSettings settings, int index = 0)
 		{
-            _machine = machine;
-            DataContext = new SettingsViewModel(machine);
+            _settings = settings;
+
+            DataContext = new SettingsViewModel(machine, _settings);
             var cameras = DsDevice.GetDevicesOfCat(FilterCategory.VideoInputDevice);
             var idx = 0;
             foreach (var camera in cameras)
@@ -36,8 +38,6 @@ namespace LagoVista.GCode.Sender.Application
             InitializeComponent();
 
             Tabs.SelectedIndex = index;
-            
-            Closed += SettingsWindow_Closed;
 		}
         public SettingsViewModel ViewModel
         {
@@ -45,19 +45,13 @@ namespace LagoVista.GCode.Sender.Application
         }
 
 
-        private async void SettingsWindow_Closed(object sender, EventArgs e)
+        private void Save_Click(object sender, RoutedEventArgs e)
         {
-            await _machine.MachineRepo.SaveAsync();
-        }
-
-        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            if(String.IsNullOrEmpty(_machine.Settings.MachineName))
+            if (String.IsNullOrEmpty(_settings.MachineName))
             {
                 MessageBox.Show("Machine Name is a Required Field");
                 Tabs.TabIndex = 0;
                 MachineName.Focus();
-                e.Cancel = true;
                 return;
             }
 
@@ -66,9 +60,17 @@ namespace LagoVista.GCode.Sender.Application
                 MessageBox.Show("Machine Type is a Required Field");
                 Tabs.TabIndex = 0;
                 MachineName.Focus();
-                e.Cancel = true;
                 return;
             }
+
+            DialogResult = true;
+            Close();
+        }
+
+        private void Cancel_Click(object sender, RoutedEventArgs e)
+        {
+            DialogResult = false;
+            Close();
         }
     }
 }

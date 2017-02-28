@@ -49,9 +49,9 @@
             </MenuItem>
 
             <MenuItem Header="Machines" x:Name="MachinesMenu" >
-                <MenuItem Header="New Machine Profile" Command="{Binding NewMachineProfileCommand}" />
-                <MenuItem x:Name="EditMachineMenu" Header="New Machine Profile" Click="EditMachineMenu_Click" />
-
+                <MenuItem Header="New" x:Name="NewMachinePRofile" Click="NewMachinePRofile_Click" />
+                <MenuItem x:Name="EditMachineMenu" Header="Edit" Click="EditMachineMenu_Click" />
+                <Separator />
             </MenuItem>
         </Menu>
 
@@ -75,7 +75,7 @@
 
                 <ctls:CurrentFileControl x:Name="CurrentFile"  Grid.Row="2"/>
                 <ctls:MachineResponseControl x:Name="MachineResponse" Grid.Row="2" Grid.Column="1" />
-                <ctls:MachineStatusControl Grid.Row="1" Grid.Column="1" Width="200" Height="130" HorizontalAlignment="RIght" VerticalAlignment="Bottom" />
+                <ctls:MachineStatusControl Grid.Row="1" Grid.Column="1" Width="200" Height="150" HorizontalAlignment="RIght" VerticalAlignment="Bottom" />
 
                 <ctls:MachineControl  Grid.Column="2" Grid.RowSpan="2" DataContext="{Binding MachineControlVM}"  />
                 <ctls:ImageSensorControl x:Name="ImageSensor" HorizontalAlignment="Right" VerticalAlignment="Bottom" Grid.RowSpan="2" Grid.Column="2" Grid.Row="2" />

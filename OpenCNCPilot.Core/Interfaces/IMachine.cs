@@ -188,6 +188,6 @@ namespace LagoVista.GCode.Sender.Interfaces
         /// <summary>
         /// Current settings as to be used by the machine.
         /// </summary>
-        MachineSettings Settings { get; }
+        MachineSettings Settings { get; set; }
     }
 }

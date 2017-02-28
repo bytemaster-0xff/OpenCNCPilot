@@ -21,8 +21,10 @@ namespace LagoVista.GCode.Sender
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public Machine()
+        public Machine(MachinesRepo repo)
         {
+            _machineRepo = repo;
+
             Messages = new System.Collections.ObjectModel.ObservableCollection<Models.StatusMessage>();
             AddStatusMessage(StatusMessageTypes.Info, "Startup.");
 
@@ -34,13 +36,11 @@ namespace LagoVista.GCode.Sender
             MachineVisionManager = new Managers.MachineVisionManager(this, Core.PlatformSupport.Services.Logger, BoardManager);
         }
 
-        public async Task InitAsync()
+        public Task InitAsync()
         {
-            _machineRepo = await MachinesRepo.LoadAsync();
-
-            RaisePropertyChanged(nameof(Settings));
-       
             IsInitialized = true;
+
+            return Task.FromResult(default(object));
         }
 
         public void RaisePropertyChanged([CallerMemberName]string propertyName = "")

@@ -14,7 +14,7 @@ namespace LagoVista.GCode.Sender.ViewModels
 
         public String SelectedPortId
         {
-            get { return Machine.Settings.CurrentSerialPort.Id; }
+            get { return Settings.CurrentSerialPort.Id; }
             set
             {
                 var port = SerialPorts.Where(prt => prt.Id == value).FirstOrDefault();
@@ -25,7 +25,7 @@ namespace LagoVista.GCode.Sender.ViewModels
                     port.BaudRate = 115200;
                 }
 
-                Machine.Settings.CurrentSerialPort = port;
+                Settings.CurrentSerialPort = port;
             }
         }
 
@@ -36,29 +36,29 @@ namespace LagoVista.GCode.Sender.ViewModels
 
         public string MessgeOutputLevel
         {
-            get { return Machine.Settings.MessageVerbosity.ToString(); }
+            get { return Settings.MessageVerbosity.ToString(); }
             set
             {
-                Machine.Settings.MessageVerbosity = (MessageVerbosityLevels)Enum.Parse(typeof(MessageVerbosityLevels), value);
+                Settings.MessageVerbosity = (MessageVerbosityLevels)Enum.Parse(typeof(MessageVerbosityLevels), value);
             }
         }
 
         public String GCodeJogCommand
         {
-            get { return Machine.Settings.JogGCodeCommand.ToString(); }
+            get { return Settings.JogGCodeCommand.ToString(); }
             set
             {
-                Machine.Settings.JogGCodeCommand = (JogGCodeCommand)Enum.Parse(typeof(JogGCodeCommand), value);
+                Settings.JogGCodeCommand = (JogGCodeCommand)Enum.Parse(typeof(JogGCodeCommand), value);
             }
         }
 
         public String MachineOrigin
         {
-            get { return Machine.Settings.MachineOrigin.ToString().Replace("_", " "); }
+            get { return Settings.MachineOrigin.ToString().Replace("_", " "); }
             set
             {
                 var newValue = value.Replace(" ", "_");
-                Machine.Settings.MachineOrigin = (MachineOrigin)Enum.Parse(typeof(MachineOrigin), newValue);
+                Settings.MachineOrigin = (MachineOrigin)Enum.Parse(typeof(MachineOrigin), newValue);
             }
         }
 
@@ -68,21 +68,26 @@ namespace LagoVista.GCode.Sender.ViewModels
         {
             get
             {
-                return Machine.Settings.PositioningCamera != null ? Machine.Settings.PositioningCamera.Id : "";
+                return Settings.PositioningCamera != null ? Settings.PositioningCamera.Id : "";
             }
             set
             {
                 if(value != null)
                 {
-                    Machine.Settings.PositioningCamera = Cameras.Where(cmr => cmr.Id == value).FirstOrDefault();
+                    Settings.PositioningCamera = Cameras.Where(cmr => cmr.Id == value).FirstOrDefault();
                 }
             }
         }
 
         public String MachineType
         {
-            get { return Machine.Settings.MachineType.ToString().Replace("_","."); }
-            set { Machine.Settings.MachineType = (FirmwareTypes)Enum.Parse(typeof(FirmwareTypes), value.Replace(".", "_")); }
+            get { return Settings.MachineType.ToString().Replace("_","."); }
+            set { Settings.MachineType = (FirmwareTypes)Enum.Parse(typeof(FirmwareTypes), value.Replace(".", "_")); }
+        }
+
+        public MachineSettings Settings
+        {
+            get { return _settings; }
         }
 
         public ObservableCollection<SerialPortInfo> SerialPorts { get; private set; }

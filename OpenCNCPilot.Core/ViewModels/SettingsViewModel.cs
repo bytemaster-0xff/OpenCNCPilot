@@ -6,29 +6,47 @@ using LagoVista.GCode.Sender.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
 namespace LagoVista.GCode.Sender.ViewModels
 {
-    public partial class SettingsViewModel : GCodeAppViewModelBase
+    public partial class SettingsViewModel : INotifyPropertyChanged
     {
-        public SettingsViewModel(IMachine machine) : base(machine)
+        MachineSettings _settings;
+        IMachine _machine;
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+
+        public void RaisePropertyChanged([CallerMemberName]string propertyName = "")
         {
+            Services.DispatcherServices.Invoke(() =>
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName))
+            );
+        }
+
+        public SettingsViewModel(IMachine machine, MachineSettings settings) //: base(machine)
+        {
+
             Cameras = new List<Models.Camera>();
+            _settings = settings;
+            _machine = machine;
             InitComamnds();
             Init();
         }
 
-        public override async void Init()
+        public async void Init()
         {
             await InitAsync();
         }
 
-        public override async Task InitAsync()
+        public async Task InitAsync()
         {
-            if (Machine.Settings.CurrentSerialPort == null)
+            if (Settings.CurrentSerialPort == null)
             {
-                Machine.Settings.CurrentSerialPort = new SerialPortInfo()
+                Settings.CurrentSerialPort = new SerialPortInfo()
                 {
                     Id = "empty",
                     Name = "-select-"

@@ -11,13 +11,12 @@ namespace LagoVista.GCode.Sender.ViewModels
     {
         private void InitComamnds()
         {
-            SaveCommand = new RelayCommand(SaveSettingsAsync);
             CancelCommand = new RelayCommand(Cancel);
         }
 
         public bool CanChangeMachineConfig
         {
-            get { return !Machine.Connected; }
+            get { return !_machine.Connected; }
         }
 
 

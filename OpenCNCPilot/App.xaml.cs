@@ -1,5 +1,6 @@
 ﻿using LagoVista.Core.WPF.PlatformSupport;
-
+using Newtonsoft.Json;
+using System;
 using System.Threading.Tasks;
 
 namespace LagoVista.GCode.Sender.Application
@@ -17,7 +18,6 @@ namespace LagoVista.GCode.Sender.Application
 
             WPFDeviceServices.Init(Dispatcher);
         }
-
 
         public new static App Current { get { return _app; } }
     }

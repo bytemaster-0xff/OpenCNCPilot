@@ -159,6 +159,10 @@ namespace LagoVista.GCode.Sender
 
         public double ProbeOffset { get; set; }
 
+        public MachineSettings Clone()
+        {
+            return this.MemberwiseClone() as MachineSettings;
+        }
 
         public static MachineSettings Default
         {
@@ -167,7 +171,7 @@ namespace LagoVista.GCode.Sender
                 return new MachineSettings()
                 {
                     Id = Guid.NewGuid().ToString(),
-                    MachineName = "",
+                    MachineName = "Machine 1",
                     ProbeOffset = 0.0,
                     ControllerBufferSize = 120,
                     StatusPollIntervalIdle = 1000,

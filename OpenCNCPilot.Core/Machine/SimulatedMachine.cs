@@ -195,7 +195,11 @@ namespace LagoVista.GCode.Sender
 
             var line = _parser.CleanupLine(cmd, idx);
             var parsedLine = _parser.ParseMotionLine(line, idx);
-
+            if(parsedLine == null)
+            {
+                AddResponse("ok");
+                return;
+            }
          
             if (parsedLine.Command == "G0" || 
                 parsedLine.Command == "G1" || 

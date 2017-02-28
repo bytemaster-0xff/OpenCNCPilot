@@ -42,6 +42,7 @@ namespace LagoVista.GCode.Sender.ViewModels
             GotoWorkspaceHomeCommand = new RelayCommand(GotoWorkspaceHome, CanMove);
 
             Machine.PropertyChanged += _machine_PropertyChanged;
+            Machine.Settings.PropertyChanged += _machine_PropertyChanged;
             Machine.HeightMapManager.PropertyChanged += HeightMapManager_PropertyChanged;
             Machine.GCodeFileManager.PropertyChanged += GCodeFileManager_PropertyChanged;
         }
@@ -129,8 +130,10 @@ namespace LagoVista.GCode.Sender.ViewModels
         {
             if (e.PropertyName == nameof(Machine.IsInitialized) ||
                 e.PropertyName == nameof(Machine.Mode) ||
+                e.PropertyName == nameof(Machine.Settings) ||
                 e.PropertyName == nameof(Machine.Status) ||
-                e.PropertyName == nameof(Machine.Connected))
+                e.PropertyName == nameof(Machine.Connected) ||
+                e.PropertyName == nameof(Machine.Settings.CurrentSerialPort))
             {
                 DispatcherServices.Invoke(RefreshCommandExecuteStatus);
             }

@@ -122,17 +122,14 @@ namespace LagoVista.GCode.Sender
             get { return _machineRepo; }
         }
 
+        MachineSettings _settings;
         public MachineSettings Settings
         {
-            get {
-                if (_machineRepo == null || _machineRepo.CurrentMachine == null)
-                    return MachineSettings.Default;
-
-                return _machineRepo.CurrentMachine;
-            }
+            get { return _settings;}
             set
             {
-                _machineRepo.CurrentMachine = value;
+                _settings = value;
+                _machineRepo.CurrentMachineId = value.Id;
                 RaisePropertyChanged();
             }
         }

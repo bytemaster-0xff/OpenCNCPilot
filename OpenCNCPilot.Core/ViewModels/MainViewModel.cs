@@ -5,9 +5,10 @@ namespace LagoVista.GCode.Sender.ViewModels
 {
     public partial class MainViewModel : GCodeAppViewModelBase
     {
-        public MainViewModel() : base()
+        public MainViewModel(MachinesRepo repo) : base()
         {
-            Machine = new Machine();
+            Machine = new Machine(repo);
+            Machine.Settings = repo.GetCurrentMachine();
 
             InitCommands();
             InitChildViewModels();
