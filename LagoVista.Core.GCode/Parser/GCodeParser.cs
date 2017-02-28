@@ -269,6 +269,13 @@ namespace LagoVista.Core.GCode.Parser
                 words.Remove(feedRateCommand);
             }
 
+            var spindleRPM = words.Where(wrd => wrd.Command == 'S').FirstOrDefault();
+            if (spindleRPM != null)
+            {
+                State.SpindleRPM = spindleRPM.Parameter;
+                words.Remove(spindleRPM);
+            }
+
             //TODO: We likely care about this at some point, not today though
             var radiusCommand = words.Where(wrd => wrd.Command == 'R').FirstOrDefault();
             if (radiusCommand != null)
@@ -297,6 +304,7 @@ namespace LagoVista.Core.GCode.Parser
                         var motion = (motionMode <= 1) ? ParseLine(words, motionMode, EndPos) : ParseArc(words, motionMode, EndPos, UnitMultiplier);
                         motion.Line = line;
                         motion.Feed = State.Feed;
+                        motion.SpindlePRM = State.SpindleRPM;
                         motion.LineNumber = lineNumber;
                         State.Position = EndPos;
 

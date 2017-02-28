@@ -25,6 +25,15 @@ namespace LagoVista.Core.GCode.Parser
                     continue;
                 }
 
+                /* ???? */ 
+                var unknown = words.Where(wrd => wrd.Command == 'B').FirstOrDefault();
+                if (unknown != null)
+                {
+                    words.Remove(unknown);
+                    continue;
+                }
+
+
                 if (words.First().Command == 'G' && !MotionCommands.Contains(words.First().Parameter))
                 {
                     #region UnitPlaneDistanceMode

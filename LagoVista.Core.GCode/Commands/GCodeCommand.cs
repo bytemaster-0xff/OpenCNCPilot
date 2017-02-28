@@ -20,6 +20,8 @@ namespace LagoVista.Core.GCode.Commands
             set { Set(ref _status, value); }
         }
 
+        public double SpindlePRM { get; set; }
+
         public double Feed { get; set; }
 
         public string Line { get; set; }

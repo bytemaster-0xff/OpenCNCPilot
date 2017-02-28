@@ -178,7 +178,15 @@ namespace LagoVista.Core.GCode.Parser
         private GCodeMotion ParseLine(List<Word> Words, int MotionMode, Vector3 EndPos)
         {
             if (Words.Count > 0)
-                throw new Exception("Motion Command must be last in line (unused Words in Block)");
+            {
+                var bldr = new StringBuilder();
+                foreach(var word in Words)
+                {
+                    bldr.Append(word.FullWord + "; ");
+                }
+
+                throw new Exception("Motion Command must be last in line Unparsed words in block => " + bldr.ToString());
+            }
 
             var motion = new GCodeLine();
             motion.Start = State.Position;
