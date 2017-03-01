@@ -33,8 +33,8 @@ namespace LagoVista.GCode.Sender.Application.Controls
             return;
             var linePoints = new Point3DCollection();
 
-              var doc = XDocument.Load("./KegeratorController.brd");
-           // var doc = XDocument.Load("./EagleSample.brd");
+            var doc = XDocument.Load("./KegeratorController.brd");
+            // var doc = XDocument.Load("./EagleSample.brd");
             var pcb = EagleParser.ReadPCB(doc);
 
             var modelGroup = new Model3DGroup();
@@ -86,8 +86,8 @@ namespace LagoVista.GCode.Sender.Application.Controls
 
 
             var cornerWires = pcb.Layers.Where(layer => layer.Number == 20).FirstOrDefault().Wires.Where(wire => wire.Curve.HasValue == true);
-            var radius = cornerWires.Any() ?  cornerWires.First().Rect.X2 : 0;
-            if(radius == 0)
+            var radius = cornerWires.Any() ? cornerWires.First().Rect.X2 : 0;
+            if (radius == 0)
             {
                 boardEdgeMeshBuilder.AddBox(new Point3D(pcb.Width / 2, pcb.Height / 2, 0), pcb.Width, pcb.Height, 1);
             }
@@ -95,8 +95,8 @@ namespace LagoVista.GCode.Sender.Application.Controls
             {
                 boardEdgeMeshBuilder.AddBox(new Point3D(pcb.Width / 2, pcb.Height / 2, 0), pcb.Width - (radius * 2), pcb.Height - (radius * 2), 1);
                 boardEdgeMeshBuilder.AddBox(new Point3D(pcb.Width / 2, radius / 2, 0), pcb.Width - (radius * 2), radius, 1);
-                boardEdgeMeshBuilder.AddBox(new Point3D(pcb.Width / 2, pcb.Height -  radius / 2, 0), pcb.Width - (radius * 2), radius, 1);
-                boardEdgeMeshBuilder.AddBox(new Point3D(radius / 2, pcb.Height / 2, 0), radius, pcb.Height - (radius * 2),  1);
+                boardEdgeMeshBuilder.AddBox(new Point3D(pcb.Width / 2, pcb.Height - radius / 2, 0), pcb.Width - (radius * 2), radius, 1);
+                boardEdgeMeshBuilder.AddBox(new Point3D(radius / 2, pcb.Height / 2, 0), radius, pcb.Height - (radius * 2), 1);
                 boardEdgeMeshBuilder.AddBox(new Point3D(pcb.Width - radius / 2, pcb.Height / 2, 0), radius, pcb.Height - (radius * 2), 1);
                 boardEdgeMeshBuilder.AddCylinder(new Point3D(radius, radius, -0.5), new Point3D(radius, radius, 0.5), radius, 50, true, true);
                 boardEdgeMeshBuilder.AddCylinder(new Point3D(radius, pcb.Height - radius, -0.5), new Point3D(radius, pcb.Height - radius, 0.5), radius, 50, true, true);
@@ -107,7 +107,7 @@ namespace LagoVista.GCode.Sender.Application.Controls
 
             modelGroup.Children.Add(new GeometryModel3D() { Geometry = boardEdgeMeshBuilder.ToMesh(true), Material = greenMaterial });
 
-    
+
 
             PadsLayer.Content = modelGroup;
         }
@@ -160,17 +160,27 @@ namespace LagoVista.GCode.Sender.Application.Controls
                     _imageMode = ImageModes.Front;
                     break;
                 case "ZoomIn":
-                    Camera.Position = new Point3D(Camera.Position.X - CAMERA_MOVE_DELTA, Camera.Position.Y - CAMERA_MOVE_DELTA, Camera.Position.Z - CAMERA_MOVE_DELTA);
+                    switch (_imageMode)
+                    {
+                        case ImageModes.Front: Camera.Position = new Point3D(Camera.Position.X, Camera.Position.Y * 0.9, Camera.Position.Z * 0.9); break;
+                        case ImageModes.Side: Camera.Position = new Point3D(Camera.Position.X * 0.9, Camera.Position.Y, Camera.Position.Z * 0.9); break;
+                        case ImageModes.Top: Camera.Position = new Point3D(Camera.Position.X * 0.9, Camera.Position.Y * 0.9, Camera.Position.Z); break;
+                    }
                     break;
                 case "ZoomOut":
-                    Camera.Position = new Point3D(Camera.Position.X + CAMERA_MOVE_DELTA, Camera.Position.Y + CAMERA_MOVE_DELTA, Camera.Position.Z + CAMERA_MOVE_DELTA);
+                    switch (_imageMode)
+                    {
+                        case ImageModes.Front: Camera.Position = new Point3D(Camera.Position.X, Camera.Position.Y * 1.1, Camera.Position.Z * 1.1); break;
+                        case ImageModes.Side: Camera.Position = new Point3D(Camera.Position.X * 1.1, Camera.Position.Y, Camera.Position.Z * 1.1); break;
+                        case ImageModes.Top: Camera.Position = new Point3D(Camera.Position.X * 1.1, Camera.Position.Y * 1.1, Camera.Position.Z); break;
+                    }
                     break;
                 case "ShowObject":
                     break;
                 case "ShowAll":
                     break;
                 case "Up":
-                    switch(_imageMode)
+                    switch (_imageMode)
                     {
                         case ImageModes.Front: Camera.Position = new Point3D(Camera.Position.X, Camera.Position.Y, Camera.Position.Z + CAMERA_MOVE_DELTA); break;
                         case ImageModes.Side: Camera.Position = new Point3D(Camera.Position.X, Camera.Position.Y, Camera.Position.Z + CAMERA_MOVE_DELTA); break;
@@ -197,8 +207,8 @@ namespace LagoVista.GCode.Sender.Application.Controls
                     switch (_imageMode)
                     {
                         case ImageModes.Front: Camera.Position = new Point3D(Camera.Position.X - CAMERA_MOVE_DELTA, Camera.Position.Y, Camera.Position.Z); break;
-                        case ImageModes.Side: Camera.Position = new Point3D(Camera.Position.X , Camera.Position.Y + CAMERA_MOVE_DELTA, Camera.Position.Z); break;
-                        case ImageModes.Top: Camera.Position = new Point3D(Camera.Position.X - CAMERA_MOVE_DELTA, Camera.Position.Y, Camera.Position.Z ); break;
+                        case ImageModes.Side: Camera.Position = new Point3D(Camera.Position.X, Camera.Position.Y + CAMERA_MOVE_DELTA, Camera.Position.Z); break;
+                        case ImageModes.Top: Camera.Position = new Point3D(Camera.Position.X - CAMERA_MOVE_DELTA, Camera.Position.Y, Camera.Position.Z); break;
                     }
                     break;
                 case "Center":
@@ -240,7 +250,7 @@ namespace LagoVista.GCode.Sender.Application.Controls
                     switch (_imageMode)
                     {
                         case ImageModes.Front: Camera.Position = new Point3D(Camera.Position.X, Camera.Position.Y + CAMERA_MOVE_DELTA, Camera.Position.Z); break;
-                        case ImageModes.Side: Camera.Position = new Point3D(Camera.Position.X + CAMERA_MOVE_DELTA, Camera.Position.Y, Camera.Position.Z ); break;
+                        case ImageModes.Side: Camera.Position = new Point3D(Camera.Position.X + CAMERA_MOVE_DELTA, Camera.Position.Y, Camera.Position.Z); break;
                     }
 
                     break;
@@ -248,7 +258,7 @@ namespace LagoVista.GCode.Sender.Application.Controls
                     switch (_imageMode)
                     {
                         case ImageModes.Front: Camera.Position = new Point3D(Camera.Position.X, Camera.Position.Y - CAMERA_MOVE_DELTA, Camera.Position.Z); break;
-                        case ImageModes.Side: Camera.Position = new Point3D(Camera.Position.X - CAMERA_MOVE_DELTA, Camera.Position.Y, Camera.Position.Z ); break;
+                        case ImageModes.Side: Camera.Position = new Point3D(Camera.Position.X - CAMERA_MOVE_DELTA, Camera.Position.Y, Camera.Position.Z); break;
                     }
 
                     break;
