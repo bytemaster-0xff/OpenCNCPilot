@@ -78,6 +78,10 @@ namespace LagoVista.GCode.Sender.Interfaces
         /// </summary>
         DateTime EstimatedCompletion { get; }
 
+
+        LagoVista.Core.Models.Drawing.Point3D<double> Min { get; }
+        LagoVista.Core.Models.Drawing.Point3D<double> Max { get; }
+
         /// <summary>
         /// Iterate through all the GCode commands and translate the points in the Z-Axis to take into account the height map.  Note: Credit needs to be give to the original OpenCNCPilot project, this code has been adopted.
         /// </summary>

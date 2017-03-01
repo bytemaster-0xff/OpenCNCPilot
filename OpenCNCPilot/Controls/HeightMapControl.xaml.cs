@@ -29,6 +29,7 @@ namespace LagoVista.GCode.Sender.Application.Controls
 
         private void HeightMapControl_Loaded(object sender, RoutedEventArgs e)
         {
+            ViewModel.Machine.GCodeFileManager.PropertyChanged += GCodeFileManager_PropertyChanged;
 
             return;
             var linePoints = new Point3DCollection();
@@ -107,9 +108,72 @@ namespace LagoVista.GCode.Sender.Application.Controls
 
             modelGroup.Children.Add(new GeometryModel3D() { Geometry = boardEdgeMeshBuilder.ToMesh(true), Material = greenMaterial });
 
-
-
             PadsLayer.Content = modelGroup;
+        }
+
+        private void GCodeFileManager_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if(e.PropertyName == nameof(ViewModel.Machine.GCodeFileManager.Min) ||
+                e.PropertyName == nameof(ViewModel.Machine.GCodeFileManager.Max))
+            {
+                RefreshExtents();
+            }
+        }
+
+        private void RefreshExtents()
+        {
+            if(ViewModel.Machine.GCodeFileManager.Min != null && ViewModel.Machine.GCodeFileManager.Max != null)
+            {
+                switch(_imageMode)
+                {
+                    case ImageModes.Front:
+                        {
+                            var x = (ViewModel.Machine.GCodeFileManager.Max.X - ViewModel.Machine.GCodeFileManager.Min.X) / 2;
+                            Camera.Position = new Point3D(x, Camera.Position.Y, Camera.Position.Z);
+                        }
+                        break;
+                    case ImageModes.Side:
+                        {
+                            var y = (ViewModel.Machine.GCodeFileManager.Max.Y - ViewModel.Machine.GCodeFileManager.Min.Y) / 2;
+                            Camera.Position = new Point3D(Camera.Position.X, y, Camera.Position.Z);
+                        }
+                        break;
+
+                    case ImageModes.Top:
+                        {
+                            var x = (ViewModel.Machine.GCodeFileManager.Max.X - ViewModel.Machine.GCodeFileManager.Min.X) / 2;
+                            var y = (ViewModel.Machine.GCodeFileManager.Max.X - ViewModel.Machine.GCodeFileManager.Min.X) / 2;
+                            Camera.Position = new Point3D(x, y, Camera.Position.Z);
+                        }
+                        break;
+                }
+            }
+            else
+            {
+                switch (_imageMode)
+                {
+                    case ImageModes.Front:
+                        {
+                            var x = ViewModel.Machine.Settings.WorkAreaWidth / 2;
+                            Camera.Position = new Point3D(x, Camera.Position.Y, Camera.Position.Z);
+                        }
+                        break;
+                    case ImageModes.Side:
+                        {
+                            var y = (ViewModel.Machine.GCodeFileManager.Max.Y - ViewModel.Machine.GCodeFileManager.Min.Y) / 2;
+                            Camera.Position = new Point3D(Camera.Position.X, y, Camera.Position.Z);
+                        }
+                        break;
+
+                    case ImageModes.Top:
+                        {
+                            var x = ViewModel.Machine.Settings.WorkAreaWidth / 2;
+                            var y = ViewModel.Machine.Settings.WorkAreaHeight / 2;
+                            Camera.Position = new Point3D(x, y, Camera.Position.Z);
+                        }
+                        break;
+                }
+            }
         }
 
         public void Clear()
@@ -144,27 +208,39 @@ namespace LagoVista.GCode.Sender.Application.Controls
             switch (btn.Tag.ToString())
             {
                 case "Top":
-                    //  Camera.Position = new Point3D(ViewModel.Machine.Settings.WorkAreaWidth / 2, ViewModel.Machine.Settings.WorkAreaHeight / 2, 3000);
-                    Camera.Position = new Point3D(50, 40, 200);
-                    Camera.LookDirection = new Vector3D(0, 0.0001, -1);
-                    _imageMode = ImageModes.Top;
+                    {
+                        var x = (ViewModel.Machine.GCodeFileManager.Max.X - ViewModel.Machine.GCodeFileManager.Min.X) / 2;
+                        var y = (ViewModel.Machine.GCodeFileManager.Max.X - ViewModel.Machine.GCodeFileManager.Min.X) / 2;
+
+                        Camera.Position = new Point3D(x, y, 200);
+                        Camera.LookDirection = new Vector3D(0, 0.0001, -1);
+                        _imageMode = ImageModes.Top;
+                    }
                     break;
                 case "Left":
-                    Camera.Position = new Point3D(-100, 40, 40);
-                    Camera.LookDirection = new Vector3D(4, 0.0001, -1);
-                    _imageMode = ImageModes.Side;
+                    {
+                        var y = (ViewModel.Machine.GCodeFileManager.Max.Y - ViewModel.Machine.GCodeFileManager.Min.Y) / 2;
+
+                        Camera.Position = new Point3D(-100, y, 40);
+                        Camera.LookDirection = new Vector3D(4, 0.0001, -1);
+                        _imageMode = ImageModes.Side;
+                    }
                     break;
                 case "Front":
-                    Camera.Position = new Point3D(50, -120, 70);
-                    Camera.LookDirection = new Vector3D(0, 4, -1.7);
-                    _imageMode = ImageModes.Front;
+                    {
+                        var x = (ViewModel.Machine.GCodeFileManager.Max.X - ViewModel.Machine.GCodeFileManager.Min.X) / 2;
+
+                        Camera.Position = new Point3D(50, -120, 70);
+                        Camera.LookDirection = new Vector3D(0, 4, -1.7);
+                        _imageMode = ImageModes.Front;
+                    }
                     break;
                 case "ZoomIn":
                     switch (_imageMode)
                     {
                         case ImageModes.Front: Camera.Position = new Point3D(Camera.Position.X, Camera.Position.Y * 0.9, Camera.Position.Z * 0.9); break;
                         case ImageModes.Side: Camera.Position = new Point3D(Camera.Position.X * 0.9, Camera.Position.Y, Camera.Position.Z * 0.9); break;
-                        case ImageModes.Top: Camera.Position = new Point3D(Camera.Position.X * 0.9, Camera.Position.Y * 0.9, Camera.Position.Z); break;
+                        case ImageModes.Top: Camera.Position = new Point3D(Camera.Position.X , Camera.Position.Y , Camera.Position.Z *.9); break;
                     }
                     break;
                 case "ZoomOut":
@@ -172,7 +248,7 @@ namespace LagoVista.GCode.Sender.Application.Controls
                     {
                         case ImageModes.Front: Camera.Position = new Point3D(Camera.Position.X, Camera.Position.Y * 1.1, Camera.Position.Z * 1.1); break;
                         case ImageModes.Side: Camera.Position = new Point3D(Camera.Position.X * 1.1, Camera.Position.Y, Camera.Position.Z * 1.1); break;
-                        case ImageModes.Top: Camera.Position = new Point3D(Camera.Position.X * 1.1, Camera.Position.Y * 1.1, Camera.Position.Z); break;
+                        case ImageModes.Top: Camera.Position = new Point3D(Camera.Position.X , Camera.Position.Y , Camera.Position.Z * 1.1); break;
                     }
                     break;
                 case "ShowObject":
