@@ -30,10 +30,10 @@ namespace LagoVista.GCode.Sender
 
             ToolChangeManager = new Managers.ToolChangeManager(this, Core.PlatformSupport.Services.Logger);
             GCodeFileManager = new Managers.GCodeFileManager(this, Core.PlatformSupport.Services.Logger, ToolChangeManager);
-            BoardManager = new Managers.BoardManager(this, Core.PlatformSupport.Services.Logger);
-            HeightMapManager = new Managers.HeightMapManager(this, Core.PlatformSupport.Services.Logger, BoardManager);
+            PCBManager = new Managers.PCBManager(this, Core.PlatformSupport.Services.Logger);
+            HeightMapManager = new Managers.HeightMapManager(this, Core.PlatformSupport.Services.Logger, PCBManager);
             ProbingManager = new Managers.ProbingManager(this, Core.PlatformSupport.Services.Logger);
-            MachineVisionManager = new Managers.MachineVisionManager(this, Core.PlatformSupport.Services.Logger, BoardManager);
+            MachineVisionManager = new Managers.MachineVisionManager(this, Core.PlatformSupport.Services.Logger, PCBManager);
         }
 
         public Task InitAsync()

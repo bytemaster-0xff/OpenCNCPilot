@@ -34,7 +34,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Interfaces\IBoardManager.cs" />
+    <Compile Include="Interfaces\IPCBManager.cs" />
     <Compile Include="Interfaces\IGCodeFileManager.cs" />
     <Compile Include="Interfaces\IMachine.cs" />
     <Compile Include="Interfaces\IMachineVisionManager.cs" />
@@ -67,13 +67,6 @@
       <DependentUpon>Machine.cs</DependentUpon>
     </Compile>
     <Compile Include="Machine\SimulatedMachine.cs" />
-    <Compile Include="Managers\BoardManager.Actions.cs">
-      <DependentUpon>BoardManager.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Managers\BoardManager.cs" />
-    <Compile Include="Managers\BoardManager.Properties.cs">
-      <DependentUpon>BoardManager.cs</DependentUpon>
-    </Compile>
     <Compile Include="Managers\GCodeFileManager.Actions.cs">
       <DependentUpon>GCodeFileManager.cs</DependentUpon>
     </Compile>
@@ -99,6 +92,19 @@
     <Compile Include="Managers\MachineVisionManager.Properties.cs" />
     <Compile Include="Managers\MachineVisionManager.cs" />
     <Compile Include="Managers\ManagerBase.cs" />
+    <Compile Include="Managers\PCBManager.Actions.cs">
+      <DependentUpon>PCBManager.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Managers\PCBManager.cs" />
+    <Compile Include="Managers\PCBManager.FileOperations.cs">
+      <DependentUpon>PCBManager.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Managers\PCBManager.Properties.cs">
+      <DependentUpon>PCBManager.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Managers\PCBManager.Visual.cs">
+      <DependentUpon>PCBManager.cs</DependentUpon>
+    </Compile>
     <Compile Include="Managers\ProbingManager.Actions.cs">
       <DependentUpon>ProbingManager.cs</DependentUpon>
     </Compile>

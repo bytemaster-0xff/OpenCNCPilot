@@ -43,17 +43,25 @@ namespace LagoVista.GCode.Sender.Managers
             var min = new Point3D<double>() { X = 99999.0, Y = 99999.0, Z = 99999.0 };
             var max = new Point3D<double>() { X = -99999.0, Y = -99999.0, Z = -999999.0 };
 
+            bool first = true;
             foreach (var cmd in File.Commands)
             {
                 var motionCmd = cmd as GCodeMotion;
                 if (motionCmd != null)
                 {
-                    min.X = Math.Min(min.X, motionCmd.Start.X);
-                    min.Y = Math.Min(min.Y, motionCmd.Start.Y);
-                    min.Z = Math.Min(min.Z, motionCmd.Start.Z);
-                    min.X = Math.Min(min.X, motionCmd.End.X);
-                    min.Y = Math.Min(min.Y, motionCmd.End.Y);
-                    min.Z = Math.Min(min.Z, motionCmd.End.Z);
+                    if (!first)
+                    {
+                        min.X = Math.Min(min.X, motionCmd.Start.X);
+                        min.Y = Math.Min(min.Y, motionCmd.Start.Y);
+                        min.Z = Math.Min(min.Z, motionCmd.Start.Z);
+                        min.X = Math.Min(min.X, motionCmd.End.X);
+                        min.Y = Math.Min(min.Y, motionCmd.End.Y);
+                        min.Z = Math.Min(min.Z, motionCmd.End.Z);
+                    }
+                    else
+                    {
+                        first = false;
+                    }
 
                     max.X = Math.Max(max.X, motionCmd.Start.X);
                     max.Y = Math.Max(max.Y, motionCmd.Start.Y);

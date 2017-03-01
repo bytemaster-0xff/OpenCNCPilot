@@ -10,8 +10,8 @@ namespace LagoVista.GCode.Sender.Managers
 {
     public partial class MachineVisionManager : ManagerBase, IMachineVisionManager
     {
-        IBoardManager _boardManager;
-        public MachineVisionManager(IMachine machine, ILogger logger, IBoardManager boardManager) : base(machine, logger)
+        IPCBManager _boardManager;
+        public MachineVisionManager(IMachine machine, ILogger logger, IPCBManager boardManager) : base(machine, logger)
         {
             _boardManager = boardManager;
         }

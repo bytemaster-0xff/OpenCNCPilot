@@ -75,9 +75,14 @@ namespace LagoVista.GCode.Sender.Interfaces
         String Status { get; }
 
         /// <summary>
-        /// Business logic to manage the sending of GCode files to the machien.
+        /// Business logic to manage the sending of GCode files to the machine.
         /// </summary>
         IGCodeFileManager GCodeFileManager { get; }
+
+        /// <summary>
+        /// Business logic to handle working with Printed Circut Boards
+        /// </summary>
+        IPCBManager PCBManager { get; }
 
         /// <summary>
         /// Business logic for capturing a height map that can be applied to a GCode file to correct for warpage of material

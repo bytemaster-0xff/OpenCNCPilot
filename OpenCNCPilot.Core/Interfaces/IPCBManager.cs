@@ -8,12 +8,12 @@ using System.Threading.Tasks;
 
 namespace LagoVista.GCode.Sender.Interfaces
 {
-    public interface IBoardManager : INotifyPropertyChanged
+    public interface IPCBManager : INotifyPropertyChanged
     {
         bool HasBoard { get; }
 
         PCB Board { get; }
 
-        Task LoadBoardAsync(string boardFile);
+        Task OpenFileAsync(string boardFile);
     }
 }

@@ -37,7 +37,16 @@ namespace LagoVista.GCode.Sender.ViewModels
             AssertInManualMode(() => Machine.SendCommand("G21"));
         }
 
-        public void OpenEagleBoardFile()
+        public async void OpenEagleBoardFile()
+        {
+            var file = await Popups.ShowOpenFileAsync(Constants.FileFilterPCB);
+            if (!String.IsNullOrEmpty(file))
+            {
+                await Machine.PCBManager.OpenFileAsync(file);
+            }
+         }
+
+        public void CloseEagleBoardFile()
         {
 
         }

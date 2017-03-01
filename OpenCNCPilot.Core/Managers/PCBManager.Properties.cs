@@ -1,6 +1,4 @@
-﻿using LagoVista.Core.PlatformSupport;
-using LagoVista.EaglePCB.Models;
-using LagoVista.GCode.Sender.Interfaces;
+﻿using LagoVista.EaglePCB.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace LagoVista.GCode.Sender.Managers
 {
-    public partial class BoardManager
+    public partial class PCBManager
     {
         private PCB _board;
         public PCB Board
@@ -27,5 +25,6 @@ namespace LagoVista.GCode.Sender.Managers
         {
             get { return _board != null; }
         }
+
     }
 }

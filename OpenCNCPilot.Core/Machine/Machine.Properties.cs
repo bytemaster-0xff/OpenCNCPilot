@@ -43,13 +43,13 @@ namespace LagoVista.GCode.Sender
             }
         }
 
-        IBoardManager _boardManager;
-        public IBoardManager BoardManager
+        IPCBManager _pcbManager;
+        public IPCBManager PCBManager
         {
-            get { return _boardManager; }
+            get { return _pcbManager; }
             private set
             {
-                _boardManager = value;
+                _pcbManager = value;
                 RaisePropertyChanged();
             }
         }
