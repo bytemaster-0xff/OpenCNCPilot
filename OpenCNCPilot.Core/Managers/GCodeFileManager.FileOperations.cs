@@ -22,14 +22,16 @@ namespace LagoVista.GCode.Sender.Managers
             var parts = path.Split('\\');
             FileName = parts[parts.Length - 1];
 
-            File = GCodeFile.Load(path);
-            if (File != null)
+            var file = GCodeFile.Load(path);
+            if (file != null)
             {
-                FindExtents();
+                FindExtents(file);
+                File = file;
                 RenderPaths();
             }
             else
             {
+                File = null;
                 Max = null;
                 Min = null;
                 ClearPaths();
@@ -38,13 +40,13 @@ namespace LagoVista.GCode.Sender.Managers
             return Task.FromResult(default(object));
         }
 
-        private void FindExtents()
+        private void FindExtents(GCodeFile file)
         {
             var min = new Point3D<double>() { X = 99999.0, Y = 99999.0, Z = 99999.0 };
             var max = new Point3D<double>() { X = -99999.0, Y = -99999.0, Z = -999999.0 };
 
             bool first = true;
-            foreach (var cmd in File.Commands)
+            foreach (var cmd in file.Commands)
             {
                 var motionCmd = cmd as GCodeMotion;
                 if (motionCmd != null)

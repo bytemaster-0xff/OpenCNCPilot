@@ -38,6 +38,7 @@
     <Compile Include="Managers\EagleParser.cs" />
     <Compile Include="Models\Circle.cs" />
     <Compile Include="Models\Component.cs" />
+    <Compile Include="Models\ContactRef.cs" />
     <Compile Include="Models\Drill.cs" />
     <Compile Include="Models\Fiducial.cs" />
     <Compile Include="Models\Hole.cs" />
@@ -47,6 +48,7 @@
     <Compile Include="Models\PCB.cs" />
     <Compile Include="Models\Plain.cs" />
     <Compile Include="Models\Rect.cs" />
+    <Compile Include="Models\Signal.cs" />
     <Compile Include="Models\SMD.cs" />
     <Compile Include="Models\Text.cs" />
     <Compile Include="Models\Via.cs" />

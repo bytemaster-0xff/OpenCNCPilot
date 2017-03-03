@@ -53,16 +53,36 @@ namespace LagoVista.GCode.Sender.Application.Controls
 
             foreach (var element in board.Components)
             {
-                if (element.SMDPads.Any())
+                foreach (var pad in element.SMDPads)
                 {
-                    foreach (var pad in element.SMDPads)
-                    {
-                        var padMeshBuilder = new MeshBuilder(false, false);
-                        padMeshBuilder.AddBox(new Point3D(pad.X, pad.Y, 1), pad.DX, pad.DY, 0.25);
-                        modelGroup.Children.Add(new GeometryModel3D() { Geometry = padMeshBuilder.ToMesh(true), Material = silverMaterial });
-                    }
+                    var padMeshBuilder = new MeshBuilder(false, false);
+                    padMeshBuilder.AddBox(new Point3D(pad.X, pad.Y, 1), pad.DX, pad.DY, 0.25);
+                    modelGroup.Children.Add(new GeometryModel3D() { Geometry = padMeshBuilder.ToMesh(true), Material = silverMaterial });
+                }
+
+                foreach (var pad in element.Pads)
+                {
+                    var padMeshBuilder = new MeshBuilder(false, false);
+                    padMeshBuilder.AddBox(new Point3D(pad.X, pad.Y, 1), 1, 1, 0.25);
+                    modelGroup.Children.Add(new GeometryModel3D() { Geometry = padMeshBuilder.ToMesh(true), Material = silverMaterial });
                 }
             }
+
+            BottomWires.Points.Clear();
+            TopWires.Points.Clear();
+
+            foreach (var wire in board.TopWires)
+            {
+                TopWires.Points.Add(new Point3D(wire.Rect.X1, wire.Rect.Y1, 1));
+                TopWires.Points.Add(new Point3D(wire.Rect.X2, wire.Rect.Y2, 1));
+            }
+
+            foreach (var wire in board.BottomWires)
+            {
+                BottomWires.Points.Add(new Point3D(wire.Rect.X1, wire.Rect.Y1, 1));
+                BottomWires.Points.Add(new Point3D(wire.Rect.X2, wire.Rect.Y2, 1));
+            }
+
             /*
             foreach (var circle in element.Package.Circles)
             {

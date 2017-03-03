@@ -19,6 +19,26 @@ namespace LagoVista.EaglePCB.Models
 
         public Package Package { get; set; }
 
+        public List<Pad> Pads
+        {
+            get
+            {
+                var pads = new List<Pad>();
+
+                foreach(var pad in Package.Pads)
+                {
+                    pads.Add(new Pad()
+                    {
+                        X = X.Value + pad.X,
+                        Y = Y.Value + pad.Y,
+                    });
+                }
+
+                return pads;
+            }
+
+        }
+
         public List<SMD> SMDPads
         {
             get

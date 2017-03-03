@@ -31,6 +31,10 @@ namespace LagoVista.EaglePCB.Managers
                         in doc.Descendants("via")
                         select Models.Via.Create(eles)).ToList();
 
+            pcb.Signals = (from eles
+                        in doc.Descendants("signal")
+                           select Models.Signal.Create(eles)).ToList();
+
             /* FIrst assign packages to components */
             foreach (var element in pcb.Components)
             {
@@ -65,6 +69,17 @@ namespace LagoVista.EaglePCB.Managers
                 }
             }
 
+            pcb.UnroutedWires = new System.Collections.Generic.List<Models.Wire>();
+            pcb.TopWires = new System.Collections.Generic.List<Models.Wire>();
+            pcb.BottomWires = new System.Collections.Generic.List<Models.Wire>();
+
+            foreach(var signal in pcb.Signals)
+            {
+                pcb.UnroutedWires.AddRange(signal.UnroutedWires);
+                pcb.TopWires.AddRange(signal.TopWires);
+                pcb.BottomWires.AddRange(signal.BottomWires);
+            }
+
             var outlineWires = pcb.Layers.Where(layer => layer.Number == 20).FirstOrDefault().Wires;
 
             foreach (var outline in outlineWires)
@@ -79,7 +94,6 @@ namespace LagoVista.EaglePCB.Managers
             {
                 pcb.Layers.Where(layer => layer.Number == 18).First().Vias.Add(via);
             }
-
 
             return pcb;
         }
