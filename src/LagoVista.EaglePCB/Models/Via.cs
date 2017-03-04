@@ -11,15 +11,19 @@ namespace LagoVista.EaglePCB.Models
     {
         public double X { get; set; }
         public double Y { get; set; }
-        public double Drill { get; set; }
+        public double OriginX { get; set; }
+        public double OriginY { get; set; }
+        public double DrillDiameter { get; set; }
 
         public static Via Create(XElement element)
         {
             return new Via()
             {
-                Drill = element.GetDouble("drill"),
+                DrillDiameter = element.GetDouble("drill"),
                 X = element.GetDouble("x"),
-                Y = element.GetDouble("y")
+                Y = element.GetDouble("y"),
+                OriginX = element.GetDouble("x"),
+                OriginY = element.GetDouble("y")
             };
         }
     }

@@ -40,29 +40,126 @@ namespace LagoVista.GCode.Sender.Application.Controls
             Camera.Position = new Point3D(x, Camera.Position.Y, Camera.Position.Z);
         }
 
+        private Point Rotate(double centerX, double centerY, double x, double y, double angle)
+        {
+
+            return new Point();
+        }
+
         private void RenderBoard(PCB board)
         {
             var linePoints = new Point3DCollection();
 
             var modelGroup = new Model3DGroup();
-            var silverMaterial = MaterialHelper.CreateMaterial(Color.FromRgb(0xb8, 0x73, 0x33));
+            var copperMaterial = MaterialHelper.CreateMaterial(Color.FromRgb(0xb8, 0x73, 0x33));
             var redMaterial = MaterialHelper.CreateMaterial(Colors.Red);
             var greenMaterial = MaterialHelper.CreateMaterial(Colors.Green);
             var blueMaterial = MaterialHelper.CreateMaterial(Colors.Blue);
             var blackMaterial = MaterialHelper.CreateMaterial(Colors.Black);
+            var grayMaterial = MaterialHelper.CreateMaterial(Colors.DarkGray);
+
 
             foreach (var element in board.Components)
             {
-                if (element.SMDPads.Any())
+                var deg = 0.0;
+                if (!string.IsNullOrEmpty(element.Rotate))
                 {
-                    foreach (var pad in element.SMDPads)
+                    if (element.Rotate.Substring(0, 1) == "R")
                     {
-                        var padMeshBuilder = new MeshBuilder(false, false);
-                        padMeshBuilder.AddBox(new Point3D(pad.X, pad.Y, 1), pad.DX, pad.DY, 0.25);
-                        modelGroup.Children.Add(new GeometryModel3D() { Geometry = padMeshBuilder.ToMesh(true), Material = silverMaterial });
+                        deg = Convert.ToDouble(element.Rotate.Substring(1));
+                    }
+                    else if (element.Rotate.Substring(0, 1) == "L")
+                    {
+                        deg = 360 - Convert.ToDouble(element.Rotate.Substring(1));
                     }
                 }
+
+                foreach (var pad in element.SMDPads)
+                {
+                    var padMeshBuilder = new MeshBuilder(false, false);
+
+                    padMeshBuilder.AddBox(new Rect3D(pad.OriginX - (pad.DX / 2), pad.OriginY - (pad.DY / 2), 0, (pad.DX), (pad.DY), 0.25));
+                    var box = new GeometryModel3D() { Geometry = padMeshBuilder.ToMesh(true), Material = element.Layer == 1 ? copperMaterial : grayMaterial };
+
+                    var transformGroup = new Transform3DGroup();
+
+                    if (deg != 0.0)
+                    {
+                        transformGroup.Children.Add(new RotateTransform3D(new AxisAngleRotation3D(new Vector3D(0, 0, 1), deg)));
+                    }
+
+                    transformGroup.Children.Add(new TranslateTransform3D(new Vector3D(element.X.Value, element.Y.Value, element.Layer == 1 ? 1 : 0.75)));
+
+                    box.Transform = transformGroup;
+
+                    modelGroup.Children.Add(box);
+                }
+
+                foreach (var pad in element.Pads)
+                {
+                    var padCopperMeshBuilder = new MeshBuilder(false, false);
+                    padCopperMeshBuilder.AddCylinder(new Point3D(pad.OriginX, pad.OriginY, 0), new Point3D(pad.OriginX, pad.OriginY, 0.1), pad.DrillDiameter * 0.75);
+                    var padCopper = new GeometryModel3D() { Geometry = padCopperMeshBuilder.ToMesh(true), Material = copperMaterial };
+
+                    var transformGroup = new Transform3DGroup();
+
+                    if (deg != 0.0)
+                    {
+                        transformGroup.Children.Add(new RotateTransform3D(new AxisAngleRotation3D(new Vector3D(0, 0, 1), deg)));
+                    }
+
+                    transformGroup.Children.Add(new TranslateTransform3D(new Vector3D(element.X.Value, element.Y.Value, 1)));
+                    padCopper.Transform = transformGroup;
+                    modelGroup.Children.Add(padCopper);
+
+                    var padDrillMeshBuilder = new MeshBuilder(false, false);
+                    padDrillMeshBuilder.AddCylinder(new Point3D(pad.OriginX, pad.OriginY, 0), new Point3D(pad.OriginX, pad.OriginY, 0.11), pad.DrillDiameter / 2);
+                    var padDrill = new GeometryModel3D() { Geometry = padDrillMeshBuilder.ToMesh(true), Material = blackMaterial};
+
+                    var drillTransformGroup = new Transform3DGroup();
+
+                    if (deg != 0.0)
+                    {
+                        drillTransformGroup.Children.Add(new RotateTransform3D(new AxisAngleRotation3D(new Vector3D(0, 0, 1), deg)));
+                    }
+
+                    drillTransformGroup.Children.Add(new TranslateTransform3D(new Vector3D(element.X.Value, element.Y.Value, 1)));
+                    padDrill.Transform = drillTransformGroup;
+                    modelGroup.Children.Add(padDrill);
+                }
+
+                var billBoard = new BillboardTextVisual3D() {Foreground = Brushes.White, Text = element.Name, Position = new Point3D(element.X.Value, element.Y.Value, 4), FontSize = 12 };
+                viewport.Children.Add(billBoard);
             }
+
+            foreach(var via in board.Vias)
+            {
+                var padCopperMeshBuilder = new MeshBuilder(false, false);
+                padCopperMeshBuilder.AddCylinder(new Point3D(via.X, via.Y, 1), new Point3D(via.X, via.Y, 1.1), via.DrillDiameter * 1.25);
+                var padCopper = new GeometryModel3D() { Geometry = padCopperMeshBuilder.ToMesh(true), Material = copperMaterial };
+                modelGroup.Children.Add(padCopper);
+
+                var padDrillMeshBuilder = new MeshBuilder(false, false);
+                padDrillMeshBuilder.AddCylinder(new Point3D(via.X, via.Y, 1), new Point3D(via.X, via.Y, 1.11), via.DrillDiameter / 2);
+                var padDrill = new GeometryModel3D() { Geometry = padDrillMeshBuilder.ToMesh(true), Material = blackMaterial };
+                modelGroup.Children.Add(padDrill);
+            }
+
+            BottomWires.Points.Clear();
+            TopWires.Points.Clear();
+
+            foreach (var wire in board.TopWires)
+            {
+                TopWires.Points.Add(new Point3D(wire.Rect.X1, wire.Rect.Y1, 1));
+                TopWires.Points.Add(new Point3D(wire.Rect.X2, wire.Rect.Y2, 1));
+            }
+
+            foreach (var wire in board.BottomWires)
+            {
+                BottomWires.Points.Add(new Point3D(wire.Rect.X1, wire.Rect.Y1, 1));
+                BottomWires.Points.Add(new Point3D(wire.Rect.X2, wire.Rect.Y2, 1));
+            }
+
             /*
             foreach (var circle in element.Package.Circles)
             {
