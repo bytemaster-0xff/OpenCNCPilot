@@ -168,32 +168,29 @@ namespace LagoVista.GCode.Sender.Application.Controls
                             CvInvoke.GaussianBlur(gray, blurredGray, new System.Drawing.Size(7, 7), 0);
                             var results = PerformShapeDetection(blurredGray);
 
-                            /*CvInvoke.Canny(blurredGray, finalOutput, 0, 50, 5, false);
+                            CvInvoke.Canny(blurredGray, finalOutput, 0, 10, 5, false);
                             CvInvoke.Threshold(finalOutput, finalOutput, 100, 255, Emgu.CV.CvEnum.ThresholdType.Binary);
 
-                            double cannyThreshold = 180.0;
+                            double cannyThreshold = 140.0;
                             double cannyThresholdLinking = 120.0;
                             var cannyEdges = gray.Canny(cannyThreshold, cannyThresholdLinking);
 
-                            var segments = CvInvoke.HoughLinesP(finalOutput, 1, Math.PI / 2, 50, 5, 5);
-
-    */
-
-                            /*foreach (var segment in results.Lines)
+                            var segments = CvInvoke.HoughLinesP(finalOutput, 1, Math.PI / 2, 30, 5, 5);
+                            foreach (var segment in results.Lines)
                             {
                                 CvInvoke.Line(blurredGray,
                                     segment.P1,
                                     segment.P2,
                                     new Bgr(System.Drawing.Color.White).MCvScalar, 2, Emgu.CV.CvEnum.LineType.AntiAlias);
-                            }*/
+                            }
 
-                            foreach (var circle in results.Circles)
+                        /*    foreach (var circle in results.Circles)
                             {
                                 /*CvInvoke.Circle(blurredGray,
                                      new   System.Drawing.Point((int)circle.Center.X, (int)circle.Center.Y), (int)circle.Radius,
                                      new Bgr(System.Drawing.Color.White).MCvScalar, 2, Emgu.CV.CvEnum.LineType.AntiAlias);*/
 
-                                var pt1 = new System.Drawing.Point(0, (int)circle.Center.Y);
+                             /*   var pt1 = new System.Drawing.Point(0, (int)circle.Center.Y);
                                 var pt2 = new System.Drawing.Point(1024, (int)circle.Center.Y);
 
                                 CvInvoke.Line(blurredGray,
@@ -215,7 +212,7 @@ namespace LagoVista.GCode.Sender.Application.Controls
                                         CvInvoke.Polylines(blurredGray, Array.ConvertAll(box.GetVertices(), System.Drawing.Point.Round), 
                                             true, 
                                             new Bgr(System.Drawing.Color.White).MCvScalar, 2);
-                                    }
+                                    }*/
 
                             WebCamImage.Source = Emgu.CV.WPF.BitmapSourceConvert.ToBitmapSource(blurredGray);
                         }

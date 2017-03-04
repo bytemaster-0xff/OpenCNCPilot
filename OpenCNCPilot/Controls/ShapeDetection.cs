@@ -31,7 +31,7 @@ namespace LagoVista.GCode.Sender.Application.Controls
             var watch = Stopwatch.StartNew();
             double cannyThreshold = 180.0;
             double circleAccumulatorThreshold = 140;
-            var circles = CvInvoke.HoughCircles(img, HoughType.Gradient, 2.0, 50.0, cannyThreshold, circleAccumulatorThreshold, 50, 150);
+            var circles = CvInvoke.HoughCircles(img, HoughType.Gradient, 2.0, 15.0, cannyThreshold, circleAccumulatorThreshold, 50, 150);
 
             watch.Stop();
             msgBuilder.Append(String.Format("Hough circles - {0} ms; ", watch.ElapsedMilliseconds));
