@@ -8,8 +8,13 @@ namespace LagoVista.EaglePCB.Models
     {
         public int Layer { get; set; }
         public string Name { get; set; }
-        public double X { get; set; }
-        public double Y { get; set; }
+        public double OriginX { get; set; }
+        public double OriginY { get; set; }
+
+        public double X1 { get; set; }
+        public double Y1 { get; set; }
+        public double X2 { get; set; }
+        public double Y2 { get; set; }
         public double DX { get; set; }
         public double DY { get; set; }
         public double? Roundness { get; set; }
@@ -23,8 +28,8 @@ namespace LagoVista.EaglePCB.Models
             {
                 Layer = element.GetInt32("layer"),
                 Name = element.GetString("name"),
-                X = element.GetDouble("x"),
-                Y = element.GetDouble("y"),
+                OriginX = element.GetDouble("x"),
+                OriginY = element.GetDouble("y"),
                 DX = element.GetDouble("dx"),
                 DY = element.GetDouble("dy"),
                 Roundness = element.GetDoubleNullable("roundness"),

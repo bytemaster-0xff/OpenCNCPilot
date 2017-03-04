@@ -42,14 +42,14 @@ namespace LagoVista.EaglePCB
             return Convert.ToInt32(element.Attribute(name).Value);
         }
 
-        public static string GetString(this XElement element, string name)
+        public static string GetString(this XElement element, string name, string defaultValue = "")
         {
             if(element.Attributes(name).Any())
             {
                 return element.Attribute(name).Value;
             }
 
-            return String.Empty;
+            return defaultValue;
         }
     }
 }

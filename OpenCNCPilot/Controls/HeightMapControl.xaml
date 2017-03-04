@@ -16,8 +16,8 @@
             <h:LinesVisual3D Thickness="0.5" Color="Gray" Points="{Binding Path=Machine.GCodeFileManager.RapidMoves, Converter={StaticResource Lines2Visual3DConverter}}" />
             <h:LinesVisual3D Thickness="1" Color="Black" Points="{Binding Path=Machine.GCodeFileManager.Lines, Converter={StaticResource Lines2Visual3DConverter}}"/>
             <h:LinesVisual3D Thickness="1" Color="Blue" Points="{Binding Path=Machine.GCodeFileManager.Arcs, Converter={StaticResource Lines2Visual3DConverter}}"/>
-            <h:LinesVisual3D Thickness="2" Color="Blue" x:Name="BottomWires" />
-            <h:LinesVisual3D Thickness="2" Color="Red" x:Name="TopWires" />
+            <h:LinesVisual3D Thickness="2" Color="DarkGray" x:Name="BottomWires" />
+            <h:LinesVisual3D Thickness="2" Color="#B87333" x:Name="TopWires" />
 
             <ModelVisual3D x:Name="PadsLayer" />
             <h:ArrowVisual3D  x:Name="ModelTool" Direction="0,0,-10" Fill="Red"

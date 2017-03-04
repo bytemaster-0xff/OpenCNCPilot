@@ -47,7 +47,7 @@ namespace LagoVista.EaglePCB.Managers
                     {
                         foreach (var pad in element.Package.Pads)
                         {
-                            layer.Pads.Add(new Models.Pad() { Drill = pad.Drill, X = element.X.Value + pad.X, Y = element.Y.Value + pad.Y, RotateStr = pad.RotateStr });
+                            layer.Pads.Add(new Models.Pad() { DrillDiameter = pad.DrillDiameter, X = element.X.Value + pad.X, Y = element.Y.Value + pad.Y, RotateStr = pad.RotateStr });
                         }
                     }
 
@@ -55,7 +55,7 @@ namespace LagoVista.EaglePCB.Managers
                     {
                         foreach (var hole in element.Package.Pads)
                         {
-                            layer.Drills.Add(new Models.Drill() { Diameter = hole.Drill, X = element.X.Value + hole.X, Y = element.Y.Value });
+                            layer.Drills.Add(new Models.Drill() { Diameter = hole.DrillDiameter, X = element.X.Value + hole.X, Y = element.Y.Value });
                         }
                     }
 

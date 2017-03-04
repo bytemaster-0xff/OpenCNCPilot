@@ -12,7 +12,9 @@ namespace LagoVista.EaglePCB.Models
         public string Name { get; set; }
         public double X { get; set; }
         public double Y { get; set; }
-        public double Drill { get; set; }
+        public double OriginX { get; set; }
+        public double OriginY { get; set; }
+        public double DrillDiameter { get; set; }
         public string Shape { get; set; }
         public string RotateStr { get; set; }
 
@@ -22,9 +24,11 @@ namespace LagoVista.EaglePCB.Models
             {
                 X = element.GetDouble("x"),
                 Y = element.GetDouble("y"),
-                Drill = element.GetDouble("drill"),
+                OriginX = element.GetDouble("x"),
+                OriginY = element.GetDouble("y"),
+                DrillDiameter = element.GetDouble("drill"),
                 Name = element.GetString("name"),
-                Shape = element.GetString("shape"),
+                Shape = element.GetString("shape", "Circle"),
                 RotateStr = element.GetString("rot")
             };
         }
