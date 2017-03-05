@@ -188,7 +188,9 @@ namespace LagoVista.GCode.Sender
 
         public void GotoWorkspaceHome()
         {
-            Enqueue("G0 X0 Y0 Z0");
+            Enqueue("G0 Z20");
+            Enqueue("G0 X0 Y0");
+            Enqueue("G0 Z0");
         }
 
         public void SetFavorite1()
@@ -239,7 +241,7 @@ namespace LagoVista.GCode.Sender
 
         public void SpindleOff()
         {
-            Enqueue("M3");
+            Enqueue("M5");
         }
 
         public void LaserOff()

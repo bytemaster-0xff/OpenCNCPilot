@@ -6,6 +6,7 @@ using LagoVista.GCode.Sender.Interfaces;
 using LagoVista.GCode.Sender.Models;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace LagoVista.GCode.Sender.Managers
@@ -64,9 +65,17 @@ namespace LagoVista.GCode.Sender.Managers
                 /* If Next Command up is a Tool Change, set the nullable property to that line and bail. */
                 if (Head  < _file.Commands.Count && _file.Commands[Head] is ToolChangeCommand)
                 {
+                    Debug.WriteLine("Found tool change at " + Head + " Will break once client confirms it ");
+
                     _pendingToolChangeLine = Head;
                     Head++;
                     return;
+                }
+
+                else
+                {
+
+                    Debug.WriteLine("Sending Next Line" + _file.Commands[Head].Line);
                 }
 
                 _machine.SendCommand(_file.Commands[Head]);
@@ -82,6 +91,8 @@ namespace LagoVista.GCode.Sender.Managers
         public int CommandAcknowledged()
         {
             var sentCommandLength = _file.Commands[Tail].MessageLength;
+            Debug.WriteLine("Acknowledged: " + _file.Commands[Tail].Line);
+
             _file.Commands[Tail++].Status = GCodeCommand.StatusTypes.Acknowledged;
             if (Tail < _file.Commands.Count)
             {
@@ -94,6 +105,7 @@ namespace LagoVista.GCode.Sender.Managers
 
             if (_pendingToolChangeLine != null && _pendingToolChangeLine.Value == Tail)
             {
+                Debug.WriteLine("Found tool change at " + Tail);
                 HandleToolChange(_file.Commands[Tail] as ToolChangeCommand);
             }
 

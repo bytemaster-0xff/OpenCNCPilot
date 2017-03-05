@@ -37,6 +37,9 @@ namespace LagoVista.GCode.Sender.Managers
                 ClearPaths();
             }
 
+            _head = 0;
+            _tail = 0;
+
             return Task.FromResult(default(object));
         }
 

@@ -1,5 +1,6 @@
 ﻿using LagoVista.Core.Commanding;
 using LagoVista.Core.Models.Drawing;
+using LagoVista.GCode.Sender.Managers;
 using System.ComponentModel;
 
 namespace LagoVista.GCode.Sender.Interfaces
@@ -21,6 +22,8 @@ namespace LagoVista.GCode.Sender.Interfaces
         /// </summary>
         /// <param name="probeResult"></param>
         void ProbeCompleted(Vector3 probeResult);
+
+        ProbeStatus Status { get; }
 
         /// <summary>
         /// Probing failed.

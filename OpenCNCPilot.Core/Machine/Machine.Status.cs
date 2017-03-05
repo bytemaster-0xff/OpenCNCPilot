@@ -117,22 +117,9 @@ namespace LagoVista.GCode.Sender
             {
                 Services.DispatcherServices.Invoke(() =>
                 {
-                    Debug.WriteLine($"{DateTime.Now.ToString()}  {type} - {message}");
-
                     Messages.Add(Models.StatusMessage.Create(type, message));
                     RaisePropertyChanged(nameof(MessageCount));
                 });
-            }
-            else
-            {
-                Services.DispatcherServices.Invoke(() =>
-                {
-                    Debug.WriteLine($"{DateTime.Now.ToString()}  {type} - {message}");
-
-                    Messages.Add(Models.StatusMessage.Create(type, message));
-                    RaisePropertyChanged(nameof(MessageCount));
-                });
-
             }
         }
     }

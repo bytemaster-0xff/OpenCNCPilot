@@ -19,8 +19,8 @@ namespace LagoVista.GCode.Sender.ViewModels
 
             HomingCycleCommand = new RelayCommand(HomingCycle, CanHomeAndReset);
             SoftResetCommand = new RelayCommand(SoftReset, CanHomeAndReset);
-            FeedHoldCommand = new RelayCommand(FeedHold, CanStopJob);
-            CycleStartCommand = new RelayCommand(CycleStart, CanStopJob);
+            FeedHoldCommand = new RelayCommand(FeedHold, CanPauseFeed);
+            CycleStartCommand = new RelayCommand(CycleStart, CanResumeFeed);
 
             ClearAlarmCommand = new RelayCommand(ClearAlarm, CanClearAlarm);
 
@@ -192,6 +192,20 @@ namespace LagoVista.GCode.Sender.ViewModels
             return Machine.IsInitialized &&
                 Machine.Connected
                 && Machine.Mode == OperatingMode.Manual;
+        }
+
+        public bool CanPauseFeed()
+        {
+            return (Machine.IsInitialized &&
+                        Machine.Connected &&
+                        Machine.Status != "Hold");
+        }
+
+        public bool CanResumeFeed()
+        {
+            return (Machine.IsInitialized &&
+                        Machine.Connected &&
+                        Machine.Status == "Hold");
         }
 
         public bool CanStopJob()

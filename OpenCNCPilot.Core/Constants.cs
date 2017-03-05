@@ -69,7 +69,7 @@ namespace LagoVista.GCode.Sender
 
     public enum StatusMessageTypes
     {
-        ReceviedLine,
+        ReceivedLine,
         SentLine,
         SentLinePriority,
         Info,

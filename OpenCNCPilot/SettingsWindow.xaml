@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         WindowStartupLocation="CenterOwner"
         WindowStyle="ToolWindow"
-        Title="SettingsWindow" Height="350" Width="400">
+        Title="SettingsWindow" Height="450" Width="500">
     <Window.Resources>
         <Style TargetType="TextBox">
             <Setter Property="Margin" Value="4" />

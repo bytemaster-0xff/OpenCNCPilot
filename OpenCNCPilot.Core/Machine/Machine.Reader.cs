@@ -19,7 +19,7 @@ namespace LagoVista.GCode.Sender
                 return;
             }
 
-            Debug.WriteLine(DateTime.Now.ToString() + "  >>> " + line);
+            //Debug.WriteLine(DateTime.Now.ToString() + "  >>> " + line);
 
             if (line.StartsWith("ok"))
             {
@@ -104,15 +104,15 @@ namespace LagoVista.GCode.Sender
                 {
                     if (ParseStatus(line))
                     {
-                        AddStatusMessage(StatusMessageTypes.ReceviedLine, line, MessageVerbosityLevels.Diagnostics);
+                        AddStatusMessage(StatusMessageTypes.ReceivedLine, line, MessageVerbosityLevels.Diagnostics);
                     }
                     else if (ParseLine(line))
                     {
-                        AddStatusMessage(StatusMessageTypes.ReceviedLine, line, MessageVerbosityLevels.Diagnostics);
+                        AddStatusMessage(StatusMessageTypes.ReceivedLine, line, MessageVerbosityLevels.Diagnostics);
                     }
                     else
                     {
-                        AddStatusMessage(StatusMessageTypes.ReceviedLine, line);
+                        AddStatusMessage(StatusMessageTypes.ReceivedLine, line);
                     }
                 }
                 else if (line.StartsWith("[PRB:"))
@@ -136,7 +136,7 @@ namespace LagoVista.GCode.Sender
                 {
                     UpdateStatus(line);
 
-                    AddStatusMessage(StatusMessageTypes.ReceviedLine, line);
+                    AddStatusMessage(StatusMessageTypes.ReceivedLine, line);
                 }
                 else if (line.StartsWith("ALARM"))
                 {
@@ -147,7 +147,7 @@ namespace LagoVista.GCode.Sender
                 {
                     if (!ParseLine(line))
                     {
-                        AddStatusMessage(StatusMessageTypes.ReceviedLine, line);
+                        AddStatusMessage(StatusMessageTypes.ReceivedLine, line);
                     }
                     lock (_queueAccessLocker)
                     {

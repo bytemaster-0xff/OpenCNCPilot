@@ -94,7 +94,8 @@ namespace LagoVista.GCode.Sender
             {
                 if ((Now - _lastPollTime).TotalMilliseconds > Settings.StatusPollIntervalRunning)
                 {
-                    MachinePosition = GCodeFileManager.CurrentCommand.CurrentPosition;
+                    //MachinePosition = GCodeFileManager.CurrentCommand.CurrentPosition;
+                    Enqueue("?", true);
                     _lastPollTime = Now;
                 }
             }

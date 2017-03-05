@@ -9,9 +9,23 @@ using System.Threading.Tasks;
 
 namespace LagoVista.GCode.Sender.Managers
 {
+
+    public enum ProbeStatus
+    {
+        Idle,
+        Probing,
+        Success,
+        TimedOut,
+        Cancelled,
+    }
+
     public partial class ProbingManager
     {
         ITimer _timer;
+
+        ProbeStatus _status = ProbeStatus.Idle;
+
+        public ProbeStatus Status { get { return _status; } }
 
         private static Regex ProbeEx = new Regex(@"\[PRB:(?'MX'-?[0-9]+\.?[0-9]*),(?'MY'-?[0-9]+\.?[0-9]*),(?'MZ'-?[0-9]+\.?[0-9]*):(?'Success'0|1)\]");
 
@@ -40,6 +54,8 @@ namespace LagoVista.GCode.Sender.Managers
 
         public void StartProbe()
         {
+            _status = ProbeStatus.Probing;
+
             if (Machine.SetMode(OperatingMode.ProbingHeight))
             {
                 _timer = Core.PlatformSupport.Services.TimerFactory.Create(TimeSpan.FromSeconds(Machine.Settings.ProbeTimeoutSeconds));
@@ -55,6 +71,8 @@ namespace LagoVista.GCode.Sender.Managers
             Machine.SetMode(OperatingMode.Manual);
             Machine.AddStatusMessage(StatusMessageTypes.Warning, $"Probing timed out after {Machine.Settings.ProbeTimeoutSeconds} sec.");
 
+            _status = ProbeStatus.TimedOut;
+
             if (_timer != null)
             {
                 _timer.Stop();
@@ -65,6 +83,8 @@ namespace LagoVista.GCode.Sender.Managers
         public void CancelProbe()
         {
             Machine.AddStatusMessage(StatusMessageTypes.Info, $"Probing Manually Cancelled");
+
+            _status = ProbeStatus.Cancelled;
 
             if (_timer != null)
             {
@@ -89,7 +109,11 @@ namespace LagoVista.GCode.Sender.Managers
                 _timer.Stop();
                 _timer = null;
             }
-                SetZAxis(position.Z);
+
+            _status = ProbeStatus.Success;
+
+            SetZAxis(position.Z);
+            Machine.SendCommand("G0 Z10");
             Machine.SetMode(OperatingMode.Manual);
         }
 

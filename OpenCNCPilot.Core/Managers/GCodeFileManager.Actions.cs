@@ -14,7 +14,8 @@ namespace LagoVista.GCode.Sender.Managers
         {
             Head = 0;
             Tail = 0;
-            
+            _pendingToolChangeLine = null;
+
             foreach (var cmd in Commands)
             {
                 cmd.Status = GCodeCommand.StatusTypes.Ready;
@@ -65,6 +66,7 @@ namespace LagoVista.GCode.Sender.Managers
 
         public void CancelJob()
         {
+            _pendingToolChangeLine = null;
 
         }
 
