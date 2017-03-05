@@ -214,8 +214,30 @@
                     <Label Content="mm/min" Grid.Row="6" Grid.Column="2" />
 
                     <Label Grid.Row="7" Content="Probe Offset" />
-                    <TextBox Grid.Row="7" Grid.Column="1" TextAlignment="Right" ToolTip="Feed Rate For Movement Between Probe Positions" Text="{Binding Settings.ProbeOffset, FallbackValue=1.25, Mode=TwoWay}"/>
+                    <TextBox Grid.Row="7" Grid.Column="1" TextAlignment="Right" ToolTip="Offset of Material Used for Probing" Text="{Binding Settings.ProbeOffset, FallbackValue=1.25, Mode=TwoWay}"/>
                     <Label Content="mm" Grid.Row="7" Grid.Column="2" />
+                </Grid>
+            </TabItem>
+            <TabItem Header="PCB">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="140" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="80" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                    </Grid.RowDefinitions>
+                    <Label Content="EAGLE CAD Location" />
+                    <TextBox Grid.Column="1" />
+                    <Button Grid.Column="2" Content="..." Width="40" />
                 </Grid>
             </TabItem>
         </TabControl>
