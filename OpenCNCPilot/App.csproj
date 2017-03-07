@@ -138,6 +138,9 @@
     <Compile Include="GCodeWindow.xaml.cs">
       <DependentUpon>GCodeWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="MachineVision.xaml.cs">
+      <DependentUpon>MachineVision.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MessageWindow.xaml.cs">
       <DependentUpon>MessageWindow.xaml</DependentUpon>
     </Compile>
@@ -186,6 +189,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="GCodeWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MachineVision.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

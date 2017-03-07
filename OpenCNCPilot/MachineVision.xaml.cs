@@ -23,5 +23,20 @@ namespace LagoVista.GCode.Sender.Application
         {
             InitializeComponent();
         }
+
+        private void Play_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Stop_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Settings_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

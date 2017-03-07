@@ -4,9 +4,116 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:LagoVista.GCode.Sender.Application"
+        xmlns:fa="http://schemas.fontawesome.io/icons/"
+        xmlns:vms="clr-namespace:LagoVista.GCode.Sender.ViewModels;assembly=LagoVista.GCode.Sender"
         mc:Ignorable="d"
-        Title="MachineVision" Height="300" Width="300">
-    <Grid>
-        
+        Title="MachineVision" Height="720" Width="1200">
+    <Window.Resources>
+        <vms:MachineVisionViewModel x:Key="visionVM" />
+    </Window.Resources>
+    <Grid d:DataContext="{StaticResource visionVM}" >
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="36"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="900"/>
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+
+        <Image x:Name="WebCamImage" Stretch="UniformToFill"  Source="/Imgs/TestPattern.jpg" Grid.RowSpan="2" />
+
+
+        <Grid Grid.ColumnSpan="2" Grid.Row="1">
+            <Rectangle Grid.Row="1" Fill="Black" Opacity="0.5">
+
+            </Rectangle>
+            <Button  Click="Settings_Click"  x:Name="Settings" Margin="2" HorizontalAlignment="Right"  Style="{StaticResource VideoControlButton}" >
+                <Button.Content>
+                    <fa:ImageAwesome Foreground="White" Icon="Gear" />
+                </Button.Content>
+            </Button>
+
+
+            <StackPanel Orientation="Horizontal" Grid.Row="1" >
+                <Button  x:Name="Stop" Click="Stop_Click"  Margin="2" Style="{StaticResource VideoControlButton}" >
+                    <Button.Content>
+                        <fa:ImageAwesome Foreground="White" Icon="Stop"  />
+                    </Button.Content>
+                </Button>
+                <Button  Click="Play_Click" x:Name="Play" Margin="2"  Style="{StaticResource VideoControlButton}" >
+                    <Button.Content>
+                        <fa:ImageAwesome Foreground="White" Icon="Play" />
+                    </Button.Content>
+                </Button>
+            </StackPanel>
+        </Grid>
+
+        <Grid Grid.Column="1" Background="LightBlue">
+            <ScrollViewer>
+                <StackPanel>
+                    <StackPanel.Resources>
+                        <Style TargetType="Label" x:Key="Link">
+                            <Setter Property="Foreground" Value="Blue" />
+                            <Setter Property="FontStyle" Value="Normal" />
+                        </Style>
+                    </StackPanel.Resources>
+                    <Label Content="Gaussian Blur" Style="{StaticResource Link}" MouseDown="ShowLink_Handler" Tag="{Binding GaussianBlurLink}" />
+                    <Label Content="KSize"/>
+                    <Slider Value="{Binding GaussianKSize, Mode=TwoWay}" ToolTip="{Binding GuassianKSizeHelp}" />
+                    <Label Content="SigmaX"/>
+                    <Slider Value="{Binding GuassianSigmaX, Mode=TwoWay}" ToolTip="{Binding GuassianSigmaXHelp}" />
+                    <Label Content="SigmaY"/>
+                    <Slider Value="{Binding GuassianSigmaX, Mode=TwoWay}" Margin="0,0,0,20" ToolTip="{Binding GuassianSigmaXHelp}" />
+
+                    <Label Content="Canny Edge Detection 1" Style="{StaticResource Link}" MouseDown="ShowLink_Handler" Tag="{Binding  CannyLink}" />
+                    <Label Content="Canny Edge Detection 2" Style="{StaticResource Link}" MouseDown="ShowLink_Handler" Tag="{Binding  CannyLink2}" />
+                    <Label Content="Apeture Size"/>
+                    <Slider Value="{Binding  CannyApetureSize, Mode=TwoWay}" ToolTip="{Binding CannyApetureSizeHelp}" />
+                    <Label Content="Gradient"/>
+                    <Slider Value="{Binding CannyGradient, Mode=TwoWay}" ToolTip="{Binding CannyGradientHelp}" />
+                    <Label Content="Low Threshold"/>
+                    <Slider Value="{Binding CannyLowThreshold, Mode=TwoWay}" ToolTip="{Binding CannyLowThresholdHelp}" />
+                    <Label Content="High Threshold"/>
+                    <Slider Value="{Binding CannyHighThreshold, Mode=TwoWay}" ToolTip="{Binding CannyHighThreshold}" />
+                    <Label Content="High Threshold Tracks Low Thresold (ration 3:1)" />
+                    <CheckBox IsChecked="{Binding CannyHighThresholdTracksLowThreshold, Mode=TwoWay}" ToolTip="{Binding CannyHighThresholdTracksLowThresholdHelp}" Margin="0,0,0,20" />
+                    <Label Content="Hough Lines" Style="{StaticResource Link}" MouseDown="ShowLink_Handler" Tag="{Binding  HoughLinesLink}" />
+                    <Label Content="Minimum Line Length"/>
+                    <Slider Value="{Binding HoughLinesMinLine, Mode=TwoWay}" ToolTip="{Binding HoughLinesMinLineHelp}" />
+                    <Label Content="Maximum Line Gap"/>
+                    <Slider Value="{Binding HoughLinesMaxLineGap, Mode=TwoWay}" ToolTip="{Binding HoughLinesMaxLineGapHelp}" />
+                    <Label Content="RHO"/>
+                    <Slider Value="{Binding HoughLinesRHO, Mode=TwoWay}" ToolTip="{Binding HoughLinesRHOHelp}" />
+                    <Label Content="Theta"/>
+                    <Slider Value="{Binding HoughLinesTheta, Mode=TwoWay}" ToolTip="{Binding HoughLinesThetaHelp}" />
+                    <Label Content="Threshold"/>
+                    <Slider Value="{Binding HoughLinesThreshold, Mode=TwoWay}" ToolTip="{Binding HoughLinesThresholdHelp}" Margin="0,0,0,20"/>
+                    <Label Content="Hough Circles" Style="{StaticResource Link}" MouseDown="ShowLink_Handler" Tag="{Binding  HoughCirclesLink}" />
+                    <Label Content="DP"/>
+                    <Slider Value="{Binding HoughCirclesDP, Mode=TwoWay}" ToolTip="{Binding HoughCirclesDPHelp}" />
+                    <Label Content="Min Radius"/>
+                    <Slider Value="{Binding HoughCirclesMinRadius, Mode=TwoWay}" ToolTip="{Binding HoughCirclesMinDistanceHelp}" />
+                    <Label Content="Max Radius"/>
+                    <Slider Value="{Binding HoughCirclesMaxRadius, Mode=TwoWay}" ToolTip="{Binding HoughCirclesMaxDistanceHelp}" />
+                    <Label Content="Min Distance Between Centers"/>
+                    <Slider Value="{Binding HoughCirclesMinDistance, Mode=TwoWay}" ToolTip="{Binding HoughCirclesMinDistanceHelp}" />
+                    <Label Content="Gradient Param 1"/>
+                    <Slider Value="{Binding HoughCirclesParam1, Mode=TwoWay}" ToolTip="{Binding HoughCirclesParam1Help}" />
+                    <Label Content="Gradient Param 2"/>
+                    <Slider Value="{Binding HoughCirclesParam2, Mode=TwoWay}" ToolTip="{Binding HoughCirclesParam2Help}" />
+
+
+
+                </StackPanel>
+            </ScrollViewer>
+        </Grid>
+
+        <Grid Grid.ColumnSpan="2" x:Name="LoadingMask"  Visibility="Collapsed" >
+            <Rectangle Fill="Black" Opacity="0.5"/>
+            <TextBlock Text="Please wait..."  FontSize="42" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,20"/>
+        </Grid>
     </Grid>
 </Window>

@@ -38,7 +38,7 @@ namespace LagoVista.GCode.Sender.Application.Controls
             watch.Reset(); watch.Start();
             double cannyThresholdLinking = 120.0;
             UMat cannyEdges = new UMat();
-            CvInvoke.Canny(img, cannyEdges, cannyThreshold, cannyThresholdLinking);
+            CvInvoke.Canny(img, cannyEdges, cannyThreshold,cannyThresholdLinking);
 
             var lines = CvInvoke.HoughLinesP(
                cannyEdges,

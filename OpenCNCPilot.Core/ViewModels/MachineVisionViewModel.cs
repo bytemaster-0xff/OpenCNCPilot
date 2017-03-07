@@ -6,7 +6,12 @@ using System.Threading.Tasks;
 
 namespace LagoVista.GCode.Sender.ViewModels
 {
-    class MachineVisionViewModel
+    public partial class MachineVisionViewModel : GCodeAppViewModelBase
     {
+        public MachineVisionViewModel()
+        {
+
+
+        }
     }
 }
