@@ -38,5 +38,10 @@ namespace LagoVista.GCode.Sender.Application
         {
 
         }
+
+        private void ShowLink_Handler(object sender, MouseButtonEventArgs e)
+        {
+
+        }
     }
 }

@@ -62,22 +62,24 @@
                     </StackPanel.Resources>
                     <Label Content="Gaussian Blur" Style="{StaticResource Link}" MouseDown="ShowLink_Handler" Tag="{Binding GaussianBlurLink}" />
                     <Label Content="KSize"/>
-                    <Slider Value="{Binding GaussianKSize, Mode=TwoWay}" ToolTip="{Binding GuassianKSizeHelp}" />
+                    <Slider Value="{Binding GaussianKSize, Mode=TwoWay}" ToolTip="{Binding GuassianKSizeHelp}" Minimum="1" Maximum="20"/>
                     <Label Content="SigmaX"/>
-                    <Slider Value="{Binding GuassianSigmaX, Mode=TwoWay}" ToolTip="{Binding GuassianSigmaXHelp}" />
+                    <Slider Value="{Binding GuassianSigmaX, Mode=TwoWay}" ToolTip="{Binding GuassianSigmaXHelp}" Minimum="0" MaxHeight="20" />
                     <Label Content="SigmaY"/>
-                    <Slider Value="{Binding GuassianSigmaX, Mode=TwoWay}" Margin="0,0,0,20" ToolTip="{Binding GuassianSigmaXHelp}" />
+                    <Slider Value="{Binding GuassianSigmaY, Mode=TwoWay}" Margin="0,0,0,20" ToolTip="{Binding GuassianSigmaYHelp}"  Minimum="0" MaxHeight="20"/>
 
                     <Label Content="Canny Edge Detection 1" Style="{StaticResource Link}" MouseDown="ShowLink_Handler" Tag="{Binding  CannyLink}" />
                     <Label Content="Canny Edge Detection 2" Style="{StaticResource Link}" MouseDown="ShowLink_Handler" Tag="{Binding  CannyLink2}" />
                     <Label Content="Apeture Size"/>
-                    <Slider Value="{Binding  CannyApetureSize, Mode=TwoWay}" ToolTip="{Binding CannyApetureSizeHelp}" />
+                    <Slider Value="{Binding  CannyApetureSize, Mode=TwoWay}" ToolTip="{Binding CannyApetureSizeHelp}" Minimum="0" Maximum="10" />
                     <Label Content="Gradient"/>
                     <Slider Value="{Binding CannyGradient, Mode=TwoWay}" ToolTip="{Binding CannyGradientHelp}" />
                     <Label Content="Low Threshold"/>
-                    <Slider Value="{Binding CannyLowThreshold, Mode=TwoWay}" ToolTip="{Binding CannyLowThresholdHelp}" />
+                    <Slider Value="{Binding CannyLowThreshold, Mode=TwoWay}" Minimum="0" MaxHeight="100" SmallChange="0" LargeChange="5" ToolTip="{Binding CannyLowThresholdHelp}" />
                     <Label Content="High Threshold"/>
                     <Slider Value="{Binding CannyHighThreshold, Mode=TwoWay}" ToolTip="{Binding CannyHighThreshold}" />
+                    
+                    
                     <Label Content="High Threshold Tracks Low Thresold (ration 3:1)" />
                     <CheckBox IsChecked="{Binding CannyHighThresholdTracksLowThreshold, Mode=TwoWay}" ToolTip="{Binding CannyHighThresholdTracksLowThresholdHelp}" Margin="0,0,0,20" />
                     <Label Content="Hough Lines" Style="{StaticResource Link}" MouseDown="ShowLink_Handler" Tag="{Binding  HoughLinesLink}" />
@@ -93,17 +95,21 @@
                     <Slider Value="{Binding HoughLinesThreshold, Mode=TwoWay}" ToolTip="{Binding HoughLinesThresholdHelp}" Margin="0,0,0,20"/>
                     <Label Content="Hough Circles" Style="{StaticResource Link}" MouseDown="ShowLink_Handler" Tag="{Binding  HoughCirclesLink}" />
                     <Label Content="DP"/>
-                    <Slider Value="{Binding HoughCirclesDP, Mode=TwoWay}" ToolTip="{Binding HoughCirclesDPHelp}" />
+                    <Slider Value="{Binding HoughCirclesDP, Mode=TwoWay}" Minimum="0.5" Maximum="5" SmallChange="0.25" LargeChange="0.25" ToolTip="{Binding HoughCirclesDPHelp}" />
                     <Label Content="Min Radius"/>
-                    <Slider Value="{Binding HoughCirclesMinRadius, Mode=TwoWay}" ToolTip="{Binding HoughCirclesMinDistanceHelp}" />
+                    <Slider Value="{Binding HoughCirclesMinRadius, Mode=TwoWay}" ToolTip="{Binding HoughCirclesMinDistanceHelp}" Minimum="0" Maximum="100" SmallChange="5" LargeChange="25" />
                     <Label Content="Max Radius"/>
-                    <Slider Value="{Binding HoughCirclesMaxRadius, Mode=TwoWay}" ToolTip="{Binding HoughCirclesMaxDistanceHelp}" />
+                    <Slider Value="{Binding HoughCirclesMaxRadius, Mode=TwoWay}" ToolTip="{Binding HoughCirclesMaxDistanceHelp}" Minimum="0" Maximum="200" SmallChange="5" LargeChange="25"  />
                     <Label Content="Min Distance Between Centers"/>
-                    <Slider Value="{Binding HoughCirclesMinDistance, Mode=TwoWay}" ToolTip="{Binding HoughCirclesMinDistanceHelp}" />
+                    <Slider Value="{Binding HoughCirclesMinDistance, Mode=TwoWay}" ToolTip="{Binding HoughCirclesMinDistanceHelp}" Minimum="0" Maximum="200" SmallChange="5" LargeChange="25"/>
                     <Label Content="Gradient Param 1"/>
-                    <Slider Value="{Binding HoughCirclesParam1, Mode=TwoWay}" ToolTip="{Binding HoughCirclesParam1Help}" />
+                    <Slider Value="{Binding HoughCirclesParam1, Mode=TwoWay}" ToolTip="{Binding HoughCirclesParam1Help}" Minimum="50" Maximum="300" SmallChange="5" LargeChange="5"/>
                     <Label Content="Gradient Param 2"/>
-                    <Slider Value="{Binding HoughCirclesParam2, Mode=TwoWay}" ToolTip="{Binding HoughCirclesParam2Help}" />
+                    <Slider Value="{Binding HoughCirclesParam2, Mode=TwoWay}" ToolTip="{Binding HoughCirclesParam2Help}" Minimum="50" Maximum="300" SmallChange="5" LargeChange="5" />
+
+                    <Label Content="Polygon Detection" Style="{StaticResource Link}" MouseDown="ShowLink_Handler" Tag="{Binding  HoughLinesLink}" />
+                    <Label Content="Epsilon"/>
+                    <Slider Value="{Binding PolygonEpsilon, Mode=TwoWay}" ToolTip="{Binding PolygonEpsilonHelp}" Minimum="0.1" Maximum="1.0" SmallChange="0.5" LargeChange="0.5" />
 
 
 
