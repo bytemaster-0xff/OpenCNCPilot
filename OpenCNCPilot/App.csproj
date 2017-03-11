@@ -65,11 +65,11 @@
       <HintPath>..\Lib\HelixToolkit.Wpf.dll</HintPath>
     </Reference>
     <Reference Include="LagoVista.Core, Version=1.1.0.32, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\LagoVista.Core.0.8.89-alpha00706\lib\portable46-net451+win81\LagoVista.Core.dll</HintPath>
+      <HintPath>..\packages\LagoVista.Core.0.8.92-alpha00522\lib\portable46-net451+win81\LagoVista.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="LagoVista.Core.WPF, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\LagoVista.Core.WPF.0.8.88-alpha00464\lib\451\LagoVista.Core.WPF.dll</HintPath>
+      <HintPath>..\packages\LagoVista.Core.WPF.0.8.100-alpha00722\lib\451\LagoVista.Core.WPF.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">

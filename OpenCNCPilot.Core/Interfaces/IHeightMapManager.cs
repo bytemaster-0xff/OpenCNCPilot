@@ -48,7 +48,7 @@ namespace LagoVista.GCode.Sender.Interfaces
         /// <summary>
         /// Outline of the PCB Blank
         /// </summary>
-        ObservableCollection<Line3D> RawBoardOutline { get; }
+        ObservableCollection<LagoVista.Core.Models.Drawing.Line3D> RawBoardOutline { get; }
 
         /// <summary>
         /// The XY Coordinates of the points that will be probed.

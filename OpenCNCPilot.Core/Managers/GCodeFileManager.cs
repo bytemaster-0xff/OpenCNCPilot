@@ -45,7 +45,6 @@ namespace LagoVista.GCode.Sender.Managers
         {
             await _toolChangeManager.HandleToolChange(mcode);
             _pendingToolChangeLine = null;
-            Tail++;
         }
 
         public void ProcessNextLines()
@@ -67,7 +66,7 @@ namespace LagoVista.GCode.Sender.Managers
                 {
                     if (_machine.Settings.PauseOnToolChange)
                     {
-                        Debug.WriteLine("Found tool change at " + Head + " Will break once client confirms it ");
+                        Debug.WriteLine("Tool Change " + Head + ". Pausing Sending");
 
                         _pendingToolChangeLine = Head;
                     }
@@ -78,7 +77,7 @@ namespace LagoVista.GCode.Sender.Managers
 
                 else
                 {
-                    Debug.WriteLine("Sending Next Line" + _file.Commands[Head].Line);
+                    Debug.WriteLine("Sending " + Head + ". " + _file.Commands[Head].Line);
                 }
 
                 _machine.SendCommand(_file.Commands[Head]);
@@ -94,9 +93,19 @@ namespace LagoVista.GCode.Sender.Managers
         public int CommandAcknowledged()
         {
             var sentCommandLength = _file.Commands[Tail].MessageLength;
-            Debug.WriteLine("Acknowledged: " + _file.Commands[Tail].Line);
+            _file.Commands[Tail].Status = GCodeCommand.StatusTypes.Acknowledged;
+            Debug.WriteLine("Acknowledged:  " + Tail + ". "  + _file.Commands[Tail].Line);
+            Tail++;
 
-            _file.Commands[Tail++].Status = GCodeCommand.StatusTypes.Acknowledged;
+            if (_pendingToolChangeLine != null && _pendingToolChangeLine.Value == Tail)
+            {
+                _file.Commands[Tail].Status = GCodeCommand.StatusTypes.Internal;
+                Debug.WriteLine("Performing Tool Change " + Tail);
+                HandleToolChange(_file.Commands[Tail] as ToolChangeCommand);
+                Debug.WriteLine("Cleared Tool Change " + Tail + ". continue");
+                Tail++;
+            }
+
             if (Tail < _file.Commands.Count)
             {
                 _file.Commands[Tail].StartTimeStamp = DateTime.Now;
@@ -104,12 +113,6 @@ namespace LagoVista.GCode.Sender.Managers
             else
             {
                 RaisePropertyChanged(nameof(IsCompleted));
-            }
-
-            if (_pendingToolChangeLine != null && _pendingToolChangeLine.Value == Tail)
-            {
-                Debug.WriteLine("Found tool change at " + Tail);
-                HandleToolChange(_file.Commands[Tail] as ToolChangeCommand);
             }
 
             return sentCommandLength;

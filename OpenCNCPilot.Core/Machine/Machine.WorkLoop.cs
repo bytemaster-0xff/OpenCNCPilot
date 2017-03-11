@@ -63,6 +63,8 @@ namespace LagoVista.GCode.Sender
             _writer.Write('\n');
             _writer.Flush();
 
+            Debug.WriteLine(">>> " + sendCommand.Line);
+
             UpdateStatus(sendCommand.Line.ToString());
             AddStatusMessage(StatusMessageTypes.SentLine, sendCommand.Line.ToString());
 

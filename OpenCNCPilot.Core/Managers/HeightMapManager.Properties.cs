@@ -34,7 +34,7 @@ namespace LagoVista.GCode.Sender.Managers
             }
         }
 
-        public ObservableCollection<Line3D> RawBoardOutline { get; private set; }
+        public ObservableCollection<LagoVista.Core.Models.Drawing.Line3D> RawBoardOutline { get; private set; }
 
         /// <summary>
         /// The XY Coordinates of the points that will be probed.

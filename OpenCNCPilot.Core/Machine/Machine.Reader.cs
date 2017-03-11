@@ -23,8 +23,11 @@ namespace LagoVista.GCode.Sender
 
             if (line.StartsWith("ok"))
             {
+                
+
                 if (GCodeFileManager.HasValidFile && Mode == OperatingMode.SendingGCodeFile)
                 {
+                    Debug.WriteLine("OK Received - Acknowledge GCode Command");
                     lock (this)
                     {
                         GCodeFileManager.CommandAcknowledged();
@@ -34,7 +37,6 @@ namespace LagoVista.GCode.Sender
                             if (_sentQueue.Any())
                             {
                                 var sentLine = _sentQueue.Dequeue();
-                                Debug.WriteLine("<<<<< " + sentLine);
                                 UnacknowledgedBytesSent -= (sentLine.Length + 1);
                             }
                         }
@@ -47,6 +49,8 @@ namespace LagoVista.GCode.Sender
                 }
                 else
                 {
+                    Debug.WriteLine("OK Received - Other Mode");
+
                     lock (_queueAccessLocker)
                     {
                         if (_sentQueue.Any())

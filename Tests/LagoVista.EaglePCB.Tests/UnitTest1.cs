@@ -4,6 +4,7 @@ using System.Xml.Linq;
 using System.Linq;
 using LagoVista.EaglePCB.Managers;
 using System.Diagnostics;
+using LagoVista.EaglePCB.Models;
 
 namespace LagoVista.EaglePCB.Tests
 {
@@ -11,9 +12,8 @@ namespace LagoVista.EaglePCB.Tests
     public class UnitTest1
     {
         [TestMethod]
-        public void TestMethod1()
+        public void ParsePCB()
         {
-
             var doc = XDocument.Load("./EagleSample.brd");
 
             var pcb = EagleParser.ReadPCB(doc);
@@ -35,12 +35,59 @@ namespace LagoVista.EaglePCB.Tests
             }
 
             Debug.WriteLine("Drills");
-            foreach(var drill in drills)
+            foreach (var drill in drills)
             {
                 Debug.WriteLine($"\t{drill}");
             }
 
             Debug.Write($"Width={pcb.Width}  Height={pcb.Height}");
+        }
+
+        [TestMethod]
+        public void GenerateDrills()
+        {
+            var doc = XDocument.Load("./EagleSample.brd");
+            var pcb = EagleParser.ReadPCB(doc);
+
+            var config = new PCBProject()
+            {
+                PauseForToolChange = true,
+                DrillSpindleRPM = 25000,
+                DrillSpindleDwell = 3,
+                DrillSafeHeight = 3,
+                BoardDepth = 1.75,
+                Scrap = 3,
+                DrillPlungRate = 200,
+                SafePlungRecoverRate = 1000,               
+            };
+
+            var gcode = GCodeEngine.CreateDrillGCode(pcb, config);
+
+            Debug.WriteLine(gcode);
+        }
+
+        [TestMethod]
+        public void GenerateCutout()
+        {
+            var doc = XDocument.Load("./EagleSample.brd");
+            var pcb = EagleParser.ReadPCB(doc);
+
+            var config = new PCBProject()
+            {
+                PauseForToolChange = true,
+                DrillSpindleRPM = 25000,
+                DrillSpindleDwell = 3,
+                DrillSafeHeight = 3,
+                BoardDepth = 1.75,
+                Scrap = 3,
+                DrillPlungRate = 200,
+                SafePlungRecoverRate = 1000,
+            };
+
+            var gcode = GCodeEngine.CreateCutoutMill(pcb, config);
+
+            Debug.WriteLine(gcode);
+
         }
     }
 }

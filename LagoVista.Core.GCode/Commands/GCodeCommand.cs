@@ -10,7 +10,8 @@ namespace LagoVista.Core.GCode.Commands
             Ready,
             Queued,
             Sent,
-            Acknowledged
+            Acknowledged,
+            Internal,
         }
 
         private StatusTypes _status = StatusTypes.Ready;
