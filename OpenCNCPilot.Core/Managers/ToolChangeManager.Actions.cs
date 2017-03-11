@@ -17,6 +17,7 @@ namespace LagoVista.GCode.Sender.Managers
 
             Machine.SpindleOff();
             Machine.SendCommand("G0 Z30 F1000");
+            Machine.SendCommand("G0 X0 Y0 F1000");
             await Core.PlatformSupport.Services.Popups.ShowAsync("Tool Change Required\nChange Tool to: " + mcode.ToolSize + " and set probe");
             Machine.SendCommand("G0 Z10 F1000");
             Machine.SetMode(OperatingMode.Manual);

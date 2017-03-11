@@ -68,15 +68,19 @@ namespace LagoVista.GCode.Sender.Managers
 
         private void _timer_Tick(object sender, EventArgs e)
         {
-            Machine.SetMode(OperatingMode.Manual);
-            Machine.AddStatusMessage(StatusMessageTypes.Warning, $"Probing timed out after {Machine.Settings.ProbeTimeoutSeconds} sec.");
-
-            _status = ProbeStatus.TimedOut;
-
             if (_timer != null)
             {
-                _timer.Stop();
-                _timer = null;
+
+                Machine.SetMode(OperatingMode.Manual);
+                Machine.AddStatusMessage(StatusMessageTypes.Warning, $"Probing timed out after {Machine.Settings.ProbeTimeoutSeconds} sec.");
+
+                _status = ProbeStatus.TimedOut;
+
+                if (_timer != null)
+                {
+                    _timer.Stop();
+                    _timer = null;
+                }
             }
         }
 

@@ -131,6 +131,20 @@
                 </Grid>
             </TabItem>
 
+            <TabItem Header="ToolChange">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="140" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto" />
+                    </Grid.RowDefinitions>
+
+                    <Label Content="Pause on Tool Change" />
+                    <CheckBox Grid.Row="1" Grid.Column="1" IsChecked="{Binding Settings.PauseOnToolChange, Mode=TwoWay}"/>
+                </Grid>
+            </TabItem>
             <TabItem Header="Vision">
                 <Grid>
                     <Grid.ColumnDefinitions>

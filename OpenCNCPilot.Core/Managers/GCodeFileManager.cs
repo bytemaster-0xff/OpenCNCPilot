@@ -63,18 +63,21 @@ namespace LagoVista.GCode.Sender.Managers
                 _machine.HasBufferSpaceAvailableForByteCount(_file.Commands[Head].MessageLength))
             {
                 /* If Next Command up is a Tool Change, set the nullable property to that line and bail. */
-                if (Head  < _file.Commands.Count && _file.Commands[Head] is ToolChangeCommand)
+                if (Head < _file.Commands.Count && _file.Commands[Head] is ToolChangeCommand)
                 {
-                    Debug.WriteLine("Found tool change at " + Head + " Will break once client confirms it ");
+                    if (_machine.Settings.PauseOnToolChange)
+                    {
+                        Debug.WriteLine("Found tool change at " + Head + " Will break once client confirms it ");
 
-                    _pendingToolChangeLine = Head;
+                        _pendingToolChangeLine = Head;
+                    }
+
                     Head++;
                     return;
                 }
 
                 else
                 {
-
                     Debug.WriteLine("Sending Next Line" + _file.Commands[Head].Line);
                 }
 
