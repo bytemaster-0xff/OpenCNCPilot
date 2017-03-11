@@ -75,9 +75,13 @@ namespace LagoVista.EaglePCB.Tests
             var config = new PCBProject()
             {
                 PauseForToolChange = true,
-                DrillSpindleRPM = 25000,
-                DrillSpindleDwell = 3,
-                DrillSafeHeight = 3,
+                MillFeedRate = 200,
+                MillCutDepth = 0.5,
+                MillPlungeRate = 200,
+                MillSafeHeight = 10,
+                MillSpindleDwell = 3,
+                MillSpindleRPM = 15000,
+                MillToolSize = 3.2,
                 BoardDepth = 1.75,
                 Scrap = 3,
                 DrillPlungRate = 200,
