@@ -231,5 +231,10 @@ namespace LagoVista.GCode.Sender.Application
 
             }
         }
+
+        private void PCB2GCode_Click(object sender, RoutedEventArgs e)
+        {
+            PCB.PCB2Gode.CreateGCode();
+        }
     }
 }

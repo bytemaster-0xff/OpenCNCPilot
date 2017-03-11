@@ -29,6 +29,9 @@
             </MenuItem>
             <MenuItem Header="PCB" >
                 <MenuItem Header="Open Eagle Board File" Command="{Binding OpenEagleBoardFileCommand}" />
+                <Separator />
+                <MenuItem Header="PCB 2 GCode" x:Name="PCB2GCode" Click="PCB2GCode_Click" />
+                <Separator />
                 <MenuItem Header="Close PCB" Command="{Binding OpenEagleBoardFileCommand}" />
             </MenuItem>
             <MenuItem Header="Height Map" >

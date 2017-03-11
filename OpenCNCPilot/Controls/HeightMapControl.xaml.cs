@@ -46,7 +46,7 @@ namespace LagoVista.GCode.Sender.Application.Controls
             return new Point();
         }
 
-        private void RenderBoard(PCB board)
+        private void RenderBoard(LagoVista.EaglePCB.Models.PCB board)
         {
             var linePoints = new Point3DCollection();
 
@@ -148,19 +148,33 @@ namespace LagoVista.GCode.Sender.Application.Controls
             BottomWires.Points.Clear();
             TopWires.Points.Clear();
 
-            foreach (var wire in board.TopWires)
+            foreach(var wireSection in board.TopWires.GroupBy(wre => wre.Width))
             {
-                TopWires.Points.Add(new Point3D(wire.Rect.X1, wire.Rect.Y1, 1));
-                TopWires.Points.Add(new Point3D(wire.Rect.X2, wire.Rect.Y2, 1));
+                var topLines = new LinesVisual3D() { Thickness = wireSection.First().Width * 10, Color = Color.FromRgb(0xb8, 0x73, 0x33) };
+
+                foreach(var wire in wireSection)
+                {
+                    topLines.Points.Add(new Point3D(wire.Rect.X1, wire.Rect.Y1, 1));
+                    topLines.Points.Add(new Point3D(wire.Rect.X2, wire.Rect.Y2, 1));
+                }
+
+                viewport.Children.Add(topLines);
             }
 
-            foreach (var wire in board.BottomWires)
+            foreach (var wireSection in board.BottomWires.GroupBy(wre => wre.Width))
             {
-                BottomWires.Points.Add(new Point3D(wire.Rect.X1, wire.Rect.Y1, 1));
-                BottomWires.Points.Add(new Point3D(wire.Rect.X2, wire.Rect.Y2, 1));
+                var bottomLines = new LinesVisual3D() { Thickness = wireSection.First().Width * 10, Color = Colors.DarkGray };
+
+                foreach (var wire in wireSection)
+                {
+                    bottomLines.Points.Add(new Point3D(wire.Rect.X1, wire.Rect.Y1, 1));
+                    bottomLines.Points.Add(new Point3D(wire.Rect.X2, wire.Rect.Y2, 1));
+                }
+
+                viewport.Children.Add(bottomLines);
             }
 
-            /*
+                       /*
             foreach (var circle in element.Package.Circles)
             {
                 var circleMeshBuilder = new MeshBuilder(false, false);

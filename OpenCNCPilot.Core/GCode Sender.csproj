@@ -153,6 +153,10 @@
     <Compile Include="ViewModels\MachineControlViewModel.Properties.cs">
       <DependentUpon>MachineControlViewModel.cs</DependentUpon>
     </Compile>
+    <Compile Include="ViewModels\MachineVisionViewModel.cs" />
+    <Compile Include="ViewModels\MachineVisionViewModel.Properties.cs">
+      <DependentUpon>MachineVisionViewModel.cs</DependentUpon>
+    </Compile>
     <Compile Include="ViewModels\MainViewModel.CommandHandlers.cs">
       <DependentUpon>MainViewModel.cs</DependentUpon>
     </Compile>

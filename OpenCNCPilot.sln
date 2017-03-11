@@ -15,6 +15,32 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LagoVista.EaglePCB", "src\L
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LagoVista.EaglePCB.Tests", "Tests\LagoVista.EaglePCB.Tests\LagoVista.EaglePCB.Tests.csproj", "{8AF32689-4D56-4DE7-85B1-324FC7AC9723}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PCB2Gode Source", "PCB2Gode Source", "{0C9B53AC-C592-4AE1-A067-BE58C17BBBED}"
+	ProjectSection(SolutionItems) = preProject
+		PCB2GCODE\drill_sizes.h = PCB2GCODE\drill_sizes.h
+		PCB2GCODE\filecopy.h = PCB2GCODE\filecopy.h
+		PCB2GCODE\filename_subs.h = PCB2GCODE\filename_subs.h
+		PCB2GCODE\library.h = PCB2GCODE\library.h
+		PCB2GCODE\library.ulp = PCB2GCODE\library.ulp
+		PCB2GCODE\math.h = PCB2GCODE\math.h
+		PCB2GCODE\math.ulp = PCB2GCODE\math.ulp
+		PCB2GCODE\nonvolatile.h = PCB2GCODE\nonvolatile.h
+		PCB2GCODE\pcb-file-utils.h = PCB2GCODE\pcb-file-utils.h
+		PCB2GCODE\pcb-gcode-menu.scr = PCB2GCODE\pcb-gcode-menu.scr
+		PCB2GCODE\pcb-gcode-prg.scr = PCB2GCODE\pcb-gcode-prg.scr
+		PCB2GCODE\pcb-gcode-setup.ulp = PCB2GCODE\pcb-gcode-setup.ulp
+		PCB2GCODE\pcb-gcode-stack.h = PCB2GCODE\pcb-gcode-stack.h
+		PCB2GCODE\pcb-gcode.h = PCB2GCODE\pcb-gcode.h
+		PCB2GCODE\pcb-gcode.ulp = PCB2GCODE\pcb-gcode.ulp
+		PCB2GCODE\stack.h = PCB2GCODE\stack.h
+		PCB2GCODE\stack.ulp = PCB2GCODE\stack.ulp
+		PCB2GCODE\string.h = PCB2GCODE\string.h
+		PCB2GCODE\string.ulp = PCB2GCODE\string.ulp
+		PCB2GCODE\test_nonvolatile.h = PCB2GCODE\test_nonvolatile.h
+		PCB2GCODE\test_nonvolatile.ulp = PCB2GCODE\test_nonvolatile.ulp
+		PCB2GCODE\viewer.linux.sh = PCB2GCODE\viewer.linux.sh
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

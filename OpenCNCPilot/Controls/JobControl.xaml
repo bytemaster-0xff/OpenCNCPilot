@@ -187,27 +187,27 @@
                         <Image Source="/imgs/SpindleOff.png"/>
                     </Button.Content>
                 </Button>
-                <Button BorderBrush="Transparent"  Background="Transparent" Command="{Binding GotoWorkspaceHomeCommand}"  ToolTip="Spindle On"   >
+                <Button BorderBrush="Transparent"  Background="Transparent" Command="{Binding GotoWorkspaceHomeCommand}"  ToolTip="Go To Home"   >
                     <Button.Content>
                         <Image Source="/imgs/GotoWorkspaceHome.png"/>
                     </Button.Content>
                 </Button>
-                <Button BorderBrush="Transparent"  Background="Transparent" Command="{Binding SetFavorite1Command}"  ToolTip="Spindle On"   >
+                <Button BorderBrush="Transparent"  Background="Transparent" Command="{Binding SetFavorite1Command}"  ToolTip="Set Favorite 1"   >
                     <Button.Content>
                         <Image Source="/imgs/AddFavorite1.png"/>
                     </Button.Content>
                 </Button>
-                <Button BorderBrush="Transparent"  Background="Transparent" Command="{Binding GotoFavorite1Command}"   >
+                <Button BorderBrush="Transparent"  Background="Transparent" Command="{Binding GotoFavorite1Command}"  ToolTip="Go To Favorite 1"  >
                     <Button.Content>
                         <Image Source="/imgs/GotoFavorite1.png"/>
                     </Button.Content>
                 </Button>
-                <Button BorderBrush="Transparent"  Background="Transparent" Command="{Binding SetFavorite2Command}"  ToolTip="Spindle On"   >
+                <Button BorderBrush="Transparent"  Background="Transparent" Command="{Binding SetFavorite2Command}"  ToolTip="Set Favorite 2"   >
                     <Button.Content>
                         <Image Source="/imgs/AddFavorite2.png"/>
                     </Button.Content>
                 </Button>
-                <Button BorderBrush="Transparent"  Background="Transparent" Command="{Binding GotoFavorite2Command}"  ToolTip="Spindle Off" Margin="0,0,20,0"  >
+                <Button BorderBrush="Transparent"  Background="Transparent" Command="{Binding GotoFavorite2Command}"  ToolTip="Go To Favorite 2" Margin="0,0,20,0"  >
                     <Button.Content>
                         <Image Source="/imgs/GotoFavorite2.png"/>
                     </Button.Content>
