@@ -11,6 +11,7 @@ using Newtonsoft.Json;
 using System.Windows.Controls;
 using System.Diagnostics;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace LagoVista.GCode.Sender.Application
 {
@@ -18,8 +19,7 @@ namespace LagoVista.GCode.Sender.Application
     {
         public MainWindow()
         {
-            bool designTime = System.ComponentModel.DesignerProperties.GetIsInDesignMode(
-                new DependencyObject());
+            bool designTime = System.ComponentModel.DesignerProperties.GetIsInDesignMode(new DependencyObject());
             if (!designTime)
             {
                 var repo = LoadRepo();
@@ -108,9 +108,51 @@ namespace LagoVista.GCode.Sender.Application
 
         private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-
             await ViewModel.InitAsync();
             await GrblErrorProvider.InitAsync();
+            await ViewModel.LoadMRUs();
+
+            var idx = 1;
+            foreach(var file in ViewModel.MRUs.BoardFiles)
+            {
+                var boardMenu = new MenuItem() { Header = $"&{idx++}. {file}", Tag = file };
+                boardMenu.Click += BoardMenu_Click;
+                RecentBoards.Items.Add(boardMenu);
+            }
+
+            idx = 1;
+            foreach (var file in ViewModel.MRUs.ProjectFiles)
+            {
+                var projectMenu = new MenuItem() { Header = $"&{idx++}. {file}", Tag = file };
+                projectMenu.Click += ProjectMenu_Click;
+                RecentProjects.Items.Add(projectMenu);
+            }
+
+            idx = 1;
+            foreach (var file in ViewModel.MRUs.GCodeFiles)
+            {
+                var gcodeFile = new MenuItem() { Header = $"&{idx++}. {file}", Tag = file };
+                gcodeFile.Click += GcodeFile_Click;
+                RecentGCodeFiles.Items.Add(gcodeFile);
+            }
+        }
+
+        private async void GcodeFile_Click(object sender, RoutedEventArgs e)
+        {
+            var menu = sender as MenuItem;
+            await ViewModel.Machine.GCodeFileManager.OpenFileAsync(menu.Tag as string);
+        }
+
+        private async void ProjectMenu_Click(object sender, RoutedEventArgs e)
+        {
+            var menu = sender as MenuItem;
+            await OpenPCBProjectAsync(menu.Tag as String);
+        }
+
+        private async void BoardMenu_Click(object sender, RoutedEventArgs e)
+        {
+            var menu = sender as MenuItem;
+            await ViewModel.Machine.PCBManager.OpenFileAsync(menu.Tag as string);
         }
 
         private void SettingsMenu_Click(object sender, RoutedEventArgs e)
@@ -169,6 +211,7 @@ namespace LagoVista.GCode.Sender.Application
             Close();
         }
 
+        #region GCOde Manual Send Text Box
         private void TextBoxManual_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
             if (e.Key == System.Windows.Input.Key.Up)
@@ -193,6 +236,7 @@ namespace LagoVista.GCode.Sender.Application
                 TextBoxManual.CaretIndex = TextBoxManual.Text.Length;
             }
         }
+        #endregion
 
         private async void EditMachineMenu_Click(object sender, RoutedEventArgs e)
         {
@@ -228,7 +272,6 @@ namespace LagoVista.GCode.Sender.Application
                 menu.Click += ChangeMachine_Click;
 
                 MachinesMenu.Items.Add(menu);
-
             }
         }
 
@@ -237,36 +280,42 @@ namespace LagoVista.GCode.Sender.Application
             PCB.PCB2Gode.CreateGCode();
         }
 
+        private async Task OpenPCBProjectAsync(string file)
+        {
+            var vm = new PCBProjectViewModel(new EaglePCB.Models.PCBProject());
+            if (await vm.LoadExistingFile(file))
+            {
+                var pcbWindow = new PCBProject();
+                pcbWindow.DataContext = vm;
+                pcbWindow.Owner = this;
+                pcbWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                var result = pcbWindow.ShowDialog();
+                if (result.HasValue && result.Value)
+                {
+                    ViewModel.Project = vm.Project;
+                    ViewModel.PCBFilePath = file;
+                    ViewModel.AddProjectFileMRU(file);
+                }
+            }
+            else
+            {
+                MessageBox.Show("Could not open PCBProjectg");
+            }
+
+        }
+
         private async void OpenPCBProject_Click(object sender, RoutedEventArgs e)
         {
             var file = await Core.PlatformSupport.Services.Popups.ShowOpenFileAsync(Constants.PCBProject);
             if (!String.IsNullOrEmpty(file))
             {
-                var vm = new PCBProjectViewModel(new EaglePCB.Models.PCBProject());
-                if (await vm.LoadExistingFile(file))
-                {
-                    var pcbWindow = new PCBProject();
-                    pcbWindow.DataContext = vm;
-                    pcbWindow.Owner = this;
-                    pcbWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-                    var result = pcbWindow.ShowDialog();
-                    if(result.HasValue && result.Value)
-                    {
-                        ViewModel.Project = vm.Project;
-                        ViewModel.PCBFilePath = file;
-                    }
-                   
-                }
-                else
-                {
-                    MessageBox.Show("Could not open PCBProjectg");
-                }
+                await OpenPCBProjectAsync(file);
             }
         }
 
         private void ClosePCBProject_Click(object sender, RoutedEventArgs e)
         {
-            
+            ViewModel.Project = null;
         }
 
         private void EditPCBProject_Click(object sender, RoutedEventArgs e)
@@ -298,6 +347,7 @@ namespace LagoVista.GCode.Sender.Application
             if(pcbWindow.DialogResult.HasValue && pcbWindow.DialogResult.Value)
             {
                 ViewModel.Project = vm.Project;
+                ViewModel.AddProjectFileMRU(pcbWindow.PCBFilepath);
             }
 
         }

@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using System.Linq;
 using LagoVista.Core.ViewModels;
 
 namespace LagoVista.GCode.Sender.ViewModels
@@ -17,8 +18,6 @@ namespace LagoVista.GCode.Sender.ViewModels
         public async override Task InitAsync()
         {
             await Machine.InitAsync();
-            //Machine.Settings.PropertyChanged += _settings_PropertyChanged;
-
             await base.InitAsync();
         }
 
@@ -27,6 +26,68 @@ namespace LagoVista.GCode.Sender.ViewModels
             JobControlVM = new JobControlViewModel(Machine);
             ManualSendVM = new ManualSendViewModel(Machine);
             MachineControlVM = new MachineControlViewModel(Machine);
+        }
+
+        public async Task LoadMRUs()
+        {
+            MRUs = await Storage.GetAsync<MRUs>("mrus.json");
+            if(MRUs == null)
+            {
+                MRUs = new MRUs();
+            }
+        }
+
+        public async void AddGCodeFileMRU(string gcodeFile)
+        {
+            if (gcodeFile == MRUs.GCodeFiles.FirstOrDefault())
+            {
+                return;
+            }
+
+            MRUs.GCodeFiles.Insert(0, gcodeFile);
+            if (MRUs.GCodeFiles.Count > 10)
+            {
+                MRUs.GCodeFiles.RemoveAt(10);
+            }
+
+            await SaveMRUsAsync();
+        }
+
+        public async void AddBoardFileMRU(string boardFile)
+        {
+            if (boardFile == MRUs.BoardFiles.FirstOrDefault())
+            {
+                return;
+            }
+
+            MRUs.BoardFiles.Insert(0, boardFile);
+            if (MRUs.BoardFiles.Count > 10)
+            {
+                MRUs.BoardFiles.RemoveAt(10);
+            }
+
+            await SaveMRUsAsync();
+        }
+
+        public async void AddProjectFileMRU(string projectFile)
+        {
+            if(projectFile == MRUs.ProjectFiles.FirstOrDefault())
+            {
+                return;
+            }
+
+            MRUs.ProjectFiles.Insert(0, projectFile);
+            if(MRUs.ProjectFiles.Count > 10)
+            {
+                MRUs.ProjectFiles.RemoveAt(10);
+            }
+
+            await SaveMRUsAsync();
+        }
+
+        public async Task SaveMRUsAsync()
+        {
+            await Storage.StoreAsync(this.MRUs, "mrus.json");
         }
     }
 }

@@ -30,8 +30,9 @@ namespace LagoVista.GCode.Sender.ViewModels
         public PCBProjectViewModel(PCBProject project)
         {
             Project = project;
-            OpenBrdCommand = new RelayCommand(OpenBrd);
             SaveDefaultProfileCommand = new RelayCommand(SaveDefaultProfile);
+
+
         }
 
         public async Task LoadDefaultSettings()
@@ -52,33 +53,17 @@ namespace LagoVista.GCode.Sender.ViewModels
         public async void SaveDefaultProfile()
         {
 
-            var brdFileName = Project.BoardFile;
-            Project.BoardFile = String.Empty;
+            var brdFileName = Project.EagleBRDFilePath;
+            Project.EagleBRDFilePath = String.Empty;
 
             await Storage.StoreAsync(Project, "Default.pcbproj");
-            Project.BoardFile = brdFileName;
+            Project.EagleBRDFilePath = brdFileName;
         }
-
-        public async void OpenBrd()
-        {
-            var result = await Popups.ShowOpenFileAsync(Constants.FileFilterPCB);
-            if(!String.IsNullOrEmpty(result))
-            {
-                try
-                {
-                    var doc = XDocument.Load(result);
-                    PCB = EagleParser.ReadPCB(doc);
-                    Project.BoardFile = result;
-                }
-                catch(Exception)
-                {
-                    await Popups.ShowAsync("Does not appear to be an Eagle PCB File");
-                }
-            }
-        }
-
-        public RelayCommand OpenBrdCommand { get; private set; }
 
         public RelayCommand SaveDefaultProfileCommand { get; private set; }
+        public RelayCommand OpenEagleBoardCommand { get; private set; }
+        public RelayCommand OpenTopEtchingCommand { get; private set; }
+        public RelayCommand OpenBottomEtchingCommand { get; private set; }
+
     }
 }

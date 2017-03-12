@@ -1,17 +1,25 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using System.Xml.Linq;
 
 namespace LagoVista.GCode.Sender.Managers
 {
     public partial class PCBManager
     {
-        public Task OpenFileAsync(string path)
+        public Task<bool> OpenFileAsync(string path)
         {
-            var doc = XDocument.Load(path);
+            try
+            {
+                var doc = XDocument.Load(path);
 
-            this.Board = EaglePCB.Managers.EagleParser.ReadPCB(doc);
+                this.Board = EaglePCB.Managers.EagleParser.ReadPCB(doc);
 
-            return Task.FromResult(default(object));
+                return Task.FromResult(true);
+            }
+            catch(Exception)
+            {
+                return Task.FromResult(false);
+            }
         }
     }
 }

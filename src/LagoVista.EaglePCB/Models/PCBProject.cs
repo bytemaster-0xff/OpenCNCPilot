@@ -8,14 +8,33 @@ namespace LagoVista.EaglePCB.Models
     {
         public double Scrap { get; set; }
 
-        private string _boardFile;
-        public string BoardFile
+        private string _eagleBRDFilePath;
+        public string EagleBRDFilePath
         {
-            get { return _boardFile; }
-            set { Set(ref _boardFile, value); }
+            get { return _eagleBRDFilePath; }
+            set { Set(ref _eagleBRDFilePath, value); }
         }
 
-        public double BoardDepth { get; set; }
+        private string _topEtchingFilePath;
+        public string TopEtchignFilePath
+        {
+            get { return _topEtchingFilePath; }
+            set { Set(ref _topEtchingFilePath, value); }
+        }
+
+        private string _bottomEtchingFilePath;
+        public string BottomEtchingFilePath
+        {
+            get { return _bottomEtchingFilePath; }
+            set { Set(ref _bottomEtchingFilePath, value); }
+        }
+
+
+
+        public double StockWidth { get; set; }
+        public double StockHeight { get; set; }
+
+        public double StockThickness { get; set; }
 
         public bool PauseForToolChange { get; set; }
 
@@ -24,6 +43,8 @@ namespace LagoVista.EaglePCB.Models
         public int SafePlungeRecoverRate { get; set; }
         public int DrillPlungRate { get; set; }
         public double DrillSafeHeight { get; set; }
+
+        public double HeightMapGridSize { get; set; }
 
         public double MillSpindleRPM { get; set; }
         public double MillSpindleDwell { get; set; }
@@ -57,11 +78,13 @@ namespace LagoVista.EaglePCB.Models
                 return new PCBProject()
                 {
                     PauseForToolChange = false,
+                    StockWidth = 100,
+                    StockHeight = 80,
                     DrillSpindleDwell = 3,
                     DrillSpindleRPM = 20000,
                     DrillPlungRate = 200,
                     DrillSafeHeight = 5,
-                    BoardDepth = 1.57,
+                    StockThickness = 1.57,
                     MillCutDepth = 0.5,
                     MillFeedRate = 500,
                     MillPlungeRate = 200,

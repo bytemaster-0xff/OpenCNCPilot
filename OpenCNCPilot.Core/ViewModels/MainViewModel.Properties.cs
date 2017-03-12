@@ -2,6 +2,7 @@
 using LagoVista.GCode.Sender.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,11 +21,36 @@ namespace LagoVista.GCode.Sender.ViewModels
         public PCBProject Project
         {
             get { return _project; }
-            set 
+            set
             {
                 _project = value;
                 RaisePropertyChanged();
             }
         }
+
+        public MRUs MRUs
+        {
+            get; set;
+        }
+    }
+
+    public class FileInfo
+    {
+        public string FullPath { get; set; }
+        public string FileName { get; set; }
+    }
+
+    public class MRUs
+    {
+        public MRUs()
+        {
+            GCodeFiles = new List<string>();
+            BoardFiles = new List<string>();
+            ProjectFiles = new List<string>();
+        }
+
+        public List<String> GCodeFiles { get; set; }
+        public List<String> BoardFiles { get; set; }
+        public List<String> ProjectFiles { get; set; }
     }
 }

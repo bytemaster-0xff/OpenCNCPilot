@@ -42,7 +42,11 @@ namespace LagoVista.GCode.Sender.ViewModels
             var file = await Popups.ShowOpenFileAsync(Constants.FileFilterPCB);
             if (!String.IsNullOrEmpty(file))
             {
-                await Machine.PCBManager.OpenFileAsync(file);
+                if(await Machine.PCBManager.OpenFileAsync(file))
+                {
+                    AddBoardFileMRU(file);
+                }
+
             }
          }
 
@@ -80,7 +84,10 @@ namespace LagoVista.GCode.Sender.ViewModels
             var file = await Popups.ShowOpenFileAsync(Constants.FileFilterGCode);
             if (!String.IsNullOrEmpty(file))
             {
-                await Machine.GCodeFileManager.OpenFileAsync(file); 
+                if(await Machine.GCodeFileManager.OpenFileAsync(file))
+                {
+                    AddGCodeFileMRU(file);
+                }
             }
         }
 

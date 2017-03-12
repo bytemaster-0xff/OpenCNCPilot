@@ -199,7 +199,7 @@
                         <RowDefinition Height="auto" />
                         <RowDefinition Height="auto" />
                     </Grid.RowDefinitions>
-                    <Label  Content="Plunge Feedrate (mm/min)" />
+                    <Label  Content="Plunge Feedrate" />
                     <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding Settings.ProbeFeed, FallbackValue=10, Mode=TwoWay}"/>
                     <Label Content="mm/min" Grid.Column="2" />
 

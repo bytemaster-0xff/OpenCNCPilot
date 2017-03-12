@@ -11,36 +11,43 @@ namespace LagoVista.GCode.Sender.Managers
 {
     public partial class GCodeFileManager
     {
-        public Task OpenFileAsync(string path)
+        public Task<bool> OpenFileAsync(string path)
         {
-            if (String.IsNullOrEmpty(path))
+            try
             {
-                ClearPaths();
-                FileName = "<empty>";
+                if (String.IsNullOrEmpty(path))
+                {
+                    ClearPaths();
+                    FileName = "<empty>";
+                }
+
+                var parts = path.Split('\\');
+                FileName = parts[parts.Length - 1];
+
+                var file = GCodeFile.Load(path);
+                if (file != null)
+                {
+                    FindExtents(file);
+                    File = file;
+                    RenderPaths();
+                }
+                else
+                {
+                    File = null;
+                    Max = null;
+                    Min = null;
+                    ClearPaths();
+                }
+
+                _head = 0;
+                _tail = 0;
+
+                return Task.FromResult(true);
             }
-
-            var parts = path.Split('\\');
-            FileName = parts[parts.Length - 1];
-
-            var file = GCodeFile.Load(path);
-            if (file != null)
+            catch(Exception)
             {
-                FindExtents(file);
-                File = file;
-                RenderPaths();
+                return Task.FromResult(false);
             }
-            else
-            {
-                File = null;
-                Max = null;
-                Min = null;
-                ClearPaths();
-            }
-
-            _head = 0;
-            _tail = 0;
-
-            return Task.FromResult(default(object));
         }
 
 

@@ -14,6 +14,6 @@ namespace LagoVista.GCode.Sender.Interfaces
 
         PCB Board { get; }
 
-        Task OpenFileAsync(string boardFile);
+        Task<bool> OpenFileAsync(string boardFile);
     }
 }

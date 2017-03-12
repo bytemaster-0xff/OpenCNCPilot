@@ -38,7 +38,7 @@ namespace LagoVista.EaglePCB.Managers
                 {
                     bldr.AppendLine($"G00 X{(drill.X + pcbProject.Scrap):0.0000} Y{(drill.Y + pcbProject.Scrap):0:0000}");
                     bldr.AppendLine($"G01 Z0 F{pcbProject.SafePlungeRecoverRate}");
-                    bldr.AppendLine($"G01 Z{pcbProject.BoardDepth:0.0000} FS{pcbProject.DrillPlungRate}");
+                    bldr.AppendLine($"G01 Z{pcbProject.StockThickness:0.0000} FS{pcbProject.DrillPlungRate}");
                     bldr.AppendLine($"G01 Z{pcbProject.DrillSafeHeight} F{pcbProject.SafePlungeRecoverRate}");
                 }
             }
@@ -81,9 +81,9 @@ namespace LagoVista.EaglePCB.Managers
 
                 depth -= pcbProject.MillCutDepth;
 
-                while (depth > -pcbProject.BoardDepth)
+                while (depth > -pcbProject.StockThickness)
                 {
-                    depth = Math.Min(depth, pcbProject.BoardDepth);
+                    depth = Math.Min(depth, pcbProject.StockThickness);
                     bldr.AppendLine($"G01 Z{depth:0.0000} F{pcbProject.MillPlungeRate}"); /* Move to cut depth interval at 0,0 */
 
                     bldr.AppendLine($"G01 X{(scrap + width + millRadius):0.0000} Y{(scrap - millRadius):0.0000} F{pcbProject.MillFeedRate}"); /* Move to bottom right */
@@ -110,9 +110,9 @@ namespace LagoVista.EaglePCB.Managers
 
                 depth -= pcbProject.MillCutDepth;
 
-                while (depth > -pcbProject.BoardDepth)
+                while (depth > -pcbProject.StockThickness)
                 {
-                    depth = Math.Min(depth, pcbProject.BoardDepth);
+                    depth = Math.Min(depth, pcbProject.StockThickness);
                     bldr.AppendLine($"G01 Z{depth:0.0000} F{pcbProject.MillPlungeRate}");   
 
                     bldr.AppendLine($"G00 X{(scrap + (width - radius)):0.0000} Y{(scrap - millRadius):0.0000} F{pcbProject.MillFeedRate}"); 

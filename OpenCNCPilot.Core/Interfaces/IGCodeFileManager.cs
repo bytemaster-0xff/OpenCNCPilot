@@ -15,7 +15,7 @@ namespace LagoVista.GCode.Sender.Interfaces
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        Task OpenFileAsync(string path);
+        Task<bool> OpenFileAsync(string path);
 
         /// <summary>
         /// Close the current file.

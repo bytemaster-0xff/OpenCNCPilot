@@ -22,33 +22,53 @@
                         <RowDefinition Height="auto" />
                         <RowDefinition Height="auto" />
                         <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="120" />
+                        <ColumnDefinition Width="130" />
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="80" />
                     </Grid.ColumnDefinitions>
 
 
-                    <Label Content="Board File" />
-                    <ctls:MaskingTextBox Text="{Binding Path=Project.BoardFile, Mode=TwoWay}" Grid.Column="1" Margin="4,4,0,4" />
-                    <Button Content="..." Width="30" HorizontalAlignment="Left" Grid.Column="2" Margin="0,4,4,4" Command="{Binding OpenBrdCommand}"/>
+                    <Label Content="Eagle Board File" />
+                    <ctls:MaskingTextBox Text="{Binding Path=Project.EagleBRDFilePath, Mode=TwoWay}" Grid.Column="1" Margin="4,4,0,4" />
+                    <Button Content="..." Width="30" HorizontalAlignment="Left" Grid.Column="2" Margin="0,4,4,4" Command="{Binding OpenEagleBoardCommand}" />
 
-                    <Label Content="Scrap" Grid.Row="1" />
-                    <ctls:MaskingTextBox  UnitType="Size" Min="0" Max="99" Text="{Binding Path=Project.Scrap, Mode=TwoWay}" ToolTip="The bottom and left margin from the origin to the PCB area.  The board edges will be milled from the scrap area." Margin="4,4,0,4" Grid.Column="1" Grid.Row="1" />
-                    <Label Content="(mm)" Grid.Column="2" Grid.Row="1" />
+                    <Label Content="Top Etching GCode" Grid.Row="1" />
+                    <ctls:MaskingTextBox Grid.Row="1" Text="{Binding Path=Project.TopEtchignFilePath, Mode=TwoWay}" Grid.Column="1" Margin="4,4,0,4" />
+                    <Button Grid.Row="1" Content="..." Width="30" HorizontalAlignment="Left" Grid.Column="2" Margin="0,4,4,4" Command="{Binding OpenTopEtchingCommand}"/>
 
-                    <Label Content="Stock Thickness" Grid.Row="2" />
-                    <ctls:MaskingTextBox UnitType="Size" Min="0" Max="99" Text="{Binding Path=Project.BoardDepth, Mode=TwoWay}" ToolTip="The Thickness of the blank PCB file, this is used for establishing drill and mill depths" Margin="4,4,0,4" Grid.Column="1" Grid.Row="2" />
-                    <Label Content="(mm)" Grid.Column="2" Grid.Row="2" />
+                    <Label Grid.Row="2" Content="Bottom Etching GCode" />
+                    <ctls:MaskingTextBox Grid.Row="2" Text="{Binding Path=Project.BottomEtchingFilePath, Mode=TwoWay}" Grid.Column="1" Margin="4,4,0,4" />
+                    <Button Content="..." Grid.Row="2" Width="30" HorizontalAlignment="Left" Grid.Column="2" Margin="0,4,4,4" Command="{Binding OpenBottomEtchingCommand}"/>
 
-                    <Label Content="Width" Grid.Row="3" />
-                    <TextBlock Text="{Binding Path=PCB.Width}" Grid.Row="3" Grid.Column="1" />
-                    <Label Content="(mm)" Grid.Column="2" Grid.Row="3" />
+                    <Label Content="Scrap" Grid.Row="3" />
+                    <ctls:MaskingTextBox  UnitType="Size" Min="0" Max="99" Text="{Binding Path=Project.Scrap, Mode=TwoWay}" ToolTip="The bottom and left margin from the origin to the PCB area.  The board edges will be milled from the scrap area." Margin="4,4,0,4" Grid.Column="1" Grid.Row="3" />
+                    <Label Content="mm" Grid.Column="2" Grid.Row="3" />
 
-                    <Label Content="Height" Grid.Row="4" />
-                    <TextBlock Text="{Binding Path=PCB.Height}" Grid.Row="4" Grid.Column="1" />
-                    <Label Content="(mm)" Grid.Column="2" Grid.Row="4" />
+                    <Label Content="Stock Width" Grid.Row="4" />
+                    <ctls:MaskingTextBox UnitType="Size" Min="0" Max="99" Text="{Binding Path=Project.StockWidth, Mode=TwoWay}" ToolTip="The Width of the blank PCB file, this is used for establishing drill and mill depths" Margin="4,4,0,4" Grid.Column="1" Grid.Row="4" />
+                    <Label Content="mm" Grid.Column="2" Grid.Row="4" />
+
+                    <Label Content="Stock Height" Grid.Row="5" />
+                    <ctls:MaskingTextBox UnitType="Size" Min="0" Max="99" Text="{Binding Path=Project.StockHeight, Mode=TwoWay}" ToolTip="The Height of the blank PCB file, this is used for establishing drill and mill depths" Margin="4,4,0,4" Grid.Column="1" Grid.Row="5" />
+                    <Label Content="mm" Grid.Column="2" Grid.Row="5" />
+
+                    <Label Content="Stock Thickness" Grid.Row="6" />
+                    <ctls:MaskingTextBox UnitType="Size" Min="0" Max="99" Text="{Binding Path=Project.StockThickness, Mode=TwoWay}" ToolTip="The Thickness of the blank PCB file, this is used for establishing drill and mill depths" Margin="4,4,0,4" Grid.Column="1" Grid.Row="6" />
+                    <Label Content="mm" Grid.Column="2" Grid.Row="6" />
+
+                    <Label Content="Detected Width" Grid.Row="7" />
+                    <TextBlock Text="{Binding Path=PCB.Width}" Grid.Row="7" Grid.Column="1" />
+                    <Label Content="mm" Grid.Column="2" Grid.Row="7" />
+
+                    <Label Content="Detected Height" Grid.Row="8" />
+                    <TextBlock Text="{Binding Path=PCB.Height}" Grid.Row="8" Grid.Column="1" />
+                    <Label Content="mm" Grid.Column="2" Grid.Row="8" />
 
                 </Grid>
             </TabItem>
@@ -70,30 +90,30 @@
                     </Grid.ColumnDefinitions>
                     <Label Content="Plunge Rate" Grid.Row="0" />
                     <ctls:MaskingTextBox UnitType="Rate" Min="0" Max="9999" Grid.Column="1" Grid.Row="0" Text="{Binding Path=Project.DrillPlungeRate, Mode=TwoWay}" ToolTip="The rate at which the Z-Axis will be moved from the time the bit touches the board until drill has been completed." Margin="4,4,0,4" />
-                    <Label Content="(mm/min)" Grid.Column="2" Grid.Row="0" />
+                    <Label Content="mm/min" Grid.Column="2" Grid.Row="0" />
 
                     <Label Content="Spindle RPM" Grid.Row="1" />
                     <ctls:MaskingTextBox Min="0" Max="99999"  UnitType="RPM"  Grid.Column="1" Grid.Row="1" Text="{Binding Path=Project.DrillSpindleRPM, Mode=TwoWay}" ToolTip="For drills that have computer controlled RPM the rotations per minute during the drill process" Margin="4,4,0,4" />
-                    <Label Content="(rpm)" Grid.Column="2" Grid.Row="1" />
+                    <Label Content="rpm" Grid.Column="2" Grid.Row="1" />
 
                     <Label Content="Spindle Dwell" Grid.Row="2" />
                     <ctls:MaskingTextBox Min="0" Max="99" UnitType="Seconds" Grid.Column="1" Grid.Row="2" Text="{Binding Path=Project.DrillSpindleDwell, Mode=TwoWay}" ToolTip="The amount of time to pause while the drill spins-up." Margin="4,4,0,4" />
-                    <Label Content="(sec)" Grid.Column="2" Grid.Row="2" />
+                    <Label Content="sec" Grid.Column="2" Grid.Row="2" />
 
                     <Label Content="Safe Height" Grid.Row="3" />
                     <ctls:MaskingTextBox Min="0" Max="99" UnitType="Size" Grid.Column="1" Grid.Row="3" Text="{Binding Path=Project.DrillSafeHeight, Mode=TwoWay}" ToolTip="The Height above the Z-Axis the the bit will move to prior to moving between drills and tool change." Margin="4,4,0,4" />
-                    <Label Content="(mm)" Grid.Column="2" Grid.Row="3" />
+                    <Label Content="mm" Grid.Column="2" Grid.Row="3" />
 
                     <Label Content="Safe Plunge/Reover Rate" Grid.Row="4" />
                     <ctls:MaskingTextBox UnitType="Rate"  Min="0" Max="9999" Grid.Column="1" Grid.Row="4" Text="{Binding Path=Project.SafePlungeRecoverRate, Mode=TwoWay}" ToolTip="The Rate at which the drill will move from the safe height to the Z Zero Axis, also the Rate at which the bill will be with drawn from the board." Margin="4,4,0,4" />
-                    <Label Content="(mm/sec)" Grid.Column="2" Grid.Row="4" />
+                    <Label Content="mm/sec" Grid.Column="2" Grid.Row="4" />
 
                     <Label Content="Use Tool Change Process" Grid.Row="5" />
                     <CheckBox Grid.Column="1" Grid.Row="5" IsChecked="{Binding PauseForToolChange, Mode=TwoWay}" VerticalAlignment="Center" Margin="4" ToolTip="Perform a process on Tool Change where Machine is Stopped, move to a Safe Hope Position and Probed." />
                 </Grid>
 
             </TabItem>
-            <TabItem Header="Mill">
+            <TabItem Header="Mill Cutout">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="auto" />
@@ -111,27 +131,47 @@
 
                     <Label Content="Cut Depth" Grid.Row="0" />
                     <ctls:MaskingTextBox  Min="0" Max="99" Grid.Column="1" Grid.Row="0" Text="{Binding Path=Project.MillCutDepth, Mode=TwoWay}" ToolTip="The Milling Process can make multiple passes to Cut the PCB from the Blank, this is the depth the PCB is cut with each pass." Margin="4,4,0,4" />
-                    <Label Content="(mm)" Grid.Column="2" Grid.Row="0" />
+                    <Label Content="mm" Grid.Column="2" Grid.Row="0" />
 
                     <Label Content="Tool Size" Grid.Row="1" />
                     <ctls:MaskingTextBox Min="0" Max="20"  Grid.Column="1" Grid.Row="1" Text="{Binding Path=Project.MillToolSize, Mode=TwoWay}" ToolTip="To Ensure that the Milled Board matches the specified size, it will mill from outside the boundary of the board.  The tool size is required to determine how far outside the boundary will be milled." Margin="4,4,0,4" />
-                    <Label Content="(mm)" Grid.Column="2" Grid.Row="1" />
+                    <Label Content="mm" Grid.Column="2" Grid.Row="1" />
 
                     <Label Content="Spindle RPM" Grid.Row="2" />
                     <ctls:MaskingTextBox Min="0" Max="99999"  Grid.Column="1" Grid.Row="2" Text="{Binding Path=Project.MillSpindleRPM, Mode=TwoWay}" ToolTip="How fast the Spindle will Spin in RPM during the Milling Process" Margin="4,4,0,4" />
-                    <Label Content="(rpm)" Grid.Column="2" Grid.Row="2" />
+                    <Label Content="rpm" Grid.Column="2" Grid.Row="2" />
 
                     <Label Content="Spindle Dwell" Grid.Row="3" />
                     <ctls:MaskingTextBox  Min="0" Max="99" Grid.Column="1" Grid.Row="3" Text="{Binding Path=Project.MillSpindleDwell, Mode=TwoWay}" ToolTip="Number of Seconds to Pause prior after the Spindle has spun up prior to the milling operation" Margin="4,4,0,4" />
-                    <Label Content="(sec)" Grid.Column="2" Grid.Row="3" />
+                    <Label Content="sec" Grid.Column="2" Grid.Row="3" />
 
                     <Label Content="Feed Rate" Grid.Row="4" />
                     <ctls:MaskingTextBox Min="0" Max="999"  Grid.Column="1" Grid.Row="4" Text="{Binding Path=Project.MillFeedRate, Mode=TwoWay}" ToolTip="Number of Seconds to Pause prior after the Spindle has spun up prior to the milling operation." Margin="4,4,0,4" />
-                    <Label Content="(mm/sec)" Grid.Column="2" Grid.Row="4" />
+                    <Label Content="mm/sec" Grid.Column="2" Grid.Row="4" />
 
                     <Label Content="Safe Height" Grid.Row="5" />
                     <ctls:MaskingTextBox UnitType="Size" Min="0" Max="100"  Grid.Column="1" Grid.Row="5" Text="{Binding Path=Project.MillSafeHeight, Mode=TwoWay}" ToolTip="Height above the Z Axis the bit will move to prior to moving in the XY plane" Margin="4,4,0,4" />
-                    <Label Content="(mm)" Grid.Column="2" Grid.Row="5" />
+                    <Label Content="mm" Grid.Column="2" Grid.Row="5" />
+                </Grid>
+            </TabItem>
+            <TabItem Header="Height Map">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="120" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="80" />
+                    </Grid.ColumnDefinitions>
+                    <Label Content="Grid Size" Grid.Row="0" />
+                    <ctls:MaskingTextBox  Min="0" Max="99" Grid.Column="1" Grid.Row="0" Text="{Binding Path=Project.HeightMapGridSize, Mode=TwoWay}" ToolTip="The distance between points when creating a Height Map to correct for slight warpage in the PCB Blank." Margin="4,4,0,4" />
+                    <Label Content="mm" Grid.Column="2" Grid.Row="0" />
                 </Grid>
             </TabItem>
         </TabControl>
