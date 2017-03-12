@@ -32,9 +32,6 @@ namespace LagoVista.GCode.Sender.Application.Controls
             InitializeComponent();
             Stop.Visibility = Visibility.Collapsed;
             DataContextChanged += ImageSensorControl_DataContextChanged;
-
-
-            _viewModel = new MachineVisionViewModel();
         }
 
         private void ImageSensorControl_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
@@ -295,6 +292,29 @@ namespace LagoVista.GCode.Sender.Application.Controls
         private void Play_Click(object sender, RoutedEventArgs e)
         {
             StartCapture();
+        }
+
+        MachineVision _fullScreenWindow;
+
+        private void ShowFullScreenVision_Click(object sender, RoutedEventArgs e)
+        {
+            StopCapture();
+
+            if (_fullScreenWindow != null)
+            {
+                _fullScreenWindow.BringIntoView();
+            }
+            else
+            {
+                _fullScreenWindow = new MachineVision(ViewModel.Machine);
+                _fullScreenWindow.Closed += _fullScreenWindow_Closed;
+                _fullScreenWindow.Show();
+            }
+        }
+
+        private void _fullScreenWindow_Closed(object sender, EventArgs e)
+        {
+            _fullScreenWindow = null;
         }
     }
 }

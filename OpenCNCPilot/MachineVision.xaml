@@ -8,9 +8,7 @@
         xmlns:vms="clr-namespace:LagoVista.GCode.Sender.ViewModels;assembly=LagoVista.GCode.Sender"
         mc:Ignorable="d"
         Title="MachineVision" Height="720" Width="1200">
-    <Window.Resources>
-        <vms:MachineVisionViewModel x:Key="visionVM" />
-    </Window.Resources>
+
     <Grid d:DataContext="{StaticResource visionVM}" >
 
         <Grid.RowDefinitions>

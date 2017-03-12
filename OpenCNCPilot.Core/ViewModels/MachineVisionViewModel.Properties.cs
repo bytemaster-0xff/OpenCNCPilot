@@ -44,7 +44,7 @@ namespace LagoVista.GCode.Sender.ViewModels
         public string CannyLowThresholdHelp { get { return "Threshold for Line Detection"; } }
         public double CannyLowThreshold { get; set; } = 5;
         public string CannyHighThresholdHelp { get { return "Recommended to ve set to three times the lower threshold"; } }
-        public double CannyHighThreshold { get { return CannyLowThreshold * 3; } }
+        public double CannyHighThreshold { get { return CannyLowThreshold * 3; } set { } }
         public string CannyHighThresholdTracksLowThresholdHelp { get { return "Force High Threshold to Map to 3x Low Threshold"; } }
         public bool CannyHighThresholdTracksLowThreshold { get; set; }
         public string CannyApetureSizeHelp { get { return "The size of the Sobel kernel to be used internally"; } }
@@ -67,9 +67,9 @@ namespace LagoVista.GCode.Sender.ViewModels
 
         public string HoughCirclesLink { get { return "http://docs.opencv.org/2.4/modules/imgproc/doc/feature_detection.html#houghcircles"; } }
         public string HoughCirclesDPHelp { get { return "Inverse ratio of the accumulator resolution to the image resolution. For example, if dp=1 , the accumulator has the same resolution as the input image. If dp=2 , the accumulator has half as big width and height"; } }
-        public double HoughCirclesDP { get; set; } = 1;
+        public double HoughCirclesDP { get; set; } = 2;
         public string HoughCirclesMinDistanceHelp { get { return "Minimum distance between the centers of the detected circles. If the parameter is too small, multiple neighbor circles may be falsely detected in addition to a true one. If it is too large, some circles may be missed."; } }
-        public double HoughCirclesMinDistance { get; set; } = 25;
+        public double HoughCirclesMinDistance { get; set; } = 32;
         public string HoughCirclesParam1Help { get { return "Higher threshold of the two passed to the Canny() edge detector (the lower one is twice smaller)."; } }
         public double HoughCirclesParam1 { get; set; } = 100;
         public string HoughCirclesParam2Help { get { return " it is the accumulator threshold for the circle centers at the detection stage. The smaller it is, the more false circles may be detected. Circles, corresponding to the larger accumulator values, will be returned first."; } }

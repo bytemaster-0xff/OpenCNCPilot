@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LagoVista.GCode.Sender.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +9,7 @@ namespace LagoVista.GCode.Sender.ViewModels
 {
     public partial class MachineVisionViewModel : GCodeAppViewModelBase
     {
-        public MachineVisionViewModel()
+        public MachineVisionViewModel(IMachine machine) :base(machine)
         {
 
 

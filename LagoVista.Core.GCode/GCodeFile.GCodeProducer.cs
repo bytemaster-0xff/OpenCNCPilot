@@ -76,7 +76,7 @@ namespace LagoVista.Core.GCode
                         State.Plane = a.Plane;
                     }
 
-                    string code = a.Direction == ArcDirection.CW ? "G2" : "G3";
+                    string code = a.Direction == ArcDirection.CW ? "G02" : "G03";
 
                     if (State.Position.X != a.End.X)
                         code += string.Format(nfi, "X{0:0.###}", a.End.X);

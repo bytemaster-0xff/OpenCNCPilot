@@ -19,7 +19,7 @@ namespace LagoVista.GCode.Sender.Application
     {
         public MainWindow()
         {
-            bool designTime = System.ComponentModel.DesignerProperties.GetIsInDesignMode(new DependencyObject());
+            var designTime = System.ComponentModel.DesignerProperties.GetIsInDesignMode(new DependencyObject());
             if (!designTime)
             {
                 var repo = LoadRepo();
