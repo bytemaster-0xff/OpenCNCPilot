@@ -30,14 +30,12 @@ namespace LagoVista.EaglePCB.Models
         }
 
 
-
         public double StockWidth { get; set; }
         public double StockHeight { get; set; }
-
         public double StockThickness { get; set; }
 
-        public bool PauseForToolChange { get; set; }
 
+        public bool PauseForToolChange { get; set; }
         public double DrillSpindleDwell { get; set; }
         public int DrillSpindleRPM { get; set; }
         public int SafePlungeRecoverRate { get; set; }
@@ -45,14 +43,12 @@ namespace LagoVista.EaglePCB.Models
         public double DrillSafeHeight { get; set; }
 
         public double HeightMapGridSize { get; set; }
-
         public double MillSpindleRPM { get; set; }
         public double MillSpindleDwell { get; set; }
-
         public double MillToolSize { get; set; }
         public double MillCutDepth { get; set; }
-        public double MillFeedRate { get; set; }
-        public double MillPlungeRate { get; set; }
+        public int MillFeedRate { get; set; }
+        public int MillPlungeRate { get; set; }
         public double MillSafeHeight { get; set; }
 
         public PCBProject Clone()

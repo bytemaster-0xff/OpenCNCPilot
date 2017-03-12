@@ -44,18 +44,21 @@ namespace LagoVista.GCode.Sender.Application
         {
             if (IsNew)
             {
-                var NewFilePath = await Core.PlatformSupport.Services.Popups.ShowSaveFileAsync(Constants.PCBProject);
+                var NewFilePath = await Core.PlatformSupport.Services.Popups.ShowSaveFileAsync(String.Empty, Constants.PCBProject);
                 if (!String.IsNullOrEmpty(NewFilePath))
                 {
+                    PCBFilepath = NewFilePath;
                     await ViewModel.Project.SaveAsync(NewFilePath);
+                    DialogResult = true;
                 }
             }
             else
             {
                 await ViewModel.Project.SaveAsync(PCBFilepath);
+                DialogResult = true;
             }
 
-            DialogResult = true;
+        
         }
 
         public string NewFilePath { get; set; }
