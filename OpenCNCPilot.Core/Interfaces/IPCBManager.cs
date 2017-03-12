@@ -15,5 +15,15 @@ namespace LagoVista.GCode.Sender.Interfaces
         PCB Board { get; }
 
         Task<bool> OpenFileAsync(string boardFile);
+
+
+        Task<bool> OpenProjectAsync(string projectFile);
+
+
+        bool HasProject { get; }
+
+        PCBProject Project { get; set; }
+
+        String ProjectFilePath { get; set; }
     }
 }

@@ -57,7 +57,7 @@ namespace LagoVista.EaglePCB.Tests
                 DrillSafeHeight = 3,
                 StockThickness = 1.75,
                 Scrap = 3,
-                DrillPlungRate = 200,
+                DrillPlungeRate = 200,
                 SafePlungeRecoverRate = 1000,               
             };
 
@@ -84,7 +84,7 @@ namespace LagoVista.EaglePCB.Tests
                 MillToolSize = 3.2,
                 StockThickness = 1.75,
                 Scrap = 3,
-                DrillPlungRate = 200,
+                DrillPlungeRate = 200,
                 SafePlungeRecoverRate = 1000,
             };
 

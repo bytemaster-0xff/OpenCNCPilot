@@ -1,9 +1,6 @@
 ﻿using LagoVista.EaglePCB.Models;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace LagoVista.GCode.Sender.Managers
 {
@@ -26,5 +23,38 @@ namespace LagoVista.GCode.Sender.Managers
             get { return _board != null; }
         }
 
+
+        PCBProject _project;
+        public PCBProject Project
+        {
+            get { return _project; }
+            set
+            {
+                _project = value;
+                RaisePropertyChanged();
+                RaisePropertyChanged(nameof(HasProject));
+                if (_project != null)
+                {
+                    if (_project != null && !String.IsNullOrEmpty(_project.EagleBRDFilePath))
+                    {
+                        OpenFileAsync(_project.EagleBRDFilePath);
+                    }
+                }
+                else
+                {
+                    Board = null;
+                }
+            }
+        }
+
+        public bool HasProject
+        {
+            get { return _project != null; }
+        }
+
+        public String ProjectFilePath
+        {
+            get; set;
+        }
     }
 }

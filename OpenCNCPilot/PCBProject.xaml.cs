@@ -1,4 +1,5 @@
-﻿using LagoVista.GCode.Sender.ViewModels;
+﻿using LagoVista.EaglePCB.Models;
+using LagoVista.GCode.Sender.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -62,5 +63,12 @@ namespace LagoVista.GCode.Sender.Application
         }
 
         public string NewFilePath { get; set; }
+
+        private void Add_Click(object sender, RoutedEventArgs e)
+        {
+            var selectedDrill = (sender as Button).DataContext as Hole;
+
+            ViewModel.Project.Fiducials.Add(selectedDrill);
+        }
     }
 }

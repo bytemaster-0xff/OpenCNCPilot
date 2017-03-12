@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:LagoVista.GCode.Sender.Application"
         xmlns:ctls="clr-namespace:LagoVista.GCode.Sender.Application.Controls"
         mc:Ignorable="d"
-        Title="PCBProject" Height="380" Width="400">
+        Title="PCBProject" Height="400" Width="500">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
@@ -109,7 +109,7 @@
                     <Label Content="mm/sec" Grid.Column="2" Grid.Row="4" />
 
                     <Label Content="Use Tool Change Process" Grid.Row="5" />
-                    <CheckBox Grid.Column="1" Grid.Row="5" IsChecked="{Binding PauseForToolChange, Mode=TwoWay}" VerticalAlignment="Center" Margin="4" ToolTip="Perform a process on Tool Change where Machine is Stopped, move to a Safe Hope Position and Probed." />
+                    <CheckBox Grid.Column="1" Grid.Row="5" IsChecked="{Binding Project.PauseForToolChange, Mode=TwoWay}" VerticalAlignment="Center" Margin="4" ToolTip="Perform a process on Tool Change where Machine is Stopped, move to a Safe Hope Position and Probed." />
                 </Grid>
 
             </TabItem>
@@ -172,6 +172,58 @@
                     <Label Content="Grid Size" Grid.Row="0" />
                     <ctls:MaskingTextBox  Min="0" Max="99" Grid.Column="1" Grid.Row="0" Text="{Binding Path=Project.HeightMapGridSize, Mode=TwoWay}" ToolTip="The distance between points when creating a Height Map to correct for slight warpage in the PCB Blank." Margin="4,4,0,4" />
                     <Label Content="mm" Grid.Column="2" Grid.Row="0" />
+                </Grid>
+            </TabItem>
+            <TabItem Header="Fiducial" >
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="50*" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="50*" />
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Text="Fiducials are know locations on your board and are used to accurately position the tool using camera.  Fiducials are pulled from the Hole Layer (45) for any holes that are greather than 2mm.  These are generally the mounting holes on the outside of the board.  You should select at a minimum 3 holes.  The one closest to the bottom left will be useds as the primary location. "  TextWrapping="Wrap" />
+                    <Label Content="Available"  Grid.Row="1"/>
+                    <ListBox x:Name="FiducialList" ItemsSource="{Binding Path=Project.FiducialOptions}" Grid.Row="2">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="40" />
+                                        <ColumnDefinition Width="40" />
+                                        <ColumnDefinition Width="40" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="{Binding X}" Grid.Column="1" />
+                                    <TextBlock Text="{Binding Y}" Grid.Column="2" />
+                                    <TextBlock Text="{Binding Drill}"  Grid.Column="3" />
+                                    <Button x:Name="Add" Content="Add" Click="Add_Click" Height="24" Width="60"  Grid.Column="4" />
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                    <Label Content="Selected"  Grid.Row="3"/>
+                    <ListBox x:Name="SelectedFidcuals" ItemsSource="{Binding Path=Project.Fiducials}" Grid.Row="4">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="40" />
+                                        <ColumnDefinition Width="40" />
+                                        <ColumnDefinition Width="40" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="{Binding X}" Grid.Column="1" />
+                                    <TextBlock Text="{Binding Y}" Grid.Column="2" />
+                                    <TextBlock Text="{Binding Drill}"  Grid.Column="3" />
+                                    <Button x:Name="Add" Content="Add" Click="Add_Click" Height="24" Width="60"  Grid.Column="4" />
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+
                 </Grid>
             </TabItem>
         </TabControl>

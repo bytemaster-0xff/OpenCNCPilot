@@ -13,13 +13,14 @@
 
             <h:DefaultLights/>
             <h:CoordinateSystemVisual3D ArrowLengths="5"/>
-            <h:LinesVisual3D Thickness="0.5" Color="Gray" Points="{Binding Path=Machine.GCodeFileManager.RapidMoves, Converter={StaticResource Lines2Visual3DConverter}}" />
-            <h:LinesVisual3D Thickness="1" Color="Black" Points="{Binding Path=Machine.GCodeFileManager.Lines, Converter={StaticResource Lines2Visual3DConverter}}"/>
-            <h:LinesVisual3D Thickness="1" Color="Blue" Points="{Binding Path=Machine.GCodeFileManager.Arcs, Converter={StaticResource Lines2Visual3DConverter}}"/>
+            <h:LinesVisual3D Thickness="1" Color="Red" Points="{Binding Path=Machine.GCodeFileManager.RapidMoves, Converter={StaticResource Lines2Visual3DConverter}}" />
+            <h:LinesVisual3D Thickness="2" Color="Red" Points="{Binding Path=Machine.GCodeFileManager.Lines, Converter={StaticResource Lines2Visual3DConverter}}"/>
+            <h:LinesVisual3D Thickness="2" Color="Red" Points="{Binding Path=Machine.GCodeFileManager.Arcs, Converter={StaticResource Lines2Visual3DConverter}}"/>
             <h:LinesVisual3D Thickness="2" Color="DarkGray" x:Name="BottomWires" />
             <h:LinesVisual3D Thickness="2" Color="#B87333" x:Name="TopWires" />
-
-            <ModelVisual3D x:Name="PadsLayer" />
+            
+            <ModelVisual3D x:Name="StockLayer"  />
+            <ModelVisual3D x:Name="PCBLayer" />
             <h:ArrowVisual3D  x:Name="ModelTool" Direction="0,0,-10" Fill="Red"
             Point2="{Binding Machine.NormalizedPosition, Converter={StaticResource PointConverter}}"
             Point1="{Binding Machine.NormalizedPosition, Converter={StaticResource ToolTopPointConverter}}" />
@@ -33,13 +34,42 @@
             <h:PointsVisual3D Points="{Binding Path=Machine.HeightMapManager.HeightMap.Points, Converter={StaticResource HeightMapProbePoint2PointConverter}}" x:Name="ModelHeightMapPoints" Color="Red" Size="4"/>
         </h:HelixViewport3D>
 
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top">
-            <Button Width="32" Background="Transparent" Tag="Top" Click="ChangeView_Handler">
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Left" >
+            <Button Width="32" Background="Transparent" Click="ChangeLayer_Handler" ToolTip="Show/Hide Stock Layer" Tag="Stock">
                 <Button.Content>
                     <Image Source="/imgs/TopView.png" />
                 </Button.Content>
             </Button>
-            <Button Width="32" Background="Transparent" Tag="Front" Click="ChangeView_Handler">
+            <Button Width="32" Background="Transparent" Click="ChangeLayer_Handler" ToolTip="Show/Hide PCB Layer" Tag="PCB">
+                <Button.Content>
+                    <Image Source="/imgs/TopView.png" />
+                </Button.Content>
+            </Button>
+            <Button Width="32" Background="Transparent" Click="ChangeLayer_Handler" ToolTip="Show/Hide Top Wires" Tag="TopWires">
+                <Button.Content>
+                    <Image Source="/imgs/TopView.png" />
+                </Button.Content>
+            </Button>
+            <Button Width="32" Background="Transparent" Click="ChangeLayer_Handler" ToolTip="Show/Hide Bottom Wires" Tag="BottomWires">
+                <Button.Content>
+                    <Image Source="/imgs/TopView.png" />
+                </Button.Content>
+            </Button>
+            <Button Width="32" Background="Transparent" Click="ChangeLayer_Handler" ToolTip="Show/Hide GCode" Tag="GCode">
+                <Button.Content>
+                    <Image Source="/imgs/TopView.png" />
+                </Button.Content>
+            </Button>
+        </StackPanel>
+
+
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top">
+            <Button Width="32" Background="Transparent" Tag="Top" Click="ChangeView_Handler" ToolTip="Top View">
+                <Button.Content>
+                    <Image Source="/imgs/TopView.png" />
+                </Button.Content>
+            </Button>
+            <Button Width="32" Background="Transparent" Tag="Front" Click="ChangeView_Handler" ToolTip="Front View">
                 <Button.Content>
                     <Image Source="/imgs/FrontView.png" />
                 </Button.Content>

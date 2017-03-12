@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using System.Linq;
 using LagoVista.Core.ViewModels;
+using LagoVista.EaglePCB.Models;
 
 namespace LagoVista.GCode.Sender.ViewModels
 {
@@ -83,6 +84,20 @@ namespace LagoVista.GCode.Sender.ViewModels
             }
 
             await SaveMRUsAsync();
+        }
+
+        public async Task<bool> OpenProjectAsync(string projectFile)
+        {
+            try
+            {
+                Project = await PCBProject.OpenAsync(projectFile);
+                Machine.PCBManager.ProjectFilePath = projectFile;
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         public async Task SaveMRUsAsync()

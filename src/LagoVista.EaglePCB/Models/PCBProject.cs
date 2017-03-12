@@ -1,11 +1,18 @@
 ﻿using LagoVista.Core.Models;
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 
 namespace LagoVista.EaglePCB.Models
 {
     public class PCBProject : ModelBase
     {
+        public PCBProject()
+        {
+            Fiducials = new ObservableCollection<Hole>();
+        }
+
         public double Scrap { get; set; }
 
         private string _eagleBRDFilePath;
@@ -39,7 +46,7 @@ namespace LagoVista.EaglePCB.Models
         public double DrillSpindleDwell { get; set; }
         public int DrillSpindleRPM { get; set; }
         public int SafePlungeRecoverRate { get; set; }
-        public int DrillPlungRate { get; set; }
+        public int DrillPlungeRate { get; set; }
         public double DrillSafeHeight { get; set; }
 
         public double HeightMapGridSize { get; set; }
@@ -50,6 +57,15 @@ namespace LagoVista.EaglePCB.Models
         public int MillFeedRate { get; set; }
         public int MillPlungeRate { get; set; }
         public double MillSafeHeight { get; set; }
+
+        List<Models.Hole> _fiducualOptions;
+        public List<Models.Hole> FiducialOptions
+        {
+            get { return _fiducualOptions; }
+            set { Set(ref _fiducualOptions, value); }
+        }
+
+        public ObservableCollection<Hole> Fiducials { get; set; }
 
         public PCBProject Clone()
         {
@@ -78,7 +94,7 @@ namespace LagoVista.EaglePCB.Models
                     StockHeight = 80,
                     DrillSpindleDwell = 3,
                     DrillSpindleRPM = 20000,
-                    DrillPlungRate = 200,
+                    DrillPlungeRate = 200,
                     DrillSafeHeight = 5,
                     StockThickness = 1.57,
                     MillCutDepth = 0.5,

@@ -15,7 +15,6 @@ namespace LagoVista.GCode.Sender.ViewModels
         public MachineControlViewModel MachineControlVM { get; private set; }
         public ManualSendViewModel ManualSendVM { get; private set; }
 
-        public string PCBFilePath { get; set; }
 
         PCBProject _project;
         public PCBProject Project
@@ -24,6 +23,7 @@ namespace LagoVista.GCode.Sender.ViewModels
             set
             {
                 _project = value;
+                Machine.PCBManager.Project = value;
                 RaisePropertyChanged();
             }
         }

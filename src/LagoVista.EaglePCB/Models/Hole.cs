@@ -9,6 +9,7 @@ namespace LagoVista.EaglePCB.Models
 {
     public class Hole
     {
+        public string Name { get; set; }
         public double X { get; set; }
         public double Y { get; set; }
         public double Drill { get; set; }
@@ -21,7 +22,8 @@ namespace LagoVista.EaglePCB.Models
             {
                 X = element.GetDouble("x"),
                 Y = element.GetDouble("y"),
-                Drill = element.GetDouble("drill")
+                Drill = element.GetDouble("drill"),
+                Name = element.GetString("name")
             };
         }
 

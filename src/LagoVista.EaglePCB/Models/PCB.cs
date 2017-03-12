@@ -23,7 +23,16 @@ namespace LagoVista.EaglePCB.Models
 
         public List<Drill> Drills
         {
-            get { return Layers.Where(layer => layer.Number == 44).FirstOrDefault().Drills; }
+            get
+            {
+                var drills = Layers.Where(layer => layer.Number == 44).FirstOrDefault().Drills;
+                foreach(var via in Vias)
+                {
+                    drills.Add(new Drill() { X = via.X, Y = via.Y, Diameter = via.DrillDiameter });
+                }
+
+                return drills;
+            }
         }
 
         public List<Hole> Holes

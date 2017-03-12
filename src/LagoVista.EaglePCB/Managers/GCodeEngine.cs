@@ -19,15 +19,17 @@ namespace LagoVista.EaglePCB.Managers
             bldr.AppendLine("G90");
             bldr.AppendLine("M05");
 
+            var allDrills = pcb.Drills.ToList();
+
             var tools = pcb.Drills.GroupBy(drl => drl.Diameter);
             foreach (var tool in tools)
             {
                 if (pcbProject.PauseForToolChange)
                 {
                     bldr.AppendLine("M05");
-                    bldr.AppendLine($"G0 Z{pcbProject.DrillSafeHeight:0.0000}");
-                    bldr.AppendLine($"M06 {tool.First().Diameter:0.0000}");
-                    bldr.AppendLine($"G0 Z{pcbProject.DrillSafeHeight:0.0000}");
+                    bldr.AppendLine($"G0 Z{pcbProject.DrillSafeHeight.ToDim()}");
+                    bldr.AppendLine($"M06 {tool.First().Diameter.ToDim()}");
+                    bldr.AppendLine($"G0 Z{pcbProject.DrillSafeHeight.ToDim()}");
                     bldr.AppendLine($"G00 X0.0000 Y0.0000");
                     bldr.AppendLine("M03");
                     bldr.AppendLine($"S{pcbProject.DrillSpindleRPM}");
@@ -36,9 +38,9 @@ namespace LagoVista.EaglePCB.Managers
 
                 foreach (var drill in tool)
                 {
-                    bldr.AppendLine($"G00 X{(drill.X + pcbProject.Scrap):0.0000} Y{(drill.Y + pcbProject.Scrap):0:0000}");
+                    bldr.AppendLine($"G00 X{(drill.X + pcbProject.Scrap).ToDim()} Y{(drill.Y + pcbProject.Scrap).ToDim()})");
                     bldr.AppendLine($"G01 Z0 F{pcbProject.SafePlungeRecoverRate}");
-                    bldr.AppendLine($"G01 Z{pcbProject.StockThickness:0.0000} FS{pcbProject.DrillPlungRate}");
+                    bldr.AppendLine($"G01 Z{pcbProject.StockThickness.ToDim()} FS{pcbProject.DrillPlungeRate}");
                     bldr.AppendLine($"G01 Z{pcbProject.DrillSafeHeight} F{pcbProject.SafePlungeRecoverRate}");
                 }
             }
@@ -76,20 +78,20 @@ namespace LagoVista.EaglePCB.Managers
             {
                 var depth = 0.0;
                 bldr.AppendLine($"G00 Z{pcbProject.MillSafeHeight}");
-                bldr.AppendLine($"G00 X{(scrap - millRadius):0.0000} Y{(scrap - millRadius):0.0000}");
-                bldr.AppendLine($"G00 Z{pcbProject.MillPlungeRate}");
+                bldr.AppendLine($"G00 X{(scrap - millRadius).ToDim()} Y{(scrap - millRadius).ToDim()}");
+                bldr.AppendLine($"G00 Z0 F{pcbProject.MillPlungeRate}");
 
                 depth -= pcbProject.MillCutDepth;
 
                 while (depth > -pcbProject.StockThickness)
                 {
                     depth = Math.Min(depth, pcbProject.StockThickness);
-                    bldr.AppendLine($"G01 Z{depth:0.0000} F{pcbProject.MillPlungeRate}"); /* Move to cut depth interval at 0,0 */
+                    bldr.AppendLine($"G01 Z{depth.ToDim()} F{pcbProject.MillPlungeRate}"); /* Move to cut depth interval at 0,0 */
 
-                    bldr.AppendLine($"G01 X{(scrap + width + millRadius):0.0000} Y{(scrap - millRadius):0.0000} F{pcbProject.MillFeedRate}"); /* Move to bottom right */
-                    bldr.AppendLine($"G01 X{(scrap + width + millRadius):0.0000} Y{(scrap + height + millRadius):0.0000}"); /* Move to Top Right */
-                    bldr.AppendLine($"G01 X{(scrap - millRadius):0.0000} Y{(scrap + height + millRadius):0.0000}"); /* Move to Top Left */
-                    bldr.AppendLine($"G01 X{(scrap - millRadius):0.0000} Y{(scrap - millRadius):0.0000}"); /* Move back to origin */
+                    bldr.AppendLine($"G01 X{(scrap + width + millRadius).ToDim()} Y{(scrap - millRadius).ToDim()} F{pcbProject.MillFeedRate}"); /* Move to bottom right */
+                    bldr.AppendLine($"G01 X{(scrap + width + millRadius).ToDim()} Y{(scrap + height + millRadius).ToDim()}"); /* Move to Top Right */
+                    bldr.AppendLine($"G01 X{(scrap - millRadius).ToDim()} Y{(scrap + height + millRadius).ToDim()}"); /* Move to Top Left */
+                    bldr.AppendLine($"G01 X{(scrap - millRadius).ToDim()} Y{(scrap - millRadius).ToDim()}"); /* Move back to origin */
 
                     depth -= pcbProject.MillCutDepth;
                 }
@@ -104,7 +106,7 @@ namespace LagoVista.EaglePCB.Managers
                 var depth = 0.0;
                 depth += pcbProject.MillCutDepth;
                 bldr.AppendLine($"G00 Z{pcbProject.MillSafeHeight}");
-                bldr.AppendLine($"G00 X{(scrap + radius):0.0000} Y{(scrap - millRadius):0.0000}");
+                bldr.AppendLine($"G00 X{(scrap + radius).ToDim()} Y{(scrap - millRadius).ToDim()}");
 
                 bldr.AppendLine($"G01 Z0 F{pcbProject.MillPlungeRate}");
 
@@ -113,24 +115,23 @@ namespace LagoVista.EaglePCB.Managers
                 while (depth > -pcbProject.StockThickness)
                 {
                     depth = Math.Min(depth, pcbProject.StockThickness);
-                    bldr.AppendLine($"G01 Z{depth:0.0000} F{pcbProject.MillPlungeRate}");   
+                    bldr.AppendLine($"G01 Z{depth.ToDim()} F{pcbProject.MillPlungeRate}");   
 
-                    bldr.AppendLine($"G00 X{(scrap + (width - radius)):0.0000} Y{(scrap - millRadius):0.0000} F{pcbProject.MillFeedRate}"); 
+                    bldr.AppendLine($"G00 X{(scrap + (width - radius)).ToDim()} Y{(scrap - millRadius).ToDim()} F{pcbProject.MillFeedRate}"); 
 
+                    bldr.AppendLine($"G03 X{(scrap + (width + millRadius)).ToDim()} Y{(scrap + radius).ToDim()} R{radius + millRadius}"); 
 
-                    bldr.AppendLine($"G03 X{(scrap + (width + millRadius)):0.0000} Y{(scrap + radius):0.0000} R{radius + millRadius}"); 
+                    bldr.AppendLine($"G00 X{(scrap + (width + millRadius)).ToDim()} Y{(scrap + (height - radius)).ToDim()}"); 
 
-                    bldr.AppendLine($"G00 X{(scrap + (width + millRadius)):0.0000} Y{(scrap + (height - radius)):0.0000}"); 
+                    bldr.AppendLine($"G03 X{(scrap + (width - radius)).ToDim()} Y{(scrap + (height + millRadius)).ToDim()} R{radius + millRadius}");
 
-                    bldr.AppendLine($"G03 X{(scrap + (width - radius)):0.0000} Y{(scrap + (height + millRadius)):0.0000} R{radius + millRadius}");
+                    bldr.AppendLine($"G0 X{(scrap + radius).ToDim()} Y{(scrap + (height + millRadius)).ToDim()}"); 
 
-                    bldr.AppendLine($"G0 X{(scrap + radius):0.0000} Y{(scrap + (height + millRadius)):0.0000}"); 
+                    bldr.AppendLine($"G03 X{(scrap - millRadius).ToDim()} Y{(scrap + (height - radius)).ToDim()} R{radius + millRadius}");
 
-                    bldr.AppendLine($"G03 X{(scrap - millRadius):0.0000} Y{(scrap + (height - radius)):0.0000} R{radius + millRadius}");
+                    bldr.AppendLine($"G0 X{(scrap - millRadius).ToDim()} Y{(scrap + radius).ToDim()}"); 
 
-                    bldr.AppendLine($"G0 X{(scrap - millRadius):0.0000} Y{(scrap + radius):0.0000}"); 
-
-                    bldr.AppendLine($"G03 X{(scrap + radius):0.0000} Y{(scrap - millRadius):0.0000} R{radius + millRadius}"); 
+                    bldr.AppendLine($"G03 X{(scrap + radius).ToDim()} Y{(scrap - millRadius).ToDim()} R{radius + millRadius}"); 
 
                     depth -= pcbProject.MillCutDepth;
                 }

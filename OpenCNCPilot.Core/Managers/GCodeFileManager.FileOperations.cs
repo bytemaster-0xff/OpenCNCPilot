@@ -2,9 +2,6 @@
 using LagoVista.Core.GCode.Commands;
 using LagoVista.Core.Models.Drawing;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace LagoVista.GCode.Sender.Managers
@@ -16,31 +13,22 @@ namespace LagoVista.GCode.Sender.Managers
             try
             {
                 if (String.IsNullOrEmpty(path))
-                {
-                    ClearPaths();
-                    FileName = "<empty>";
+                {                    
+                    File = null;
+                    return Task.FromResult(false);
                 }
-
-                var parts = path.Split('\\');
-                FileName = parts[parts.Length - 1];
 
                 var file = GCodeFile.Load(path);
                 if (file != null)
                 {
-                    FindExtents(file);
                     File = file;
-                    RenderPaths();
+                    var parts = path.Split('\\');
+                    FileName = parts[parts.Length - 1];
                 }
                 else
                 {
                     File = null;
-                    Max = null;
-                    Min = null;
-                    ClearPaths();
                 }
-
-                _head = 0;
-                _tail = 0;
 
                 return Task.FromResult(true);
             }
@@ -91,7 +79,8 @@ namespace LagoVista.GCode.Sender.Managers
 
         public Task CloseFileAsync()
         {
-            throw new NotImplementedException();
+            File = null;
+            return Task.FromResult(default(object));
         }
     }
 }

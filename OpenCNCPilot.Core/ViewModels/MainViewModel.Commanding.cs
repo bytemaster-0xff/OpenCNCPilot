@@ -15,6 +15,9 @@ namespace LagoVista.GCode.Sender.ViewModels
             ArcToLineCommand = new RelayCommand(ArcToLine, CanConvertArcToLine);
             ApplyHeightMapCommand = new RelayCommand(ApplyHeightMap, CanApplyHeightMap);
 
+            GenerateMillingGCodeCommand = new RelayCommand(GenerateMillingGCode, CanGenerateGCode);
+            GeneateDrillGCodeCommand = new RelayCommand(GenerateDrillGCode, CanGenerateGCode);
+
             SetMetricUnitsCommand = new RelayCommand(SetMetricUnits, CanChangeUnits);
             SetImperialUnitsCommand = new RelayCommand(SetImperialUnits, CanChangeUnits);
 
@@ -25,6 +28,19 @@ namespace LagoVista.GCode.Sender.ViewModels
             SetIncrementalPositionModeCommand = new RelayCommand(SetIncrementalPositionMode, CanSetPositionMode);
 
             Machine.PropertyChanged += _machine_PropertyChanged;
+            Machine.PCBManager.PropertyChanged += PCBManager_PropertyChanged;
+        }
+
+        private void PCBManager_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(Machine.PCBManager.HasBoard))
+            {
+                DispatcherServices.Invoke(() =>
+                {
+                    GenerateMillingGCodeCommand.RaiseCanExecuteChanged();
+                    GeneateDrillGCodeCommand.RaiseCanExecuteChanged();
+                });
+            }
         }
 
         private void _machine_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -48,6 +64,11 @@ namespace LagoVista.GCode.Sender.ViewModels
             }
         }
 
+        public bool CanGenerateGCode()
+        {
+            return Machine.PCBManager.HasBoard;
+        }
+
         public bool CanSetPositionMode()
         {
             return Machine.Mode == OperatingMode.Manual && Machine.Connected;
@@ -62,12 +83,12 @@ namespace LagoVista.GCode.Sender.ViewModels
         {
             return Machine.Mode == OperatingMode.Manual && Machine.Connected;
         }
-       
+
         public bool CanApplyHeightMap()
         {
             return Machine.GCodeFileManager.HasValidFile &&
                    Machine.HeightMapManager.HasHeightMap &&
-                   Machine.HeightMapManager.HeightMap.Status == Models.HeightMapStatus.Populated ;
+                   Machine.HeightMapManager.HeightMap.Status == Models.HeightMapStatus.Populated;
         }
 
         private bool CanPerformFileOperation(Object instance)
@@ -97,6 +118,9 @@ namespace LagoVista.GCode.Sender.ViewModels
 
         public RelayCommand ApplyHeightMapCommand { get; private set; }
         public RelayCommand ArcToLineCommand { get; private set; }
-        
+
+        public RelayCommand GenerateMillingGCodeCommand { get; private set; }
+        public RelayCommand GeneateDrillGCodeCommand { get; private set; }
+
     }
 }

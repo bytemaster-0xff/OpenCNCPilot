@@ -64,6 +64,20 @@ namespace LagoVista.GCode.Sender.Managers
             set
             {
                 _file = value;
+
+                if (value !=null)
+                {
+                    FindExtents(value);
+                    RenderPaths();
+                }
+                else
+                {
+                    FileName = "<empty>"; 
+                    Max = null;
+                    Min = null;
+                    ClearPaths();
+                }
+                
                 HasValidFile = _file != null;
                 RaisePropertyChanged(nameof(HasValidFile));
                 RaisePropertyChanged(nameof(Commands));
@@ -72,6 +86,9 @@ namespace LagoVista.GCode.Sender.Managers
                 RaisePropertyChanged(nameof(EstimatedCompletion));
                 RaisePropertyChanged(nameof(TotalLines));
                 RaisePropertyChanged(nameof(CurrentIndex));
+
+                _head = 0;
+                _tail = 0;
             }
         }
 

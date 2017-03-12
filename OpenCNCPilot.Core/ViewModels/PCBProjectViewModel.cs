@@ -31,8 +31,16 @@ namespace LagoVista.GCode.Sender.ViewModels
         {
             Project = project;
             SaveDefaultProfileCommand = new RelayCommand(SaveDefaultProfile);
+            OpenEagleBoardCommand = new RelayCommand(OpenEagleBoard);
+            OpenTopEtchingCommand = new RelayCommand(OpenTopEtching);
+            OpenBottomEtchingCommand = new RelayCommand(OpenBottomEtching);
 
-
+            if (!String.IsNullOrEmpty(Project.EagleBRDFilePath))
+            {
+                var doc = XDocument.Load(Project.EagleBRDFilePath);
+                PCB = EagleParser.ReadPCB(doc);
+                Project.FiducialOptions = PCB.Holes.Where(drl => drl.Drill > 2).ToList();
+            }
         }
 
         public async Task LoadDefaultSettings()
@@ -44,6 +52,44 @@ namespace LagoVista.GCode.Sender.ViewModels
             }
         }
 
+        public async void OpenEagleBoard()
+        {
+            var result = await Popups.ShowOpenFileAsync(Constants.FileFilterPCB);
+            if (!String.IsNullOrEmpty(result))
+            {
+                try
+                {
+                    Project.EagleBRDFilePath = result;
+
+                    var doc = XDocument.Load(Project.EagleBRDFilePath);
+                    PCB = EagleParser.ReadPCB(doc);
+                    Project.FiducialOptions = PCB.Holes.Where(drl => drl.Drill > 2).ToList();
+                }
+                catch
+                {
+                    await Popups.ShowAsync("Could not open Eage File");
+                }
+            }
+        }
+
+        public async void OpenTopEtching()
+        {
+            var result = await Popups.ShowOpenFileAsync(Constants.FileFilterGCode);
+            if (!String.IsNullOrEmpty(result))
+            {
+                Project.TopEtchignFilePath = result;
+            }
+        }
+
+        public async void OpenBottomEtching()
+        {
+            var result = await Popups.ShowOpenFileAsync(Constants.FileFilterGCode);
+            if (!String.IsNullOrEmpty(result))
+            {
+                Project.BottomEtchingFilePath = result;
+            }
+        }
+
         public async Task<bool> LoadExistingFile(string file)
         {
             Project = await Storage.GetAsync<PCBProject>(file);
@@ -52,13 +98,14 @@ namespace LagoVista.GCode.Sender.ViewModels
 
         public async void SaveDefaultProfile()
         {
-
             var brdFileName = Project.EagleBRDFilePath;
             Project.EagleBRDFilePath = String.Empty;
 
             await Storage.StoreAsync(Project, "Default.pcbproj");
             Project.EagleBRDFilePath = brdFileName;
         }
+
+
 
         public RelayCommand SaveDefaultProfileCommand { get; private set; }
         public RelayCommand OpenEagleBoardCommand { get; private set; }

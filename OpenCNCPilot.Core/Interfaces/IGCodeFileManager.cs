@@ -136,9 +136,9 @@ namespace LagoVista.GCode.Sender.Interfaces
         void ResetJob();
 
         /// <summary>
-        /// Open a PCB Project file to create a Printed Circuilt Board.
+        /// Manually add a string that represnts GCode
         /// </summary>
-        /// <param name="path"></param>
-        Task OpenPCBProject(String path);
+        /// <param name="gcode"></param>
+        void SetGCode(String gcode);
     }
 }

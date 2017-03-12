@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LagoVista.EaglePCB.Models;
+using System;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
@@ -19,6 +20,20 @@ namespace LagoVista.GCode.Sender.Managers
             catch(Exception)
             {
                 return Task.FromResult(false);
+            }
+        }
+
+        public async Task<bool> OpenProjectAsync(string projectFile)
+        {
+            try
+            {
+                Project = await PCBProject.OpenAsync(projectFile);
+
+                return true;
+            }
+            catch
+            {
+                return false;
             }
         }
     }

@@ -10,7 +10,7 @@
 	    mc:Ignorable="d"
 		AllowDrop="True"
         MinHeight="800" MinWidth="1200"
-        Title="LagoVista - GCode Sender" Height="800" Width="1200" Closing="Window_Closing">
+        Title="DIY PCB Commander" Height="800" Width="1200" Closing="Window_Closing">
     <Window.Resources>
         <ResourceDictionary Source="MainWindow.Resources.xaml"/>
     </Window.Resources>
@@ -27,20 +27,24 @@
             <MenuItem Header="GCode">
                 <MenuItem Header="Open GCode File" Command="{Binding OpenGCodeFileCommand}" />
                 <MenuItem Header="Close GCode File" Command="{Binding CloseFileCommand}" />
-                <MenuItem  Header="Recent GCOde Files" x:Name="RecentGCodeFiles" />
+                <MenuItem  Header="Recent GCode Files" x:Name="RecentGCodeFiles" />
+                <Separator/>
+                <MenuItem Header="Generate Cutout Milling" Command="{Binding GenerateMillingGCodeCommand}" />
+                <MenuItem Header="Generate Drills" Command="{Binding GeneateDrillGCodeCommand}" />
+
             </MenuItem>
             <MenuItem Header="PCB" >
                 <MenuItem Header="New Project" x:Name="NewPCBProject" Click="NewPCBProject_Click" />
                 <MenuItem Header="Open Project" x:Name="OpenPCBProject"  Click="OpenPCBProject_Click" />
                 <MenuItem Header="Edit project" x:Name="EditPCBProject" Click="EditPCBProject_Click" />
-                <MenuItem Header="Edit project" x:Name="ClosePCBProject" Click="ClosePCBProject_Click" />
+                <MenuItem Header="Close project" x:Name="ClosePCBProject" Click="ClosePCBProject_Click" />
                 <MenuItem  Header="Recent Projects" x:Name="RecentProjects" />
                 <Separator />
                 <MenuItem Header="Open Eagle Board File" Command="{Binding OpenEagleBoardFileCommand}" />
                 <MenuItem Header="Close Eagle Board File" Command="{Binding CloseEagleBoardFileCommand}" />
                 <MenuItem  Header="Recent Eagle Boards" x:Name="RecentBoards" />
                 <Separator />
-               
+
             </MenuItem>
             <MenuItem Header="Height Map" >
                 <MenuItem Header="New HeightMap" x:Name="NewHeigtMap" Click="NewHeigtMap_Click" />

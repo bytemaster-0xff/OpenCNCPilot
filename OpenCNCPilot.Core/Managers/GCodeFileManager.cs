@@ -85,11 +85,12 @@ namespace LagoVista.GCode.Sender.Managers
             }
         }
 
-        public Task OpenPCBProject(String path)
+        public void SetGCode(string gcode)
         {
-            return Task.FromResult(default(object));
+            var file =  GCodeFile.FromString(gcode);
+            FindExtents(file);
+            File = file;
         }
-        
 
         public GCodeCommand CurrentCommand
         {
@@ -100,7 +101,7 @@ namespace LagoVista.GCode.Sender.Managers
         {
             var sentCommandLength = _file.Commands[Tail].MessageLength;
             _file.Commands[Tail].Status = GCodeCommand.StatusTypes.Acknowledged;
-            Debug.WriteLine("Acknowledged:  " + Tail + ". "  + _file.Commands[Tail].Line);
+            Debug.WriteLine("Acknowledged:  " + Tail + ". " + _file.Commands[Tail].Line);
             Tail++;
 
             if (_pendingToolChangeLine != null && _pendingToolChangeLine.Value == Tail)

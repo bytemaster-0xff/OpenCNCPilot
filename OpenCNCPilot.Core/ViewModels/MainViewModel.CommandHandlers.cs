@@ -1,4 +1,5 @@
 ﻿using LagoVista.Core.GCode;
+using LagoVista.EaglePCB.Managers;
 using LagoVista.GCode.Sender.Models;
 using System;
 
@@ -103,6 +104,17 @@ namespace LagoVista.GCode.Sender.ViewModels
         public void CloseFile(object instance)
         {
             Machine.GCodeFileManager.CloseFileAsync();
+        }
+
+
+        public void GenerateMillingGCode()
+        {
+            Machine.GCodeFileManager.SetGCode(GCodeEngine.CreateCutoutMill(Machine.PCBManager.Board, Machine.PCBManager.Project));
+        }
+
+        public void GenerateDrillGCode()
+        {
+            Machine.GCodeFileManager.SetGCode(GCodeEngine.CreateDrillGCode(Machine.PCBManager.Board, Machine.PCBManager.Project));
         }
     }
 }

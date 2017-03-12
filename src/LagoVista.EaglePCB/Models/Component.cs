@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -32,35 +33,13 @@ namespace LagoVista.EaglePCB.Models
             get
             {
                 var pads = new List<Pad>();
-
-                var rad = 0.0;
-                if (!String.IsNullOrEmpty(Rotate))
-                {
-                    var degrees = 0.0;
-                    if (Rotate.Substring(0, 1) == "R")
-                    {
-                        degrees = Convert.ToDouble(Rotate.Substring(1));
-
-                    }
-                    else if (Rotate.Substring(0, 1) == "L")
-                    {
-                        degrees = Convert.ToDouble(Rotate.Substring(1));
-                    }
-
-                    rad = degrees * Math.PI / 180;
-                }
-
+                
                 foreach (var pad in Package.Pads)
                 {
-                    pads.Add(new Pad()
-                    {
-                        OriginX = pad.OriginX,
-                        OriginY = pad.OriginY,
-                        X = X.Value + ((pad.X * Math.Cos(rad)) - (pad.Y * Math.Sin(rad))),
-                        Y = Y.Value + ((pad.Y * Math.Sin(rad)) + (pad.X * Math.Cos(rad))),
-                        Shape = pad.Shape,
-                        DrillDiameter = pad.DrillDiameter,
-                    });
+                    var rotatedPad = pad.ApplyRotation(Rotate.ToAngle());
+                    rotatedPad.X += X.Value;
+                    rotatedPad.Y += Y.Value;                    
+                    pads.Add(rotatedPad);
                 }
 
                 return pads;
@@ -74,51 +53,21 @@ namespace LagoVista.EaglePCB.Models
             {
                 var smdPads = new List<SMD>();
 
-                var rad = 0.0;
-                if (!String.IsNullOrEmpty(Rotate))
-                {
-                    var degrees = 0.0;
-                    if (Rotate.Substring(0, 1) == "R")
-                    {
-                        degrees = Convert.ToDouble(Rotate.Substring(1));
-
-                    }
-                    else if (Rotate.Substring(0, 1) == "L")
-                    {
-                        degrees = Convert.ToDouble(Rotate.Substring(1));
-                    }
-
-                    rad = degrees * Math.PI / 180;
-                }
-
                 foreach (var smd in Package.SMDs)
                 {
-                    var x1 = (smd.OriginX) - (smd.DX / 2);
-                    var y1 = (smd.OriginY) - (smd.DY / 2);
-                    var x2 = (smd.OriginX) + (smd.DX / 2);
-                    var y2 = (smd.OriginY) + (smd.DY / 2);
+                    
+                    var rotatedSMD = smd.ApplyRotation(Rotate.ToAngle());
 
-                    if (rad != 0)
+                    if(!String.IsNullOrEmpty(Rotate))
                     {
-                        x1 = x1 * Math.Cos(rad) - y1 * Math.Sin(rad);
-                        y1 = y1 * Math.Sin(rad) + y1 * Math.Cos(rad);
-                        x2 = x2 * Math.Cos(rad) - y2 * Math.Sin(rad);
-                        y2 = y2 * Math.Sin(rad) + y2 * Math.Cos(rad);
                     }
 
-                    smdPads.Add(new SMD()
-                    {
-                        OriginX = smd.OriginX,
-                        OriginY = smd.OriginY,
-                        X1 = this.X.Value + x1,
-                        Y1 = this.Y.Value + y1,
-                        X2 = this.X.Value + x2,
-                        Y2 = this.Y.Value + y2,
-                        DX = smd.DX,
-                        DY = smd.DY
-                    });
+                    rotatedSMD.X1 += X.Value;
+                    rotatedSMD.Y1 += Y.Value;
+                    rotatedSMD.X2 += X.Value;
+                    rotatedSMD.Y2 += Y.Value;
+                    smdPads.Add(smd);
                 }
-
 
                 return smdPads;
             }

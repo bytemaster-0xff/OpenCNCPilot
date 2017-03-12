@@ -112,26 +112,23 @@ namespace LagoVista.GCode.Sender.Application
             await GrblErrorProvider.InitAsync();
             await ViewModel.LoadMRUs();
 
-            var idx = 1;
             foreach(var file in ViewModel.MRUs.BoardFiles)
             {
-                var boardMenu = new MenuItem() { Header = $"&{idx++}. {file}", Tag = file };
+                var boardMenu = new MenuItem() { Header = file, Tag = file };
                 boardMenu.Click += BoardMenu_Click;
                 RecentBoards.Items.Add(boardMenu);
             }
 
-            idx = 1;
             foreach (var file in ViewModel.MRUs.ProjectFiles)
             {
-                var projectMenu = new MenuItem() { Header = $"&{idx++}. {file}", Tag = file };
+                var projectMenu = new MenuItem() {Header = file, Tag = file };
                 projectMenu.Click += ProjectMenu_Click;
                 RecentProjects.Items.Add(projectMenu);
             }
 
-            idx = 1;
             foreach (var file in ViewModel.MRUs.GCodeFiles)
             {
-                var gcodeFile = new MenuItem() { Header = $"&{idx++}. {file}", Tag = file };
+                var gcodeFile = new MenuItem() { Header = file, Tag = file };
                 gcodeFile.Click += GcodeFile_Click;
                 RecentGCodeFiles.Items.Add(gcodeFile);
             }
@@ -146,13 +143,13 @@ namespace LagoVista.GCode.Sender.Application
         private async void ProjectMenu_Click(object sender, RoutedEventArgs e)
         {
             var menu = sender as MenuItem;
-            await OpenPCBProjectAsync(menu.Tag as String);
+            await ViewModel.OpenProjectAsync(menu.Tag as String);
         }
 
         private async void BoardMenu_Click(object sender, RoutedEventArgs e)
         {
             var menu = sender as MenuItem;
-            await ViewModel.Machine.PCBManager.OpenFileAsync(menu.Tag as string);
+            await ViewModel.Machine.PCBManager.OpenFileAsync(menu.Tag as String);
         }
 
         private void SettingsMenu_Click(object sender, RoutedEventArgs e)
@@ -280,36 +277,12 @@ namespace LagoVista.GCode.Sender.Application
             PCB.PCB2Gode.CreateGCode();
         }
 
-        private async Task OpenPCBProjectAsync(string file)
-        {
-            var vm = new PCBProjectViewModel(new EaglePCB.Models.PCBProject());
-            if (await vm.LoadExistingFile(file))
-            {
-                var pcbWindow = new PCBProject();
-                pcbWindow.DataContext = vm;
-                pcbWindow.Owner = this;
-                pcbWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-                var result = pcbWindow.ShowDialog();
-                if (result.HasValue && result.Value)
-                {
-                    ViewModel.Project = vm.Project;
-                    ViewModel.PCBFilePath = file;
-                    ViewModel.AddProjectFileMRU(file);
-                }
-            }
-            else
-            {
-                MessageBox.Show("Could not open PCBProjectg");
-            }
-
-        }
-
         private async void OpenPCBProject_Click(object sender, RoutedEventArgs e)
         {
             var file = await Core.PlatformSupport.Services.Popups.ShowOpenFileAsync(Constants.PCBProject);
             if (!String.IsNullOrEmpty(file))
             {
-                await OpenPCBProjectAsync(file);
+                await ViewModel.OpenProjectAsync(file);
             }
         }
 
@@ -320,12 +293,14 @@ namespace LagoVista.GCode.Sender.Application
 
         private void EditPCBProject_Click(object sender, RoutedEventArgs e)
         {
-            var vm = new PCBProjectViewModel(new EaglePCB.Models.PCBProject());
-            vm.Project = ViewModel.Project.Clone();
+            var clonedProject = ViewModel.Project.Clone();
+            var vm = new PCBProjectViewModel(clonedProject);
+
             var pcbWindow = new PCBProject();
+            pcbWindow.DataContext = vm;
             pcbWindow.IsNew = false;
             pcbWindow.Owner = this;
-            pcbWindow.PCBFilepath = ViewModel.PCBFilePath;
+            pcbWindow.PCBFilepath = ViewModel.Machine.PCBManager.ProjectFilePath;
             pcbWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
             pcbWindow.ShowDialog();
             if (pcbWindow.DialogResult.HasValue && pcbWindow.DialogResult.Value)
@@ -348,8 +323,12 @@ namespace LagoVista.GCode.Sender.Application
             {
                 ViewModel.Project = vm.Project;
                 ViewModel.AddProjectFileMRU(pcbWindow.PCBFilepath);
+                if (!String.IsNullOrEmpty(vm.Project.EagleBRDFilePath))
+                {
+                    await ViewModel.Machine.PCBManager.OpenFileAsync(vm.Project.EagleBRDFilePath);
+                }
+                ViewModel.Machine.PCBManager.Project = vm.Project;
             }
-
         }
     }
 }
