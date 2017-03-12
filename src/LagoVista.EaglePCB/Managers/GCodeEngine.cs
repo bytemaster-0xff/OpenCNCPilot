@@ -13,7 +13,7 @@ namespace LagoVista.EaglePCB.Managers
         {
             var bldr = new StringBuilder();
 
-            bldr.AppendLine("(Metric Mode}");
+            bldr.AppendLine("(Metric Mode)");
             bldr.AppendLine("G21");
             bldr.AppendLine("(Absolute Coordinates)");
             bldr.AppendLine("G90");
@@ -53,7 +53,7 @@ namespace LagoVista.EaglePCB.Managers
         {
             var bldr = new StringBuilder();
 
-            bldr.AppendLine("(Metric Mode}");
+            bldr.AppendLine("(Metric Mode)");
             bldr.AppendLine("G21");
             bldr.AppendLine("(Absolute Coordinates)");
             bldr.AppendLine("G90");
@@ -95,7 +95,7 @@ namespace LagoVista.EaglePCB.Managers
                 }
 
                 bldr.AppendLine($"G00 Z{pcbProject.MillSafeHeight}");
-                bldr.AppendLine("M03");
+                bldr.AppendLine("M05");
                 bldr.AppendLine("G0 X0 Y0");
             }
             else
@@ -106,7 +106,7 @@ namespace LagoVista.EaglePCB.Managers
                 bldr.AppendLine($"G00 Z{pcbProject.MillSafeHeight}");
                 bldr.AppendLine($"G00 X{(scrap + radius):0.0000} Y{(scrap - millRadius):0.0000}");
 
-                bldr.AppendLine($"G00 Z{pcbProject.MillPlungeRate}");
+                bldr.AppendLine($"G01 Z0 F{pcbProject.MillPlungeRate}");
 
                 depth -= pcbProject.MillCutDepth;
 
@@ -115,7 +115,7 @@ namespace LagoVista.EaglePCB.Managers
                     depth = Math.Min(depth, pcbProject.BoardDepth);
                     bldr.AppendLine($"G01 Z{depth:0.0000} F{pcbProject.MillPlungeRate}");   
 
-                    bldr.AppendLine($"G00 X{(scrap + (width - radius)):0.0000} Y{(scrap - millRadius):0.0000}"); 
+                    bldr.AppendLine($"G00 X{(scrap + (width - radius)):0.0000} Y{(scrap - millRadius):0.0000} F{pcbProject.MillFeedRate}"); 
 
 
                     bldr.AppendLine($"G03 X{(scrap + (width + millRadius)):0.0000} Y{(scrap + radius):0.0000} R{radius + millRadius}"); 
@@ -134,6 +134,10 @@ namespace LagoVista.EaglePCB.Managers
 
                     depth -= pcbProject.MillCutDepth;
                 }
+
+                bldr.AppendLine($"G00 Z{pcbProject.MillSafeHeight}");
+                bldr.AppendLine("M05");
+                bldr.AppendLine("G0 X0 Y0");
             }
 
 
