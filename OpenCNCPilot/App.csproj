@@ -122,6 +122,7 @@
     <Compile Include="Controls\MachineStatusControl.xaml.cs">
       <DependentUpon>MachineStatusControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\MaskingTextBox.cs" />
     <Compile Include="Controls\ScrollListBox.cs" />
     <Compile Include="Controls\ShapeDetection.cs" />
     <Compile Include="Converters\ColorConverters.cs" />
@@ -146,6 +147,9 @@
     </Compile>
     <Compile Include="NewHeightMapWindow.xaml.cs">
       <DependentUpon>NewHeightMapWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PCBProject.xaml.cs">
+      <DependentUpon>PCBProject.xaml</DependentUpon>
     </Compile>
     <Compile Include="PCB\PCB2Gode.cs" />
     <Compile Include="SettingsWindow.xaml.cs">
@@ -218,6 +222,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="NewHeightMapWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PCBProject.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

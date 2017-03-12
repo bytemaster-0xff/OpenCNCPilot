@@ -43,6 +43,7 @@ namespace LagoVista.GCode.Sender.Managers
             return Task.FromResult(default(object));
         }
 
+
         private void FindExtents(GCodeFile file)
         {
             var min = new Point3D<double>() { X = 99999.0, Y = 99999.0, Z = 99999.0 };

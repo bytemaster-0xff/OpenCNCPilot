@@ -1,4 +1,5 @@
 ﻿using LagoVista.Core.GCode.Commands;
+using LagoVista.EaglePCB.Models;
 using LagoVista.GCode.Sender.Models;
 using System;
 using System.Collections.Generic;
@@ -133,5 +134,11 @@ namespace LagoVista.GCode.Sender.Interfaces
         /// Reset all the pointers and indexes for the current job, can only be done when the job is not running.  If job is paused it will stop the job.  This leaves the job in a state where it can be restarted from the beginning 
         /// </summary>
         void ResetJob();
+
+        /// <summary>
+        /// Open a PCB Project file to create a Printed Circuilt Board.
+        /// </summary>
+        /// <param name="path"></param>
+        Task OpenPCBProject(String path);
     }
 }

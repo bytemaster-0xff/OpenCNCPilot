@@ -236,5 +236,70 @@ namespace LagoVista.GCode.Sender.Application
         {
             PCB.PCB2Gode.CreateGCode();
         }
+
+        private async void OpenPCBProject_Click(object sender, RoutedEventArgs e)
+        {
+            var file = await Core.PlatformSupport.Services.Popups.ShowOpenFileAsync(Constants.PCBProject);
+            if (!String.IsNullOrEmpty(file))
+            {
+                var vm = new PCBProjectViewModel(new EaglePCB.Models.PCBProject());
+                if (await vm.LoadExistingFile(file))
+                {
+                    var pcbWindow = new PCBProject();
+                    pcbWindow.DataContext = vm;
+                    pcbWindow.Owner = this;
+                    pcbWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                    var result = pcbWindow.ShowDialog();
+                    if(result.HasValue && result.Value)
+                    {
+                        ViewModel.Project = vm.Project;
+                        ViewModel.PCBFilePath = file;
+                    }
+                   
+                }
+                else
+                {
+                    MessageBox.Show("Could not open PCBProjectg");
+                }
+            }
+        }
+
+        private void ClosePCBProject_Click(object sender, RoutedEventArgs e)
+        {
+            
+        }
+
+        private void EditPCBProject_Click(object sender, RoutedEventArgs e)
+        {
+            var vm = new PCBProjectViewModel(new EaglePCB.Models.PCBProject());
+            vm.Project = ViewModel.Project.Clone();
+            var pcbWindow = new PCBProject();
+            pcbWindow.IsNew = false;
+            pcbWindow.Owner = this;
+            pcbWindow.PCBFilepath = ViewModel.PCBFilePath;
+            pcbWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            pcbWindow.ShowDialog();
+            if (pcbWindow.DialogResult.HasValue && pcbWindow.DialogResult.Value)
+            {
+                ViewModel.Project = vm.Project;
+            }
+        }
+
+        private async void NewPCBProject_Click(object sender, RoutedEventArgs e)
+        {
+            var pcbWindow = new PCBProject();
+            var vm = new PCBProjectViewModel(new EaglePCB.Models.PCBProject());
+            await vm.LoadDefaultSettings();
+            pcbWindow.DataContext = vm;
+            pcbWindow.IsNew = true;
+            pcbWindow.Owner = this;
+            pcbWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            pcbWindow.ShowDialog();
+            if(pcbWindow.DialogResult.HasValue && pcbWindow.DialogResult.Value)
+            {
+                ViewModel.Project = vm.Project;
+            }
+
+        }
     }
 }

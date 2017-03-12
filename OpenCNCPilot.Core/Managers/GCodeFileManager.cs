@@ -85,6 +85,12 @@ namespace LagoVista.GCode.Sender.Managers
             }
         }
 
+        public Task OpenPCBProject(String path)
+        {
+            return Task.FromResult(default(object));
+        }
+        
+
         public GCodeCommand CurrentCommand
         {
             get { return _file == null ? null : _file.Commands[Tail]; }

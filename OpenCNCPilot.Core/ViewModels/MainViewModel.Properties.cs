@@ -1,4 +1,5 @@
-﻿using LagoVista.GCode.Sender.Models;
+﻿using LagoVista.EaglePCB.Models;
+using LagoVista.GCode.Sender.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,5 +13,18 @@ namespace LagoVista.GCode.Sender.ViewModels
         public JobControlViewModel JobControlVM { get; private set; }
         public MachineControlViewModel MachineControlVM { get; private set; }
         public ManualSendViewModel ManualSendVM { get; private set; }
+
+        public string PCBFilePath { get; set; }
+
+        PCBProject _project;
+        public PCBProject Project
+        {
+            get { return _project; }
+            set 
+            {
+                _project = value;
+                RaisePropertyChanged();
+            }
+        }
     }
 }

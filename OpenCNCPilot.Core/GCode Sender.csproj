@@ -192,6 +192,7 @@
     <Compile Include="ViewModels\NewHeightMapViewModel.Properties.cs">
       <DependentUpon>NewHeightMapViewModel.cs</DependentUpon>
     </Compile>
+    <Compile Include="ViewModels\PCBProjectViewModel.cs" />
     <Compile Include="ViewModels\SettingsViewModel.CommandHandlers.cs">
       <DependentUpon>SettingsViewModel.cs</DependentUpon>
     </Compile>

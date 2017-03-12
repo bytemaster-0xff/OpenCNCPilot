@@ -58,7 +58,7 @@ namespace LagoVista.EaglePCB.Tests
                 BoardDepth = 1.75,
                 Scrap = 3,
                 DrillPlungRate = 200,
-                SafePlungRecoverRate = 1000,               
+                SafePlungeRecoverRate = 1000,               
             };
 
             var gcode = GCodeEngine.CreateDrillGCode(pcb, config);
@@ -85,7 +85,7 @@ namespace LagoVista.EaglePCB.Tests
                 BoardDepth = 1.75,
                 Scrap = 3,
                 DrillPlungRate = 200,
-                SafePlungRecoverRate = 1000,
+                SafePlungeRecoverRate = 1000,
             };
 
             var gcode = GCodeEngine.CreateCutoutMill(pcb, config);

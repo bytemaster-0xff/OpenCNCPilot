@@ -37,9 +37,9 @@ namespace LagoVista.EaglePCB.Managers
                 foreach (var drill in tool)
                 {
                     bldr.AppendLine($"G00 X{(drill.X + pcbProject.Scrap):0.0000} Y{(drill.Y + pcbProject.Scrap):0:0000}");
-                    bldr.AppendLine($"G01 Z0 F{pcbProject.SafePlungRecoverRate}");
+                    bldr.AppendLine($"G01 Z0 F{pcbProject.SafePlungeRecoverRate}");
                     bldr.AppendLine($"G01 Z{pcbProject.BoardDepth:0.0000} FS{pcbProject.DrillPlungRate}");
-                    bldr.AppendLine($"G01 Z{pcbProject.DrillSafeHeight} F{pcbProject.SafePlungRecoverRate}");
+                    bldr.AppendLine($"G01 Z{pcbProject.DrillSafeHeight} F{pcbProject.SafePlungeRecoverRate}");
                 }
             }
 
