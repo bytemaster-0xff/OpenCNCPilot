@@ -12,6 +12,8 @@ namespace LagoVista.Core.GCode.Parser
 {
     public partial class GCodeParser
     {
+        public bool Diagnostics { get; set; } = true;
+
         public ParserState State { get; private set; }
 
 
@@ -64,7 +66,7 @@ namespace LagoVista.Core.GCode.Parser
 
             sw.Stop();
 
-            Services.Logger.Log(LogLevel.Message, "GCodeParser_Parse", $"Parsing the GCode File took {sw.ElapsedMilliseconds} ms");
+            //Services.Logger.Log(LogLevel.Message, "GCodeParser_Parse", $"Parsing the GCode File took {sw.ElapsedMilliseconds} ms");
         }
 
         public GCodeCommand ParseLine(string line, int lineIndex)
@@ -275,14 +277,7 @@ namespace LagoVista.Core.GCode.Parser
                 State.SpindleRPM = spindleRPM.Parameter;
                 words.Remove(spindleRPM);
             }
-
-            //TODO: We likely care about this at some point, not today though
-            var radiusCommand = words.Where(wrd => wrd.Command == 'R').FirstOrDefault();
-            if (radiusCommand != null)
-            {
-                //State.Feed = feedRateCommand.Parameter;
-                words.Remove(radiusCommand);
-            }
+            
 
             double pauseTime = 0.0;
 

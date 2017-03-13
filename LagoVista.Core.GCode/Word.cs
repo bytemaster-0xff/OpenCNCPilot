@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LagoVista.Core.GCode
 {
-    class Word
+    public class Word
     {
         public char Command { get; set; }
         public double Parameter { get; set; }

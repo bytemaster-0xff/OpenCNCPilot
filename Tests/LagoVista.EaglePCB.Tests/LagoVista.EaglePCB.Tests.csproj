@@ -60,11 +60,16 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="GCodeArcTests.cs" />
     <Compile Include="RotationTests.cs" />
     <Compile Include="UnitTest1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\LagoVista.Core.GCode\GCode Core.csproj">
+      <Project>{26A18C19-479E-495B-A8F2-1BAA591D7DF8}</Project>
+      <Name>GCode Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\src\LagoVista.EaglePCB\LagoVista.EaglePCB.csproj">
       <Project>{b60c5358-d6ae-469a-8beb-78ce5c434952}</Project>
       <Name>LagoVista.EaglePCB</Name>

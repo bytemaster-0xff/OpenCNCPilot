@@ -2,6 +2,7 @@
 using LagoVista.Core.Models.Drawing;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,7 +11,7 @@ namespace LagoVista.Core.GCode.Parser
 {
     public partial class GCodeParser
     {
-        private GCodeArc ParseArc(List<Word> words, int motionMode, Vector3 EndPos, double UnitMultiplier)
+        public GCodeArc ParseArc(List<Word> words, int motionMode, Vector3 EndPos, double UnitMultiplier)
         {
             double U, V;
 
@@ -137,8 +138,8 @@ namespace LagoVista.Core.GCode.Parser
                 A -= U;     //(AB) = vector from start to end of arc along the axes of the current plane
                 B -= V;
 
-                double C = -B;  //(UV) = vector perpendicular to (AB)
-                double D = A;
+                var C = Math.Round(A, 4) == Math.Round(B, 4) ? A : -A;
+                var D = Math.Round(A, 4) == Math.Round(B, 4) ? -B : B;               
 
                 {   //normalize perpendicular vector
                     double perpLength = Math.Sqrt(C * C + D * D);
@@ -146,7 +147,9 @@ namespace LagoVista.Core.GCode.Parser
                     D /= perpLength;
                 }
 
-                double PerpSquare = (Radius * Radius) - ((A * A + B * B) / 4);
+                //double PerpSquare = Math.Round((Radius * Radius) - ((A * A + B * B) / 4), 4);
+
+                var PerpSquare = (Radius * Radius) - ((A * A + B * B) / 4);
 
                 if (PerpSquare < 0)
                     throw new Exception("arc radius too small to reach both ends");
@@ -156,7 +159,7 @@ namespace LagoVista.Core.GCode.Parser
                 if (motionMode == 3 ^ Radius < 0)
                     PerpLength = -PerpLength;
 
-                U += (A / 2) + C * (PerpLength);
+                U += (A / 2) + (C * PerpLength);
                 V += (B / 2) + (D * PerpLength);
 
                 words.RemoveAt(i);
@@ -180,7 +183,7 @@ namespace LagoVista.Core.GCode.Parser
             if (Words.Count > 0)
             {
                 var bldr = new StringBuilder();
-                foreach(var word in Words)
+                foreach (var word in Words)
                 {
                     bldr.Append(word.FullWord + "; ");
                 }
