@@ -62,7 +62,7 @@
   <ItemGroup>
     <Compile Include="GCodeArcTests.cs" />
     <Compile Include="RotationTests.cs" />
-    <Compile Include="UnitTest1.cs" />
+    <Compile Include="EagleParsingTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -85,6 +85,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="packages.config" />
+    <Content Include="PNPHeadBoard.brd">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

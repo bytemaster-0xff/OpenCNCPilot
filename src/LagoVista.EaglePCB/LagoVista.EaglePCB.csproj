@@ -55,6 +55,7 @@
     <Compile Include="Models\Signal.cs" />
     <Compile Include="Models\SMD.cs" />
     <Compile Include="Models\Text.cs" />
+    <Compile Include="Models\Trace.cs" />
     <Compile Include="Models\Via.cs" />
     <Compile Include="Models\Wire.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -16,6 +16,12 @@ namespace LagoVista.EaglePCB.Models
 
         public int Layer { get; set; }
 
+        public List<Wire> StartJunctions { get; set; }
+        public List<Wire> EndJunctions { get; set; }
+
+        public ContactRef StartContactRef { get; set; }
+        public ContactRef EndContactRef { get;  set}
+
         public static Wire Create(XElement element)
         {
             return new Wire()
@@ -24,7 +30,9 @@ namespace LagoVista.EaglePCB.Models
                 Rect = Rect.Create(element),
                 Width = element.GetDouble("width"),
                 Layer = element.GetInt32("layer"),
-                Curve = element.GetDoubleNullable("curve")
+                Curve = element.GetDoubleNullable("curve"),
+                StartJunctions = new List<Wire>(),
+                EndJunctions = new List<Wire>(),
             };
         }
 

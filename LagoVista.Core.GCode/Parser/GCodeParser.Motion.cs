@@ -139,15 +139,13 @@ namespace LagoVista.Core.GCode.Parser
                 B -= V;
 
                 var C = Math.Round(A, 4) == Math.Round(B, 4) ? A : -A;
-                var D = Math.Round(A, 4) == Math.Round(B, 4) ? -B : B;               
+                var D = Math.Round(A, 4) == Math.Round(B, 4) ? -B : B;
 
                 {   //normalize perpendicular vector
                     double perpLength = Math.Sqrt(C * C + D * D);
                     C /= perpLength;
                     D /= perpLength;
                 }
-
-                //double PerpSquare = Math.Round((Radius * Radius) - ((A * A + B * B) / 4), 4);
 
                 var PerpSquare = (Radius * Radius) - ((A * A + B * B) / 4);
 

@@ -9,7 +9,7 @@ using LagoVista.EaglePCB.Models;
 namespace LagoVista.EaglePCB.Tests
 {
     [TestClass]
-    public class UnitTest1
+    public class EagleParsingTests
     {
         [TestMethod]
         public void ParsePCB()
@@ -91,6 +91,28 @@ namespace LagoVista.EaglePCB.Tests
             var gcode = GCodeEngine.CreateCutoutMill(pcb, config);
 
             Debug.WriteLine(gcode);
+
+        }
+
+        [TestMethod]
+        public void GetTraceSegments()
+        {
+               var doc = XDocument.Load("./PNPHeadBoard.brd");
+            //var doc = XDocument.Load("./EagleSample.brd");
+            var pcb = EagleParser.ReadPCB(doc);
+
+            foreach(var signal in pcb.Signals)
+            {
+                Debug.WriteLine(signal.Name);
+                foreach(var trace in signal.TopTraces)
+                {
+                    Debug.WriteLine("TRACE");
+                    foreach(var wire in trace.Wires)
+                    {
+                        Debug.WriteLine("    " + wire.ToString());
+                    }
+                }
+            }
 
         }
     }
