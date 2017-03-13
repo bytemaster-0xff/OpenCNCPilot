@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using LagoVista.EaglePCB.Models;
+using LagoVista.Core;
 
 namespace LagoVista.GCode.Sender.Application.Controls
 {
@@ -64,19 +65,6 @@ namespace LagoVista.GCode.Sender.Application.Controls
 
             foreach (var element in board.Components)
             {
-                var deg = 0.0;
-                if (!string.IsNullOrEmpty(element.Rotate))
-                {
-                    if (element.Rotate.Substring(0, 1) == "R")
-                    {
-                        deg = Convert.ToDouble(element.Rotate.Substring(1));
-                    }
-                    else if (element.Rotate.Substring(0, 1) == "L")
-                    {
-                        deg = 360 - Convert.ToDouble(element.Rotate.Substring(1));
-                    }
-                }
-
                 foreach (var pad in element.SMDPads)
                 {
                     var padMeshBuilder = new MeshBuilder(false, false);
@@ -85,12 +73,7 @@ namespace LagoVista.GCode.Sender.Application.Controls
                     var box = new GeometryModel3D() { Geometry = padMeshBuilder.ToMesh(true), Material = element.Layer == 1 ? copperMaterial : grayMaterial };
 
                     var transformGroup = new Transform3DGroup();
-
-                    if (deg != 0.0)
-                    {
-                        transformGroup.Children.Add(new RotateTransform3D(new AxisAngleRotation3D(new Vector3D(0, 0, 1), deg)));
-                    }
-
+                    transformGroup.Children.Add(new RotateTransform3D(new AxisAngleRotation3D(new Vector3D(0, 0, 1), element.RotateAngle)));
                     transformGroup.Children.Add(new TranslateTransform3D(new Vector3D(element.X.Value, element.Y.Value, element.Layer == 1 ? 1 : 0.75)));
 
                     box.Transform = transformGroup;
@@ -135,21 +118,21 @@ namespace LagoVista.GCode.Sender.Application.Controls
             BottomWires.Points.Clear();
             TopWires.Points.Clear();
 
-
-
             if (_topWiresVisible)
             {
                 foreach (var wireSection in board.TopWires.GroupBy(wre => wre.Width))
                 {
-                    var topLines = new LinesVisual3D() { Thickness = wireSection.First().Width * 10, Color = Color.FromRgb(0xb8, 0x73, 0x33) };
+                    var width = wireSection.First().Width;
 
                     foreach (var wire in wireSection)
                     {
-                        topLines.Points.Add(new Point3D(wire.Rect.X1 + scrap, wire.Rect.Y1 + scrap, boardThickness + 0.2));
-                        topLines.Points.Add(new Point3D(wire.Rect.X2 + scrap, wire.Rect.Y2 + scrap, boardThickness + 0.2));
+                        var topWireMeshBuilder = new MeshBuilder(false, false);
+                        var boxRect = new Rect3D(wire.Rect.X1 - (width / 2), wire.Rect.Y1, boardThickness, width, wire.Rect.Length, 0.25);
+                        topWireMeshBuilder.AddBox(boxRect);
+                        var boxModel = new GeometryModel3D() { Geometry = topWireMeshBuilder.ToMesh(true), Material = redMaterial };
+                        boxModel.Transform = new RotateTransform3D(new AxisAngleRotation3D(new Vector3D(0, 0, 1), wire.Rect.Angle), new Point3D(wire.Rect.X1, wire.Rect.Y1, 0));
+                        modelGroup.Children.Add(boxModel);
                     }
-
-                    viewport.Children.Add(topLines);
                 }
             }
 
@@ -165,7 +148,7 @@ namespace LagoVista.GCode.Sender.Application.Controls
                         bottomLines.Points.Add(new Point3D(wire.Rect.X2 + scrap, wire.Rect.Y2 + scrap, boardThickness + 0.1));
                     }
 
-                    viewport.Children.Add(bottomLines);
+                    //    viewport.Children.Add(bottomLines);
                 }
             }
 

@@ -37,7 +37,8 @@ namespace LagoVista.EaglePCB
             //HATE THIS CODE...don't know the spec on Eagle, very likely a sleeping bug.
             //TODO: Find spec on eagle to get a better understanding.
             var startIndex = 1;
-            if (rotationString.StartsWith("MR"))
+            /* Prettu sure this is telling me "M" = "Mirror" */
+            if (rotationString.StartsWith("M"))
             {
                 startIndex = 2;
             }

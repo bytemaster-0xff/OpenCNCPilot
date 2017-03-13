@@ -26,6 +26,14 @@ namespace LagoVista.EaglePCB.Models
             }
         }
 
+        public double RotateAngle
+        {
+            get
+            {
+                return Rotate.ToAngle();
+            }
+        }
+
         public Package Package { get; set; }
 
         public List<Pad> Pads

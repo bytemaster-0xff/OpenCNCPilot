@@ -16,14 +16,19 @@
             <h:LinesVisual3D Thickness="1" Color="Red" Points="{Binding Path=Machine.GCodeFileManager.RapidMoves, Converter={StaticResource Lines2Visual3DConverter}}" />
             <h:LinesVisual3D Thickness="2" Color="Red" Points="{Binding Path=Machine.GCodeFileManager.Lines, Converter={StaticResource Lines2Visual3DConverter}}"/>
             <h:LinesVisual3D Thickness="2" Color="Red" Points="{Binding Path=Machine.GCodeFileManager.Arcs, Converter={StaticResource Lines2Visual3DConverter}}"/>
+            
+            
             <h:LinesVisual3D Thickness="2" Color="DarkGray" x:Name="BottomWires" />
             <h:LinesVisual3D Thickness="2" Color="#B87333" x:Name="TopWires" />
             
             <ModelVisual3D x:Name="StockLayer"  />
             <ModelVisual3D x:Name="PCBLayer" />
+            
+            
             <h:ArrowVisual3D  x:Name="ModelTool" Direction="0,0,-10" Fill="Red"
-            Point2="{Binding Machine.NormalizedPosition, Converter={StaticResource PointConverter}}"
-            Point1="{Binding Machine.NormalizedPosition, Converter={StaticResource ToolTopPointConverter}}" />
+                Point2="{Binding Machine.NormalizedPosition, Converter={StaticResource PointConverter}}"
+                Point1="{Binding Machine.NormalizedPosition, Converter={StaticResource ToolTopPointConverter}}" />
+            
             <!-- Note: Width and Height seem to have different meanings on GridLinesVisual3D-->
             <h:GridLinesVisual3D x:Name="ModelGrid" MinorDistance="10"  MajorDistance="100" Origin="BottomLeft"
            	    Width="{Binding Machine.Settings.WorkAreaHeight, FallbackValue=80}"

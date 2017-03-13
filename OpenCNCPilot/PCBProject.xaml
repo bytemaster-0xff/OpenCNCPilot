@@ -51,11 +51,11 @@
                     <Label Content="mm" Grid.Column="2" Grid.Row="3" />
 
                     <Label Content="Stock Width" Grid.Row="4" />
-                    <ctls:MaskingTextBox UnitType="Size" Min="0" Max="99" Text="{Binding Path=Project.StockWidth, Mode=TwoWay}" ToolTip="The Width of the blank PCB file, this is used for establishing drill and mill depths" Margin="4,4,0,4" Grid.Column="1" Grid.Row="4" />
+                    <ctls:MaskingTextBox UnitType="Size" Min="0" Max="999" Text="{Binding Path=Project.StockWidth, Mode=TwoWay}" ToolTip="The Width of the blank PCB file, this is used for establishing drill and mill depths" Margin="4,4,0,4" Grid.Column="1" Grid.Row="4" />
                     <Label Content="mm" Grid.Column="2" Grid.Row="4" />
 
                     <Label Content="Stock Height" Grid.Row="5" />
-                    <ctls:MaskingTextBox UnitType="Size" Min="0" Max="99" Text="{Binding Path=Project.StockHeight, Mode=TwoWay}" ToolTip="The Height of the blank PCB file, this is used for establishing drill and mill depths" Margin="4,4,0,4" Grid.Column="1" Grid.Row="5" />
+                    <ctls:MaskingTextBox UnitType="Size" Min="0" Max="999" Text="{Binding Path=Project.StockHeight, Mode=TwoWay}" ToolTip="The Height of the blank PCB file, this is used for establishing drill and mill depths" Margin="4,4,0,4" Grid.Column="1" Grid.Row="5" />
                     <Label Content="mm" Grid.Column="2" Grid.Row="5" />
 
                     <Label Content="Stock Thickness" Grid.Row="6" />
