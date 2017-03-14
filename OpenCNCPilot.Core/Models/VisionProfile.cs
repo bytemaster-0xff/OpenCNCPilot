@@ -86,7 +86,7 @@ namespace LagoVista.GCode.Sender.Models
         public bool CannyGradient
         {
             get { return _cannyGradiant; }
-            set { _cannyGradiant = value; RaisePropertyChanged(), }
+            set { _cannyGradiant = value; RaisePropertyChanged(); }
         }
 
 
