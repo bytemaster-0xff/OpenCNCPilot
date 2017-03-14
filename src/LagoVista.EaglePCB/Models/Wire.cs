@@ -20,7 +20,7 @@ namespace LagoVista.EaglePCB.Models
         public List<Wire> EndJunctions { get; set; }
 
         public ContactRef StartContactRef { get; set; }
-        public ContactRef EndContactRef { get;  set}
+        public ContactRef EndContactRef { get; set; }
 
         public static Wire Create(XElement element)
         {

@@ -63,18 +63,61 @@ namespace LagoVista.GCode.Sender.Application.Controls
             var boardThickness = project == null ? 1.60 : project.StockThickness;
 
 
+            if (_topWiresVisible)
+            {
+                foreach (var wireSection in board.TopWires.GroupBy(wre => wre.Width))
+                {
+                    var width = wireSection.First().Width;
+
+                    foreach (var wire in wireSection)
+                    {
+                        var topWireMeshBuilder = new MeshBuilder(false, false);
+                        var boxRect = new Rect3D(wire.Rect.X1 - (width / 2), wire.Rect.Y1, -0.1, width, wire.Rect.Length, 0.2);
+                        topWireMeshBuilder.AddBox(boxRect);
+
+                        topWireMeshBuilder.AddCylinder(new Point3D(wire.Rect.X1, wire.Rect.Y1, -0.1), new Point3D(wire.Rect.X1, wire.Rect.Y1, .1), width / 2, 50, true, true);
+
+                        var boxModel = new GeometryModel3D() { Geometry = topWireMeshBuilder.ToMesh(true), Material = copperMaterial };
+                        boxModel.Transform = new RotateTransform3D(new AxisAngleRotation3D(new Vector3D(0, 0, 1), wire.Rect.Angle), new Point3D(wire.Rect.X1, wire.Rect.Y1, 0));
+                        modelGroup.Children.Add(boxModel);
+                    }
+                }
+            }
+
+            if (_bottomWiresVisible)
+            {
+                foreach (var wireSection in board.BottomWires.GroupBy(wre => wre.Width))
+                {
+                    var width = wireSection.First().Width;
+
+                    foreach (var wire in wireSection)
+                    {
+                        var topWireMeshBuilder = new MeshBuilder(false, false);
+                        var boxRect = new Rect3D(wire.Rect.X1 - (width / 2), wire.Rect.Y1, -0.105, width, wire.Rect.Length, 0.2);
+                        topWireMeshBuilder.AddBox(boxRect);
+
+                        topWireMeshBuilder.AddCylinder(new Point3D(wire.Rect.X1, wire.Rect.Y1, -0.105), new Point3D(wire.Rect.X1, wire.Rect.Y1, .095), width / 2, 50, true, true);
+
+                        var boxModel = new GeometryModel3D() { Geometry = topWireMeshBuilder.ToMesh(true), Material = grayMaterial };
+                        boxModel.Transform = new RotateTransform3D(new AxisAngleRotation3D(new Vector3D(0, 0, 1), wire.Rect.Angle), new Point3D(wire.Rect.X1, wire.Rect.Y1, 0));
+                        modelGroup.Children.Add(boxModel);
+                    }
+                }
+            }
+
+
             foreach (var element in board.Components)
             {
                 foreach (var pad in element.SMDPads)
                 {
                     var padMeshBuilder = new MeshBuilder(false, false);
 
-                    padMeshBuilder.AddBox(new Rect3D(pad.OriginX - (pad.DX / 2), pad.OriginY - (pad.DY / 2), 0, (pad.DX), (pad.DY), 0.25));
+                    padMeshBuilder.AddBox(new Rect3D(pad.OriginX - (pad.DX / 2), pad.OriginY - (pad.DY / 2), -0.1, (pad.DX), (pad.DY), 0.2));
                     var box = new GeometryModel3D() { Geometry = padMeshBuilder.ToMesh(true), Material = element.Layer == 1 ? copperMaterial : grayMaterial };
 
                     var transformGroup = new Transform3DGroup();
                     transformGroup.Children.Add(new RotateTransform3D(new AxisAngleRotation3D(new Vector3D(0, 0, 1), element.RotateAngle)));
-                    transformGroup.Children.Add(new TranslateTransform3D(new Vector3D(element.X.Value, element.Y.Value, element.Layer == 1 ? 1 : 0.75)));
+                    transformGroup.Children.Add(new TranslateTransform3D(new Vector3D(element.X.Value, element.Y.Value, element.Layer == 1 ? 0 : 0.05)));
 
                     box.Transform = transformGroup;
 
@@ -84,12 +127,12 @@ namespace LagoVista.GCode.Sender.Application.Controls
                 foreach (var pad in element.Pads)
                 {
                     var padCopperMeshBuilder = new MeshBuilder(false, false);
-                    padCopperMeshBuilder.AddCylinder(new Point3D(pad.X, pad.Y, boardThickness), new Point3D(pad.X, pad.Y, 0.25 + boardThickness), pad.DrillDiameter * 0.75);
+                    padCopperMeshBuilder.AddCylinder(new Point3D(pad.X, pad.Y, 0), new Point3D(pad.X, pad.Y, 0.1), pad.DrillDiameter * 0.75);
                     var padCopper = new GeometryModel3D() { Geometry = padCopperMeshBuilder.ToMesh(true), Material = copperMaterial };
                     modelGroup.Children.Add(padCopper);
 
                     var padDrillMeshBuilder = new MeshBuilder(false, false);
-                    padDrillMeshBuilder.AddCylinder(new Point3D(pad.X, pad.Y, boardThickness), new Point3D(pad.X, pad.Y, 0.25 + boardThickness), pad.DrillDiameter / 2);
+                    padDrillMeshBuilder.AddCylinder(new Point3D(pad.X, pad.Y, 0), new Point3D(pad.X, pad.Y, 0.101), pad.DrillDiameter / 2);
                     var padDrill = new GeometryModel3D() { Geometry = padDrillMeshBuilder.ToMesh(true), Material = blackMaterial };
                     modelGroup.Children.Add(padDrill);
                 }
@@ -104,118 +147,67 @@ namespace LagoVista.GCode.Sender.Application.Controls
             foreach (var via in board.Vias)
             {
                 var padCopperMeshBuilder = new MeshBuilder(false, false);
-                padCopperMeshBuilder.AddCylinder(new Point3D(via.X, via.Y, boardThickness), new Point3D(via.X, via.Y, boardThickness + 0.25), via.DrillDiameter * 1.25);
+                padCopperMeshBuilder.AddCylinder(new Point3D(via.X, via.Y, 0), new Point3D(via.X, via.Y, 0.1), via.DrillDiameter * 1.25);
                 var padCopper = new GeometryModel3D() { Geometry = padCopperMeshBuilder.ToMesh(true), Material = copperMaterial };
                 modelGroup.Children.Add(padCopper);
 
                 var padDrillMeshBuilder = new MeshBuilder(false, false);
-                padDrillMeshBuilder.AddCylinder(new Point3D(via.X, via.Y, boardThickness), new Point3D(via.X, via.Y, boardThickness + 0.26), via.DrillDiameter / 2);
+                padDrillMeshBuilder.AddCylinder(new Point3D(via.X, via.Y, 0), new Point3D(via.X, via.Y, 0.11), via.DrillDiameter / 2);
                 var padDrill = new GeometryModel3D() { Geometry = padDrillMeshBuilder.ToMesh(true), Material = blackMaterial };
                 modelGroup.Children.Add(padDrill);
             }
 
-
-            BottomWires.Points.Clear();
-            TopWires.Points.Clear();
-
-            if (_topWiresVisible)
-            {
-                foreach (var wireSection in board.TopWires.GroupBy(wre => wre.Width))
-                {
-                    var width = wireSection.First().Width;
-
-                    foreach (var wire in wireSection)
-                    {
-                        var topWireMeshBuilder = new MeshBuilder(false, false);
-                        var boxRect = new Rect3D(wire.Rect.X1 - (width / 2), wire.Rect.Y1, boardThickness, width, wire.Rect.Length, 0.25);
-                        topWireMeshBuilder.AddBox(boxRect);
-                        var boxModel = new GeometryModel3D() { Geometry = topWireMeshBuilder.ToMesh(true), Material = redMaterial };
-                        boxModel.Transform = new RotateTransform3D(new AxisAngleRotation3D(new Vector3D(0, 0, 1), wire.Rect.Angle), new Point3D(wire.Rect.X1, wire.Rect.Y1, 0));
-                        modelGroup.Children.Add(boxModel);
-                    }
-                }
-            }
-
-            if (_bottomWiresVisible)
-            {
-                foreach (var wireSection in board.BottomWires.GroupBy(wre => wre.Width))
-                {
-                    var bottomLines = new LinesVisual3D() { Thickness = wireSection.First().Width * 10, Color = Colors.DarkGray };
-
-                    foreach (var wire in wireSection)
-                    {
-                        bottomLines.Points.Add(new Point3D(wire.Rect.X1 + scrap, wire.Rect.Y1 + scrap, boardThickness + 0.1));
-                        bottomLines.Points.Add(new Point3D(wire.Rect.X2 + scrap, wire.Rect.Y2 + scrap, boardThickness + 0.1));
-                    }
-
-                    //    viewport.Children.Add(bottomLines);
-                }
-            }
-
-            /*
-             foreach (var circle in element.Package.Circles)
-             {
-                 var circleMeshBuilder = new MeshBuilder(false, false);
-                 circleMeshBuilder.AddCylinder(new Point3D(circle.X, circle.Y, 0), new Point3D(circle.X, circle.Y, 3), circle.Radius);
-                 modelGroup.Children.Add(new GeometryModel3D() { Geometry = circleMeshBuilder.ToMesh(true), Material = blackMaterial });
-             }
-             */
-            foreach (var circle in board.Holes)
-            {
-                var circleMeshBuilder = new MeshBuilder(false, false);
-                circleMeshBuilder.AddCylinder(new Point3D(circle.X, circle.Y, 0), new Point3D(circle.X, circle.Y, boardThickness + 0.25), circle.Drill / 2);
-                modelGroup.Children.Add(new GeometryModel3D() { Geometry = circleMeshBuilder.ToMesh(true), Material = blackMaterial });
-            }
-
-            var boardEdgeMeshBuilder = new MeshBuilder(false, false);
-
-            #region Hold your nose to discover why irregular boards don't render as expected... 
-            /* gonna cheat here in next chunk of code...need to make progress, assume all corners are
-             * either square or round.  If rounded, same radius...WILL revisit this at some point, KDW 2/24/2017
-             * FWIW - feel so dirty doing this, but need to move on :*( 
-             * very happy to accept a PR to fix this!  Proper mechanism is to create a polygon and likely subdivide the curve into smaller polygon edges
-             * more work than it's worth right now....sorry again :(
-             */
-            //TODO: Render proper edge of board.
-
-
-            var cornerWires = board.Layers.Where(layer => layer.Number == 20).FirstOrDefault().Wires.Where(wire => wire.Curve.HasValue == true);
-            var radius = cornerWires.Any() ? Math.Abs(cornerWires.First().Rect.X1 - cornerWires.First().Rect.X2) : 0;
-            if (radius == 0)
-            {
-                boardEdgeMeshBuilder.AddBox(new Point3D(board.Width / 2, board.Height / 2, 0), board.Width, board.Height, boardThickness);
-            }
-            else
-            {
-                boardEdgeMeshBuilder.AddBox(new Point3D(board.Width / 2, board.Height / 2, 0), board.Width - (radius * 2), board.Height - (radius * 2), boardThickness);
-                boardEdgeMeshBuilder.AddBox(new Point3D(board.Width / 2, radius / 2, 0), board.Width - (radius * 2), radius, boardThickness);
-                boardEdgeMeshBuilder.AddBox(new Point3D(board.Width / 2, board.Height - radius / 2, 0), board.Width - (radius * 2), radius, boardThickness);
-                boardEdgeMeshBuilder.AddBox(new Point3D(radius / 2, board.Height / 2, 0), radius, board.Height - (radius * 2), boardThickness);
-                boardEdgeMeshBuilder.AddBox(new Point3D(board.Width - radius / 2, board.Height / 2, 0), radius, board.Height - (radius * 2), boardThickness);
-                boardEdgeMeshBuilder.AddCylinder(new Point3D(radius, radius, -boardThickness / 2), new Point3D(radius, radius, boardThickness / 2), radius, 50, true, true);
-                boardEdgeMeshBuilder.AddCylinder(new Point3D(radius, board.Height - radius, -boardThickness / 2), new Point3D(radius, board.Height - radius, boardThickness / 2), radius, 50, true, true);
-                boardEdgeMeshBuilder.AddCylinder(new Point3D(board.Width - radius, radius, -boardThickness / 2), new Point3D(board.Width - radius, radius, boardThickness / 2), radius, 50, true, true);
-                boardEdgeMeshBuilder.AddCylinder(new Point3D(board.Width - radius, board.Height - radius, -boardThickness / 2), new Point3D(board.Width - radius, board.Height - radius, boardThickness / 2), radius, 50, true, true);
-            }
-            #endregion
-
-            modelGroup.Children.Add(new GeometryModel3D() { Geometry = boardEdgeMeshBuilder.ToMesh(true), Material = greenMaterial });
-
             if (_pcbVisible)
             {
-                PCBLayer.Content = modelGroup;
-                PCBLayer.Transform = new TranslateTransform3D(scrap, scrap, 0);
+                foreach (var circle in board.Holes)
+                {
+                    var circleMeshBuilder = new MeshBuilder(false, false);
+                    circleMeshBuilder.AddCylinder(new Point3D(circle.X, circle.Y, 0), new Point3D(circle.X, circle.Y, 0.01), circle.Drill / 2);
+                    modelGroup.Children.Add(new GeometryModel3D() { Geometry = circleMeshBuilder.ToMesh(true), Material = blackMaterial });
+                }
+
+                #region Hold your nose to discover why irregular boards don't render as expected... 
+                /* gonna cheat here in next chunk of code...need to make progress, assume all corners are
+                 * either square or round.  If rounded, same radius...WILL revisit this at some point, KDW 2/24/2017
+                 * FWIW - feel so dirty doing this, but need to move on :*( 
+                 * very happy to accept a PR to fix this!  Proper mechanism is to create a polygon and likely subdivide the curve into smaller polygon edges
+                 * more work than it's worth right now....sorry again :(
+                 */
+                //TODO: Render proper edge of board.
+
+                var boardEdgeMeshBuilder = new MeshBuilder(false, false);
+
+                var cornerWires = board.Layers.Where(layer => layer.Number == 20).FirstOrDefault().Wires.Where(wire => wire.Curve.HasValue == true);
+                var radius = cornerWires.Any() ? Math.Abs(cornerWires.First().Rect.X1 - cornerWires.First().Rect.X2) : 0;
+                if (radius == 0)
+                {
+                    boardEdgeMeshBuilder.AddBox(new Point3D(board.Width / 2, board.Height / 2, -boardThickness / 2), board.Width, board.Height, boardThickness);
+                }
+                else
+                {
+                    boardEdgeMeshBuilder.AddBox(new Point3D(board.Width / 2, board.Height / 2, -boardThickness / 2), board.Width - (radius * 2), board.Height - (radius * 2), boardThickness);
+                    boardEdgeMeshBuilder.AddBox(new Point3D(board.Width / 2, radius / 2, -boardThickness / 2), board.Width - (radius * 2), radius, boardThickness);
+                    boardEdgeMeshBuilder.AddBox(new Point3D(board.Width / 2, board.Height - radius / 2, -boardThickness / 2), board.Width - (radius * 2), radius, boardThickness);
+                    boardEdgeMeshBuilder.AddBox(new Point3D(radius / 2, board.Height / 2, -boardThickness / 2), radius, board.Height - (radius * 2), boardThickness);
+                    boardEdgeMeshBuilder.AddBox(new Point3D(board.Width - radius / 2, board.Height / 2, -boardThickness / 2), radius, board.Height - (radius * 2), boardThickness);
+                    boardEdgeMeshBuilder.AddCylinder(new Point3D(radius, radius, -boardThickness), new Point3D(radius, radius, 0), radius, 50, true, true);
+                    boardEdgeMeshBuilder.AddCylinder(new Point3D(radius, board.Height - radius, -boardThickness), new Point3D(radius, board.Height - radius, 0), radius, 50, true, true);
+                    boardEdgeMeshBuilder.AddCylinder(new Point3D(board.Width - radius, radius, -boardThickness), new Point3D(board.Width - radius, radius, 0), radius, 50, true, true);
+                    boardEdgeMeshBuilder.AddCylinder(new Point3D(board.Width - radius, board.Height - radius, -boardThickness), new Point3D(board.Width - radius, board.Height - radius, 0), radius, 50, true, true);
+                }
+                modelGroup.Children.Add(new GeometryModel3D() { Geometry = boardEdgeMeshBuilder.ToMesh(true), Material = greenMaterial });
+
+                #endregion
             }
-            else
-            {
-                PCBLayer.Content = null;
-            }
+
+            PCBLayer.Content = modelGroup;
+            PCBLayer.Transform = new TranslateTransform3D(scrap, scrap, 0);
 
             if (project != null && _stockVisible)
             {
                 var stockGroup = new Model3DGroup();
                 var stockMeshBuilder = new MeshBuilder(false, false);
-                stockMeshBuilder.AddBox(new Point3D(project.StockWidth / 2, project.StockHeight / 2, 0), project.StockWidth, project.StockHeight, boardThickness - 0.05);
+                stockMeshBuilder.AddBox(new Point3D(project.StockWidth / 2, project.StockHeight / 2, -boardThickness / 2), project.StockWidth, project.StockHeight, boardThickness - 0.05);
                 stockGroup.Children.Add(new GeometryModel3D() { Geometry = stockMeshBuilder.ToMesh(true), Material = copperMaterial });
                 StockLayer.Content = stockGroup;
             }
