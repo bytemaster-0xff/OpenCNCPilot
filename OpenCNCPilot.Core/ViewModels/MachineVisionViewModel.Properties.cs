@@ -10,10 +10,11 @@ namespace LagoVista.GCode.Sender.ViewModels
 {
     public partial class MachineVisionViewModel 
     {
-        public bool ShowRectangles { get; set; }
-        public bool ShowCircles { get; set; }
-        public bool ShowLines { get; set; }
-        public bool ShowHarrisCorners { get; set; }
+        public bool ShowPolygons { get; set; } = false;
+        public bool ShowRectangles { get; set; } = false;
+        public bool ShowCircles { get; set; } = true;
+        public bool ShowLines { get; set; } = false;
+        public bool ShowHarrisCorners { get; set; } = false;
 
 
         public string PolygonHelp { get { return "http://docs.opencv.org/2.4/doc/tutorials/imgproc/shapedescriptors/bounding_rects_circles/bounding_rects_circles.html?highlight=approxpolydp"; } }

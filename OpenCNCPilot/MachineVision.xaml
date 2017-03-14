@@ -23,6 +23,42 @@
 
         <Image x:Name="WebCamImage" Stretch="UniformToFill"  Source="/Imgs/TestPattern.jpg" Grid.RowSpan="2" />
 
+        <Grid HorizontalAlignment="Right" VerticalAlignment="Top"  Width="140" Height="160">
+            <Grid.Resources>
+                <Style TargetType="Label">
+                    <Setter Property="Foreground" Value="White" />
+                    <Setter Property="VerticalAlignment" Value="Center" />
+                    <Setter Property="FontSize" Value="16" />
+                </Style>
+                <Style TargetType="CheckBox">
+                    <Setter Property="Foreground" Value="White" />
+                    <Setter Property="HorizontalAlignment" Value="Center" />
+                    <Setter Property="VerticalAlignment" Value="Center" />
+                </Style>
+            </Grid.Resources>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="50" />
+            </Grid.ColumnDefinitions>
+            <Grid Opacity="0.5" Background="Black" Grid.RowSpan="999" Grid.ColumnSpan="999"></Grid>
+            <Label Content="Circles"  />
+            <CheckBox IsChecked="{Binding ShowCircles, Mode=TwoWay}" Grid.Column="1" />
+            <Label Content="Lines"  Grid.Row="1" />
+            <CheckBox IsChecked="{Binding ShowLines, Mode=TwoWay}" Grid.Row="1" Grid.Column="1" />
+            <Label Content="Rectangles"  Grid.Row="2" />
+            <CheckBox IsChecked="{Binding ShowRectangles, Mode=TwoWay}" Grid.Row="2" Grid.Column="1" />
+            <Label Content="Corners"  Grid.Row="3" />
+            <CheckBox IsChecked="{Binding ShowRectangles, Mode=TwoWay}" Grid.Row="3" Grid.Column="1" />
+            <Label Content="Polygons"  Grid.Row="4" />
+            <CheckBox IsChecked="{Binding ShowPolygons, Mode=TwoWay}" Grid.Row="4" Grid.Column="1" />
+        </Grid>
 
         <Grid Grid.ColumnSpan="2" Grid.Row="1">
             <Rectangle Grid.Row="1" Fill="Black" Opacity="0.5">
@@ -101,7 +137,7 @@
                         </StackPanel>
                         <Slider Value="{Binding Path=Profile.CannyLowThreshold, Mode=TwoWay}" Minimum="0" MaxHeight="100" SmallChange="0" LargeChange="5" ToolTip="{Binding CannyLowThresholdHelp}" />
                         <StackPanel Orientation="Horizontal">
-                            <Label Content="HIght Threshold - "/>
+                            <Label Content="High Threshold - "/>
                             <Label Content="{Binding Profile.CannyHighThreshold, FallbackValue=3}" />
                         </StackPanel>
                     </StackPanel>
@@ -110,8 +146,6 @@
                 <TabItem Header="Line">
                     <StackPanel>
                         <Label Content="Line Detection" FontSize="36" />
-                        <Label Content="High Threshold Tracks Low Thresold (ration 3:1)" />
-                        <CheckBox IsChecked="{Binding Path=Profile.CannyHighThresholdTracksLowThreshold, Mode=TwoWay}" ToolTip="{Binding CannyHighThresholdTracksLowThresholdHelp}" Margin="0,0,0,20" />
                         <Label Content="Hough Lines" Style="{StaticResource Link}" MouseDown="ShowLink_Handler" Tag="{Binding  HoughLinesLink}" />
                         <StackPanel Orientation="Horizontal">
                             <Label Content="Minimum Line Length - "/>
@@ -136,7 +170,7 @@
                         <StackPanel Orientation="Horizontal">
                             <Label Content="Threshold - "/>
                             <Label Content="{Binding Profile.HoughLinesThreshold, FallbackValue=3}" />
-                        </StackPanel>  
+                        </StackPanel>
                         <Slider Value="{Binding Path=Profile.HoughLinesThreshold, Mode=TwoWay}" ToolTip="{Binding HoughLinesThresholdHelp}" Margin="0,0,0,20"/>
                     </StackPanel>
                 </TabItem>
@@ -190,7 +224,7 @@
                 </TabItem>
             </TabControl>
         </Grid>
-     
+
         <Grid Grid.ColumnSpan="2" x:Name="LoadingMask"  Visibility="Collapsed" >
             <Rectangle Fill="Black" Opacity="0.5"/>
             <TextBlock Text="Please wait..."  FontSize="42" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,20"/>
