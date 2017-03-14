@@ -9,7 +9,7 @@
         mc:Ignorable="d"
         Title="MachineVision" Height="720" Width="1200">
 
-    <Grid d:DataContext="{StaticResource visionVM}" >
+    <Grid >
 
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
@@ -50,71 +50,98 @@
         </Grid>
 
         <Grid Grid.Column="1" Background="LightBlue">
-            <ScrollViewer>
-                <StackPanel>
-                    <StackPanel.Resources>
-                        <Style TargetType="Label" x:Key="Link">
-                            <Setter Property="Foreground" Value="Blue" />
-                            <Setter Property="FontStyle" Value="Normal" />
-                        </Style>
-                    </StackPanel.Resources>
-                    <Label Content="Gaussian Blur" Style="{StaticResource Link}" MouseDown="ShowLink_Handler" Tag="{Binding GaussianBlurLink}" />
-                    <Label Content="KSize"/>
-                    <Slider Value="{Binding GaussianKSize, Mode=TwoWay}" ToolTip="{Binding GuassianKSizeHelp}" Minimum="1" Maximum="20"/>
-                    <Label Content="SigmaX"/>
-                    <Slider Value="{Binding GuassianSigmaX, Mode=TwoWay}" ToolTip="{Binding GuassianSigmaXHelp}" Minimum="0" MaxHeight="20" />
-                    <Label Content="SigmaY"/>
-                    <Slider Value="{Binding GuassianSigmaY, Mode=TwoWay}" Margin="0,0,0,20" ToolTip="{Binding GuassianSigmaYHelp}"  Minimum="0" MaxHeight="20"/>
+            <Grid.Resources>
+                <Style TargetType="Label" x:Key="Link">
+                    <Setter Property="Foreground" Value="Blue" />
+                    <Setter Property="FontStyle" Value="Normal" />
+                </Style>
+            </Grid.Resources>
 
-                    <Label Content="Canny Edge Detection 1" Style="{StaticResource Link}" MouseDown="ShowLink_Handler" Tag="{Binding  CannyLink}" />
-                    <Label Content="Canny Edge Detection 2" Style="{StaticResource Link}" MouseDown="ShowLink_Handler" Tag="{Binding  CannyLink2}" />
-                    <Label Content="Apeture Size"/>
-                    <Slider Value="{Binding  CannyApetureSize, Mode=TwoWay}" ToolTip="{Binding CannyApetureSizeHelp}" Minimum="0" Maximum="10" />
-                    <Label Content="Gradient"/>
-                    <Slider Value="{Binding CannyGradient, Mode=TwoWay}" ToolTip="{Binding CannyGradientHelp}" />
-                    <Label Content="Low Threshold"/>
-                    <Slider Value="{Binding CannyLowThreshold, Mode=TwoWay}" Minimum="0" MaxHeight="100" SmallChange="0" LargeChange="5" ToolTip="{Binding CannyLowThresholdHelp}" />
-                    <Label Content="High Threshold"/>
-                    <Slider Value="{Binding CannyHighThreshold, Mode=TwoWay}" ToolTip="{Binding CannyHighThreshold}" />
-                    
-                    
-                    <Label Content="High Threshold Tracks Low Thresold (ration 3:1)" />
-                    <CheckBox IsChecked="{Binding CannyHighThresholdTracksLowThreshold, Mode=TwoWay}" ToolTip="{Binding CannyHighThresholdTracksLowThresholdHelp}" Margin="0,0,0,20" />
-                    <Label Content="Hough Lines" Style="{StaticResource Link}" MouseDown="ShowLink_Handler" Tag="{Binding  HoughLinesLink}" />
-                    <Label Content="Minimum Line Length"/>
-                    <Slider Value="{Binding HoughLinesMinLine, Mode=TwoWay}" ToolTip="{Binding HoughLinesMinLineHelp}" />
-                    <Label Content="Maximum Line Gap"/>
-                    <Slider Value="{Binding HoughLinesMaxLineGap, Mode=TwoWay}" ToolTip="{Binding HoughLinesMaxLineGapHelp}" />
-                    <Label Content="RHO"/>
-                    <Slider Value="{Binding HoughLinesRHO, Mode=TwoWay}" ToolTip="{Binding HoughLinesRHOHelp}" />
-                    <Label Content="Theta"/>
-                    <Slider Value="{Binding HoughLinesTheta, Mode=TwoWay}" ToolTip="{Binding HoughLinesThetaHelp}" />
-                    <Label Content="Threshold"/>
-                    <Slider Value="{Binding HoughLinesThreshold, Mode=TwoWay}" ToolTip="{Binding HoughLinesThresholdHelp}" Margin="0,0,0,20"/>
-                    <Label Content="Hough Circles" Style="{StaticResource Link}" MouseDown="ShowLink_Handler" Tag="{Binding  HoughCirclesLink}" />
-                    <Label Content="DP"/>
-                    <Slider Value="{Binding HoughCirclesDP, Mode=TwoWay}" Minimum="0.5" Maximum="5" SmallChange="0.25" LargeChange="0.25" ToolTip="{Binding HoughCirclesDPHelp}" />
-                    <Label Content="Min Radius"/>
-                    <Slider Value="{Binding HoughCirclesMinRadius, Mode=TwoWay}" ToolTip="{Binding HoughCirclesMinDistanceHelp}" Minimum="0" Maximum="100" SmallChange="5" LargeChange="25" />
-                    <Label Content="Max Radius"/>
-                    <Slider Value="{Binding HoughCirclesMaxRadius, Mode=TwoWay}" ToolTip="{Binding HoughCirclesMaxDistanceHelp}" Minimum="0" Maximum="200" SmallChange="5" LargeChange="25"  />
-                    <Label Content="Min Distance Between Centers"/>
-                    <Slider Value="{Binding HoughCirclesMinDistance, Mode=TwoWay}" ToolTip="{Binding HoughCirclesMinDistanceHelp}" Minimum="0" Maximum="200" SmallChange="5" LargeChange="25"/>
-                    <Label Content="Gradient Param 1"/>
-                    <Slider Value="{Binding HoughCirclesParam1, Mode=TwoWay}" ToolTip="{Binding HoughCirclesParam1Help}" Minimum="50" Maximum="300" SmallChange="5" LargeChange="5"/>
-                    <Label Content="Gradient Param 2"/>
-                    <Slider Value="{Binding HoughCirclesParam2, Mode=TwoWay}" ToolTip="{Binding HoughCirclesParam2Help}" Minimum="50" Maximum="300" SmallChange="5" LargeChange="5" />
+            <TabControl VerticalContentAlignment="Stretch">
+                <TabItem Header="Blur">
+                    <StackPanel>
 
-                    <Label Content="Polygon Detection" Style="{StaticResource Link}" MouseDown="ShowLink_Handler" Tag="{Binding  HoughLinesLink}" />
-                    <Label Content="Epsilon"/>
-                    <Slider Value="{Binding PolygonEpsilon, Mode=TwoWay}" ToolTip="{Binding PolygonEpsilonHelp}" Minimum="0.1" Maximum="1.0" SmallChange="0.5" LargeChange="0.5" />
+                        <Label Content="Blur" FontSize="36" />
+                        <Label Content="Gaussian Blur" Style="{StaticResource Link}" MouseDown="ShowLink_Handler" Tag="{Binding GaussianBlurLink}" />
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="K Size - "/>
+                            <Label Content="{Binding Profile.GaussianKSize, FallbackValue=3}" />
+                        </StackPanel>
+                        <Slider Value="{Binding Path=Profile.GaussianKSize, Mode=TwoWay}" ToolTip="{Binding GaussianKSizeHelp}" Minimum="1" Maximum="20"/>
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="SigmaX - "/>
+                            <Label Content="{Binding Profile.GaussianSigmaX, FallbackValue=3}" />
+                        </StackPanel>
+                        <Slider Value="{Binding Path=Profile.GaussianSigmaX, Mode=TwoWay}" ToolTip="{Binding GaussianSigmaXHelp}" Minimum="0" MaxHeight="20" />
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="SigmaY - "/>
+                            <Label Content="{Binding Profile.GaussianSigmaY, FallbackValue=3}" />
+                        </StackPanel>
+                        <Slider Value="{Binding Path=Profile.GaussianSigmaY, Mode=TwoWay}" Margin="0,0,0,20" ToolTip="{Binding GaussianSigmaYHelp}"  Minimum="0" MaxHeight="20"/>
+                    </StackPanel>
+                </TabItem>
+                <TabItem Header="Edge">
+                    <StackPanel>
+                        <Label Content="Edge Detection" FontSize="36" />
+                        <Label Content="Canny Edge Detection 1" Style="{StaticResource Link}" MouseDown="ShowLink_Handler" Tag="{Binding  CannyLink}" />
+                        <Label Content="Canny Edge Detection 2" Style="{StaticResource Link}" MouseDown="ShowLink_Handler" Tag="{Binding  CannyLink2}" />
+                        <Label Content="Apeture Size"/>
+                        <Slider Value="{Binding  Path=Profile.CannyApetureSize, Mode=TwoWay}" ToolTip="{Binding CannyApetureSizeHelp}" Minimum="0" Maximum="10" />
+                        <Label Content="Gradient"/>
+                        <Slider Value="{Binding Path=Profile.CannyGradient, Mode=TwoWay}" ToolTip="{Binding CannyGradientHelp}" />
+                        <Label Content="Low Threshold"/>
+                        <Slider Value="{Binding Path=Profile.CannyLowThreshold, Mode=TwoWay}" Minimum="0" MaxHeight="100" SmallChange="0" LargeChange="5" ToolTip="{Binding CannyLowThresholdHelp}" />
+                        <Label Content="High Threshold"/>
+                        <Slider Value="{Binding Path=Profile.CannyHighThreshold, Mode=TwoWay}" ToolTip="{Binding CannyHighThresholdHelp}" />
+                    </StackPanel>
+                </TabItem>
 
-
-
-                </StackPanel>
-            </ScrollViewer>
+                <TabItem Header="Line">
+                    <StackPanel>
+                        <Label Content="Line Detection" FontSize="36" />
+                        <Label Content="High Threshold Tracks Low Thresold (ration 3:1)" />
+                        <CheckBox IsChecked="{Binding Path=Profile.CannyHighThresholdTracksLowThreshold, Mode=TwoWay}" ToolTip="{Binding CannyHighThresholdTracksLowThresholdHelp}" Margin="0,0,0,20" />
+                        <Label Content="Hough Lines" Style="{StaticResource Link}" MouseDown="ShowLink_Handler" Tag="{Binding  HoughLinesLink}" />
+                        <Label Content="Minimum Line Length"/>
+                        <Slider Value="{Binding Path=Profile.HoughLinesMinLineLength, Mode=TwoWay}" ToolTip="{Binding HoughLinesMinLineHelp}" />
+                        <Label Content="Maximum Line Gap"/>
+                        <Slider Value="{Binding Path=Profile.HoughLinesMaxLineGap, Mode=TwoWay}" ToolTip="{Binding HoughLinesMaxLineGapHelp}" />
+                        <Label Content="RHO"/>
+                        <Slider Value="{Binding Path=Profile.HoughLinesRHO, Mode=TwoWay}" ToolTip="{Binding HoughLinesRHOHelp}" />
+                        <Label Content="Theta"/>
+                        <Slider Value="{Binding Path=Profile.HoughLinesTheta, Mode=TwoWay}" ToolTip="{Binding HoughLinesThetaHelp}" />
+                        <Label Content="Threshold"/>
+                        <Slider Value="{Binding Path=Profile.HoughLinesThreshold, Mode=TwoWay}" ToolTip="{Binding HoughLinesThresholdHelp}" Margin="0,0,0,20"/>
+                    </StackPanel>
+                </TabItem>
+                <TabItem Header="Circle">
+                    <StackPanel>
+                        <Label Content="Hough Circles" Style="{StaticResource Link}" MouseDown="ShowLink_Handler" Tag="{Binding  HoughCirclesLink}" />
+                        <Label Content="DP"/>
+                        <Slider Value="{Binding Path=Profile.HoughCirclesDP, Mode=TwoWay}" Minimum="0.5" Maximum="5" SmallChange="0.25" LargeChange="0.25" ToolTip="{Binding HoughCirclesDPHelp}" />
+                        <Label Content="Min Radius"/>
+                        <Slider Value="{Binding Path=Profile.HoughCirclesMinRadius, Mode=TwoWay}" ToolTip="{Binding HoughCirclesMinRadiusHelp}" Minimum="0" Maximum="100" SmallChange="5" LargeChange="25" />
+                        <Label Content="Max Radius"/>
+                        <Slider Value="{Binding Path=Profile.HoughCirclesMaxRadius, Mode=TwoWay}" ToolTip="{Binding HoughCirclesMaxRadiusHelp}" Minimum="0" Maximum="200" SmallChange="5" LargeChange="25"  />
+                        <Label Content="Min Distance Between Centers"/>
+                        <Slider Value="{Binding Path=Profile.HoughCirclesMinDistance, Mode=TwoWay}" ToolTip="{Binding HoughCirclesMinDistanceHelp}" Minimum="0" Maximum="200" SmallChange="5" LargeChange="25"/>
+                        <Label Content="Gradient Param 1"/>
+                        <Slider Value="{Binding Path=Profile.HoughCirclesParam1, Mode=TwoWay}" ToolTip="{Binding HoughCirclesParam1Help}" Minimum="50" Maximum="300" SmallChange="5" LargeChange="5"/>
+                        <Label Content="Gradient Param 2"/>
+                        <Slider Value="{Binding Path=Profile.HoughCirclesParam2, Mode=TwoWay}" ToolTip="{Binding HoughCirclesParam2Help}" Minimum="50" Maximum="300" SmallChange="5" LargeChange="5" />
+                    </StackPanel>
+                </TabItem>
+                <TabItem Header="Circle">
+                    <StackPanel>
+                        <Label Content="Circle Detection" FontSize="36" />
+                        <Label Content="Polygon Detection" Style="{StaticResource Link}" MouseDown="ShowLink_Handler" Tag="{Binding  HoughLinesLink}" />
+                        <Label Content="Epsilon"/>
+                        <Slider Value="{Binding Path=Profile.PolygonEpsilon, Mode=TwoWay}" ToolTip="{Binding PolygonEpsilonHelp}" Minimum="0.1" Maximum="1.0" SmallChange="0.5" LargeChange="0.5" />
+                    </StackPanel>
+                </TabItem>
+            </TabControl>
         </Grid>
-
+     
         <Grid Grid.ColumnSpan="2" x:Name="LoadingMask"  Visibility="Collapsed" >
             <Rectangle Fill="Black" Opacity="0.5"/>
             <TextBlock Text="Please wait..."  FontSize="42" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,20"/>

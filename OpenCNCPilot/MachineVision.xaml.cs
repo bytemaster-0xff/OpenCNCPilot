@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using System.Windows.Media.Imaging;
 using LagoVista.GCode.Sender.Interfaces;
+using LagoVista.GCode.Sender.Models;
 
 namespace LagoVista.GCode.Sender.Application
 {
@@ -39,7 +40,7 @@ namespace LagoVista.GCode.Sender.Application
             }
         }
 
-        public Result PerformShapeDetection(MachineVisionViewModel vm, Mat img)
+        public Result PerformShapeDetection(VisionProfile vm, Mat img)
         {
             using (var gray = new Image<Gray, byte>(img.Bitmap))
             using (var blurredGray = new Mat())
@@ -185,7 +186,7 @@ namespace LagoVista.GCode.Sender.Application
                         using (var originalFrame = _videoCapture.QueryFrame())
                         {
 
-                            var results = PerformShapeDetection(ViewModel, originalFrame);
+                            var results = PerformShapeDetection(ViewModel.Profile, originalFrame);
 
                             foreach (var circle in results.Circles)
                             {

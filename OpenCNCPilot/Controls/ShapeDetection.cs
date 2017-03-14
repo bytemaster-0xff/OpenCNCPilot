@@ -2,6 +2,7 @@
 using Emgu.CV.CvEnum;
 using Emgu.CV.Structure;
 using Emgu.CV.Util;
+using LagoVista.GCode.Sender.Models;
 using LagoVista.GCode.Sender.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -14,7 +15,7 @@ namespace LagoVista.GCode.Sender.Application.Controls
 {
     public partial class ImageSensorControl
     {
-        public Result PerformShapeDetection(MachineVisionViewModel vm, Mat img)
+        public Result PerformShapeDetection(VisionProfile profile, Mat img)
         {
             using (var gray = new Image<Gray, byte>(img.Bitmap))
             using (var blurredGray = new Mat())
@@ -22,13 +23,13 @@ namespace LagoVista.GCode.Sender.Application.Controls
             {
 
                 //K Must always be odd.
-                var k = vm.GaussianKSize;
+                var k = profile.GaussianKSize;
                 if(k % 1 == 0)
                 {
                     k += 1;
                 }
 
-                CvInvoke.GaussianBlur(gray, blurredGray, new System.Drawing.Size(vm.GaussianKSize, vm.GaussianKSize),vm.GaussianSigmaX);
+                CvInvoke.GaussianBlur(gray, blurredGray, new System.Drawing.Size(profile.GaussianKSize, profile.GaussianKSize),profile.GaussianSigmaX);
 
 
                 //Convert the image to grayscale and filter out the noise
@@ -42,12 +43,12 @@ namespace LagoVista.GCode.Sender.Application.Controls
 
                 //Image<Gray, Byte> gray = img.Convert<Gray, Byte>().PyrDown().PyrUp();
 
-                var circles = CvInvoke.HoughCircles(img, HoughType.Gradient,vm.HoughCirclesDP, vm.HoughCirclesMinDistance, vm.HoughCirclesParam1, vm.HoughCirclesParam2, vm.HoughCirclesMinRadius, vm.HoughCirclesMaxRadius);
+                var circles = CvInvoke.HoughCircles(img, HoughType.Gradient,profile.HoughCirclesDP, profile.HoughCirclesMinDistance, profile.HoughCirclesParam1, profile.HoughCirclesParam2, profile.HoughCirclesMinRadius, profile.HoughCirclesMaxRadius);
 
                 UMat cannyEdges = new UMat();
-                CvInvoke.Canny(img, cannyEdges, vm.CannyLowThreshold, vm.CannyHighThreshold, vm.CannyApetureSize, vm.CannyGradient);
+                CvInvoke.Canny(img, cannyEdges, profile.CannyLowThreshold, profile.CannyHighThreshold, profile.CannyApetureSize, profile.CannyGradient);
 
-                var lines = CvInvoke.HoughLinesP(cannyEdges,vm.HoughLinesRHO, vm.HoughLinesTheta, vm.HoughLinesThreshold, vm.HoughLinesMinLineLength, vm.HoughLinesMaxLineGap);
+                var lines = CvInvoke.HoughLinesP(cannyEdges,profile.HoughLinesRHO, profile.HoughLinesTheta, profile.HoughLinesThreshold, profile.HoughLinesMinLineLength, profile.HoughLinesMaxLineGap);
                 
 
                 List<Triangle2DF> triangleList = new List<Triangle2DF>();

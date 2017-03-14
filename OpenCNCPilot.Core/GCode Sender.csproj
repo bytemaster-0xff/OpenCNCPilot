@@ -133,6 +133,7 @@
     <Compile Include="Models\Line3D.cs" />
     <Compile Include="Models\ProbePoint.cs" />
     <Compile Include="Models\StatusMessage.cs" />
+    <Compile Include="Models\VisionProfile.cs" />
     <Compile Include="ViewModels\GCodeAppViewModelBase.cs" />
     <Compile Include="ViewModels\JobControlViewModel.ComandHandlers.cs">
       <DependentUpon>JobControlViewModel.cs</DependentUpon>

@@ -11,8 +11,7 @@ namespace LagoVista.GCode.Sender.ViewModels
     {
         public MachineVisionViewModel(IMachine machine) :base(machine)
         {
-
-
+            Profile = new Models.VisionProfile();
         }
     }
 }

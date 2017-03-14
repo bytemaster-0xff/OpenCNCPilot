@@ -25,8 +25,6 @@ namespace LagoVista.GCode.Sender.Application.Controls
         VideoCapture _videoCapture;
         Object _videoCaptureLocker = new object();
 
-        MachineVisionViewModel _viewModel;
-
         public ImageSensorControl()
         {
             InitializeComponent();
@@ -162,7 +160,7 @@ namespace LagoVista.GCode.Sender.Application.Controls
                     {
                         using (var originalFrame = _videoCapture.QueryFrame())
                         {
-                            var result = PerformShapeDetection(_viewModel, originalFrame);
+                            var result = PerformShapeDetection(null, originalFrame);
                         }
                      
                     }
