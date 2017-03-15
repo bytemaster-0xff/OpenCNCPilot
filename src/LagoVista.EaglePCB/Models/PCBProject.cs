@@ -13,7 +13,10 @@ namespace LagoVista.EaglePCB.Models
             Fiducials = new ObservableCollection<Hole>();
         }
 
-        public double Scrap { get; set; }
+        private string _currentFileName;
+
+        public double ScrapSides { get; set; }
+        public double ScrapTopBottom { get; set; }
 
         private string _eagleBRDFilePath;
         public string EagleBRDFilePath
@@ -73,14 +76,25 @@ namespace LagoVista.EaglePCB.Models
         }
 
 
-        public async Task SaveAsync(String fileName)
+        public async Task SaveAsync(String fileName = null)
         {
+            if(String.IsNullOrEmpty(fileName))
+            {
+                if(_currentFileName == null)
+                {
+                    throw new Exception("Must provide a file name if we aren't editing an existing file.");
+                }
+
+                fileName = _currentFileName;
+            }
             await Core.PlatformSupport.Services.Storage.StoreAsync(this, fileName);
         }
 
-        public static Task<PCBProject> OpenAsync(String fileName)
+        public static async Task<PCBProject> OpenAsync(String fileName)
         {
-            return Core.PlatformSupport.Services.Storage.GetAsync<PCBProject>(fileName);
+            var project = await Core.PlatformSupport.Services.Storage.GetAsync<PCBProject>(fileName);
+            project._currentFileName = fileName;
+            return project;
         }
 
         public static PCBProject Default
@@ -104,7 +118,8 @@ namespace LagoVista.EaglePCB.Models
                     MillSpindleDwell = 3,
                     MillSpindleRPM = 15000,
                     MillToolSize = 3.15,
-                    Scrap = 5,
+                    ScrapTopBottom = 5,
+                    ScrapSides = 5,
                     SafePlungeRecoverRate = 500,
                 };
             }

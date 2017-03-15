@@ -274,7 +274,14 @@ namespace LagoVista.GCode.Sender.Application
 
         private void PCB2GCode_Click(object sender, RoutedEventArgs e)
         {
-            PCB.PCB2Gode.CreateGCode();
+            if (ViewModel.Project != null && !String.IsNullOrEmpty(ViewModel.Project.EagleBRDFilePath))
+            {
+                PCB.PCB2Gode.CreateGCode(ViewModel.Project.EagleBRDFilePath, ViewModel.Project);
+            }
+            else
+            {
+                MessageBox.Show("Please Create a Project PCB->New Project and Assign an Eagle Board File.");
+            }
         }
 
         private async void OpenPCBProject_Click(object sender, RoutedEventArgs e)
@@ -329,6 +336,11 @@ namespace LagoVista.GCode.Sender.Application
                 }
                 ViewModel.Machine.PCBManager.Project = vm.Project;
             }
+        }
+
+        private void PCB2GCode_Click_1(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

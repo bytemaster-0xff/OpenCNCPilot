@@ -31,6 +31,7 @@
                 <Separator/>
                 <MenuItem Header="Generate Cutout Milling" Command="{Binding GenerateMillingGCodeCommand}" />
                 <MenuItem Header="Generate Drills" Command="{Binding GeneateDrillGCodeCommand}" />
+                <MenuItem Header="Generate Etching (PCBGCODE)" x:Name="PCB2GCode" Click="PCB2GCode_Click" />
 
             </MenuItem>
             <MenuItem Header="PCB" >

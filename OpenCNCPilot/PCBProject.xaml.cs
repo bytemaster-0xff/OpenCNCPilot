@@ -24,6 +24,23 @@ namespace LagoVista.GCode.Sender.Application
         public PCBProject()
         {
             InitializeComponent();
+            var designTime = System.ComponentModel.DesignerProperties.GetIsInDesignMode(new DependencyObject());
+            if (!designTime)
+            {
+                this.Loaded += PCBProject_Loaded;
+            }
+        }
+
+        private void PCBProject_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (!System.IO.File.Exists(ViewModel.Project.EagleBRDFilePath))
+            {
+                MessageBox.Show("Could not find Eagle Board File, please check your settings and try again.");
+            }
+            else
+            {
+                ViewModel.GenerateIsolationEvent += (s, a) => PCB.PCB2Gode.CreateGCode(ViewModel.Project.EagleBRDFilePath, ViewModel.Project);
+            }
         }
 
         public bool IsNew

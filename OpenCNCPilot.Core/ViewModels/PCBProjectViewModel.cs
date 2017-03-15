@@ -13,6 +13,8 @@ namespace LagoVista.GCode.Sender.ViewModels
 {
     public class PCBProjectViewModel : ViewModelBase
     {
+        public event EventHandler GenerateIsolationEvent;
+
         PCBProject _project;
         public PCBProject Project
         {
@@ -34,6 +36,8 @@ namespace LagoVista.GCode.Sender.ViewModels
             OpenEagleBoardCommand = new RelayCommand(OpenEagleBoard);
             OpenTopEtchingCommand = new RelayCommand(OpenTopEtching);
             OpenBottomEtchingCommand = new RelayCommand(OpenBottomEtching);
+            CenterBoardCommand = new RelayCommand(CenterBoard);
+            GenerateIsolationMillingCommand = new RelayCommand(GenerateIsolation);
 
             if (!String.IsNullOrEmpty(Project.EagleBRDFilePath))
             {
@@ -41,6 +45,16 @@ namespace LagoVista.GCode.Sender.ViewModels
                 PCB = EagleParser.ReadPCB(doc);
                 Project.FiducialOptions = PCB.Holes.Where(drl => drl.Drill > 2).ToList();
             }
+        }
+
+        public bool CanCenterboard()
+        {
+            return PCB != null;
+        }
+
+        public bool CanGenerateIsolation()
+        {
+            return PCB != null;
         }
 
         public async Task LoadDefaultSettings()
@@ -90,6 +104,17 @@ namespace LagoVista.GCode.Sender.ViewModels
             }
         }
 
+        public void CenterBoard()
+        {
+            Project.ScrapSides = Math.Round((Project.StockWidth - PCB.Width) / 2, 2);
+            Project.ScrapTopBottom = Math.Round((Project.StockHeight - PCB.Height) / 2, 2);
+        }
+
+        public void GenerateIsolation()
+        {
+            GenerateIsolationEvent?.Invoke(this, null);
+        }
+
         public async Task<bool> LoadExistingFile(string file)
         {
             Project = await Storage.GetAsync<PCBProject>(file);
@@ -105,12 +130,14 @@ namespace LagoVista.GCode.Sender.ViewModels
             Project.EagleBRDFilePath = brdFileName;
         }
 
-
+        public RelayCommand CenterBoardCommand { get; private set; }
 
         public RelayCommand SaveDefaultProfileCommand { get; private set; }
         public RelayCommand OpenEagleBoardCommand { get; private set; }
         public RelayCommand OpenTopEtchingCommand { get; private set; }
         public RelayCommand OpenBottomEtchingCommand { get; private set; }
+        public RelayCommand GenerateIsolationMillingCommand { get; private set; }
+
 
     }
 }

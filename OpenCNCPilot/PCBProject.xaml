@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:LagoVista.GCode.Sender.Application"
         xmlns:ctls="clr-namespace:LagoVista.GCode.Sender.Application.Controls"
         mc:Ignorable="d"
-        Title="PCBProject" Height="400" Width="500">
+        Title="PCBProject" Height="500" Width="500">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
@@ -17,6 +17,9 @@
             <TabItem Header="Board">
                 <Grid>
                     <Grid.RowDefinitions>
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
                         <RowDefinition Height="auto" />
                         <RowDefinition Height="auto" />
                         <RowDefinition Height="auto" />
@@ -46,29 +49,37 @@
                     <ctls:MaskingTextBox Grid.Row="2" Text="{Binding Path=Project.BottomEtchingFilePath, Mode=TwoWay}" Grid.Column="1" Margin="4,4,0,4" />
                     <Button Content="..." Grid.Row="2" Width="30" HorizontalAlignment="Left" Grid.Column="2" Margin="0,4,4,4" Command="{Binding OpenBottomEtchingCommand}"/>
 
-                    <Label Content="Scrap" Grid.Row="3" />
+                    <Label Content="Scrap Sides" Grid.Row="3" />
                     <ctls:MaskingTextBox  UnitType="Size" Min="0" Max="99" Text="{Binding Path=Project.Scrap, Mode=TwoWay}" ToolTip="The bottom and left margin from the origin to the PCB area.  The board edges will be milled from the scrap area." Margin="4,4,0,4" Grid.Column="1" Grid.Row="3" />
                     <Label Content="mm" Grid.Column="2" Grid.Row="3" />
 
-                    <Label Content="Stock Width" Grid.Row="4" />
-                    <ctls:MaskingTextBox UnitType="Size" Min="0" Max="999" Text="{Binding Path=Project.StockWidth, Mode=TwoWay}" ToolTip="The Width of the blank PCB file, this is used for establishing drill and mill depths" Margin="4,4,0,4" Grid.Column="1" Grid.Row="4" />
+                    <Label Content="Scrap Top/Bottom" Grid.Row="4" />
+                    <ctls:MaskingTextBox  UnitType="Size" Min="0" Max="99" Text="{Binding Path=Project.Scrap, Mode=TwoWay}" ToolTip="The bottom and left margin from the origin to the PCB area.  The board edges will be milled from the scrap area." Margin="4,4,0,4" Grid.Column="1" Grid.Row="4" />
                     <Label Content="mm" Grid.Column="2" Grid.Row="4" />
 
-                    <Label Content="Stock Height" Grid.Row="5" />
-                    <ctls:MaskingTextBox UnitType="Size" Min="0" Max="999" Text="{Binding Path=Project.StockHeight, Mode=TwoWay}" ToolTip="The Height of the blank PCB file, this is used for establishing drill and mill depths" Margin="4,4,0,4" Grid.Column="1" Grid.Row="5" />
+
+                    <Label Content="Stock Width" Grid.Row="5" />
+                    <ctls:MaskingTextBox UnitType="Size" Min="0" Max="999" Text="{Binding Path=Project.StockWidth, Mode=TwoWay}" ToolTip="The Width of the blank PCB file, this is used for establishing drill and mill depths" Margin="4,4,0,4" Grid.Column="1" Grid.Row="5" />
                     <Label Content="mm" Grid.Column="2" Grid.Row="5" />
 
-                    <Label Content="Stock Thickness" Grid.Row="6" />
-                    <ctls:MaskingTextBox UnitType="Size" Min="0" Max="99" Text="{Binding Path=Project.StockThickness, Mode=TwoWay}" ToolTip="The Thickness of the blank PCB file, this is used for establishing drill and mill depths" Margin="4,4,0,4" Grid.Column="1" Grid.Row="6" />
+                    <Label Content="Stock Height" Grid.Row="6" />
+                    <ctls:MaskingTextBox UnitType="Size" Min="0" Max="999" Text="{Binding Path=Project.StockHeight, Mode=TwoWay}" ToolTip="The Height of the blank PCB file, this is used for establishing drill and mill depths" Margin="4,4,0,4" Grid.Column="1" Grid.Row="6" />
                     <Label Content="mm" Grid.Column="2" Grid.Row="6" />
 
-                    <Label Content="Detected Width" Grid.Row="7" />
-                    <TextBlock Text="{Binding Path=PCB.Width}" Grid.Row="7" Grid.Column="1" />
+                    <Label Content="Stock Thickness" Grid.Row="7" />
+                    <ctls:MaskingTextBox UnitType="Size" Min="0" Max="99" Text="{Binding Path=Project.StockThickness, Mode=TwoWay}" ToolTip="The Thickness of the blank PCB file, this is used for establishing drill and mill depths" Margin="4,4,0,4" Grid.Column="1" Grid.Row="7" />
                     <Label Content="mm" Grid.Column="2" Grid.Row="7" />
 
-                    <Label Content="Detected Height" Grid.Row="8" />
-                    <TextBlock Text="{Binding Path=PCB.Height}" Grid.Row="8" Grid.Column="1" />
+                    <Label Content="Detected Width" Grid.Row="8" />
+                    <TextBlock Text="{Binding Path=PCB.Width}" Grid.Row="8" Grid.Column="1" />
                     <Label Content="mm" Grid.Column="2" Grid.Row="8" />
+
+                    <Label Content="Detected Height" Grid.Row="9" />
+                    <TextBlock Text="{Binding Path=PCB.Height}" Grid.Row="9" Grid.Column="1" />
+                    <Label Content="mm" Grid.Column="2" Grid.Row="9" />
+
+                    <Button Grid.Row="10" Grid.Column="1" Content="Center Board" Command="{Binding CenterBoardCommand}" Margin="4" />
+                    <Button Grid.Row="11" Grid.Column="1" Content="Generate Isolation Milling (pcb-gcode)" Command="{Binding GenerateIsolationMillingCommand}" Margin="4" />
 
                 </Grid>
             </TabItem>

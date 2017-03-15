@@ -152,6 +152,12 @@
       <DependentUpon>PCBProject.xaml</DependentUpon>
     </Compile>
     <Compile Include="PCB\PCB2Gode.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="Settings.cs" />
     <Compile Include="SettingsWindow.xaml.cs">
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
     </Compile>
@@ -261,6 +267,10 @@
     </EmbeddedResource>
     <None Include="App.config">
       <DependentUpon>App.xaml</DependentUpon>
+    </None>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <Resource Include="Imgs\FrontView.png" />
     <Resource Include="Imgs\LeftView.png" />

@@ -59,7 +59,8 @@ namespace LagoVista.GCode.Sender.Application.Controls
             var blackMaterial = MaterialHelper.CreateMaterial(Colors.Black);
             var grayMaterial = MaterialHelper.CreateMaterial(Colors.DarkGray);
 
-            var scrap = project == null ? 0 : project.Scrap;
+            var scrapX = project == null ? 0 : project.ScrapSides;
+            var scrapY = project == null ? 0 : project.ScrapTopBottom;
             var boardThickness = project == null ? 1.60 : project.StockThickness;
 
 
@@ -139,7 +140,7 @@ namespace LagoVista.GCode.Sender.Application.Controls
 
                 if (_pcbVisible)
                 {
-                    var billBoard = new BillboardTextVisual3D() { Foreground = Brushes.White, Text = element.Name, Position = new Point3D(element.X.Value, element.Y.Value, 4), FontSize = 12 };
+                    var billBoard = new BillboardTextVisual3D() { Foreground = Brushes.White, Text = element.Name, Position = new Point3D(element.X.Value + scrapX, element.Y.Value + scrapY, 4), FontSize = 14 };
                     viewport.Children.Add(billBoard);
                 }
             }
@@ -201,7 +202,7 @@ namespace LagoVista.GCode.Sender.Application.Controls
             }
 
             PCBLayer.Content = modelGroup;
-            PCBLayer.Transform = new TranslateTransform3D(scrap, scrap, 0);
+            PCBLayer.Transform = new TranslateTransform3D(scrapX, scrapY, 0);
 
             if (project != null && _stockVisible)
             {
