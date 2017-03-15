@@ -75,8 +75,6 @@ namespace LagoVista.GCode.Sender.Application
                 await ViewModel.Project.SaveAsync(PCBFilepath);
                 DialogResult = true;
             }
-
-        
         }
 
         public string NewFilePath { get; set; }
@@ -86,6 +84,72 @@ namespace LagoVista.GCode.Sender.Application
             var selectedDrill = (sender as Button).DataContext as Hole;
 
             ViewModel.Project.Fiducials.Add(selectedDrill);
+        }
+
+        private void ConsolidatedDrills_Drop(object sender, DragEventArgs e)
+        {
+            if (ViewModel.ConsolidatedDrillBit != null)
+            {
+                var drill = e.Data.GetData("Drill") as DrillBit;
+                var existingDrill = ViewModel.AddDrillBit(drill);
+                if (!String.IsNullOrEmpty(existingDrill))
+                {
+                    MessageBox.Show($"This drill bit already exists on: {existingDrill}");
+                }
+            }
+        }
+
+        private void SourceBitsGrid_MouseMove(object sender, MouseEventArgs e)
+        {
+            if(e.LeftButton == MouseButtonState.Pressed)
+            {
+                var drill = (sender as Grid).DataContext;
+                var data = new DataObject();
+                data.SetData("Drill", drill);
+                DragDrop.DoDragDrop(this, data, DragDropEffects.Copy | DragDropEffects.Move);
+            }
+        }
+
+        private void ConsolidatedBitsGrid_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                var drill = (sender as Grid).DataContext;
+
+                var data = new DataObject();
+                data.SetData("Drill", drill);
+                DragDrop.DoDragDrop(this, data, DragDropEffects.Copy | DragDropEffects.Move);
+            }
+        }
+
+
+        private void AddConsolidatedDrill_Click(object sender, RoutedEventArgs e)
+        {
+            var dlg = new ConsolidatedDrillBit();
+            dlg.ShowForNew(ViewModel.Project, this);
+            if (dlg.DialogResult.HasValue && dlg.DialogResult.Value)
+            {
+                ViewModel.ConsolidatedDrillBit = dlg.ConsolidatedDrill;
+            }
+        }
+
+        private void ConsolidatedDrillBitItem_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if(e.ClickCount >= 2)
+            {
+                var consolidatedDrill = (sender as TextBlock).DataContext as LagoVista.EaglePCB.Models.ConsolidatedDrillBit;
+                var dlg = new ConsolidatedDrillBit();
+                dlg.ShowForEdit(ViewModel.Project, consolidatedDrill, this);
+            }
+        }
+
+        private void FullDrillIst_Drop(object sender, DragEventArgs e)
+        {
+            if (ViewModel.ConsolidatedDrillBit != null)
+            {
+                var drill = e.Data.GetData("Drill") as DrillBit;
+                ViewModel.RemoveBit(drill);                
+            }
         }
     }
 }

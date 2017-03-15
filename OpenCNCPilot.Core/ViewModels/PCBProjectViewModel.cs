@@ -138,6 +138,51 @@ namespace LagoVista.GCode.Sender.ViewModels
         public RelayCommand OpenBottomEtchingCommand { get; private set; }
         public RelayCommand GenerateIsolationMillingCommand { get; private set; }
 
+        public string AddDrillBit(DrillBit bit)
+        {
+            if(ConsolidatedDrillBit == null)
+            {
+                return null;
+            }
 
+            /* If it already exists here, don't add it again */
+            if(ConsolidatedDrillBit.Bits.Where(bt=>bt.ToolName== bit.ToolName).Any())
+            {
+                return null;
+            }
+
+            foreach(var consolidatedDrill in Project.ConsolidatedDrillRack)
+            {
+                if (consolidatedDrill != ConsolidatedDrillBit)
+                {
+                    return null;
+                }
+
+                if (consolidatedDrill != ConsolidatedDrillBit && consolidatedDrill.Bits.Where(bt => bt.ToolName == bit.ToolName).Any())
+                {
+                    return consolidatedDrill.NewToolName;
+                }
+            }
+
+            ConsolidatedDrillBit.AddBit(bit);
+
+            return null;
+        }
+
+        public void RemoveBit(DrillBit bit)
+        {
+            var localBit = ConsolidatedDrillBit.Bits.Where(bt => bt.ToolName == bit.ToolName).FirstOrDefault();
+            if(localBit != null)
+            {
+                ConsolidatedDrillBit.Bits.Remove(localBit);
+            }
+        }
+
+        ConsolidatedDrillBit _consolidatedDrillBit;
+        public ConsolidatedDrillBit ConsolidatedDrillBit
+        {
+            get { return _consolidatedDrillBit; }
+            set{ Set(ref _consolidatedDrillBit, value);}
+        }
     }
 }

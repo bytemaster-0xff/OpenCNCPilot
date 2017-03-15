@@ -11,6 +11,7 @@ namespace LagoVista.EaglePCB.Models
         public PCBProject()
         {
             Fiducials = new ObservableCollection<Hole>();
+            ConsolidatedDrillRack = new ObservableCollection<ConsolidatedDrillBit>();
         }
 
         private string _currentFileName;
@@ -90,6 +91,7 @@ namespace LagoVista.EaglePCB.Models
             return this.MemberwiseClone() as PCBProject;
         }
 
+        public ObservableCollection<ConsolidatedDrillBit> ConsolidatedDrillRack { get; set; }
 
         public async Task SaveAsync(String fileName = null)
         {

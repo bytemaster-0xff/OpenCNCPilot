@@ -280,7 +280,7 @@ namespace LagoVista.GCode.Sender.Application
             }
             else
             {
-                MessageBox.Show("Please Create a Project PCB->New Project and Assign an Eagle Board File.");
+                MessageBox.Show("Please Create or Edit a Project PCB->New Project and Assign an Eagle Board File.");
             }
         }
 
@@ -300,6 +300,11 @@ namespace LagoVista.GCode.Sender.Application
 
         private void EditPCBProject_Click(object sender, RoutedEventArgs e)
         {
+            if(ViewModel.Project == null)
+            {
+                MessageBox.Show("Please Open or Create a Project First.");
+                return;
+            }
             var clonedProject = ViewModel.Project.Clone();
             var vm = new PCBProjectViewModel(clonedProject);
 

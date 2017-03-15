@@ -128,22 +128,22 @@
                         <RowDefinition Height="auto" />
                         <RowDefinition Height="auto" />
                         <RowDefinition Height="50*" />
-                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="30" />
                         <RowDefinition Height="50*" />
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="45*" />
+                        <ColumnDefinition Width="30*" />
                         <ColumnDefinition Width="10*" />
-                        <ColumnDefinition Width="45*" />
+                        <ColumnDefinition Width="60*" />
                     </Grid.ColumnDefinitions>
 
                     <TextBlock Margin="4" Text="The Full List includes all the drill sizes as specified by the Eagle parts list.  In some cases if the difference is minor, it may make sense to combine drills to eliminate drill changes"  TextWrapping="Wrap" Grid.ColumnSpan="3" />
                     <Label Content="Drill Rack from Eagle"  Grid.Row="1"/>
 
-                    <ListBox x:Name="FullDrillIst" ItemsSource="{Binding Path=PCB.OriginalToolRack}" Grid.Row="2" Grid.RowSpan="3" Margin="4">
+                    <ListBox x:Name="FullDrillIst" ItemsSource="{Binding Path=PCB.OriginalToolRack}" Grid.Row="2" Grid.RowSpan="3" Margin="4" AllowDrop="True" Drop="FullDrillIst_Drop" >
                         <ListBox.ItemTemplate>
                             <DataTemplate>
-                                <Grid>
+                                <Grid MouseMove="SourceBitsGrid_MouseMove">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="40" />
                                         <ColumnDefinition Width="40" />
@@ -152,17 +152,27 @@
                                     <TextBlock Text="{Binding ToolName}" Grid.Column="0" />
                                     <TextBlock Text="{Binding Diameter, StringFormat=0.00}" TextAlignment="Right" Grid.Column="1" />
                                     <TextBlock Text="mm" Margin="4,0,0,0" Grid.Column="2" />
-                                    
+
                                 </Grid>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
                     </ListBox>
 
                     <Label Content="Consolidated Drill Rack"  Grid.Row="1" Grid.Column="2"/>
-                    <ListBox x:Name="ConsolidatedDrillRick" ItemsSource="{Binding Path=PCB.OriginalToolRack}" Grid.Row="2" Grid.Column="2" Margin="4">
+                    <Button Content="+" x:Name="AddConsolidatedDril" Click="AddConsolidatedDrill_Click" HorizontalAlignment="Right" Grid.Column="2" Grid.Row="1" Margin="0,0,4,0" Width="24" />
+                    <ListBox x:Name="ConsolidatedDrillRack" ItemsSource="{Binding Path=Project.ConsolidatedDrillRack}" Grid.Row="2" Grid.Column="2" Margin="4" SelectedItem="{Binding ConsolidatedDrillBit}" >
                         <ListBox.ItemTemplate>
                             <DataTemplate>
-                                <Grid>
+                                <TextBlock Text="{Binding Display, FallbackValue=TS01 0.3 33}" Grid.Column="0" x:Name="ConsolidatedDrillBitItem" MouseDown="ConsolidatedDrillBitItem_MouseDown" />
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+
+                    <Label Content="{Binding Path=ConsolidatedDrillBit.Title}"  Grid.Row="3" Grid.Column="2" />
+                    <ListBox x:Name="ConsolidatedDrills" ItemsSource="{Binding Path=ConsolidatedDrillBit.Bits}" Grid.Column="2" Grid.Row="4" Margin="4" AllowDrop="True" Drop="ConsolidatedDrills_Drop" >
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Grid MouseMove="ConsolidatedBitsGrid_MouseMove">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="40" />
                                         <ColumnDefinition Width="40" />
@@ -171,12 +181,10 @@
                                     <TextBlock Text="{Binding ToolName}" Grid.Column="0" />
                                     <TextBlock Text="{Binding Diameter, StringFormat=0.00}" TextAlignment="Right" Grid.Column="1" />
                                     <TextBlock Text="mm" Margin="4,0,0,0" Grid.Column="2" />
-
                                 </Grid>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
                     </ListBox>
-
                 </Grid>
             </TabItem>
 
@@ -255,9 +263,9 @@
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="80" />
                     </Grid.ColumnDefinitions>
-                  
+
                     <TextBlock Grid.ColumnSpan="3" Margin="4" Text="Hold Downs are extra holes drilled in the PCB Stock, usually on the Scrap portion that hold the PCB down durring drilling and milling operations" TextWrapping="Wrap" />
-                    
+
                     <Label Content="Hole Diameter" Grid.Row="1" />
                     <ctls:MaskingTextBox  Min="0" Max="99" Grid.Column="1" Grid.Row="1" Text="{Binding Path=Project.HoldDownDiameter, Mode=TwoWay}" ToolTip="The diameter that will be drilled in the PCB to allow a screw or mounting post to be passed through it and into underlying material." Margin="4,4,0,4" />
                     <Label Content="mm" Grid.Column="2" Grid.Row="1" />
@@ -266,7 +274,7 @@
                     <Label Content="Drill Diameter" Grid.Row="2" />
                     <ctls:MaskingTextBox  Min="0" Max="99" Grid.Column="1" Grid.Row="2" Text="{Binding Path=Project.HoldDownDrillDiameter, Mode=TwoWay}" ToolTip="The diameter that will be drilled into the underlying material.  This will often be less than the Hold Diameter to allow the threads to grab into the material.  If this is the same as the Hole Diameter, only one drill operation will be generated and no tool change will be required" Margin="4,4,0,4" />
                     <Label Content="mm" Grid.Column="2" Grid.Row="2" />
-                    
+
                     <Label Content="Drill Depth" Grid.Row="3" />
                     <ctls:MaskingTextBox  Min="0" Max="99" Grid.Column="1" Grid.Row="3" Text="{Binding Path=Project.HoldDownDrillDepth, Mode=TwoWay}" ToolTip="The depth into the underlying material that will be drilled.  This is how far below the PCB into the underlying materil will be drilled to allow a post or scew to be inserted." Margin="4,4,0,4" />
                     <Label Content="mm" Grid.Column="2" Grid.Row="3" />
