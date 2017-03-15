@@ -15,8 +15,19 @@ namespace LagoVista.EaglePCB.Models
 
         private string _currentFileName;
 
-        public double ScrapSides { get; set; }
-        public double ScrapTopBottom { get; set; }
+        private double _scrapSides;
+        public double ScrapSides
+        {
+            get { return _scrapSides; }
+            set { Set(ref _scrapSides, value); }
+        }
+
+        private double _scrapTopBottom;
+        public double ScrapTopBottom 
+        {
+            get { return _scrapTopBottom; }
+            set { Set(ref _scrapTopBottom, value); }
+        }
 
         private string _eagleBRDFilePath;
         public string EagleBRDFilePath
@@ -39,6 +50,10 @@ namespace LagoVista.EaglePCB.Models
             set { Set(ref _bottomEtchingFilePath, value); }
         }
 
+        public double HoldDownDiameter { get; set; }
+        public double HoldDownDrillDiameter { get; set; }
+        public double HoldDownDrillDepth { get; set; }
+        public double HoldDownBoardOffset { get; set; }
 
         public double StockWidth { get; set; }
         public double StockHeight { get; set; }
@@ -106,6 +121,10 @@ namespace LagoVista.EaglePCB.Models
                     PauseForToolChange = false,
                     StockWidth = 100,
                     StockHeight = 80,
+                    HoldDownBoardOffset = 3,
+                    HoldDownDiameter = 3,
+                    HoldDownDrillDiameter = 2,
+                    HoldDownDrillDepth = 5,
                     DrillSpindleDwell = 3,
                     DrillSpindleRPM = 20000,
                     DrillPlungeRate = 200,

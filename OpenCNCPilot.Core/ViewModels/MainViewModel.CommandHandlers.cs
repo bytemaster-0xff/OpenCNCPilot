@@ -106,6 +106,16 @@ namespace LagoVista.GCode.Sender.ViewModels
             Machine.GCodeFileManager.CloseFileAsync();
         }
 
+        public void ProbeHeightMap()
+        {
+
+        }
+
+        public async void GenerateHoldDownGCode()
+        {
+            var drillIntoUnderlayment = await Popups.ConfirmAsync("Drill Holes In Underlayment?", "Would you also like to drill the holes in the underlayment?  You only need to use this once when setting up a fixture.  After that you should use the holes that were already created.");
+            Machine.GCodeFileManager.SetGCode(GCodeEngine.CreateHoldDownGCode(Machine.PCBManager.Board, Machine.PCBManager.Project, drillIntoUnderlayment));
+        }
 
         public void GenerateMillingGCode()
         {
@@ -115,6 +125,16 @@ namespace LagoVista.GCode.Sender.ViewModels
         public void GenerateDrillGCode()
         {
             Machine.GCodeFileManager.SetGCode(GCodeEngine.CreateDrillGCode(Machine.PCBManager.Board, Machine.PCBManager.Project));
+        }
+
+        public void ShowTopEtchingGCode()
+        {
+
+        }
+
+        public void ShowBottomEtchingGCode()
+        {
+
         }
     }
 }

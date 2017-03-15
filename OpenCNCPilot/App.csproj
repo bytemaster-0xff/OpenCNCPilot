@@ -72,6 +72,9 @@
       <HintPath>..\packages\LagoVista.Core.WPF.0.8.100-alpha00722\lib\451\LagoVista.Core.WPF.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Markdown.Xaml">
+      <HintPath>..\Lib\Markdown.Xaml.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
@@ -139,6 +142,9 @@
     <Compile Include="GCodeWindow.xaml.cs">
       <DependentUpon>GCodeWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Help\HelpWindow.xaml.cs">
+      <DependentUpon>HelpWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MachineVision.xaml.cs">
       <DependentUpon>MachineVision.xaml</DependentUpon>
     </Compile>
@@ -199,6 +205,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="GCodeWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Help\HelpWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -268,6 +278,7 @@
     <None Include="App.config">
       <DependentUpon>App.xaml</DependentUpon>
     </None>
+    <None Include="Help\PCBProject.md" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

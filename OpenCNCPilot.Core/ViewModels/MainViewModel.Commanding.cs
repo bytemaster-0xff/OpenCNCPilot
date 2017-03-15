@@ -15,8 +15,14 @@ namespace LagoVista.GCode.Sender.ViewModels
             ArcToLineCommand = new RelayCommand(ArcToLine, CanConvertArcToLine);
             ApplyHeightMapCommand = new RelayCommand(ApplyHeightMap, CanApplyHeightMap);
 
-            GenerateMillingGCodeCommand = new RelayCommand(GenerateMillingGCode, CanGenerateGCode);
-            GeneateDrillGCodeCommand = new RelayCommand(GenerateDrillGCode, CanGenerateGCode);
+            StartProbeHeightMapCommand = new RelayCommand(ProbeHeightMap);
+
+            ShowCutoutMillingGCodeCommand = new RelayCommand(GenerateMillingGCode, CanGenerateGCode);
+            ShowDrillGCodeCommand = new RelayCommand(GenerateDrillGCode, CanGenerateGCode);
+            ShowHoldDownGCodeCommand = new RelayCommand(GenerateHoldDownGCode, CanGenerateGCode);
+
+            ShowTopEtchingGCodeCommand = new RelayCommand(ShowTopEtchingGCode, CanGenerateTopEtchingGCode);
+            ShowBottomEtchingGCodeCommand = new RelayCommand(ShowBottomEtchingGCode, CanGenerateBottomEtchingGCode);
 
             SetMetricUnitsCommand = new RelayCommand(SetMetricUnits, CanChangeUnits);
             SetImperialUnitsCommand = new RelayCommand(SetImperialUnits, CanChangeUnits);
@@ -37,8 +43,9 @@ namespace LagoVista.GCode.Sender.ViewModels
             {
                 DispatcherServices.Invoke(() =>
                 {
-                    GenerateMillingGCodeCommand.RaiseCanExecuteChanged();
-                    GeneateDrillGCodeCommand.RaiseCanExecuteChanged();
+                    ShowHoldDownGCodeCommand.RaiseCanExecuteChanged();
+                    ShowDrillGCodeCommand.RaiseCanExecuteChanged();
+                    ShowCutoutMillingGCodeCommand.RaiseCanExecuteChanged();
                 });
             }
         }
@@ -67,6 +74,17 @@ namespace LagoVista.GCode.Sender.ViewModels
         public bool CanGenerateGCode()
         {
             return Machine.PCBManager.HasBoard;
+        }
+
+        public bool CanGenerateTopEtchingGCode()
+        {
+            return true;
+        }
+
+        public bool CanGenerateBottomEtchingGCode()
+        {
+
+            return true;
         }
 
         public bool CanSetPositionMode()
@@ -119,8 +137,13 @@ namespace LagoVista.GCode.Sender.ViewModels
         public RelayCommand ApplyHeightMapCommand { get; private set; }
         public RelayCommand ArcToLineCommand { get; private set; }
 
-        public RelayCommand GenerateMillingGCodeCommand { get; private set; }
-        public RelayCommand GeneateDrillGCodeCommand { get; private set; }
+        public RelayCommand ShowTopEtchingGCodeCommand { get; private set; }
+        public RelayCommand ShowBottomEtchingGCodeCommand { get; private set; }
+
+        public RelayCommand ShowCutoutMillingGCodeCommand { get; private set; }
+        public RelayCommand ShowDrillGCodeCommand { get; private set; }
+        public RelayCommand ShowHoldDownGCodeCommand { get; private set; }
+        public RelayCommand StartProbeHeightMapCommand { get; private set; }
 
     }
 }

@@ -28,11 +28,16 @@
                 <MenuItem Header="Open GCode File" Command="{Binding OpenGCodeFileCommand}" />
                 <MenuItem Header="Close GCode File" Command="{Binding CloseFileCommand}" />
                 <MenuItem  Header="Recent GCode Files" x:Name="RecentGCodeFiles" />
-                <Separator/>
-                <MenuItem Header="Generate Cutout Milling" Command="{Binding GenerateMillingGCodeCommand}" />
-                <MenuItem Header="Generate Drills" Command="{Binding GeneateDrillGCodeCommand}" />
-                <MenuItem Header="Generate Etching (PCBGCODE)" x:Name="PCB2GCode" Click="PCB2GCode_Click" />
-
+                <Separator />
+                    <MenuItem Header="Generate Etching (PCBGCode)" x:Name="PCB2GCode" Click="PCB2GCode_Click" />
+                <Separator />
+                <MenuItem Header="PCB Hold Down" Command="{Binding ShowHoldDownGCodeCommand}" />
+                <MenuItem Header="Drills" Command="{Binding ShowDrillGCodeCommand}" />
+                <MenuItem Header="Probe Height Map" Command="{Binding ShowCutoutMillingGCodeCommand}" />
+                <MenuItem Header="Cutout Milling" Command="{Binding ShowCutoutMillingGCodeCommand}" />
+                <MenuItem Header="Top Etching" Command="{Binding ShowTopEtchingCommand}" />
+                <MenuItem Header="Bottom Etching" Command="{Binding ShowBottomEtchingCommand}" />
+              
             </MenuItem>
             <MenuItem Header="PCB" >
                 <MenuItem Header="New Project" x:Name="NewPCBProject" Click="NewPCBProject_Click" />

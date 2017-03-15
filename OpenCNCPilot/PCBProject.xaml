@@ -185,6 +185,41 @@
                     <Label Content="mm" Grid.Column="2" Grid.Row="0" />
                 </Grid>
             </TabItem>
+            <TabItem Header="Hold Down">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="140" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="80" />
+                    </Grid.ColumnDefinitions>
+                  
+                    <TextBlock Grid.ColumnSpan="3" Margin="4" Text="Hold Downs are extra holes drilled in the PCB Stock, usually on the Scrap portion that hold the PCB down durring drilling and milling operations" TextWrapping="Wrap" />
+                    
+                    <Label Content="Hole Diameter" Grid.Row="1" />
+                    <ctls:MaskingTextBox  Min="0" Max="99" Grid.Column="1" Grid.Row="1" Text="{Binding Path=Project.HoldDownDiameter, Mode=TwoWay}" ToolTip="The diameter that will be drilled in the PCB to allow a screw or mounting post to be passed through it and into underlying material." Margin="4,4,0,4" />
+                    <Label Content="mm" Grid.Column="2" Grid.Row="1" />
+
+
+                    <Label Content="Drill Diameter" Grid.Row="2" />
+                    <ctls:MaskingTextBox  Min="0" Max="99" Grid.Column="1" Grid.Row="2" Text="{Binding Path=Project.HoldDownDrillDiameter, Mode=TwoWay}" ToolTip="The diameter that will be drilled into the underlying material.  This will often be less than the Hold Diameter to allow the threads to grab into the material.  If this is the same as the Hole Diameter, only one drill operation will be generated and no tool change will be required" Margin="4,4,0,4" />
+                    <Label Content="mm" Grid.Column="2" Grid.Row="2" />
+                    
+                    <Label Content="Drill Depth" Grid.Row="3" />
+                    <ctls:MaskingTextBox  Min="0" Max="99" Grid.Column="1" Grid.Row="3" Text="{Binding Path=Project.HoldDownDrillDepth, Mode=TwoWay}" ToolTip="The depth into the underlying material that will be drilled.  This is how far below the PCB into the underlying materil will be drilled to allow a post or scew to be inserted." Margin="4,4,0,4" />
+                    <Label Content="mm" Grid.Column="2" Grid.Row="3" />
+
+                    <Label Content="Board Offset" Grid.Row="4" />
+                    <ctls:MaskingTextBox  Min="0" Max="99" Grid.Column="1" Grid.Row="4" Text="{Binding Path=Project.HoldDownBoardOffset, Mode=TwoWay}" ToolTip="The distance offset from the board edges to the center of the drill hold for the hold down holes." Margin="4,4,0,4" />
+                    <Label Content="mm" Grid.Column="2" Grid.Row="4" />
+                </Grid>
+            </TabItem>
             <TabItem Header="Fiducial" >
                 <Grid>
                     <Grid.RowDefinitions>
@@ -195,7 +230,7 @@
                         <RowDefinition Height="50*" />
                     </Grid.RowDefinitions>
 
-                    <TextBlock Text="Fiducials are know locations on your board and are used to accurately position the tool using camera.  Fiducials are pulled from the Hole Layer (45) for any holes that are greather than 2mm.  These are generally the mounting holes on the outside of the board.  You should select at a minimum 3 holes.  The one closest to the bottom left will be useds as the primary location. "  TextWrapping="Wrap" />
+                    <TextBlock Margin="4" Text="Fiducials are know locations on your board and are used to accurately position the tool using camera.  Fiducials are pulled from the Hole Layer (45) for any holes that are greather than 2mm.  These are generally the mounting holes on the outside of the board.  You should select at a minimum 3 holes.  The one closest to the bottom left will be useds as the primary location. "  TextWrapping="Wrap" />
                     <Label Content="Available"  Grid.Row="1"/>
                     <ListBox x:Name="FiducialList" ItemsSource="{Binding Path=Project.FiducialOptions}" Grid.Row="2">
                         <ListBox.ItemTemplate>
