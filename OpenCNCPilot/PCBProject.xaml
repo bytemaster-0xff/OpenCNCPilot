@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:LagoVista.GCode.Sender.Application"
         xmlns:ctls="clr-namespace:LagoVista.GCode.Sender.Application.Controls"
         mc:Ignorable="d"
-        Title="PCBProject" Height="500" Width="500">
+        Title="PCBProject" Height="480" Width="640">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
@@ -50,11 +50,11 @@
                     <Button Content="..." Grid.Row="2" Width="30" HorizontalAlignment="Left" Grid.Column="2" Margin="0,4,4,4" Command="{Binding OpenBottomEtchingCommand}"/>
 
                     <Label Content="Scrap Sides" Grid.Row="3" />
-                    <ctls:MaskingTextBox  UnitType="Size" Min="0" Max="99" Text="{Binding Path=Project.Scrap, Mode=TwoWay}" ToolTip="The bottom and left margin from the origin to the PCB area.  The board edges will be milled from the scrap area." Margin="4,4,0,4" Grid.Column="1" Grid.Row="3" />
+                    <ctls:MaskingTextBox  UnitType="Size" Min="0" Max="99" Text="{Binding Path=Project.ScrapSides, Mode=TwoWay}" ToolTip="The bottom and left margin from the origin to the PCB area.  The board edges will be milled from the scrap area." Margin="4,4,0,4" Grid.Column="1" Grid.Row="3" />
                     <Label Content="mm" Grid.Column="2" Grid.Row="3" />
 
                     <Label Content="Scrap Top/Bottom" Grid.Row="4" />
-                    <ctls:MaskingTextBox  UnitType="Size" Min="0" Max="99" Text="{Binding Path=Project.Scrap, Mode=TwoWay}" ToolTip="The bottom and left margin from the origin to the PCB area.  The board edges will be milled from the scrap area." Margin="4,4,0,4" Grid.Column="1" Grid.Row="4" />
+                    <ctls:MaskingTextBox  UnitType="Size" Min="0" Max="99" Text="{Binding Path=Project.ScrapTopBottom, Mode=TwoWay}" ToolTip="The bottom and left margin from the origin to the PCB area.  The board edges will be milled from the scrap area." Margin="4,4,0,4" Grid.Column="1" Grid.Row="4" />
                     <Label Content="mm" Grid.Column="2" Grid.Row="4" />
 
 
