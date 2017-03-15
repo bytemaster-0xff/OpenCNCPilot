@@ -35,6 +35,33 @@ namespace LagoVista.EaglePCB.Models
             }
         }
 
+        public List<DrillBit> OriginalToolRack
+        {
+            get
+            {
+                /* Probably get this down to about 25% of the lines w/ effective linq...in a hurry KDW 2017-03-15 */
+                var drills = Drills.GroupBy(drl => drl.Diameter);
+                var bits = new List<DrillBit>();
+                var toolIndex = 1;
+
+                foreach (var drill in drills)
+                {
+                    bits.Add(new DrillBit()
+                    {
+                        Diameter = drill.First().Diameter,
+                    });
+                }
+
+                var orderedBits = bits.OrderBy(drl=>drl.Diameter).ToList();
+                foreach(var bit in orderedBits)
+                {
+                    bit.ToolName = $"T{toolIndex++:00}";
+                }
+
+                return orderedBits;
+            }
+        }
+
         public List<Hole> Holes
         {
             get { return Layers.Where(layer => layer.Number == 45).FirstOrDefault().Holes; }

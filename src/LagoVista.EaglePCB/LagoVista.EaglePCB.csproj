@@ -42,6 +42,7 @@
     <Compile Include="Models\Component.cs" />
     <Compile Include="Models\ContactRef.cs" />
     <Compile Include="Models\Drill.cs" />
+    <Compile Include="Models\DrillBit.cs" />
     <Compile Include="Models\PCBProject.cs" />
     <Compile Include="Models\Fiducial.cs" />
     <Compile Include="Models\Hole.cs" />

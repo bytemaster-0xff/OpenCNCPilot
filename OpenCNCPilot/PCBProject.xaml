@@ -36,7 +36,6 @@
                         <ColumnDefinition Width="80" />
                     </Grid.ColumnDefinitions>
 
-
                     <Label Content="Eagle Board File" />
                     <ctls:MaskingTextBox Text="{Binding Path=Project.EagleBRDFilePath, Mode=TwoWay}" Grid.Column="1" Margin="4,4,0,4" />
                     <Button Content="..." Width="30" HorizontalAlignment="Left" Grid.Column="2" Margin="0,4,4,4" Command="{Binding OpenEagleBoardCommand}" />
@@ -122,8 +121,65 @@
                     <Label Content="Use Tool Change Process" Grid.Row="5" />
                     <CheckBox Grid.Column="1" Grid.Row="5" IsChecked="{Binding Project.PauseForToolChange, Mode=TwoWay}" VerticalAlignment="Center" Margin="4" ToolTip="Perform a process on Tool Change where Machine is Stopped, move to a Safe Hope Position and Probed." />
                 </Grid>
-
             </TabItem>
+            <TabItem Header="Drill Rack">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="50*" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="50*" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="45*" />
+                        <ColumnDefinition Width="10*" />
+                        <ColumnDefinition Width="45*" />
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Margin="4" Text="The Full List includes all the drill sizes as specified by the Eagle parts list.  In some cases if the difference is minor, it may make sense to combine drills to eliminate drill changes"  TextWrapping="Wrap" Grid.ColumnSpan="3" />
+                    <Label Content="Drill Rack from Eagle"  Grid.Row="1"/>
+
+                    <ListBox x:Name="FullDrillIst" ItemsSource="{Binding Path=PCB.OriginalToolRack}" Grid.Row="2" Grid.RowSpan="3" Margin="4">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="40" />
+                                        <ColumnDefinition Width="40" />
+                                        <ColumnDefinition Width="40" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="{Binding ToolName}" Grid.Column="0" />
+                                    <TextBlock Text="{Binding Diameter, StringFormat=0.00}" TextAlignment="Right" Grid.Column="1" />
+                                    <TextBlock Text="mm" Margin="4,0,0,0" Grid.Column="2" />
+                                    
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+
+                    <Label Content="Consolidated Drill Rack"  Grid.Row="1" Grid.Column="2"/>
+                    <ListBox x:Name="ConsolidatedDrillRick" ItemsSource="{Binding Path=PCB.OriginalToolRack}" Grid.Row="2" Grid.Column="2" Margin="4">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="40" />
+                                        <ColumnDefinition Width="40" />
+                                        <ColumnDefinition Width="40" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="{Binding ToolName}" Grid.Column="0" />
+                                    <TextBlock Text="{Binding Diameter, StringFormat=0.00}" TextAlignment="Right" Grid.Column="1" />
+                                    <TextBlock Text="mm" Margin="4,0,0,0" Grid.Column="2" />
+
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+
+                </Grid>
+            </TabItem>
+
             <TabItem Header="Mill Cutout">
                 <Grid>
                     <Grid.RowDefinitions>
