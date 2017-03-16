@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace LagoVista.EaglePCB.Models
 {
-    public class DrillBit 
+    public class DrillRackInfo
     {
-        public string ToolName { get; set; }
+        public string DrillName { get; set; }
         public double Diameter { get; set; }
+        public int DrillCount { get; set; }
     }
 }

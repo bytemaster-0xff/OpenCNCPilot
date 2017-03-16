@@ -1,6 +1,6 @@
 ﻿using LagoVista.EaglePCB.Models;
 using System;
-
+using System.Collections.Generic;
 
 namespace LagoVista.GCode.Sender.Managers
 {
@@ -13,6 +13,9 @@ namespace LagoVista.GCode.Sender.Managers
             set
             {
                 _board = value;
+                DrillRack = LagoVista.EaglePCB.Managers.GCodeEngine.GetToolRack(_board, Project);
+                RaisePropertyChanged(nameof(DrillRack));
+
                 RaisePropertyChanged();
                 RaisePropertyChanged(nameof(HasBoard));
             }
@@ -46,6 +49,8 @@ namespace LagoVista.GCode.Sender.Managers
                 }
             }
         }
+
+        public List<DrillRackInfo> DrillRack { get; private set; }
 
         public bool HasProject
         {

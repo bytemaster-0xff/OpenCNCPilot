@@ -13,8 +13,8 @@ namespace LagoVista.GCode.Sender.Managers
             {
                 var doc = XDocument.Load(path);
 
-                this.Board = EaglePCB.Managers.EagleParser.ReadPCB(doc);
-
+                Board = EaglePCB.Managers.EagleParser.ReadPCB(doc);
+        
                 return Task.FromResult(true);
             }
             catch(Exception)

@@ -1,6 +1,7 @@
 ﻿using LagoVista.EaglePCB.Models;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,6 +10,76 @@ namespace LagoVista.EaglePCB.Managers
 {
     public class GCodeEngine
     {
+        /* Find the replacement bit that shoud be used */
+        private static DrillBit GetConsolidated(Drill drill, ObservableCollection<ConsolidatedDrillBit> consolidatedBits)
+        {
+            foreach (var consolidatedBit in consolidatedBits)
+            {
+                foreach (var bit in consolidatedBit.Bits)
+                {
+                    if (bit.Diameter == drill.Diameter)
+                    {
+                        return new DrillBit()
+                        {
+                            Diameter = consolidatedBit.Diameter,
+                            ToolName = consolidatedBit.NewToolName
+                        };
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        public static List<DrillRackInfo> GetToolRack(EaglePCB.Models.PCB pcb, PCBProject pcbProject)
+        {
+            if (pcbProject.PauseForToolChange)
+            {
+                var allDrills = pcb.Drills.ToList();
+
+                var modifiedDrills = new List<Drill>();
+                foreach (var drill in allDrills)
+                {
+                    var modifiedDrill = new Drill()
+                    {
+                        X = drill.X,
+                        Y = drill.Y,
+                    };
+
+                    var consolidatedBit = GetConsolidated(drill, pcbProject.ConsolidatedDrillRack);
+                    modifiedDrill.Name = consolidatedBit == null ? drill.Name : consolidatedBit.ToolName;
+                    modifiedDrill.Diameter = consolidatedBit == null ? drill.Diameter : consolidatedBit.Diameter;
+
+                    modifiedDrills.Add(modifiedDrill);
+                }
+
+                var tools = modifiedDrills.GroupBy(drl => drl.Diameter);
+
+                return (from tool
+                         in tools
+                        orderby tool.First().Diameter
+                        select new DrillRackInfo()
+                        {
+                            Diameter = tool.First().Diameter,
+                            DrillCount = tool.Count(),
+                            DrillName = tool.First().Name
+                        }).ToList();
+            }
+            else
+            {
+                return (from tool
+                         in pcb.Drills.GroupBy(drl => drl.Diameter)
+                        orderby tool.First().Diameter
+                        select new DrillRackInfo()
+                        {
+                            Diameter = tool.First().Diameter,
+                            DrillCount = tool.Count(),
+                            DrillName = tool.First().Name
+                        }).ToList();
+            }
+        }
+
+
         public static string CreateDrillGCode(EaglePCB.Models.PCB pcb, PCBProject pcbProject)
         {
             var bldr = new StringBuilder();
@@ -19,24 +90,57 @@ namespace LagoVista.EaglePCB.Managers
             bldr.AppendLine("G90");
             bldr.AppendLine("M05");
 
-            var allDrills = pcb.Drills.ToList();
-
-            var tools = pcb.Drills.GroupBy(drl => drl.Diameter);
-            foreach (var tool in tools)
+            if (pcbProject.PauseForToolChange)
             {
-                if (pcbProject.PauseForToolChange)
+                var allDrills = pcb.Drills.ToList();
+
+                var modifiedDrills = new List<Drill>();
+                foreach (var drill in allDrills)
                 {
-                    bldr.AppendLine("M05");
-                    bldr.AppendLine($"G0 Z{pcbProject.DrillSafeHeight.ToDim()}");
-                    bldr.AppendLine($"M06 {tool.First().Diameter.ToDim()}");
-                    bldr.AppendLine($"G0 Z{pcbProject.DrillSafeHeight.ToDim()}");
-                    bldr.AppendLine($"G00 X0.0000 Y0.0000");
-                    bldr.AppendLine("M03");
-                    bldr.AppendLine($"S{pcbProject.DrillSpindleRPM}");
-                    bldr.AppendLine($"G04 {pcbProject.DrillSpindleDwell}");
+                    var modifiedDrill = new Drill()
+                    {
+                        X = drill.X,
+                        Y = drill.Y,
+                    };
+
+                    var consolidatedBit = GetConsolidated(drill, pcbProject.ConsolidatedDrillRack);
+                    modifiedDrill.Name = consolidatedBit == null ? drill.Name : consolidatedBit.ToolName;
+                    modifiedDrill.Diameter = consolidatedBit == null ? drill.Diameter : consolidatedBit.Diameter;
+
+                    modifiedDrills.Add(modifiedDrill);
                 }
 
-                foreach (var drill in tool)
+                var tools = modifiedDrills.GroupBy(drl => drl.Diameter);
+
+                /* Should be OK to do first here */
+                foreach (var tool in tools.OrderBy(tl => tl.First().Diameter))
+                {
+                    if (pcbProject.PauseForToolChange)
+                    {
+                        bldr.AppendLine("M05");
+                        bldr.AppendLine($"G0 Z{pcbProject.DrillSafeHeight.ToDim()}");
+                        bldr.AppendLine($"M06 {tool.First().Diameter.ToDim()}");
+                        bldr.AppendLine($"G0 Z{pcbProject.DrillSafeHeight.ToDim()}");
+                        bldr.AppendLine($"G00 X0.0000 Y0.0000");
+                        bldr.AppendLine("M03");
+                        bldr.AppendLine($"S{pcbProject.DrillSpindleRPM}");
+                        bldr.AppendLine($"G04 {pcbProject.DrillSpindleDwell}");
+                    }
+
+                    foreach (var drill in tool.OrderBy(drl => drl.X).ThenBy(drl => drl.Y))
+                    {
+                        bldr.AppendLine($"G00 X{(drill.X + pcbProject.ScrapSides).ToDim()} Y{(drill.Y + pcbProject.ScrapTopBottom).ToDim()})");
+                        bldr.AppendLine($"G01 Z0 F{pcbProject.SafePlungeRecoverRate}");
+                        bldr.AppendLine($"G01 Z-{pcbProject.StockThickness.ToDim()} FS{pcbProject.DrillPlungeRate}");
+                        bldr.AppendLine($"G01 Z{pcbProject.DrillSafeHeight} F{pcbProject.SafePlungeRecoverRate}");
+                    }
+                }
+            }
+            else
+            {
+                var allDrills = pcb.Drills.OrderBy(drl => drl.X).ThenBy(drl => drl.Y);
+
+                foreach (var drill in allDrills)
                 {
                     bldr.AppendLine($"G00 X{(drill.X + pcbProject.ScrapSides).ToDim()} Y{(drill.Y + pcbProject.ScrapTopBottom).ToDim()})");
                     bldr.AppendLine($"G01 Z0 F{pcbProject.SafePlungeRecoverRate}");
@@ -214,23 +318,23 @@ namespace LagoVista.EaglePCB.Managers
                 while (depth > -pcbProject.StockThickness)
                 {
                     depth = Math.Min(depth, pcbProject.StockThickness);
-                    bldr.AppendLine($"G01 Z{depth.ToDim()} F{pcbProject.MillPlungeRate}");   
+                    bldr.AppendLine($"G01 Z{depth.ToDim()} F{pcbProject.MillPlungeRate}");
 
-                    bldr.AppendLine($"G00 X{(scrapX + (width - radius)).ToDim()} Y{(scrapY - millRadius).ToDim()} F{pcbProject.MillFeedRate}"); 
+                    bldr.AppendLine($"G00 X{(scrapX + (width - radius)).ToDim()} Y{(scrapY - millRadius).ToDim()} F{pcbProject.MillFeedRate}");
 
-                    bldr.AppendLine($"G03 X{(scrapX + (width + millRadius)).ToDim()} Y{(scrapY + radius).ToDim()} R{radius + millRadius}"); 
+                    bldr.AppendLine($"G03 X{(scrapX + (width + millRadius)).ToDim()} Y{(scrapY + radius).ToDim()} R{radius + millRadius}");
 
-                    bldr.AppendLine($"G00 X{(scrapX + (width + millRadius)).ToDim()} Y{(scrapY + (height - radius)).ToDim()}"); 
+                    bldr.AppendLine($"G00 X{(scrapX + (width + millRadius)).ToDim()} Y{(scrapY + (height - radius)).ToDim()}");
 
                     bldr.AppendLine($"G03 X{(scrapX + (width - radius)).ToDim()} Y{(scrapY + (height + millRadius)).ToDim()} R{radius + millRadius}");
 
-                    bldr.AppendLine($"G0 X{(scrapX + radius).ToDim()} Y{(scrapY + (height + millRadius)).ToDim()}"); 
+                    bldr.AppendLine($"G0 X{(scrapX + radius).ToDim()} Y{(scrapY + (height + millRadius)).ToDim()}");
 
                     bldr.AppendLine($"G03 X{(scrapX - millRadius).ToDim()} Y{(scrapY + (height - radius)).ToDim()} R{radius + millRadius}");
 
-                    bldr.AppendLine($"G0 X{(scrapX - millRadius).ToDim()} Y{(scrapY + radius).ToDim()}"); 
+                    bldr.AppendLine($"G0 X{(scrapX - millRadius).ToDim()} Y{(scrapY + radius).ToDim()}");
 
-                    bldr.AppendLine($"G03 X{(scrapX + radius).ToDim()} Y{(scrapY - millRadius).ToDim()} R{radius + millRadius}"); 
+                    bldr.AppendLine($"G03 X{(scrapX + radius).ToDim()} Y{(scrapY - millRadius).ToDim()} R{radius + millRadius}");
 
                     depth -= pcbProject.MillCutDepth;
                 }
