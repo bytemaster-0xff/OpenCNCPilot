@@ -153,11 +153,6 @@ namespace LagoVista.GCode.Sender.ViewModels
 
             foreach(var consolidatedDrill in Project.ConsolidatedDrillRack)
             {
-                if (consolidatedDrill != ConsolidatedDrillBit)
-                {
-                    return null;
-                }
-
                 if (consolidatedDrill != ConsolidatedDrillBit && consolidatedDrill.Bits.Where(bt => bt.ToolName == bit.ToolName).Any())
                 {
                     return consolidatedDrill.NewToolName;

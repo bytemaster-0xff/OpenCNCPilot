@@ -74,18 +74,20 @@
                 </Button>
             </StackPanel>
             <Label Content="Drill Rack" Grid.Row="1" FontWeight="Bold" />
-            <ListBox ItemsSource="{Binding Machine.PCBManager.DrillRack}" Grid.Row="2" Background="Transparent">
+            <ListBox ItemsSource="{Binding Machine.PCBManager.DrillRack}" Margin="4" Grid.Row="2" Background="Transparent">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <Grid>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="80" />
+                                <ColumnDefinition Width="60" />
                                 <ColumnDefinition Width="30" />
+                                <ColumnDefinition Width="20" />
                                 <ColumnDefinition Width="60" />
                             </Grid.ColumnDefinitions>
                             <TextBlock Text="{Binding DrillName}" Foreground="Black" />
-                            <TextBlock Text="{Binding Diameter}" Foreground="Black" Grid.Column="1" />
-                            <TextBlock Text="{Binding DrillCount}" Foreground="Black" Grid.Column="2" />
+                            <TextBlock Text="{Binding Diameter, StringFormat=0.00}" Foreground="Black" TextAlignment="Right" Grid.Column="1" />
+                            <TextBlock Text="mm" Foreground="Black" TextAlignment="Right" Grid.Column="2" />
+                            <TextBlock Text="{Binding DrillCount}" Foreground="Black" Grid.Column="3" TextAlignment="Right" />
                         </Grid>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
@@ -132,6 +134,7 @@
 
         <Grid HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,32,0,0">
             <Grid.RowDefinitions>
+                <RowDefinition Height="32" />
                 <RowDefinition Height="32" />
                 <RowDefinition Height="32" />
                 <RowDefinition Height="32" />
@@ -203,6 +206,7 @@
                     <Image Source="/imgs/Backwards.png" />
                 </Button.Content>
             </Button>
+            <TextBlock Grid.Row="3" Grid.ColumnSpan="4" x:Name="CameraPosition" />
         </Grid>
 
 

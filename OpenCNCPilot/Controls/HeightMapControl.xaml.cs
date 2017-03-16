@@ -107,6 +107,7 @@ namespace LagoVista.GCode.Sender.Application.Controls
             }
 
 
+
             foreach (var element in board.Components)
             {
                 foreach (var pad in element.SMDPads)
@@ -204,12 +205,31 @@ namespace LagoVista.GCode.Sender.Application.Controls
             PCBLayer.Content = modelGroup;
             PCBLayer.Transform = new TranslateTransform3D(scrapX, scrapY, 0);
 
-            if (project != null && _stockVisible)
+            if (project != null)
             {
                 var stockGroup = new Model3DGroup();
-                var stockMeshBuilder = new MeshBuilder(false, false);
-                stockMeshBuilder.AddBox(new Point3D(project.StockWidth / 2, project.StockHeight / 2, -boardThickness / 2), project.StockWidth, project.StockHeight, boardThickness - 0.05);
-                stockGroup.Children.Add(new GeometryModel3D() { Geometry = stockMeshBuilder.ToMesh(true), Material = copperMaterial });
+
+                if (project != null)
+                {
+                    foreach (var circle in board.Holes)
+                    {
+                        var circleMeshBuilder = new MeshBuilder(false, false);
+                        circleMeshBuilder.AddCylinder(new Point3D(project.ScrapSides - project.HoldDownBoardOffset, project.ScrapTopBottom + board.Height / 2, -boardThickness), new Point3D(project.ScrapSides - project.HoldDownBoardOffset, project.ScrapTopBottom + board.Height / 2, 0.01), project.HoldDownDiameter);
+                        circleMeshBuilder.AddCylinder(new Point3D(project.ScrapSides + board.Width + project.HoldDownBoardOffset, project.ScrapTopBottom + board.Height / 2, -boardThickness), new Point3D(project.ScrapSides + board.Width + project.HoldDownBoardOffset, project.ScrapTopBottom + board.Height / 2, 0.01), project.HoldDownDiameter);
+                        circleMeshBuilder.AddCylinder(new Point3D(project.ScrapSides + board.Width / 2, project.ScrapTopBottom + board.Height + project.HoldDownBoardOffset, -boardThickness), new Point3D(project.ScrapSides + board.Width / 2, project.ScrapTopBottom + board.Height + project.HoldDownBoardOffset, 0.01), project.HoldDownDiameter);
+                        circleMeshBuilder.AddCylinder(new Point3D(project.ScrapSides + board.Width / 2, project.ScrapTopBottom - project.HoldDownBoardOffset, -boardThickness), new Point3D(project.ScrapSides + board.Width / 2, project.ScrapTopBottom - project.HoldDownBoardOffset, 0.01), project.HoldDownDiameter);
+                        stockGroup.Children.Add(new GeometryModel3D() { Geometry = circleMeshBuilder.ToMesh(true), Material = blackMaterial });
+                    }
+
+                }
+
+
+                if (_stockVisible)
+                {
+                    var stockMeshBuilder = new MeshBuilder(false, false);
+                    stockMeshBuilder.AddBox(new Point3D(project.StockWidth / 2, project.StockHeight / 2, -boardThickness / 2), project.StockWidth, project.StockHeight, boardThickness - 0.05);
+                    stockGroup.Children.Add(new GeometryModel3D() { Geometry = stockMeshBuilder.ToMesh(true), Material = copperMaterial });
+                }
                 StockLayer.Content = stockGroup;
             }
             else
@@ -302,6 +322,9 @@ namespace LagoVista.GCode.Sender.Application.Controls
 
             Camera.Position = new Point3D(x, y, z);
             Camera.LookDirection = new Vector3D(4, 0.0001, -1.7);
+
+            CameraPosition.Text = $"{Camera.Position.X},{Camera.Position.Y},{Camera.Position.Z}";
+
         }
 
         private void ShowTopView()
@@ -326,14 +349,18 @@ namespace LagoVista.GCode.Sender.Application.Controls
 
 
             var deltaX = maxX - minX;
-            var deltaY = maxY - maxY;
+            var deltaY = maxY - minY;
 
             var x = deltaX / 2 + minX;
             var y = deltaY / 2 + minY;
 
+            if (ViewModel.Machine.PCBManager.HasProject)
+                y += ViewModel.Machine.PCBManager.Project.ScrapTopBottom;
+
             Camera.Position = new Point3D(x, y, 400);
             Camera.LookDirection = new Vector3D(0, 0.0001, -1);
 
+            CameraPosition.Text = $"{Camera.Position.X},{Camera.Position.Y},{Camera.Position.Z}";
         }
 
         private void ShowFrontView()
@@ -356,6 +383,9 @@ namespace LagoVista.GCode.Sender.Application.Controls
 
             Camera.Position = new Point3D(x, y, z);
             Camera.LookDirection = new Vector3D(0.0001, 4, -1.7);
+
+            CameraPosition.Text = $"{Camera.Position.X},{Camera.Position.Y},{Camera.Position.Z}";
+
         }
 
         public bool _stockVisible = true;
@@ -534,6 +564,8 @@ namespace LagoVista.GCode.Sender.Application.Controls
 
                     break;
             }
+
+            CameraPosition.Text = $"{Camera.Position.X},{Camera.Position.Y},{Camera.Position.Z}";
         }
     }
 }
