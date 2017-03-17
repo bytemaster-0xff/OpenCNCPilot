@@ -77,6 +77,8 @@ namespace LagoVista.EaglePCB.Models
         public int MillPlungeRate { get; set; }
         public double MillSafeHeight { get; set; }
 
+        public bool FlipBoard { get; set; }
+
         List<Models.Hole> _fiducualOptions;
         public List<Models.Hole> FiducialOptions
         {
@@ -142,6 +144,9 @@ namespace LagoVista.EaglePCB.Models
                     ScrapTopBottom = 5,
                     ScrapSides = 5,
                     SafePlungeRecoverRate = 500,
+                    FlipBoard = true,
+                    HeightMapGridSize = 10,
+               
                 };
             }
         }

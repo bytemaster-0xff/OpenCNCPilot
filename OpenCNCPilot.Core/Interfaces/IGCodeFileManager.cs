@@ -90,6 +90,13 @@ namespace LagoVista.GCode.Sender.Interfaces
         void ApplyHeightMap(HeightMap map);
 
         /// <summary>
+        /// Move the GCode by X and Y parameters
+        /// </summary>
+        /// <param name="xOffset"></param>
+        /// <param name="yOffset"></param>
+        void ApplyOffset(double xOffset, double yOffset);
+
+        /// <summary>
         /// Processes the file to turn any Arc GCode commands (G2, G3) to line commands (G0, G1) will not modify the source file but will allow the new file to be saved.  The job process will be marked as having a dirty file.
         /// </summary>
         /// <param name="length"></param>

@@ -15,6 +15,28 @@ namespace LagoVista.GCode.Sender.Application.Controls
 {
     public partial class ImageSensorControl
     {
+        public void CornerDetection(VisionProfile profile, Mat img)
+        {
+            var output = new Mat();
+            var outputNormalized = new Mat();
+            var outputNormalizedScaled = new Mat();
+            CvInvoke.CornerHarris(img, output, profile.HarrisCornerBlockSize, profile.HarrisCornerAperture, profile.HarrisCornerK, BorderType.Default);
+            CvInvoke.Normalize(output, outputNormalized, 0, 255, NormType.MinMax, DepthType.Cv32F, null);
+            CvInvoke.ConvertScaleAbs(outputNormalized, outputNormalizedScaled,5,5);
+
+            for (int j = 0; j < outputNormalized.Rows; j++)
+            {
+                for (int i = 0; i < outputNormalized.Cols; i++)
+                {
+                  //  if ((int)outputNormalized.GetData(j,i) > profile.HarrisCornerThreshold)
+                    {
+                     //   circle(outputNormalizedScaled, Point(i, j), 5, Scalar(0), 2, 8, 0);
+                    }
+                }
+            }
+
+        }
+
         public Result PerformShapeDetection(VisionProfile profile, Mat img)
         {
             using (var gray = new Image<Gray, byte>(img.Bitmap))
@@ -50,7 +72,7 @@ namespace LagoVista.GCode.Sender.Application.Controls
 
                 var lines = CvInvoke.HoughLinesP(cannyEdges,profile.HoughLinesRHO, profile.HoughLinesTheta, profile.HoughLinesThreshold, profile.HoughLinesMinLineLength, profile.HoughLinesMaxLineGap);
                 
-
+               
                 List<Triangle2DF> triangleList = new List<Triangle2DF>();
                 List<RotatedRect> boxList = new List<RotatedRect>(); //a box is a rotated rectangle
 
