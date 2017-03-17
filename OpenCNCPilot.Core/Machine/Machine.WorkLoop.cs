@@ -59,7 +59,7 @@ namespace LagoVista.GCode.Sender
         {
             var sendCommand = _jobToSend.Peek();
 
-            _writer.Write(sendCommand.Line);
+            _writer.Write(sendCommand.Line.Trim('\r','\n'));
             _writer.Write('\n');
             _writer.Flush();
 

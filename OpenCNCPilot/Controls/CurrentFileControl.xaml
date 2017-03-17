@@ -63,8 +63,7 @@
                             HorizontalContentAlignment="Stretch" 
                             ItemsSource="{Binding Path=Machine.GCodeFileManager.Commands}"
                             IsHitTestVisible="False" BorderThickness="0"
-                            ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
-                            ScrollViewer.VerticalScrollBarVisibility="Disabled">
+                            ScrollViewer.HorizontalScrollBarVisibility="Disabled" >
 
             <ctls:ListBoxScroll.ItemTemplate>
                 <DataTemplate>

@@ -30,8 +30,7 @@
                  SelectedIndex="{Binding Path=Machine.MessageCount, Mode=OneWay}"
                  ItemsSource="{Binding Path=Machine.Messages}"
                  IsHitTestVisible="False" BorderThickness="0"
-                 ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
-                 ScrollViewer.VerticalScrollBarVisibility="Disabled">
+                 ScrollViewer.HorizontalScrollBarVisibility="Disabled" >
             <ctls:ListBoxScroll.ItemTemplate>
                 <DataTemplate>
                     <Grid Background="{Binding MessageType, Converter={StaticResource MessageTypeBackgroundColorConverter}}" >

@@ -23,7 +23,7 @@ namespace LagoVista.GCode.Sender
 
             if (line.StartsWith("ok"))
             {
-                
+
 
                 if (GCodeFileManager.HasValidFile && Mode == OperatingMode.SendingGCodeFile)
                 {
@@ -73,7 +73,8 @@ namespace LagoVista.GCode.Sender
             {
                 if (line.StartsWith("error:"))
                 {
-                    var errorline = _sentQueue.Dequeue();
+                    var errorline = _sentQueue.Any() ? _sentQueue.Dequeue() : "?????";
+
 
                     var errNumbRegEx = new Regex("error:(?'ErrorCode'-?[0-9\\.]*)?");
 

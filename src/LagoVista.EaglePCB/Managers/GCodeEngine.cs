@@ -83,7 +83,6 @@ namespace LagoVista.EaglePCB.Managers
         public static string CreateDrillGCode(EaglePCB.Models.PCB pcb, PCBProject pcbProject)
         {
             var bldr = new StringBuilder();
-
             bldr.AppendLine("(Metric Mode)");
             bldr.AppendLine("G21");
             bldr.AppendLine("(Absolute Coordinates)");
@@ -124,14 +123,14 @@ namespace LagoVista.EaglePCB.Managers
                         bldr.AppendLine($"G00 X0.0000 Y0.0000");
                         bldr.AppendLine("M03");
                         bldr.AppendLine($"S{pcbProject.DrillSpindleRPM}");
-                        bldr.AppendLine($"G04 {pcbProject.DrillSpindleDwell}");
+                  //      bldr.AppendLine($"G04 {pcbProject.DrillSpindleDwell}");
                     }
 
                     foreach (var drill in tool.OrderBy(drl => drl.X).ThenBy(drl => drl.Y))
                     {
-                        bldr.AppendLine($"G00 X{(drill.X + pcbProject.ScrapSides).ToDim()} Y{(drill.Y + pcbProject.ScrapTopBottom).ToDim()})");
+                        bldr.AppendLine($"G00 X{(drill.X + pcbProject.ScrapSides).ToDim()} Y{(drill.Y + pcbProject.ScrapTopBottom).ToDim()}");
                         bldr.AppendLine($"G01 Z0 F{pcbProject.SafePlungeRecoverRate}");
-                        bldr.AppendLine($"G01 Z-{pcbProject.StockThickness.ToDim()} FS{pcbProject.DrillPlungeRate}");
+                        bldr.AppendLine($"G01 Z-{pcbProject.StockThickness.ToDim()} F{pcbProject.DrillPlungeRate}");
                         bldr.AppendLine($"G01 Z{pcbProject.DrillSafeHeight} F{pcbProject.SafePlungeRecoverRate}");
                     }
                 }
@@ -142,9 +141,9 @@ namespace LagoVista.EaglePCB.Managers
 
                 foreach (var drill in allDrills)
                 {
-                    bldr.AppendLine($"G00 X{(drill.X + pcbProject.ScrapSides).ToDim()} Y{(drill.Y + pcbProject.ScrapTopBottom).ToDim()})");
+                    bldr.AppendLine($"G00 X{(drill.X + pcbProject.ScrapSides).ToDim()} Y{(drill.Y + pcbProject.ScrapTopBottom).ToDim()}");
                     bldr.AppendLine($"G01 Z0 F{pcbProject.SafePlungeRecoverRate}");
-                    bldr.AppendLine($"G01 Z-{pcbProject.StockThickness.ToDim()} FS{pcbProject.DrillPlungeRate}");
+                    bldr.AppendLine($"G01 Z-{pcbProject.StockThickness.ToDim()} F{pcbProject.DrillPlungeRate}");
                     bldr.AppendLine($"G01 Z{pcbProject.DrillSafeHeight} F{pcbProject.SafePlungeRecoverRate}");
                 }
             }
@@ -189,28 +188,28 @@ namespace LagoVista.EaglePCB.Managers
 
             bldr.AppendLine("M03");
             bldr.AppendLine($"S{pcbProject.DrillSpindleRPM}");
-            bldr.AppendLine($"G04 {pcbProject.DrillSpindleDwell}");
+            //bldr.AppendLine($"G04 {pcbProject.DrillSpindleDwell}");
 
             var initialDrillDepth = pcbProject.HoldDownDiameter == pcbProject.HoldDownDrillDiameter && drillIntoUnderlayment ? -pcbProject.HoldDownDrillDepth : -pcbProject.StockThickness;
 
             bldr.AppendLine($"G00 X{leftDrillX.ToDim()} Y{sideDrillY.ToDim()}");
             bldr.AppendLine($"G01 Z0 F{pcbProject.SafePlungeRecoverRate}");
-            bldr.AppendLine($"G01 Z{initialDrillDepth.ToDim()} FS{pcbProject.DrillPlungeRate}");
+            bldr.AppendLine($"G01 Z{initialDrillDepth.ToDim()} F{pcbProject.DrillPlungeRate}");
             bldr.AppendLine($"G01 Z{pcbProject.DrillSafeHeight} F{pcbProject.SafePlungeRecoverRate}");
 
             bldr.AppendLine($"G00 X{topBottomDrillX.ToDim()} Y{topDrillY.ToDim()}");
             bldr.AppendLine($"G01 Z0 F{pcbProject.SafePlungeRecoverRate}");
-            bldr.AppendLine($"G01 Z{initialDrillDepth.ToDim()} FS{pcbProject.DrillPlungeRate}");
+            bldr.AppendLine($"G01 Z{initialDrillDepth.ToDim()} F{pcbProject.DrillPlungeRate}");
             bldr.AppendLine($"G01 Z{pcbProject.DrillSafeHeight} F{pcbProject.SafePlungeRecoverRate}");
 
             bldr.AppendLine($"G00 X{rightDrillX.ToDim()} Y{sideDrillY.ToDim()}");
             bldr.AppendLine($"G01 Z0 F{pcbProject.SafePlungeRecoverRate}");
-            bldr.AppendLine($"G01 Z{initialDrillDepth.ToDim()} FS{pcbProject.DrillPlungeRate}");
+            bldr.AppendLine($"G01 Z{initialDrillDepth.ToDim()} F{pcbProject.DrillPlungeRate}");
             bldr.AppendLine($"G01 Z{pcbProject.DrillSafeHeight} F{pcbProject.SafePlungeRecoverRate}");
 
             bldr.AppendLine($"G00 X{topBottomDrillX.ToDim()} Y{bottomDrillY.ToDim()}");
             bldr.AppendLine($"G01 Z0 F{pcbProject.SafePlungeRecoverRate}");
-            bldr.AppendLine($"G01 Z{initialDrillDepth.ToDim()} FS{pcbProject.DrillPlungeRate}");
+            bldr.AppendLine($"G01 Z{initialDrillDepth.ToDim()} F{pcbProject.DrillPlungeRate}");
             bldr.AppendLine($"G01 Z{pcbProject.DrillSafeHeight} F{pcbProject.SafePlungeRecoverRate}");
 
             if (pcbProject.HoldDownDiameter != pcbProject.HoldDownDrillDiameter && drillIntoUnderlayment)
@@ -223,26 +222,26 @@ namespace LagoVista.EaglePCB.Managers
 
                 bldr.AppendLine("M03");
                 bldr.AppendLine($"S{pcbProject.DrillSpindleRPM}");
-                bldr.AppendLine($"G04 {pcbProject.DrillSpindleDwell}");
+                //bldr.AppendLine($"G04 {pcbProject.DrillSpindleDwell}");
 
                 bldr.AppendLine($"G00 X{leftDrillX.ToDim()} Y{sideDrillY.ToDim()}");
                 bldr.AppendLine($"G01 Z0 F{pcbProject.SafePlungeRecoverRate}");
-                bldr.AppendLine($"G01 Z-{pcbProject.HoldDownDrillDepth.ToDim()} FS{pcbProject.DrillPlungeRate}");
+                bldr.AppendLine($"G01 Z-{pcbProject.HoldDownDrillDepth.ToDim()} F{pcbProject.DrillPlungeRate}");
                 bldr.AppendLine($"G01 Z{pcbProject.DrillSafeHeight} F{pcbProject.SafePlungeRecoverRate}");
 
                 bldr.AppendLine($"G00 X{topBottomDrillX.ToDim()} Y{topDrillY.ToDim()}");
                 bldr.AppendLine($"G01 Z0 F{pcbProject.SafePlungeRecoverRate}");
-                bldr.AppendLine($"G01 Z-{pcbProject.HoldDownDrillDepth.ToDim()} FS{pcbProject.DrillPlungeRate}");
+                bldr.AppendLine($"G01 Z-{pcbProject.HoldDownDrillDepth.ToDim()} F{pcbProject.DrillPlungeRate}");
                 bldr.AppendLine($"G01 Z{pcbProject.DrillSafeHeight} F{pcbProject.SafePlungeRecoverRate}");
 
                 bldr.AppendLine($"G00 X{rightDrillX.ToDim()} Y{sideDrillY.ToDim()}");
                 bldr.AppendLine($"G01 Z0 F{pcbProject.SafePlungeRecoverRate}");
-                bldr.AppendLine($"G01 Z-{pcbProject.HoldDownDrillDepth.ToDim()} FS{pcbProject.DrillPlungeRate}");
+                bldr.AppendLine($"G01 Z-{pcbProject.HoldDownDrillDepth.ToDim()} F{pcbProject.DrillPlungeRate}");
                 bldr.AppendLine($"G01 Z{pcbProject.DrillSafeHeight} F{pcbProject.SafePlungeRecoverRate}");
 
                 bldr.AppendLine($"G00 X{topBottomDrillX.ToDim()} Y{bottomDrillY.ToDim()}");
                 bldr.AppendLine($"G01 Z0 F{pcbProject.SafePlungeRecoverRate}");
-                bldr.AppendLine($"G01 Z-{pcbProject.HoldDownDrillDepth.ToDim()} FS{pcbProject.DrillPlungeRate}");
+                bldr.AppendLine($"G01 Z-{pcbProject.HoldDownDrillDepth.ToDim()} F{pcbProject.DrillPlungeRate}");
                 bldr.AppendLine($"G01 Z{pcbProject.DrillSafeHeight} F{pcbProject.SafePlungeRecoverRate}");
             }
 
@@ -264,7 +263,7 @@ namespace LagoVista.EaglePCB.Managers
 
             bldr.AppendLine("M03");
             bldr.AppendLine($"S{pcbProject.MillSpindleRPM}");
-            bldr.AppendLine($"G04 {pcbProject.MillSpindleDwell}");
+            //bldr.AppendLine($"G04 {pcbProject.MillSpindleDwell}");
 
             double millRadius = pcbProject.MillToolSize / 2;
             double scrapX = pcbProject.ScrapSides;
