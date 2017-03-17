@@ -16,7 +16,6 @@ namespace LagoVista.GCode.Sender.ViewModels
         public bool ShowLines { get; set; } = false;
         public bool ShowHarrisCorners { get; set; } = false;
 
-
         public string PolygonHelp { get { return "http://docs.opencv.org/2.4/doc/tutorials/imgproc/shapedescriptors/bounding_rects_circles/bounding_rects_circles.html?highlight=approxpolydp"; } }
         public string PolygonEpsilonHelp { get { return "Parameter specifying the approximation accuracy. This is the maximum distance between the original curve and its approximation"; } }
 

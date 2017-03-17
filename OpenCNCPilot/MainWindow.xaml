@@ -35,8 +35,8 @@
                 <MenuItem Header="Drills" Command="{Binding ShowDrillGCodeCommand}" />
                 <MenuItem Header="Probe Height Map" Command="{Binding ShowCutoutMillingGCodeCommand}" />
                 <MenuItem Header="Cutout Milling" Command="{Binding ShowCutoutMillingGCodeCommand}" />
-                <MenuItem Header="Top Etching" Command="{Binding ShowTopEtchingCommand}" />
-                <MenuItem Header="Bottom Etching" Command="{Binding ShowBottomEtchingCommand}" />
+                <MenuItem Header="Top Etching" Command="{Binding ShowTopEtchingGCodeCommand}" />
+                <MenuItem Header="Bottom Etching" Command="{Binding ShowBottomEtchingGCodeCommand}" />
               
             </MenuItem>
             <MenuItem Header="PCB" >

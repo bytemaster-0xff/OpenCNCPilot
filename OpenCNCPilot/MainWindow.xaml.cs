@@ -177,11 +177,22 @@ namespace LagoVista.GCode.Sender.Application
         {
             var vm = DataContext as MainViewModel;
 
-            var newHeightMapWindow = new NewHeightMapWindow(this, ViewModel.Machine, false);
-
-            if (newHeightMapWindow.ShowDialog().HasValue && newHeightMapWindow.DialogResult.Value)
+            if (ViewModel.Machine.PCBManager.HasProject && ViewModel.Machine.PCBManager.HasBoard)
             {
-                ViewModel.Machine.HeightMapManager.NewHeightMap(newHeightMapWindow.HeightMap);
+                var heightMap = new HeightMap(ViewModel.Machine, ViewModel.Logger);
+                heightMap.Min = new Core.Models.Drawing.Vector2(ViewModel.Machine.PCBManager.Project.ScrapSides, ViewModel.Machine.PCBManager.Project.ScrapTopBottom);
+                heightMap.Max = new Core.Models.Drawing.Vector2(ViewModel.Machine.PCBManager.Board.Width + ViewModel.Machine.PCBManager.Project.ScrapSides, ViewModel.Machine.PCBManager.Board.Height + ViewModel.Machine.PCBManager.Project.ScrapTopBottom);
+                heightMap.GridSize = ViewModel.Machine.PCBManager.Project.HeightMapGridSize;
+                ViewModel.Machine.HeightMapManager.NewHeightMap(heightMap);
+            }
+            else
+            {
+                var newHeightMapWindow = new NewHeightMapWindow(this, ViewModel.Machine, false);
+
+                if (newHeightMapWindow.ShowDialog().HasValue && newHeightMapWindow.DialogResult.Value)
+                {
+                    ViewModel.Machine.HeightMapManager.NewHeightMap(newHeightMapWindow.HeightMap);
+                }
             }
         }
 

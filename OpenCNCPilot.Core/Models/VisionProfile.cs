@@ -23,24 +23,32 @@ namespace LagoVista.GCode.Sender.Models
             set { _polygonEpsilon = value; RaisePropertyChanged(); }
         }
 
-        private int _harrisCornerApeture = 0;
+        private int _harrisCornerApeture = 3;
         public int HarrisCornerAperture
         {
             get { return _harrisCornerApeture; }
             set { _harrisCornerApeture = value; RaisePropertyChanged(); }
         }
-        private double _harrisCornerBlockSize = 0;
-        public double HarrisCornerBlockSize
+
+        private int _harrisCornerBlockSize = 2;
+        public int HarrisCornerBlockSize
         {
             get { return _harrisCornerBlockSize; }
             set { _harrisCornerBlockSize = value; RaisePropertyChanged(); }
         }
 
-        private int _harrisCornerK = 0;
-        public int HarrisCornerK
+        private double _harrisCornerK = 0.04;
+        public double HarrisCornerK
         {
             get { return _harrisCornerK; }
             set { _harrisCornerK = value; RaisePropertyChanged(); }
+        }
+
+        private int _harrisCornerThreshold = 200;
+        public int HarrisCornerThreshold
+        {
+            get { return _harrisCornerThreshold; }
+            set { _harrisCornerThreshold = value; RaisePropertyChanged(); }
         }
 
         private int _guassianKSize = 5;

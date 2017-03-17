@@ -16,9 +16,12 @@ namespace LagoVista.GCode.Sender.Managers
             Tail = 0;
             _pendingToolChangeLine = null;
 
-            foreach (var cmd in Commands)
+            if (Commands != null)
             {
-                cmd.Status = GCodeCommand.StatusTypes.Ready;
+                foreach (var cmd in Commands)
+                {
+                    cmd.Status = GCodeCommand.StatusTypes.Ready;
+                }
             }
         }
 
@@ -41,6 +44,11 @@ namespace LagoVista.GCode.Sender.Managers
             {
                 _file = map.ApplyHeightMap(_file);
                 IsDirty = true;
+                RaisePropertyChanged(nameof(File));
+                RaisePropertyChanged(nameof(Lines));
+                RaisePropertyChanged(nameof(Arcs));
+                RaisePropertyChanged(nameof(RapidMoves));
+                RenderPaths();
             }
         }
 
@@ -58,6 +66,27 @@ namespace LagoVista.GCode.Sender.Managers
             }
         }
 
+        public void ApplyOffset(double xOffset, double yOffset)
+        {
+            var newToolPath = new List<Core.GCode.Commands.GCodeCommand>();
+
+            foreach (var command in _file.Commands)
+            {
+                var motionCommand = command as GCodeMotion;
+                if(motionCommand != null)
+                { 
+                    motionCommand.Start = new Core.Models.Drawing.Vector3(motionCommand.Start.X + xOffset, motionCommand.Start.Y + yOffset, motionCommand.Start.Z);
+                    motionCommand.End = new Core.Models.Drawing.Vector3(motionCommand.End.X + xOffset, motionCommand.End.Y + yOffset, motionCommand.End.Z);
+                }
+            }
+
+            IsDirty = true;
+            RaisePropertyChanged(nameof(IsDirty));          
+            RaisePropertyChanged(nameof(File));
+            RenderPaths();
+        }
+
+
 
         public void StartJob()
         {
@@ -73,6 +102,6 @@ namespace LagoVista.GCode.Sender.Managers
         public void PauseJob()
         {
 
-        }        
+        }
     }
 }

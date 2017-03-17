@@ -29,9 +29,10 @@
                         <RowDefinition Height="auto" />
                         <RowDefinition Height="auto" />
                         <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="130" />
+                        <ColumnDefinition Width="140" />
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="80" />
                     </Grid.ColumnDefinitions>
@@ -77,8 +78,12 @@
                     <TextBlock Text="{Binding Path=PCB.Height}" Grid.Row="9" Grid.Column="1" />
                     <Label Content="mm" Grid.Column="2" Grid.Row="9" />
 
-                    <Button Grid.Row="10" Grid.Column="1" Content="Center Board" Command="{Binding CenterBoardCommand}" Margin="4" />
-                    <Button Grid.Row="11" Grid.Column="1" Content="Generate Isolation Milling (pcb-gcode)" Command="{Binding GenerateIsolationMillingCommand}" Margin="4" />
+
+                    <Label Content="Mirror (Bottom Etching)" Grid.Row="10" />
+                    <CheckBox IsChecked="{Binding Path=FlipBoard}"  VerticalAlignment="Center"  Grid.Row="10" Grid.Column="1" ToolTip="How to handle bottom etching, if this is checked the board will maintain the XY origin of the bottom left for the bottom etching operation.  If this is unchecked, the board will be mirrored so the the origin will be in negative X space." />
+
+                    <Button Grid.Row="11" Grid.Column="1" Content="Center Board" Command="{Binding CenterBoardCommand}" Margin="4" />
+                    <Button Grid.Row="12" Grid.Column="1" Content="Generate Isolation Milling (pcb-gcode)" Command="{Binding GenerateIsolationMillingCommand}" Margin="4" />
 
                 </Grid>
             </TabItem>

@@ -96,12 +96,15 @@ namespace LagoVista.GCode.Sender
             {
                 if ((Now - _lastPollTime).TotalMilliseconds > Settings.StatusPollIntervalRunning)
                 {
-                    //MachinePosition = GCodeFileManager.CurrentCommand.CurrentPosition;
-                    Enqueue("?", true);
+                    if (Settings.CurrentSerialPort.Name == "Simulated")
+                        MachinePosition = GCodeFileManager.CurrentCommand.CurrentPosition;
+                    else
+                        Enqueue("?", true);
+
                     _lastPollTime = Now;
                 }
             }
-            else if(Mode == OperatingMode.ProbingHeightMap)
+            else if (Mode == OperatingMode.ProbingHeightMap)
             {
                 if ((Now - _lastPollTime).TotalMilliseconds > Settings.StatusPollIntervalRunning)
                 {
