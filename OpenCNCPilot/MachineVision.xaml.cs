@@ -37,7 +37,13 @@ namespace LagoVista.GCode.Sender.Application
             if (!designTime)
             {
                 ViewModel = new MachineVisionViewModel(machine);
+                this.Loaded += MachineVision_Loaded;                
             }
+        }
+
+        private  async void MachineVision_Loaded(object sender, RoutedEventArgs e)
+        {
+            await ViewModel.InitAsync();
         }
 
         public Result PerformShapeDetection(VisionProfile vm, Mat img)
@@ -54,8 +60,8 @@ namespace LagoVista.GCode.Sender.Application
                     k += 1;
                 }
 
-                CvInvoke.GaussianBlur(gray, blurredGray, new System.Drawing.Size(vm.GaussianKSize, vm.GaussianKSize), vm.GaussianSigmaX);
-                WebCamImage.Source = Emgu.CV.WPF.BitmapSourceConvert.ToBitmapSource(blurredGray);
+                CvInvoke.GaussianBlur(gray, blurredGray, System.Drawing.Size.Empty, vm.GaussianSigmaX);
+                
 
                 //Convert the image to grayscale and filter out the noise
                 //UMat uimage = new UMat();
@@ -68,17 +74,47 @@ namespace LagoVista.GCode.Sender.Application
 
                 //Image<Gray, Byte> gray = img.Convert<Gray, Byte>().PyrDown().PyrUp();
 
-                var circles = CvInvoke.HoughCircles(blurredGray, HoughType.Gradient, vm.HoughCirclesDP, vm.HoughCirclesMinDistance, 30, 550);//, vm.HoughCirclesParam1, vm.HoughCirclesParam2, vm.HoughCirclesMinRadius, vm.HoughCirclesMaxRadius);
+                var circles = CvInvoke.HoughCircles(blurredGray, HoughType.Gradient, vm.HoughCirclesDP, vm.HoughCirclesMinDistance, vm.HoughCirclesParam1, vm.HoughCirclesParam2, vm.HoughCirclesMinRadius, vm.HoughCirclesMaxRadius);
 
-                UMat cannyEdges = new UMat();
-                //CvInvoke.Canny(img, cannyEdges, vm.CannyLowThreshold, vm.CannyHighThreshold, vm.CannyApetureSize, vm.CannyGradient);
+                foreach (var circle in circles)
+                {
+                    CvInvoke.Circle(blurredGray,
+                         new System.Drawing.Point((int)circle.Center.X, (int)circle.Center.Y), (int)circle.Radius,
+                         new Bgr(System.Drawing.Color.White).MCvScalar, 2, Emgu.CV.CvEnum.LineType.AntiAlias);
 
-                List<Triangle2DF> triangleList = new List<Triangle2DF>();
-                List<RotatedRect> boxList = new List<RotatedRect>(); //a box is a rotated rectangle
-                //var lines = CvInvoke.HoughLinesP(cannyEdges, vm.HoughLinesRHO, vm.HoughLinesTheta, vm.HoughLinesThreshold, vm.HoughLinesMinLineLength, vm.HoughLinesMaxLineGap);
+                    var pt1 = new System.Drawing.Point(0, (int)circle.Center.Y);
+                    var pt2 = new System.Drawing.Point(1024, (int)circle.Center.Y);
 
-                /*
+                    CvInvoke.Line(blurredGray,
+                       pt1,
+                       pt2,
+                       new Bgr(System.Drawing.Color.White).MCvScalar, 2, Emgu.CV.CvEnum.LineType.AntiAlias);
+
+                    var vpt1 = new System.Drawing.Point((int)circle.Center.X, 0);
+                    var vpt2 = new System.Drawing.Point((int)circle.Center.X, 1024);
+
+                    CvInvoke.Line(blurredGray,
+                       vpt1,
+                       vpt2,
+                       new Bgr(System.Drawing.Color.White).MCvScalar, 2, Emgu.CV.CvEnum.LineType.AntiAlias);
+                }
+
+
                 
+                UMat cannyEdges = new UMat();
+                CvInvoke.Canny(blurredGray, cannyEdges, vm.CannyLowThreshold, vm.CannyHighThreshold, vm.CannyApetureSize, vm.CannyGradient);
+
+                var lines = CvInvoke.HoughLinesP(cannyEdges, vm.HoughLinesRHO, vm.HoughLinesTheta * (Math.PI / 180), vm.HoughLinesThreshold, vm.HoughLinesMinLineLength, vm.HoughLinesMaxLineGap);
+                foreach(var line in lines)
+                {
+                    CvInvoke.Line(blurredGray, line.P1, line.P2, new Bgr(System.Drawing.Color.White).MCvScalar);
+                }
+                /*
+
+                
+                                List<Triangle2DF> triangleList = new List<Triangle2DF>();
+                List<RotatedRect> boxList = new List<RotatedRect>(); //a box is a rotated rectangle
+
 
                 using (VectorOfVectorOfPoint contours = new VectorOfVectorOfPoint())
                 {
@@ -128,10 +164,13 @@ namespace LagoVista.GCode.Sender.Application
                 }*/
 
 
+                WebCamImage.Source = Emgu.CV.WPF.BitmapSourceConvert.ToBitmapSource(blurredGray);
+
+
                 var results = new Result();
-                results.Triangles = triangleList;
-                results.Rects = boxList;
-                results.Circles = circles.ToList();
+                //results.Triangles = triangleList;
+                //results.Rects = boxList;
+                //results.Circles = circles.ToList();
                 //results.Lines = lines.ToList();
 
                 return results;
@@ -187,7 +226,7 @@ namespace LagoVista.GCode.Sender.Application
                         {
 
                             var results = PerformShapeDetection(ViewModel.Profile, originalFrame);
-
+                            /*
                             foreach (var circle in results.Circles)
                             {
                                 CvInvoke.Circle(originalFrame,
@@ -210,7 +249,7 @@ namespace LagoVista.GCode.Sender.Application
                                    vpt2,
                                    new Bgr(System.Drawing.Color.White).MCvScalar, 2, Emgu.CV.CvEnum.LineType.AntiAlias);
                             }
-
+                            */
 
                         }
 

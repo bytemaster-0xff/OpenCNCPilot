@@ -16,12 +16,12 @@
             <RowDefinition Height="36"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="900"/>
-            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="300" />
         </Grid.ColumnDefinitions>
 
 
-        <Image x:Name="WebCamImage" Stretch="UniformToFill"  Source="/Imgs/TestPattern.jpg" Grid.RowSpan="2" />
+        <Image x:Name="WebCamImage" Stretch="Uniform"  Source="/Imgs/TestPattern.jpg" Grid.RowSpan="2" />
 
         <Grid HorizontalAlignment="Right" VerticalAlignment="Top"  Width="140" Height="160">
             <Grid.Resources>
@@ -86,14 +86,18 @@
         </Grid>
 
         <Grid Grid.Column="1" Background="LightBlue">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
             <Grid.Resources>
                 <Style TargetType="Label" x:Key="Link">
                     <Setter Property="Foreground" Value="Blue" />
                     <Setter Property="FontStyle" Value="Normal" />
                 </Style>
             </Grid.Resources>
-
-            <TabControl VerticalContentAlignment="Stretch">
+            <Button Content="Save Profile" Width="80" Height="32" Command="{Binding SaveProfileCommand}" HorizontalAlignment="Right" />
+            <TabControl VerticalContentAlignment="Stretch" Grid.Row="1">
                 <TabItem Header="Blur">
                     <StackPanel>
 
@@ -108,7 +112,7 @@
                             <Label Content="SigmaX - "/>
                             <Label Content="{Binding Profile.GaussianSigmaX, FallbackValue=3}" />
                         </StackPanel>
-                        <Slider Value="{Binding Path=Profile.GaussianSigmaX, Mode=TwoWay}" ToolTip="{Binding GaussianSigmaXHelp}" Minimum="0" MaxHeight="20" />
+                        <Slider Minimum="0.1" Maximum="10" SmallChange="0.1" LargeChange="0.5" Value="{Binding Path=Profile.GaussianSigmaX, Mode=TwoWay}" ToolTip="{Binding GaussianSigmaXHelp}"  />
                         <StackPanel Orientation="Horizontal">
                             <Label Content="SigmaY - "/>
                             <Label Content="{Binding Profile.GaussianSigmaY, FallbackValue=3}" />
@@ -135,7 +139,7 @@
                             <Label Content="Low Threshold - "/>
                             <Label Content="{Binding Profile.CannyLowThreshold, FallbackValue=3}" />
                         </StackPanel>
-                        <Slider Value="{Binding Path=Profile.CannyLowThreshold, Mode=TwoWay}" Minimum="0" MaxHeight="100" SmallChange="0" LargeChange="5" ToolTip="{Binding CannyLowThresholdHelp}" />
+                        <Slider Value="{Binding Path=Profile.CannyLowThreshold, Mode=TwoWay}" Minimum="0" Maximum="100" SmallChange="0" LargeChange="5" ToolTip="{Binding CannyLowThresholdHelp}" />
                         <StackPanel Orientation="Horizontal">
                             <Label Content="High Threshold - "/>
                             <Label Content="{Binding Profile.CannyHighThreshold, FallbackValue=3}" />
@@ -166,12 +170,12 @@
                             <Label Content="Theta - "/>
                             <Label Content="{Binding Profile.HoughLinesTheta, FallbackValue=3}" />
                         </StackPanel>
-                        <Slider Value="{Binding Path=Profile.HoughLinesTheta, Mode=TwoWay}" ToolTip="{Binding HoughLinesThetaHelp}" />
+                        <Slider Value="{Binding Path=Profile.HoughLinesTheta, Mode=TwoWay}" Minimum="0" Maximum="360" LargeChange="5" SmallChange="5" ToolTip="{Binding HoughLinesThetaHelp}" />
                         <StackPanel Orientation="Horizontal">
                             <Label Content="Threshold - "/>
                             <Label Content="{Binding Profile.HoughLinesThreshold, FallbackValue=3}" />
                         </StackPanel>
-                        <Slider Value="{Binding Path=Profile.HoughLinesThreshold, Mode=TwoWay}" ToolTip="{Binding HoughLinesThresholdHelp}" Margin="0,0,0,20"/>
+                        <Slider Value="{Binding Path=Profile.HoughLinesThreshold, Mode=TwoWay}" Minimum="20" Maximum="300" LargeChange="2" SmallChange="2" ToolTip="{Binding HoughLinesThresholdHelp}" Margin="0,0,0,20"/>
                     </StackPanel>
                 </TabItem>
                 <TabItem Header="Circle">

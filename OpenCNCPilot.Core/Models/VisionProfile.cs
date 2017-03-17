@@ -104,25 +104,25 @@ namespace LagoVista.GCode.Sender.Models
             get { return _houghLinesRHO; }
             set { _houghLinesRHO = value; RaisePropertyChanged(); }
         }
-        private double _houghLinesTheta = 0;
+        private double _houghLinesTheta = Math.PI / 180;
         public double HoughLinesTheta
         {
             get { return _houghLinesTheta; }
             set { _houghLinesTheta = value; RaisePropertyChanged(); }
         }
-        private int _houghLinesThreshold = 0;
+        private int _houghLinesThreshold = 80;
         public int HoughLinesThreshold
         {
             get { return _houghLinesThreshold; }
             set { _houghLinesThreshold = value; RaisePropertyChanged(); }
         }
-        private double _houghLinesMinLength = 5;
+        private double _houghLinesMinLength = 30;
         public double HoughLinesMinLineLength
         {
             get { return _houghLinesMinLength; }
             set { _houghLinesMinLength = value; RaisePropertyChanged(); }
         }
-        private double _houghLinesMaxLineGap = 5;
+        private double _houghLinesMaxLineGap = 10;
         public double HoughLinesMaxLineGap
         {
             get { return _houghLinesMaxLineGap; }
@@ -141,19 +141,19 @@ namespace LagoVista.GCode.Sender.Models
             get { return _houghLinesCircleMinDistance; }
             set { _houghLinesCircleMinDistance = value; RaisePropertyChanged(); }
         }
-        private double _houghCirclesParam1 = 100;
+        private double _houghCirclesParam1 = 30;
         public double HoughCirclesParam1
         {
             get { return _houghCirclesParam1; }
             set { _houghCirclesParam1 = value; RaisePropertyChanged(); }
         }
-        private double _houghCirclesParam2 = 100;
+        private double _houghCirclesParam2 = 550;
         public double HoughCirclesParam2
         {
             get { return _houghCirclesParam2; }
             set { _houghCirclesParam2 = value; RaisePropertyChanged(); }
         }
-        private int _houghCirclesMinRadius = 50;
+        private int _houghCirclesMinRadius = 5;
         public int HoughCirclesMinRadius
         {
             get { return _houghCirclesMinRadius; }
