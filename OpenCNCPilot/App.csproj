@@ -113,14 +113,26 @@
     <Compile Include="Controls\HeightMapControl.xaml.cs">
       <DependentUpon>HeightMapControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\ImageAdjustments.xaml.cs">
+      <DependentUpon>ImageAdjustments.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\ImageSensorControl.xaml.cs">
       <DependentUpon>ImageSensorControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\JobControl.xaml.cs">
       <DependentUpon>JobControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\JogButtons.xaml.cs">
+      <DependentUpon>JogButtons.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\JogControls.xaml.cs">
+      <DependentUpon>JogControls.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\MachineControl.xaml.cs">
       <DependentUpon>MachineControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\MachineLocation.xaml.cs">
+      <DependentUpon>MachineLocation.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\MachineResponseControl.xaml.cs">
       <DependentUpon>MachineResponseControl.xaml</DependentUpon>
@@ -192,6 +204,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Controls\ImageAdjustments.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\ImageSensorControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -200,7 +216,19 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Controls\JogButtons.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\JogControls.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\MachineControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\MachineLocation.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
