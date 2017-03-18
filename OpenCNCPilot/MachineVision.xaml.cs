@@ -14,6 +14,7 @@ using System.Threading;
 using System.Windows.Media.Imaging;
 using LagoVista.GCode.Sender.Interfaces;
 using LagoVista.GCode.Sender.Models;
+using System.Diagnostics;
 
 namespace LagoVista.GCode.Sender.Application
 {
@@ -46,7 +47,7 @@ namespace LagoVista.GCode.Sender.Application
             await ViewModel.InitAsync();
         }
 
-        private void Circle(Mat img, int x, int y, int radius, System.Drawing.Color color, int thickness = 1)
+        private void Circle(IInputOutputArray img, int x, int y, int radius, System.Drawing.Color color, int thickness = 1)
         {
             CvInvoke.Circle(img,
             new System.Drawing.Point(x, y), radius,
@@ -54,7 +55,7 @@ namespace LagoVista.GCode.Sender.Application
 
         }
 
-        private void Line(Mat img, int x1, int y1, int x2, int y2, System.Drawing.Color color, int thickness = 1)
+        private void Line(IInputOutputArray img, int x1, int y1, int x2, int y2, System.Drawing.Color color, int thickness = 1)
         {
             CvInvoke.Line(img, new System.Drawing.Point(x1, y1),
                 new System.Drawing.Point(x2, y2),
@@ -70,26 +71,19 @@ namespace LagoVista.GCode.Sender.Application
                 //CvInvoke.EqualizeHist(img, correctedImage);
 
                 using (var gray = new Image<Gray, byte>(img.Bitmap))
-                using (var blurredGray = new Mat())
+                using (var blurredGray = new Image<Gray, float>(gray.Size))
                 using (var finalOutput = new Mat())
                 {
 
-
-
                     var whiteColor = new Bgr(System.Drawing.Color.White).MCvScalar;
-                    //K Must always be odd.
-                    var k = vm.GaussianKSize;
-                    if (k % 1 == 0)
-                    {
-                        k += 1;
-                    }
 
                     CvInvoke.GaussianBlur(gray, blurredGray, System.Drawing.Size.Empty, vm.GaussianSigmaX);
+
                     UMat pyrDown = new UMat();
                     CvInvoke.PyrDown(blurredGray, pyrDown);
                     CvInvoke.PyrUp(pyrDown, blurredGray);
 
-                    var destImage = ViewModel.ShowOriginalImage ? img : blurredGray;
+                    var destImage = ViewModel.ShowOriginalImage ? img : (IInputOutputArray)blurredGray;
 
                     UMat edges = new UMat();
 
@@ -144,6 +138,47 @@ namespace LagoVista.GCode.Sender.Application
                         foreach (var line in lines)
                         {
                             CvInvoke.Line(destImage, line.P1, line.P2, new Bgr(System.Drawing.Color.White).MCvScalar);
+                        }
+                    }
+
+                    if (ViewModel.ShowHarrisCorners)
+                    {
+
+                        using (var cornerDest = new Image<Gray, float>(blurredGray.Size))
+                        using (var matNormalized = new Image<Gray, float>(blurredGray.Size))
+                        using (var matScaled = new Image<Gray, float>(blurredGray.Size))
+                        {
+                            cornerDest.SetZero();
+
+                            int max = -1;
+                            int x = -1, y = -1;
+
+                            CvInvoke.CornerHarris(blurredGray, cornerDest, vm.HarrisCornerBlockSize, vm.HarrisCornerAperture, vm.HarrisCornerK, BorderType.Default);
+
+                            CvInvoke.Normalize(cornerDest, matNormalized, 0, 255, NormType.MinMax, DepthType.Cv32F);
+                            CvInvoke.ConvertScaleAbs(matNormalized, matScaled, 10, 5);
+                            var minX = (img.Size.Width / 2) - vm.TargetImageRadius;
+                            var maxX = (img.Size.Width / 2) + vm.TargetImageRadius;
+                            var minY = (img.Size.Height / 2) - vm.TargetImageRadius;
+                            var maxY = (img.Size.Height / 2) + vm.TargetImageRadius;
+
+                            for (int j = minX; j < maxX; j++)
+                            {
+                                for (int i = minY; i < maxY; i++)
+                                {
+                                    var value = (int)matNormalized.Data[i, j, 0];
+                                    if (value > max)
+                                    {
+                                        x = j;
+                                        y = i;
+                                        max = value;
+                                    }
+                                }
+                            }
+
+                            Circle(destImage, x, y, 5, System.Drawing.Color.Blue);
+                            Line(destImage, 0, y, img.Width, y, System.Drawing.Color.Blue);
+                            Line(destImage, x, 0, x, img.Height, System.Drawing.Color.Blue);
                         }
                     }
 
@@ -215,9 +250,8 @@ namespace LagoVista.GCode.Sender.Application
                         }
                     }
 
+                    WebCamImage.Source = Emgu.CV.WPF.BitmapSourceConvert.ToBitmapSource(destImage as Mat);
 
-
-                    WebCamImage.Source = Emgu.CV.WPF.BitmapSourceConvert.ToBitmapSource(destImage);
 
                     var results = new Result();
                     //results.Triangles = triangleList;

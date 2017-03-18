@@ -141,6 +141,7 @@
     <Compile Include="EditGCode.xaml.cs">
       <DependentUpon>EditGCode.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Extensions\MatExtensions.cs" />
     <Compile Include="Extensions\Vector3DExtensions.cs" />
     <Compile Include="GCodeWindow.xaml.cs">
       <DependentUpon>GCodeWindow.xaml</DependentUpon>

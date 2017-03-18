@@ -103,23 +103,11 @@ namespace LagoVista.GCode.Sender.Models
             set { _harrisCornerThreshold = value; RaisePropertyChanged(); }
         }
 
-        private int _guassianKSize = 5;
-        public int GaussianKSize
-        {
-            get { return _guassianKSize; }
-            set { _guassianKSize = value; RaisePropertyChanged(); }
-        }
         private double _guassianSigmaX = 2;
         public double GaussianSigmaX
         {
             get { return _guassianSigmaX; }
-            set { _guassianSigmaX = value; RaisePropertyChanged(); }
-        }
-        private double _guasianSigmaY = 2;
-        public double GaussianSigmaY
-        {
-            get { return _guasianSigmaY; }
-            set { _guasianSigmaY = value; RaisePropertyChanged(); }
+            set { _guassianSigmaX = Math.Round(value,2); RaisePropertyChanged(); }
         }
 
         private double _thresholdEdgeDetection = 5;

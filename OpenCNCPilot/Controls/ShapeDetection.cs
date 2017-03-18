@@ -45,14 +45,8 @@ namespace LagoVista.GCode.Sender.Application.Controls
             {
 
                 //K Must always be odd.
-                var k = profile.GaussianKSize;
-                if(k % 1 == 0)
-                {
-                    k += 1;
-                }
 
-                CvInvoke.GaussianBlur(gray, blurredGray, new System.Drawing.Size(profile.GaussianKSize, profile.GaussianKSize),profile.GaussianSigmaX);
-
+                CvInvoke.GaussianBlur(gray, blurredGray, System.Drawing.Size.Empty, profile.GaussianSigmaX);
 
                 //Convert the image to grayscale and filter out the noise
                 //UMat uimage = new UMat();
@@ -71,8 +65,7 @@ namespace LagoVista.GCode.Sender.Application.Controls
                 CvInvoke.Canny(img, cannyEdges, profile.CannyLowThreshold, profile.CannyHighThreshold, profile.CannyApetureSize, profile.CannyGradient);
 
                 var lines = CvInvoke.HoughLinesP(cannyEdges,profile.HoughLinesRHO, profile.HoughLinesTheta, profile.HoughLinesThreshold, profile.HoughLinesMinLineLength, profile.HoughLinesMaxLineGap);
-                
-               
+                               
                 List<Triangle2DF> triangleList = new List<Triangle2DF>();
                 List<RotatedRect> boxList = new List<RotatedRect>(); //a box is a rotated rectangle
 
