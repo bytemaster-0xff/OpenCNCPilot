@@ -121,10 +121,6 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                         {
                             _circleMedianFilter.Add(circle.Center.X, circle.Center.Y);
 
-                            var avg = _circleMedianFilter.Filtered;
-
-                            Line(destImage, 0, (int)avg.Y, img.Width, (int)avg.Y, System.Drawing.Color.Red);
-                            Line(destImage, (int)avg.X, 0, (int)avg.X, img.Size.Height, System.Drawing.Color.Red);
                             foundCircle = true;
 
                             break;
@@ -134,6 +130,13 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                     if (!foundCircle)
                     {
                         _circleMedianFilter.Add(null);
+                    }
+
+                    var avg = _circleMedianFilter.Filtered;
+                    if (avg != null)
+                    {
+                        Line(destImage, 0, (int)avg.Y, img.Width, (int)avg.Y, System.Drawing.Color.Red);
+                        Line(destImage, (int)avg.X, 0, (int)avg.X, img.Size.Height, System.Drawing.Color.Red);
                     }
                 }
 
