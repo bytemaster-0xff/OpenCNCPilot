@@ -56,7 +56,8 @@ namespace LagoVista.EaglePCB.Tests
                 DrillSpindleDwell = 3,
                 DrillSafeHeight = 3,
                 StockThickness = 1.75,
-                Scrap = 3,
+                ScrapSides= 3,
+                ScrapTopBottom = 3,
                 DrillPlungeRate = 200,
                 SafePlungeRecoverRate = 1000,               
             };
@@ -83,7 +84,8 @@ namespace LagoVista.EaglePCB.Tests
                 MillSpindleRPM = 15000,
                 MillToolSize = 3.2,
                 StockThickness = 1.75,
-                Scrap = 3,
+                ScrapSides = 3,
+                ScrapTopBottom = 3,
                 DrillPlungeRate = 200,
                 SafePlungeRecoverRate = 1000,
             };

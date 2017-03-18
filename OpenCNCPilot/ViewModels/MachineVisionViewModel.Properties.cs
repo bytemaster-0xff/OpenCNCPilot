@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LagoVista.GCode.Sender.ViewModels
+namespace LagoVista.GCode.Sender.Application.ViewModels
 {
     public partial class MachineVisionViewModel 
     {

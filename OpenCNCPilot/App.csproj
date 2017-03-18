@@ -172,6 +172,10 @@
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Util\BitmapSourceConverter.cs" />
+    <Compile Include="ViewModels\MachineVisionViewModel.cs" />
+    <Compile Include="ViewModels\MachineVisionViewModel.Properties.cs">
+      <DependentUpon>MachineVisionViewModel.cs</DependentUpon>
+    </Compile>
     <Page Include="About.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

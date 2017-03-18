@@ -134,6 +134,7 @@
     <Compile Include="Models\ProbePoint.cs" />
     <Compile Include="Models\StatusMessage.cs" />
     <Compile Include="Models\VisionProfile.cs" />
+    <Compile Include="Util\MedianFilter.cs" />
     <Compile Include="ViewModels\GCodeAppViewModelBase.cs" />
     <Compile Include="ViewModels\JobControlViewModel.ComandHandlers.cs">
       <DependentUpon>JobControlViewModel.cs</DependentUpon>
@@ -153,10 +154,6 @@
     </Compile>
     <Compile Include="ViewModels\MachineControlViewModel.Properties.cs">
       <DependentUpon>MachineControlViewModel.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ViewModels\MachineVisionViewModel.cs" />
-    <Compile Include="ViewModels\MachineVisionViewModel.Properties.cs">
-      <DependentUpon>MachineVisionViewModel.cs</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\MainViewModel.CommandHandlers.cs">
       <DependentUpon>MainViewModel.cs</DependentUpon>
@@ -216,6 +213,9 @@
     </Reference>
     <Reference Include="PresentationCore">
       <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6\PresentationCore.dll</HintPath>
+    </Reference>
+    <Reference Include="WindowsBase">
+      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6\WindowsBase.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

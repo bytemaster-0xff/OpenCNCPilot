@@ -1,12 +1,13 @@
 ﻿using LagoVista.Core.Commanding;
 using LagoVista.GCode.Sender.Interfaces;
+using LagoVista.GCode.Sender.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LagoVista.GCode.Sender.ViewModels
+namespace LagoVista.GCode.Sender.Application.ViewModels
 {
     public partial class MachineVisionViewModel : GCodeAppViewModelBase
     {

@@ -61,6 +61,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="GCodeArcTests.cs" />
+    <Compile Include="MediaFilterTests.cs" />
     <Compile Include="RotationTests.cs" />
     <Compile Include="EagleParsingTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -69,6 +70,10 @@
     <ProjectReference Include="..\..\LagoVista.Core.GCode\GCode Core.csproj">
       <Project>{26A18C19-479E-495B-A8F2-1BAA591D7DF8}</Project>
       <Name>GCode Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\OpenCNCPilot.Core\GCode Sender.csproj">
+      <Project>{A5441C94-A9F8-4577-B2E6-7F50FB7C76F7}</Project>
+      <Name>GCode Sender</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\src\LagoVista.EaglePCB\LagoVista.EaglePCB.csproj">
       <Project>{b60c5358-d6ae-469a-8beb-78ce5c434952}</Project>
