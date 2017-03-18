@@ -46,146 +46,187 @@ namespace LagoVista.GCode.Sender.Application
             await ViewModel.InitAsync();
         }
 
+        private void Circle(Mat img, int x, int y, int radius, System.Drawing.Color color, int thickness = 1)
+        {
+            CvInvoke.Circle(img,
+            new System.Drawing.Point(x, y), radius,
+            new Bgr(color).MCvScalar, thickness, Emgu.CV.CvEnum.LineType.AntiAlias);
+
+        }
+
+        private void Line(Mat img, int x1, int y1, int x2, int y2, System.Drawing.Color color, int thickness = 1)
+        {
+            CvInvoke.Line(img, new System.Drawing.Point(x1, y1),
+                new System.Drawing.Point(x2, y2),
+                new Bgr(color).MCvScalar, thickness, Emgu.CV.CvEnum.LineType.AntiAlias);
+        }
+
+
         public Result PerformShapeDetection(VisionProfile vm, Mat img)
         {
-            using (var gray = new Image<Gray, byte>(img.Bitmap))
-            using (var blurredGray = new Mat())
-            using (var finalOutput = new Mat())
+            using (var correctedImage = new Mat())
             {
 
-                //K Must always be odd.
-                var k = vm.GaussianKSize;
-                if (k % 1 == 0)
+                //CvInvoke.EqualizeHist(img, correctedImage);
+
+                using (var gray = new Image<Gray, byte>(img.Bitmap))
+                using (var blurredGray = new Mat())
+                using (var finalOutput = new Mat())
                 {
-                    k += 1;
-                }
-
-                CvInvoke.GaussianBlur(gray, blurredGray, System.Drawing.Size.Empty, vm.GaussianSigmaX);
-
-
-                //Convert the image to grayscale and filter out the noise
-                //UMat uimage = new UMat();
-                //CvInvoke.CvtColor(img, uimage, ColorConversion.Bgr2Gray);
-
-                //use image pyr to remove noise
-                UMat pyrDown = new UMat();
-                CvInvoke.PyrDown(blurredGray, pyrDown);
-                CvInvoke.PyrUp(pyrDown, blurredGray);
-
-                UMat cannyEdges = new UMat();
-
-                if (vm.UseCannyEdgeDetection) {
-                    CvInvoke.Canny(blurredGray, cannyEdges, vm.CannyLowThreshold, vm.CannyHighThreshold, vm.CannyApetureSize, vm.CannyGradient);
-                }
 
 
 
-                //Image<Gray, Byte> gray = img.Convert<Gray, Byte>().PyrDown().PyrUp();
-
-                if (ViewModel.ShowCircles)
-                {
-                    var circles = CvInvoke.HoughCircles(blurredGray, HoughType.Gradient, vm.HoughCirclesDP, vm.HoughCirclesMinDistance, vm.HoughCirclesParam1, vm.HoughCirclesParam2, vm.HoughCirclesMinRadius, vm.HoughCirclesMaxRadius);
-
-                    foreach (var circle in circles)
+                    var whiteColor = new Bgr(System.Drawing.Color.White).MCvScalar;
+                    //K Must always be odd.
+                    var k = vm.GaussianKSize;
+                    if (k % 1 == 0)
                     {
-                        CvInvoke.Circle(blurredGray,
-                             new System.Drawing.Point((int)circle.Center.X, (int)circle.Center.Y), (int)circle.Radius,
-                             new Bgr(System.Drawing.Color.White).MCvScalar, 2, Emgu.CV.CvEnum.LineType.AntiAlias);
-
-                        var pt1 = new System.Drawing.Point(0, (int)circle.Center.Y);
-                        var pt2 = new System.Drawing.Point(1024, (int)circle.Center.Y);
-
-                        CvInvoke.Line(blurredGray,
-                           pt1,
-                           pt2,
-                           new Bgr(System.Drawing.Color.White).MCvScalar, 2, Emgu.CV.CvEnum.LineType.AntiAlias);
-
-                        var vpt1 = new System.Drawing.Point((int)circle.Center.X, 0);
-                        var vpt2 = new System.Drawing.Point((int)circle.Center.X, 1024);
-
-                        CvInvoke.Line(blurredGray,
-                           vpt1,
-                           vpt2,
-                           new Bgr(System.Drawing.Color.White).MCvScalar, 2, Emgu.CV.CvEnum.LineType.AntiAlias);
+                        k += 1;
                     }
-                }
 
+                    CvInvoke.GaussianBlur(gray, blurredGray, System.Drawing.Size.Empty, vm.GaussianSigmaX);
+                    UMat pyrDown = new UMat();
+                    CvInvoke.PyrDown(blurredGray, pyrDown);
+                    CvInvoke.PyrUp(pyrDown, blurredGray);
 
-                if (ViewModel.ShowLines)
-                {
+                    var destImage = ViewModel.ShowOriginalImage ? img : blurredGray;
 
-                    var lines = CvInvoke.HoughLinesP(cannyEdges, vm.HoughLinesRHO, vm.HoughLinesTheta * (Math.PI / 180), vm.HoughLinesThreshold, vm.HoughLinesMinLineLength, vm.HoughLinesMaxLineGap);
-                    foreach (var line in lines)
+                    UMat edges = new UMat();
+
+                    if (vm.UseCannyEdgeDetection)
                     {
-                        CvInvoke.Line(blurredGray, line.P1, line.P2, new Bgr(System.Drawing.Color.White).MCvScalar);
+                        CvInvoke.Canny(blurredGray, edges, vm.CannyLowThreshold, vm.CannyHighThreshold, vm.CannyApetureSize, vm.CannyGradient);
                     }
-                }
-
-
-                var triangleList = new List<Triangle2DF>();
-                var boxList = new List<RotatedRect>(); //a box is a rotated rectangle
-
-
-                using (var contours = new VectorOfVectorOfPoint())
-                {
-                    CvInvoke.FindContours(cannyEdges, contours, null, RetrType.List, ChainApproxMethod.ChainApproxSimple);
-                    int count = contours.Size;
-                    for (int i = 0; i < count; i++)
+                    else
                     {
-                        using (VectorOfPoint contour = contours[i])
-                        using (VectorOfPoint approxContour = new VectorOfPoint())
+                        CvInvoke.Threshold(blurredGray, edges, vm.ThresholdEdgeDetection, 255, ThresholdType.Binary);
+                    }
+
+                    if (ViewModel.ShowCircles)
+                    {
+                        var circles = CvInvoke.HoughCircles(blurredGray, HoughType.Gradient, vm.HoughCirclesDP, vm.HoughCirclesMinDistance, vm.HoughCirclesParam1, vm.HoughCirclesParam2, vm.HoughCirclesMinRadius, vm.HoughCirclesMaxRadius);
+
+                        foreach (var circle in circles)
                         {
-                            CvInvoke.ApproxPolyDP(contour, approxContour, CvInvoke.ArcLength(contour, true) * 0.05, true);
-                            if (CvInvoke.ContourArea(approxContour, false) > 250) //only consider contours with area greater than 250
+                            if (circle.Center.X > ((img.Size.Width / 2) - vm.TargetImageRadius) && circle.Center.X < ((img.Size.Width / 2) + vm.TargetImageRadius) &&
+                               circle.Center.Y > ((img.Size.Height / 2) - vm.TargetImageRadius) && circle.Center.Y < ((img.Size.Height / 2) + vm.TargetImageRadius))
                             {
-                                if (approxContour.Size == 3) //The contour has 3 vertices, it is a triangle
-                                {
-                                    var pts = approxContour.ToArray();
-                                    triangleList.Add(new Triangle2DF(
-                                       pts[0],
-                                       pts[1],
-                                       pts[2]
-                                       ));
-                                }
-                                else if (approxContour.Size == 4) //The contour has 4 vertices.
-                                {
-                                    #region determine if all the angles in the contour are within [80, 100] degree
-                                    bool isRectangle = true;
-                                    var pts = approxContour.ToArray();
-                                    LineSegment2D[] edges = PointCollection.PolyLine(pts, true);
+                                Line(destImage, 0, (int)circle.Center.Y, img.Width, (int)circle.Center.Y, ViewModel.ShowOriginalImage ? System.Drawing.Color.Red : System.Drawing.Color.White);
+                                Line(destImage, (int)circle.Center.X, 0, (int)circle.Center.X, img.Size.Height, ViewModel.ShowOriginalImage ? System.Drawing.Color.Red : System.Drawing.Color.White);
 
-                                    for (int j = 0; j < edges.Length; j++)
-                                    {
-                                        double angle = Math.Abs(
-                                           edges[(j + 1) % edges.Length].GetExteriorAngleDegree(edges[j]));
-                                        if (angle < 80 || angle > 100)
-                                        {
-                                            isRectangle = false;
-                                            break;
-                                        }
-                                    }
-                                    #endregion
-
-                                    if (isRectangle) boxList.Add(CvInvoke.MinAreaRect(approxContour));
-                                }
+                                CenterX.Text = $"{circle.Center.X:0.0}";
+                                CenterY.Text = $"{circle.Center.Y:0.0}";
                             }
-
-                            CvInvoke.MinEnclosingCircle(contour, )
                         }
                     }
+
+                    if (ViewModel.ShowCrossHairs)
+                    {
+                        var width = img.Size.Width;
+                        var height = img.Size.Height;
+
+                        var centerX = img.Size.Width / 2;
+                        var centerY = img.Size.Height / 2;
+
+                        Circle(destImage, centerX, centerY, vm.TargetImageRadius, ViewModel.ShowOriginalImage ? System.Drawing.Color.Yellow : System.Drawing.Color.White);
+
+                        Line(destImage, 0, centerY, centerX - vm.TargetImageRadius, centerY, ViewModel.ShowOriginalImage ? System.Drawing.Color.Yellow : System.Drawing.Color.White);
+                        Line(destImage, centerX + vm.TargetImageRadius, centerY, width, centerY, ViewModel.ShowOriginalImage ? System.Drawing.Color.Yellow : System.Drawing.Color.White);
+
+                        Line(destImage, centerX, 0, centerX, centerY - vm.TargetImageRadius, ViewModel.ShowOriginalImage ? System.Drawing.Color.Yellow : System.Drawing.Color.White);
+                        Line(destImage, centerX, centerY + vm.TargetImageRadius, centerX, height, ViewModel.ShowOriginalImage ? System.Drawing.Color.Yellow : System.Drawing.Color.White);
+                    }
+
+
+                    if (ViewModel.ShowLines)
+                    {
+                        var lines = CvInvoke.HoughLinesP(edges, vm.HoughLinesRHO, vm.HoughLinesTheta * (Math.PI / 180), vm.HoughLinesThreshold, vm.HoughLinesMinLineLength, vm.HoughLinesMaxLineGap);
+                        foreach (var line in lines)
+                        {
+                            CvInvoke.Line(destImage, line.P1, line.P2, new Bgr(System.Drawing.Color.White).MCvScalar);
+                        }
+                    }
+
+
+                    var triangleList = new List<Triangle2DF>();
+                    var boxList = new List<RotatedRect>(); //a box is a rotated rectangle
+
+                    if (ViewModel.ShowRectangles)
+                    {
+                        using (var contours = new VectorOfVectorOfPoint())
+                        {
+                            CvInvoke.FindContours(edges, contours, null, RetrType.List, ChainApproxMethod.ChainApproxSimple);
+                            int count = contours.Size;
+                            for (int i = 0; i < count; i++)
+                            {
+                                using (var contour = contours[i])
+                                using (var approxContour = new VectorOfPoint())
+                                {
+                                    CvInvoke.ApproxPolyDP(contour, approxContour, CvInvoke.ArcLength(contour, true) * vm.PolygonEpsilonFactor, vm.ContourFindOnlyClosed);
+                                    if (CvInvoke.ContourArea(approxContour, false) > vm.ContourMinArea) //only consider contours with area greater than 250
+                                    {
+                                        var pts = approxContour.ToArray();
+
+                                        if (approxContour.Size == 4) //The contour has 4 vertices.
+                                        {
+                                            bool isRectangle = true;
+                                            var rectEdges = PointCollection.PolyLine(pts, true);
+
+                                            if (!vm.FindIrregularPolygons)
+                                            {
+                                                for (var j = 0; j < rectEdges.Length; j++)
+                                                {
+                                                    var angle = Math.Abs(rectEdges[(j + 1) % rectEdges.Length].GetExteriorAngleDegree(rectEdges[j]));
+                                                    if (angle < 80 || angle > 100)
+                                                    {
+                                                        isRectangle = false;
+                                                        break;
+                                                    }
+                                                }
+                                            }
+
+                                            if (isRectangle)
+                                            {
+                                                var rect = CvInvoke.MinAreaRect(approxContour);
+
+                                                var point1 = new System.Drawing.Point(Convert.ToInt32(rect.Center.X - (rect.Size.Width / 2)), Convert.ToInt32(rect.Center.Y - (rect.Size.Height / 2)));
+                                                var point2 = new System.Drawing.Point(Convert.ToInt32(rect.Center.X - (rect.Size.Width / 2)), Convert.ToInt32(rect.Center.Y + (rect.Size.Height / 2)));
+                                                var point3 = new System.Drawing.Point(Convert.ToInt32(rect.Center.X + (rect.Size.Width / 2)), Convert.ToInt32(rect.Center.Y + (rect.Size.Height / 2)));
+                                                var point4 = new System.Drawing.Point(Convert.ToInt32(rect.Center.X + (rect.Size.Width / 2)), Convert.ToInt32(rect.Center.Y - (rect.Size.Height / 2)));
+
+                                                CvInvoke.Line(destImage, point1, point2, new Bgr(System.Drawing.Color.White).MCvScalar);
+                                                CvInvoke.Line(destImage, point2, point3, new Bgr(System.Drawing.Color.White).MCvScalar);
+                                                CvInvoke.Line(destImage, point3, point4, new Bgr(System.Drawing.Color.White).MCvScalar);
+                                                CvInvoke.Line(destImage, point4, point1, new Bgr(System.Drawing.Color.White).MCvScalar);
+                                            }
+                                        }
+                                        else
+                                        {
+                                            var rectEdges = PointCollection.PolyLine(pts, true);
+                                            for (var idx = 0; idx < rectEdges.Length - 1; ++idx)
+                                            {
+                                                CvInvoke.Line(destImage, rectEdges[idx].P1, rectEdges[idx].P2, new Bgr(System.Drawing.Color.White).MCvScalar);
+                                            }
+
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+
+
+                    WebCamImage.Source = Emgu.CV.WPF.BitmapSourceConvert.ToBitmapSource(destImage);
+
+                    var results = new Result();
+                    //results.Triangles = triangleList;
+                    //results.Rects = boxList;
+                    //results.Circles = circles.ToList();
+                    //results.Lines = lines.ToList();
+
+                    return results;
                 }
-
-
-                WebCamImage.Source = Emgu.CV.WPF.BitmapSourceConvert.ToBitmapSource(blurredGray);
-
-
-                var results = new Result();
-                //results.Triangles = triangleList;
-                //results.Rects = boxList;
-                //results.Circles = circles.ToList();
-                //results.Lines = lines.ToList();
-
-                return results;
             }
         }
 
@@ -208,11 +249,6 @@ namespace LagoVista.GCode.Sender.Application
                 {
                     _videoCapture = new VideoCapture(cameraIndex);
 
-                    _videoCapture.SetCaptureProperty(Emgu.CV.CvEnum.CapProp.AutoExposure, 0);
-
-                    _videoCapture.SetCaptureProperty(Emgu.CV.CvEnum.CapProp.Brightness, 33);
-                    _videoCapture.SetCaptureProperty(Emgu.CV.CvEnum.CapProp.Contrast, 54);
-                    _videoCapture.SetCaptureProperty(Emgu.CV.CvEnum.CapProp.Exposure, -7);
                 }
                 catch (Exception ex)
                 {
@@ -220,6 +256,10 @@ namespace LagoVista.GCode.Sender.Application
                 }
             });
         }
+
+        private double _lastContrast = -9999;
+        private double _lastBrightness = -9999;
+        private double _lastExposure = -9999;
 
         private void ProcessFrame(Object state)
         {
@@ -234,6 +274,28 @@ namespace LagoVista.GCode.Sender.Application
                 {
                     if (_videoCapture != null)
                     {
+                        _videoCapture.SetCaptureProperty(Emgu.CV.CvEnum.CapProp.AutoExposure, 0);
+
+                        if (_lastBrightness != ViewModel.Profile.Brightness)
+                        {
+                            _videoCapture.SetCaptureProperty(Emgu.CV.CvEnum.CapProp.Brightness, ViewModel.Profile.Brightness);
+                            _lastBrightness = ViewModel.Profile.Brightness;
+                        }
+
+
+                        if (_lastContrast != ViewModel.Profile.Contrast)
+                        {
+                            _videoCapture.SetCaptureProperty(Emgu.CV.CvEnum.CapProp.Contrast, ViewModel.Profile.Contrast);
+                            _lastContrast = ViewModel.Profile.Contrast;
+                        }
+
+
+                        if (_lastExposure != ViewModel.Profile.Exposure)
+                        {
+                            _videoCapture.SetCaptureProperty(Emgu.CV.CvEnum.CapProp.Exposure, ViewModel.Profile.Exposure);
+                            _lastExposure = ViewModel.Profile.Exposure;
+                        }
+
                         using (var originalFrame = _videoCapture.QueryFrame())
                         {
 
