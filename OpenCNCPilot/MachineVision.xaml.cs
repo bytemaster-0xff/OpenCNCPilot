@@ -37,11 +37,11 @@ namespace LagoVista.GCode.Sender.Application
             if (!designTime)
             {
                 ViewModel = new MachineVisionViewModel(machine);
-                this.Loaded += MachineVision_Loaded;                
+                this.Loaded += MachineVision_Loaded;
             }
         }
 
-        private  async void MachineVision_Loaded(object sender, RoutedEventArgs e)
+        private async void MachineVision_Loaded(object sender, RoutedEventArgs e)
         {
             await ViewModel.InitAsync();
         }
@@ -61,7 +61,7 @@ namespace LagoVista.GCode.Sender.Application
                 }
 
                 CvInvoke.GaussianBlur(gray, blurredGray, System.Drawing.Size.Empty, vm.GaussianSigmaX);
-                
+
 
                 //Convert the image to grayscale and filter out the noise
                 //UMat uimage = new UMat();
@@ -72,51 +72,61 @@ namespace LagoVista.GCode.Sender.Application
                 CvInvoke.PyrDown(blurredGray, pyrDown);
                 CvInvoke.PyrUp(pyrDown, blurredGray);
 
+                UMat cannyEdges = new UMat();
+
+                if (vm.UseCannyEdgeDetection) {
+                    CvInvoke.Canny(blurredGray, cannyEdges, vm.CannyLowThreshold, vm.CannyHighThreshold, vm.CannyApetureSize, vm.CannyGradient);
+                }
+
+
+
                 //Image<Gray, Byte> gray = img.Convert<Gray, Byte>().PyrDown().PyrUp();
 
-                var circles = CvInvoke.HoughCircles(blurredGray, HoughType.Gradient, vm.HoughCirclesDP, vm.HoughCirclesMinDistance, vm.HoughCirclesParam1, vm.HoughCirclesParam2, vm.HoughCirclesMinRadius, vm.HoughCirclesMaxRadius);
-
-                foreach (var circle in circles)
+                if (ViewModel.ShowCircles)
                 {
-                    CvInvoke.Circle(blurredGray,
-                         new System.Drawing.Point((int)circle.Center.X, (int)circle.Center.Y), (int)circle.Radius,
-                         new Bgr(System.Drawing.Color.White).MCvScalar, 2, Emgu.CV.CvEnum.LineType.AntiAlias);
+                    var circles = CvInvoke.HoughCircles(blurredGray, HoughType.Gradient, vm.HoughCirclesDP, vm.HoughCirclesMinDistance, vm.HoughCirclesParam1, vm.HoughCirclesParam2, vm.HoughCirclesMinRadius, vm.HoughCirclesMaxRadius);
 
-                    var pt1 = new System.Drawing.Point(0, (int)circle.Center.Y);
-                    var pt2 = new System.Drawing.Point(1024, (int)circle.Center.Y);
+                    foreach (var circle in circles)
+                    {
+                        CvInvoke.Circle(blurredGray,
+                             new System.Drawing.Point((int)circle.Center.X, (int)circle.Center.Y), (int)circle.Radius,
+                             new Bgr(System.Drawing.Color.White).MCvScalar, 2, Emgu.CV.CvEnum.LineType.AntiAlias);
 
-                    CvInvoke.Line(blurredGray,
-                       pt1,
-                       pt2,
-                       new Bgr(System.Drawing.Color.White).MCvScalar, 2, Emgu.CV.CvEnum.LineType.AntiAlias);
+                        var pt1 = new System.Drawing.Point(0, (int)circle.Center.Y);
+                        var pt2 = new System.Drawing.Point(1024, (int)circle.Center.Y);
 
-                    var vpt1 = new System.Drawing.Point((int)circle.Center.X, 0);
-                    var vpt2 = new System.Drawing.Point((int)circle.Center.X, 1024);
+                        CvInvoke.Line(blurredGray,
+                           pt1,
+                           pt2,
+                           new Bgr(System.Drawing.Color.White).MCvScalar, 2, Emgu.CV.CvEnum.LineType.AntiAlias);
 
-                    CvInvoke.Line(blurredGray,
-                       vpt1,
-                       vpt2,
-                       new Bgr(System.Drawing.Color.White).MCvScalar, 2, Emgu.CV.CvEnum.LineType.AntiAlias);
+                        var vpt1 = new System.Drawing.Point((int)circle.Center.X, 0);
+                        var vpt2 = new System.Drawing.Point((int)circle.Center.X, 1024);
+
+                        CvInvoke.Line(blurredGray,
+                           vpt1,
+                           vpt2,
+                           new Bgr(System.Drawing.Color.White).MCvScalar, 2, Emgu.CV.CvEnum.LineType.AntiAlias);
+                    }
                 }
 
 
-                
-                UMat cannyEdges = new UMat();
-                CvInvoke.Canny(blurredGray, cannyEdges, vm.CannyLowThreshold, vm.CannyHighThreshold, vm.CannyApetureSize, vm.CannyGradient);
-
-                var lines = CvInvoke.HoughLinesP(cannyEdges, vm.HoughLinesRHO, vm.HoughLinesTheta * (Math.PI / 180), vm.HoughLinesThreshold, vm.HoughLinesMinLineLength, vm.HoughLinesMaxLineGap);
-                foreach(var line in lines)
+                if (ViewModel.ShowLines)
                 {
-                    CvInvoke.Line(blurredGray, line.P1, line.P2, new Bgr(System.Drawing.Color.White).MCvScalar);
+
+                    var lines = CvInvoke.HoughLinesP(cannyEdges, vm.HoughLinesRHO, vm.HoughLinesTheta * (Math.PI / 180), vm.HoughLinesThreshold, vm.HoughLinesMinLineLength, vm.HoughLinesMaxLineGap);
+                    foreach (var line in lines)
+                    {
+                        CvInvoke.Line(blurredGray, line.P1, line.P2, new Bgr(System.Drawing.Color.White).MCvScalar);
+                    }
                 }
-                /*
-
-                
-                                List<Triangle2DF> triangleList = new List<Triangle2DF>();
-                List<RotatedRect> boxList = new List<RotatedRect>(); //a box is a rotated rectangle
 
 
-                using (VectorOfVectorOfPoint contours = new VectorOfVectorOfPoint())
+                var triangleList = new List<Triangle2DF>();
+                var boxList = new List<RotatedRect>(); //a box is a rotated rectangle
+
+
+                using (var contours = new VectorOfVectorOfPoint())
                 {
                     CvInvoke.FindContours(cannyEdges, contours, null, RetrType.List, ChainApproxMethod.ChainApproxSimple);
                     int count = contours.Size;
@@ -159,9 +169,11 @@ namespace LagoVista.GCode.Sender.Application
                                     if (isRectangle) boxList.Add(CvInvoke.MinAreaRect(approxContour));
                                 }
                             }
+
+                            CvInvoke.MinEnclosingCircle(contour, )
                         }
                     }
-                }*/
+                }
 
 
                 WebCamImage.Source = Emgu.CV.WPF.BitmapSourceConvert.ToBitmapSource(blurredGray);

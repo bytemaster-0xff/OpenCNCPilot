@@ -70,6 +70,25 @@ namespace LagoVista.GCode.Sender.Models
             set { _guasianSigmaY = value; RaisePropertyChanged(); }
         }
 
+        private double _thresholdEdgeDetection = 5;
+        public double ThresholdEdgeDetection
+        {
+            get { return _thresholdEdgeDetection; }
+            set
+            {
+                _thresholdEdgeDetection = value;
+                RaisePropertyChanged();
+            }
+        }
+
+
+        private bool _useCannyEdgeDetection;
+        public bool UseCannyEdgeDetection
+        {
+            get { return _useCannyEdgeDetection; }
+            set { Set(ref _useCannyEdgeDetection, value)}
+        }
+
         private double _cannyLowThreshold = 5;
         public double CannyLowThreshold
         {
@@ -81,6 +100,7 @@ namespace LagoVista.GCode.Sender.Models
                 RaisePropertyChanged(nameof(CannyHighThreshold));
             }
         }
+
 
         public double CannyHighThreshold { get { return CannyLowThreshold * 3; } set { } }
         private int _cannyApetureSize = 3;
