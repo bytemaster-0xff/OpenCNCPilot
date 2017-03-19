@@ -35,7 +35,7 @@ namespace LagoVista.GCode.Sender.Managers
 
             if (await Core.PlatformSupport.Services.Popups.ConfirmAsync("Tool Change", "Start Tool Change cycle?  Last Changed Tool: " + _oldTool + "\nNew tool: " + mcode.ToolSize))
             {
-                Machine.SendCommand("G0 Z30 F1000");
+                Machine.SendCommand("G0 Z18 F1000");
                 Machine.SendCommand("G0 X0 Y0 F1000");
 
                 bool shouldRetry = true;

@@ -43,6 +43,8 @@ namespace LagoVista.GCode.Sender.Interfaces
         /// </summary>
         Vector3 WorkPosition { get; }
 
+        Vector3 NormalizedPosition{ get; }
+
         /// <summary>
         /// Current mode of the machine, such as Connected, Running a Job, etc....
         /// </summary>

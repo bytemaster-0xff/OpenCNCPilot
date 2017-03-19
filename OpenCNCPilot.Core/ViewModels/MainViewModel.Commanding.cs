@@ -104,9 +104,10 @@ namespace LagoVista.GCode.Sender.ViewModels
 
         public bool CanApplyHeightMap()
         {
-            return Machine.GCodeFileManager.HasValidFile &&
+            return true;
+            /*return Machine.GCodeFileManager.HasValidFile &&
                    Machine.HeightMapManager.HasHeightMap &&
-                   Machine.HeightMapManager.HeightMap.Status == Models.HeightMapStatus.Populated;
+                   Machine.HeightMapManager.HeightMap.Status == Models.HeightMapStatus.Populated;*/
         }
 
         private bool CanPerformFileOperation(Object instance)

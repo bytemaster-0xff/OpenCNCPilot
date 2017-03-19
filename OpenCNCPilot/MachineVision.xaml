@@ -31,7 +31,9 @@
                 <ColumnDefinition Width="50*" />
                 <ColumnDefinition Width="50*" />
             </Grid.ColumnDefinitions>
-            <Grid Opacity="0.5" Background="Black" Grid.RowSpan="999" Grid.ColumnSpan="999"></Grid>
+            <Grid Opacity="0.5" Background="Black" Grid.ColumnSpan="2"/>
+            <TextBlock Text="{Binding CircleCenter.X, StringFormat=0.0}" TextAlignment="Right" />
+            <TextBlock Text="{Binding CircleCenter.Y, StringFormat=0.0}" TextAlignment="Right" Grid.Column="1" />
         </Grid>
         <Controls:PCBTopView HorizontalAlignment="Left" VerticalAlignment="Top" Opacity="0.76" DataContext="{Binding Path=Machine.PCBManager}" >
             <Controls:PCBTopView.LayoutTransform>

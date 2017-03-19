@@ -34,6 +34,8 @@
                 <MenuItem Header="PCB Hold Down" Command="{Binding ShowHoldDownGCodeCommand}" />
                 <MenuItem Header="Drills" Command="{Binding ShowDrillGCodeCommand}" />
                 <MenuItem Header="Probe Height Map" Command="{Binding ShowCutoutMillingGCodeCommand}" />
+                <MenuItem Header="New HeightMap" x:Name="NewHeigtMap" Click="NewHeigtMap_Click" />
+                <MenuItem Header="Apply HeightMap"  Command="{Binding ApplyHeightMapCommand}" />
                 <MenuItem Header="Cutout Milling" Command="{Binding ShowCutoutMillingGCodeCommand}" />
                 <MenuItem Header="Top Etching" Command="{Binding ShowTopEtchingGCodeCommand}" />
                 <MenuItem Header="Bottom Etching" Command="{Binding ShowBottomEtchingGCodeCommand}" />
@@ -53,12 +55,12 @@
 
             </MenuItem>
             <MenuItem Header="Height Map" >
-                <MenuItem Header="New HeightMap" x:Name="NewHeigtMap" Click="NewHeigtMap_Click" />
+                
                 <MenuItem Header="New Generated HeightMap" x:Name="NewGeneratedHeigtMap" Click="NewGeneratedHeigtMap_Click" />
                 <MenuItem Header="Open HeightMap"  Command="{Binding OpenHeightMapCommand}" />
                 <Separator />
                 <MenuItem Header="Edit HeightMap" x:Name="EditHeightMap" Click="EditHeightMap_Click"/>
-                <MenuItem Header="Apply HeightMap"  Command="{Binding ApplyHeightMapCommand}" />
+                
                 <MenuItem Header="Save Updated Board"  Command="{Binding SaveModifiedBoardCommand}" />
                 <Separator />
                 <MenuItem  Header="Close Height Map" Click="CloseMenu_Click" />

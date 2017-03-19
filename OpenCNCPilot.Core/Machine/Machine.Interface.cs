@@ -216,7 +216,15 @@ namespace LagoVista.GCode.Sender
 
         public void HomingCycle()
         {
-            Enqueue("$H\n", true);
+            if (Settings.MachineType == FirmwareTypes.GRBL1_1)
+            {
+                Enqueue("$H\n", true);
+            }
+            else
+            {
+                Enqueue("G28 X0");
+                Enqueue("G28 Y0");
+            }
         }
 
         public void FeedHold()

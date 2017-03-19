@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using LagoVista.Core;
 
 namespace LagoVista.GCode.Sender.Managers
 {
@@ -70,18 +71,79 @@ namespace LagoVista.GCode.Sender.Managers
         {
             var newToolPath = new List<Core.GCode.Commands.GCodeCommand>();
 
+            double? feed = null;
+
             foreach (var command in _file.Commands)
             {
                 var motionCommand = command as GCodeMotion;
-                if(motionCommand != null)
-                { 
+
+                if (motionCommand != null)
+                {
+                    if (!feed.HasValue)
+                    {
+                        feed = motionCommand.Feed;
+                    }
+
                     motionCommand.Start = new Core.Models.Drawing.Vector3(motionCommand.Start.X + xOffset, motionCommand.Start.Y + yOffset, motionCommand.Start.Z);
                     motionCommand.End = new Core.Models.Drawing.Vector3(motionCommand.End.X + xOffset, motionCommand.End.Y + yOffset, motionCommand.End.Z);
+
+
+                    switch (motionCommand.Command)
+                    {
+                        case "G0":
+                        case "G1":
+                        case "G00":
+                        case "G01":
+                            if (_machine.Settings.MachineType == FirmwareTypes.GRBL1_1)
+                            {
+                                if (!feed.HasValue || feed.Value != motionCommand.Feed)
+                                {
+                                    motionCommand.Line = $"{motionCommand.Command} X{motionCommand.End.X.ToDim()} Y{motionCommand.End.Y.ToDim()} Z{motionCommand.End.Z.ToDim()}  F{motionCommand.Feed}";
+                                }
+                                else
+                                {
+                                    motionCommand.Line = $"{motionCommand.Command} X{motionCommand.End.X.ToDim()} Y{motionCommand.End.Y.ToDim()}  Z{motionCommand.End.Z.ToDim()}";
+                                }
+                            }
+                            else
+                            {
+                                if (!feed.HasValue || feed.Value != motionCommand.Feed)
+                                {
+                                    motionCommand.Line = $"{motionCommand.Command} X{motionCommand.End.X.ToDim()} Y{motionCommand.End.Y.ToDim()} S20 F{motionCommand.Feed}";
+                                }
+                                else
+                                {
+                                    motionCommand.Line = $"{motionCommand.Command} X{motionCommand.End.X.ToDim()} Y{motionCommand.End.Y.ToDim()} S20 ";
+                                }
+                            }
+
+                            feed = motionCommand.Feed;
+                            newToolPath.Add(motionCommand);
+                            break;
+                        case "G2":
+                        case "G3":
+                        case "G02":
+                        case "G03":
+                            throw new Exception("Currently Arcs not support in offset...will be shortly.");
+
+                        case "G4":
+                        case "G04":
+                            newToolPath.Add(command);
+                            break;
+                    }
+
+
+                }
+                else
+                {
+                    newToolPath.Add(command);
                 }
             }
 
+            File = Core.GCode.GCodeFile.FromCommands(newToolPath);
+
             IsDirty = true;
-            RaisePropertyChanged(nameof(IsDirty));          
+            RaisePropertyChanged(nameof(IsDirty));
             RaisePropertyChanged(nameof(File));
             RenderPaths();
         }

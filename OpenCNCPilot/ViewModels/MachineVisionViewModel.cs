@@ -23,6 +23,8 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
         {
             Profile = new Models.VisionProfile();
             SaveProfileCommand = new RelayCommand(SaveProfile);
+            CaptureCameraCommand = new RelayCommand(CaptureCameraLocation);
+            CaptureDrillLocationCommand = new RelayCommand(CaptureDrillLocation);
         }
 
         public override async Task InitAsync()
@@ -32,6 +34,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             {
                 Profile = profile;
             }
+
         }
 
         public async void SaveProfile()
@@ -83,11 +86,16 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
 
         public Mat PerformShapeDetection(Mat img)
         {
+            if(img == null)
+            {
+                return null;
+            }
+
             using (var gray = new Image<Gray, byte>(img.Bitmap))
             using (var blurredGray = new Image<Gray, float>(gray.Size))
             using (var finalOutput = new Mat())
             {
-
+                
                 var whiteColor = new Bgr(System.Drawing.Color.White).MCvScalar;
 
                 CvInvoke.GaussianBlur(gray, blurredGray, System.Drawing.Size.Empty, Profile.GaussianSigmaX);
@@ -137,6 +145,12 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                     {
                         Line(destImage, 0, (int)avg.Y, img.Width, (int)avg.Y, System.Drawing.Color.Red);
                         Line(destImage, (int)avg.X, 0, (int)avg.X, img.Size.Height, System.Drawing.Color.Red);
+
+                        if((avg.X >= ((img.Width / 2) - 1)) && avg.Y <= ((img.Width / 2) + 1) &&
+                           (avg.Y >= ((img.Height / 2) - 1)) && avg.Y <= ((img.Height / 2) + 1))
+                        {
+                            Circle(destImage, (int)avg.X, (int)avg.Y, 3, System.Drawing.Color.Red);
+                        }
                     }
                 }
 
@@ -290,5 +304,24 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                 return (destImage as Mat).Clone();
             }
         }
+
+        private Point2D<double> _drillWorkLocation;
+
+        public void CaptureDrillLocation()
+        {
+            _drillWorkLocation = new Point2D<double>(Machine.NormalizedPosition.X, Machine.NormalizedPosition.Y);
+        }
+
+        public async void CaptureCameraLocation()
+        {
+            var deltaX = Machine.NormalizedPosition.X - _drillWorkLocation.X;
+            var deltaY = Machine.NormalizedPosition.Y - _drillWorkLocation.Y;
+            Machine.Settings.PositioningCamera.Tool1Offset = new Point2D<double>(deltaX, deltaY);
+            await Machine.MachineRepo.SaveAsync();
+        }
+
+        public RelayCommand CaptureDrillLocationCommand { get; private set; }
+
+        public RelayCommand CaptureCameraCommand { get; private set; }
     }
 }

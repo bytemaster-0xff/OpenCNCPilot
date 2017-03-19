@@ -46,6 +46,8 @@ namespace LagoVista.GCode.Sender.Managers
             if (HeightMap.Status == HeightMapStatus.Populated)
             {
                 Machine.SendCommand($"G0Z{Machine.Settings.ProbeSafeHeight.ToString(Constants.DecimalOutputFormat)}");
+                Machine.AddStatusMessage(StatusMessageTypes.Info, $"Creating Height Map Completed");
+                Machine.AddStatusMessage(StatusMessageTypes.Info, $"Next - Apply Height Map to GCode");
                 CancelProbing();
 
                 return;
@@ -118,7 +120,7 @@ namespace LagoVista.GCode.Sender.Managers
 
         public void CancelProbing()
         {
-
+            Machine.SetMode(OperatingMode.Manual);
         }
 
         HeightMapProbePoint _currentPoint;

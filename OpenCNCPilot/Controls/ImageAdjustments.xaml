@@ -216,6 +216,27 @@
                     <Slider Value="{Binding Path=Profile.ContourMinArea, Mode=TwoWay}" ToolTip="{Binding PolygonEpsilonHelp}" Minimum="1" Maximum="500" SmallChange="1" LargeChange="10" />
                 </StackPanel>
             </TabItem>
+
+            <TabItem Header="Calibration">
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <Label Content="Offset X:" Width="200"/>
+                        <Label Content="{Binding Path=Machine.Settings.PositioningCamera.Tool1Offset.X, StringFormat=0.0000}" HorizontalContentAlignment="Right" Width="80"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <Label Content="Offset Y:" Width="200"/>
+                        <Label Content="{Binding Path=Machine.Settings.PositioningCamera.Tool1Offset.Y, StringFormat=0.0000}" HorizontalContentAlignment="Right" Width="80" />
+                    </StackPanel>
+
+                    <Label Content="Step1" FontWeight="Bold" />
+                    <TextBlock Text="Manually drill a hole someone in your stock and press Capture Drill Location" />
+                    <Button Command="{Binding CaptureDrillLocationCommand}" Content="Capture Drill Location" />
+                    <TextBlock Text="Jog the camera so that that hole is in the cross chairs and press Capture camera Location" />
+                    <Button Command="{Binding CaptureCameraCommand}" Content="Capture Camera Location" />
+                </StackPanel>
+
+            </TabItem>
+
         </TabControl>
     </Grid>
 </UserControl>

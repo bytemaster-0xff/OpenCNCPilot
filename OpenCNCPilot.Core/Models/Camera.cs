@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LagoVista.Core.Models.Drawing;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,5 +12,9 @@ namespace LagoVista.GCode.Sender.Models
         public String Id { get; set; }
         public int CameraIndex { get; set; }
         public String Name { get; set; }
+
+        public Point2D<double> Tool1Offset { get; set; }
+        public Point2D<double> Tool2Offset { get; set; }
+        public Point2D<double> Tool3Offset { get; set; }
     }
 }

@@ -59,7 +59,7 @@ namespace LagoVista.GCode.Sender.Models
 
             foreach (var command in file.Commands)
             {
-                if (command is Core.GCode.Commands.MCode)
+                if (command is Core.GCode.Commands.MCode || command is Core.GCode.Commands.OtherCode)
                 {
                     newToolPath.Add(command);
                     continue;

@@ -1,4 +1,4 @@
-﻿
+﻿using LagoVista.Core;
 using LagoVista.Core.GCode.Commands;
 
 namespace LagoVista.GCode.Sender.ViewModels
@@ -32,22 +32,22 @@ namespace LagoVista.GCode.Sender.ViewModels
             switch (direction)
             {
                 case JogDirections.XPlus:
-                    Machine.SendCommand($"{Machine.Settings.JogGCodeCommand} X{current.X + XYStepSize} F{Machine.Settings.JogFeedRate}");
+                    Machine.SendCommand($"{Machine.Settings.JogGCodeCommand} X{(current.X + XYStepSize).ToDim()} F{Machine.Settings.JogFeedRate}");
                     break;
                 case JogDirections.YPlus:
-                    Machine.SendCommand( $"{Machine.Settings.JogGCodeCommand} Y{current.Y + XYStepSize} F{Machine.Settings.JogFeedRate}");
+                    Machine.SendCommand( $"{Machine.Settings.JogGCodeCommand} Y{(current.Y + XYStepSize).ToDim()} F{Machine.Settings.JogFeedRate}");
                     break;
                 case JogDirections.ZPlus:
-                    Machine.SendCommand($"{Machine.Settings.JogGCodeCommand} Z{current.Z + ZStepSize} F{Machine.Settings.JogFeedRate}");
+                    Machine.SendCommand($"{Machine.Settings.JogGCodeCommand} Z{(current.Z + ZStepSize).ToDim()} F{Machine.Settings.JogFeedRate}");
                     break;
                 case JogDirections.XMinus:
-                    Machine.SendCommand($"{Machine.Settings.JogGCodeCommand} X{current.X - XYStepSize} F{Machine.Settings.JogFeedRate}");
+                    Machine.SendCommand($"{Machine.Settings.JogGCodeCommand} X{(current.X - XYStepSize).ToDim()} F{Machine.Settings.JogFeedRate}");
                     break;
                 case JogDirections.YMinus:
-                    Machine.SendCommand($"{Machine.Settings.JogGCodeCommand} Y{current.Y - XYStepSize} F{Machine.Settings.JogFeedRate}");
+                    Machine.SendCommand($"{Machine.Settings.JogGCodeCommand} Y{(current.Y - XYStepSize).ToDim()} F{Machine.Settings.JogFeedRate}");
                     break;
                 case JogDirections.ZMinus:
-                    Machine.SendCommand($"{Machine.Settings.JogGCodeCommand} Z{current.Z - ZStepSize} F{Machine.Settings.JogFeedRate}");
+                    Machine.SendCommand($"{Machine.Settings.JogGCodeCommand} Z{(current.Z - ZStepSize).ToDim()} F{Machine.Settings.JogFeedRate}");
                     break;
             }
         }
