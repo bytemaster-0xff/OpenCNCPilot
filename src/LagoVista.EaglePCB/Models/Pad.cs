@@ -42,23 +42,10 @@ namespace LagoVista.EaglePCB.Models
             {
                 return pad;
             }
+            var rotated = new Point2D<double>(pad.X, pad.Y).Rotate(angle);
 
-            /*TODO: Why do we ignore the rotation at the package level?  If it's not 90, do we rotate then?
-            if (RotateStr.StartsWith("R"))
-            {
-                if (String.IsNullOrEmpty(RotateStr))
-                {
-                    return pad;
-                };
-
-                double angle;
-                if (double.TryParse(RotateStr.Substring(1), out angle))
-                { */
-                    var rotated = new Point2D<double>(pad.X, pad.Y).Rotate(angle);
-                    pad.X = Math.Round(rotated.X, 6);
-                    pad.Y = Math.Round(rotated.Y, 6);
-                /*}
-            }*/
+            pad.X = Math.Round(rotated.X, 6);
+            pad.Y = Math.Round(rotated.Y, 6);
 
             return pad;
         }

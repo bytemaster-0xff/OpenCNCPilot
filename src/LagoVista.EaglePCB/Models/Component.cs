@@ -41,7 +41,6 @@ namespace LagoVista.EaglePCB.Models
             get
             {
                 var pads = new List<Pad>();
-                Debug.WriteLine(Name + " " + Rotate);
                 foreach (var pad in Package.Pads)
                 {
                     var rotatedPad = pad.ApplyRotation(Rotate.ToAngle());
@@ -49,11 +48,27 @@ namespace LagoVista.EaglePCB.Models
                     rotatedPad.Y += Y.Value;                    
                     pads.Add(rotatedPad);
                 }
-                Debug.WriteLine("-");
-
+           
                 return pads;
             }
+        }
 
+        public List<Hole> Holes
+        {
+            get
+            {
+                var holes = new List<Hole>();
+                foreach(var hole in Package.Holes)
+                {
+                    var rotatedHole = hole.ApplyRotation(Rotate.ToAngle());
+                    rotatedHole.X += X.Value;
+                    rotatedHole.Y += Y.Value;
+                    holes.Add(rotatedHole);
+                }
+
+
+                return holes;
+            }
         }
 
         public List<SMD> SMDPads

@@ -149,7 +149,7 @@ namespace LagoVista.GCode.Sender.Application.Controls
             foreach (var via in board.Vias)
             {
                 var padCopperMeshBuilder = new MeshBuilder(false, false);
-                padCopperMeshBuilder.AddCylinder(new Point3D(via.X, via.Y, 0), new Point3D(via.X, via.Y, 0.1), via.DrillDiameter * 1.25);
+                padCopperMeshBuilder.AddCylinder(new Point3D(via.X, via.Y, 0), new Point3D(via.X, via.Y, 0.1), (via.DrillDiameter));
                 var padCopper = new GeometryModel3D() { Geometry = padCopperMeshBuilder.ToMesh(true), Material = copperMaterial };
                 modelGroup.Children.Add(padCopper);
 
@@ -214,10 +214,10 @@ namespace LagoVista.GCode.Sender.Application.Controls
                     foreach (var circle in board.Holes)
                     {
                         var circleMeshBuilder = new MeshBuilder(false, false);
-                        circleMeshBuilder.AddCylinder(new Point3D(project.ScrapSides - project.HoldDownBoardOffset, project.ScrapTopBottom + board.Height / 2, -boardThickness), new Point3D(project.ScrapSides - project.HoldDownBoardOffset, project.ScrapTopBottom + board.Height / 2, 0.01), project.HoldDownDiameter);
-                        circleMeshBuilder.AddCylinder(new Point3D(project.ScrapSides + board.Width + project.HoldDownBoardOffset, project.ScrapTopBottom + board.Height / 2, -boardThickness), new Point3D(project.ScrapSides + board.Width + project.HoldDownBoardOffset, project.ScrapTopBottom + board.Height / 2, 0.01), project.HoldDownDiameter);
-                        circleMeshBuilder.AddCylinder(new Point3D(project.ScrapSides + board.Width / 2, project.ScrapTopBottom + board.Height + project.HoldDownBoardOffset, -boardThickness), new Point3D(project.ScrapSides + board.Width / 2, project.ScrapTopBottom + board.Height + project.HoldDownBoardOffset, 0.01), project.HoldDownDiameter);
-                        circleMeshBuilder.AddCylinder(new Point3D(project.ScrapSides + board.Width / 2, project.ScrapTopBottom - project.HoldDownBoardOffset, -boardThickness), new Point3D(project.ScrapSides + board.Width / 2, project.ScrapTopBottom - project.HoldDownBoardOffset, 0.01), project.HoldDownDiameter);
+                        circleMeshBuilder.AddCylinder(new Point3D(project.ScrapSides - project.HoldDownBoardOffset, project.ScrapTopBottom + board.Height / 2, -boardThickness), new Point3D(project.ScrapSides - project.HoldDownBoardOffset, project.ScrapTopBottom + board.Height / 2, 0.01), project.HoldDownDiameter / 2);
+                        circleMeshBuilder.AddCylinder(new Point3D(project.ScrapSides + board.Width + project.HoldDownBoardOffset, project.ScrapTopBottom + board.Height / 2, -boardThickness), new Point3D(project.ScrapSides + board.Width + project.HoldDownBoardOffset, project.ScrapTopBottom + board.Height / 2, 0.01), project.HoldDownDiameter / 2);
+                        circleMeshBuilder.AddCylinder(new Point3D(project.ScrapSides + board.Width / 2, project.ScrapTopBottom + board.Height + project.HoldDownBoardOffset, -boardThickness), new Point3D(project.ScrapSides + board.Width / 2, project.ScrapTopBottom + board.Height + project.HoldDownBoardOffset, 0.01), project.HoldDownDiameter / 2);
+                        circleMeshBuilder.AddCylinder(new Point3D(project.ScrapSides + board.Width / 2, project.ScrapTopBottom - project.HoldDownBoardOffset, -boardThickness), new Point3D(project.ScrapSides + board.Width / 2, project.ScrapTopBottom - project.HoldDownBoardOffset, 0.01), project.HoldDownDiameter / 2);
                         stockGroup.Children.Add(new GeometryModel3D() { Geometry = circleMeshBuilder.ToMesh(true), Material = blackMaterial });
                     }
 

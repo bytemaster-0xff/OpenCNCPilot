@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -36,15 +37,7 @@ namespace LagoVista.EaglePCB.Models
                         drills.Add(new Drill() { X = via.X, Y = via.Y, Diameter = via.DrillDiameter });
                     }
                 }
-
-                foreach (var component in Components)
-                {
-                    foreach (var hole in component.Package.Holes)
-                    {
-                        drills.Add(new Drill() { X = component.X.Value, Y = component.Y.Value, Diameter = hole.Drill });
-                    }
-                }
-
+                
                 return drills;
             }
         }
@@ -78,7 +71,15 @@ namespace LagoVista.EaglePCB.Models
 
         public List<Hole> Holes
         {
-            get { return Layers.Where(layer => layer.Number == 45).FirstOrDefault().Holes; }
+            get
+            {
+                foreach(var hole in Layers.Where(layer => layer.Number == 45).FirstOrDefault().Holes)
+                {
+                    Debug.WriteLine(hole.X + " " + hole.Y + " " + hole.Drill);
+                }
+
+                return Layers.Where(layer => layer.Number == 45).FirstOrDefault().Holes;
+            }
         }
         public List<Wire> UnroutedWires { get; set; }
 

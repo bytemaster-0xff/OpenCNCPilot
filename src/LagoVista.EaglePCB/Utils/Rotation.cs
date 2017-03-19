@@ -19,9 +19,7 @@ namespace LagoVista.EaglePCB
             
             var rotX = (cos * (point.X - origin.X)) - (sin * (point.Y - origin.Y));
             var rotY = (cos * (point.Y - origin.Y)) + (sin * (point.X - origin.X));
-
-            Debug.WriteLine($"  {point.X:0.00}x{point.Y:0.00} - {rotX:0.00}x{rotY:0.00} - {angle} ");
-
+            
             return new Point2D<double>(rotX, rotY);
         }
 

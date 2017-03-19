@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LagoVista.Core.Models.Drawing;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -26,6 +27,23 @@ namespace LagoVista.EaglePCB.Models
                 Name = element.GetString("name")
             };
         }
+
+        public Hole ApplyRotation(double angle)
+        {
+            var hole = this.MemberwiseClone() as Hole;
+            if (angle == 0)
+            {
+                return hole;
+            }
+
+            var rotated = new Point2D<double>(hole.X, hole.Y).Rotate(angle);
+
+            hole.X = Math.Round(rotated.X, 6);
+            hole.Y = Math.Round(rotated.Y, 6);
+
+            return hole;
+        }
+
 
         public override string ToString()
         {

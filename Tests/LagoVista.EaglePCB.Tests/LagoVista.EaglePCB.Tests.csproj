@@ -89,6 +89,7 @@
     <Content Include="EagleSample.brd">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="HeaterController.brd" />
     <None Include="packages.config" />
     <Content Include="PNPHeadBoard.brd">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

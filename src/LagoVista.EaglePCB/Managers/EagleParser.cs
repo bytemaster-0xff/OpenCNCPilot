@@ -63,9 +63,10 @@ namespace LagoVista.EaglePCB.Managers
 
                     if (layer.Number == 45)
                     {
-                        foreach (var hole in element.Package.Holes)
+                        //foreach (var hole in element.Package.Holes)
+                        foreach(var hole in element.Holes)
                         {
-                            layer.Holes.Add(new Models.Hole() { Drill = hole.Drill, X = element.X.Value + hole.X, Y = element.Y.Value, Name=hole.Name });
+                            layer.Holes.Add(new Models.Hole() { Drill = hole.Drill, X = hole.X, Y = hole.Y, Name=hole.Name });
                         }
                     }
                 }
