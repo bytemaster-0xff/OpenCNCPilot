@@ -128,7 +128,10 @@ namespace LagoVista.GCode.Sender.Managers
 
                         case "G4":
                         case "G04":
-                            newToolPath.Add(command);
+                            if (_machine.Settings.MachineType == FirmwareTypes.GRBL1_1)
+                            {
+                                newToolPath.Add(command);
+                            }
                             break;
                     }
 
@@ -136,7 +139,10 @@ namespace LagoVista.GCode.Sender.Managers
                 }
                 else
                 {
-                    newToolPath.Add(command);
+                    if (_machine.Settings.MachineType == FirmwareTypes.GRBL1_1)
+                    {
+                        newToolPath.Add(command);
+                    }
                 }
             }
 

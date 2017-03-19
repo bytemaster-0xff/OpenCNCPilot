@@ -100,29 +100,38 @@ namespace LagoVista.GCode.Sender.Managers
         public int CommandAcknowledged()
         {
             var sentCommandLength = _file.Commands[Tail].MessageLength;
-            _file.Commands[Tail].Status = GCodeCommand.StatusTypes.Acknowledged;
-            Debug.WriteLine("Acknowledged:  " + Tail + ". " + _file.Commands[Tail].Line);
-            Tail++;
-
-            if (_pendingToolChangeLine != null && _pendingToolChangeLine.Value == Tail)
+            if (_file.Commands[Tail].Status == GCodeCommand.StatusTypes.Sent)
             {
-                _file.Commands[Tail].Status = GCodeCommand.StatusTypes.Internal;
-                Debug.WriteLine("Performing Tool Change " + Tail);
-                HandleToolChange(_file.Commands[Tail] as ToolChangeCommand);
-                Debug.WriteLine("Cleared Tool Change " + Tail + ". continue");
+                _file.Commands[Tail].Status = GCodeCommand.StatusTypes.Acknowledged;
+                Debug.WriteLine("Acknowledged:  " + Tail + ". " + _file.Commands[Tail].Line);
                 Tail++;
-            }
 
-            if (Tail < _file.Commands.Count)
-            {
-                _file.Commands[Tail].StartTimeStamp = DateTime.Now;
+                if (_pendingToolChangeLine != null && _pendingToolChangeLine.Value == Tail)
+                {
+                    _file.Commands[Tail].Status = GCodeCommand.StatusTypes.Internal;
+                    Debug.WriteLine("Performing Tool Change " + Tail);
+                    HandleToolChange(_file.Commands[Tail] as ToolChangeCommand);
+                    Debug.WriteLine("Cleared Tool Change " + Tail + ". continue");
+                    Tail++;
+                }
+
+                if (Tail < _file.Commands.Count)
+                {
+                    _file.Commands[Tail].StartTimeStamp = DateTime.Now;
+                }
+                else
+                {
+                    RaisePropertyChanged(nameof(IsCompleted));
+                }
+
+                return sentCommandLength;
             }
             else
             {
-                RaisePropertyChanged(nameof(IsCompleted));
-            }
+                Debug.WriteLine("Attempt to acknowledge command but not sent.");
 
-            return sentCommandLength;
+                return 0;
+            }
         }
     }
 }

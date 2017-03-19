@@ -32,7 +32,7 @@ namespace LagoVista.GCode.Sender
             {
                 var line = _toSendPriority.Dequeue();
                 _writer.Write(line);
-                if (line != "?")
+                if (line != "?" && line != "M114")
                 {
                     AddStatusMessage(StatusMessageTypes.SentLinePriority, line.TrimStart().TrimEnd());
                 }
@@ -48,8 +48,11 @@ namespace LagoVista.GCode.Sender
             _writer.Write('\n');
             _writer.Flush();
 
-            UpdateStatus(send_line.ToString());
-            AddStatusMessage(StatusMessageTypes.SentLine, send_line.ToString());
+            if (send_line != "M114")
+            {
+                UpdateStatus(send_line.ToString());
+                AddStatusMessage(StatusMessageTypes.SentLine, send_line.ToString());
+            }
 
             _sentQueue.Enqueue(send_line);
             _toSend.Dequeue();
@@ -59,7 +62,7 @@ namespace LagoVista.GCode.Sender
         {
             var sendCommand = _jobToSend.Peek();
 
-            _writer.Write(sendCommand.Line.Trim('\r','\n'));
+            _writer.Write(sendCommand.Line.Trim('\r', '\n'));
             _writer.Write('\n');
             _writer.Flush();
 
@@ -86,7 +89,7 @@ namespace LagoVista.GCode.Sender
                     }
                     else
                     {
-                        Enqueue("M114");
+//                        Enqueue("M114");
                     }
 
                     _lastPollTime = Now;
@@ -99,7 +102,17 @@ namespace LagoVista.GCode.Sender
                     if (Settings.CurrentSerialPort.Name == "Simulated")
                         MachinePosition = GCodeFileManager.CurrentCommand.CurrentPosition;
                     else
-                        Enqueue("?", true);
+                    {
+                        if (Settings.MachineType == FirmwareTypes.GRBL1_1)
+                        {
+                            Enqueue("?", true);
+                        }
+                        else
+                        {
+                            //Enqueue("M114");
+                        }
+
+                    }
 
                     _lastPollTime = Now;
                 }
@@ -126,12 +139,12 @@ namespace LagoVista.GCode.Sender
 
         private bool ShouldSendNormalPriorityItems()
         {
-            return _toSend.Count > 0 && ((_toSend.Peek().ToString()).Length + 1) < (Settings.ControllerBufferSize - UnacknowledgedBytesSent);
+            return _toSend.Count > 0 && ((_toSend.Peek().ToString()).Length + 1) < (Settings.ControllerBufferSize - Math.Max(0,UnacknowledgedBytesSent));
         }
 
         private bool ShouldSendJobItems()
         {
-            //  return _jobToSend.Count > 0 && ((_jobToSend.Peek().ToString()).Length + 1) < (_settings.ControllerBufferSize - UnacknowledgedBytesSent);
+            //return _jobToSend.Count > 0 && ((_jobToSend.Peek().ToString()).Length + 1) < (_settings.ControllerBufferSize - Math.Max(0,UnacknowledgedBytesSent));
             return _jobToSend.Count > 0;
         }
 

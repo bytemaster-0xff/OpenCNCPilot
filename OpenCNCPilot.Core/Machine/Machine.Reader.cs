@@ -23,8 +23,6 @@ namespace LagoVista.GCode.Sender
 
             if (line.StartsWith("ok"))
             {
-
-
                 if (GCodeFileManager.HasValidFile && Mode == OperatingMode.SendingGCodeFile)
                 {
                     Debug.WriteLine("OK Received - Acknowledge GCode Command");

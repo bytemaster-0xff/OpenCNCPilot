@@ -27,7 +27,7 @@ namespace LagoVista.GCode.Sender.ViewModels
 
         public void Jog(JogDirections direction)
         {
-            var current = Machine.MachinePosition - Machine.WorkPosition;
+            var current = Machine.Settings.MachineType == FirmwareTypes.GRBL1_1 ? Machine.MachinePosition - Machine.WorkPosition : Machine.MachinePosition;
 
             switch (direction)
             {
