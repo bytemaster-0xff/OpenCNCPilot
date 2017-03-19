@@ -1,6 +1,7 @@
 ﻿using LagoVista.Core.Models.Drawing;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,13 +12,15 @@ namespace LagoVista.EaglePCB
     {
         public static Point2D<double> Rotate(this Point2D<double> point, Point2D<double> origin, double angle)
         {
-            var radians = (Math.PI / 180) * angle;
+            var radians = (Math.PI / 180) * (angle);
 
             var cos = Math.Cos(radians);
             var sin = Math.Sin(radians);
+            
+            var rotX = (cos * (point.X - origin.X)) - (sin * (point.Y - origin.Y));
+            var rotY = (cos * (point.Y - origin.Y)) + (sin * (point.X - origin.X));
 
-            var rotX = (cos * (point.X - origin.X)) + (sin * (point.Y - origin.Y)) + origin.X;
-            var rotY = (cos * (point.Y - origin.Y)) + (sin * (point.X - origin.X)) + origin.Y;
+            Debug.WriteLine($"  {point.X:0.00}x{point.Y:0.00} - {rotX:0.00}x{rotY:0.00} - {angle} ");
 
             return new Point2D<double>(rotX, rotY);
         }

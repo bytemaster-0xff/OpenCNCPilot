@@ -26,9 +26,23 @@ namespace LagoVista.EaglePCB.Models
             get
             {
                 var drills = Layers.Where(layer => layer.Number == 44).FirstOrDefault().Drills;
-                foreach(var via in Vias)
+                foreach (var via in Vias)
                 {
-                    drills.Add(new Drill() { X = via.X, Y = via.Y, Diameter = via.DrillDiameter });
+                    var existingDrill = drills.Where(drl => drl.X == via.X && drl.Y == via.Y);
+
+                    /* Vias have drills/holes on top and bottom, only need one */
+                    if (!existingDrill.Any())
+                    {
+                        drills.Add(new Drill() { X = via.X, Y = via.Y, Diameter = via.DrillDiameter });
+                    }
+                }
+
+                foreach (var component in Components)
+                {
+                    foreach (var hole in component.Package.Holes)
+                    {
+                        drills.Add(new Drill() { X = component.X.Value, Y = component.Y.Value, Diameter = hole.Drill });
+                    }
                 }
 
                 return drills;
@@ -52,8 +66,8 @@ namespace LagoVista.EaglePCB.Models
                     });
                 }
 
-                var orderedBits = bits.OrderBy(drl=>drl.Diameter).ToList();
-                foreach(var bit in orderedBits)
+                var orderedBits = bits.OrderBy(drl => drl.Diameter).ToList();
+                foreach (var bit in orderedBits)
                 {
                     bit.ToolName = $"T{toolIndex++:00}";
                 }

@@ -41,7 +41,7 @@ namespace LagoVista.EaglePCB.Models
             get
             {
                 var pads = new List<Pad>();
-                
+                Debug.WriteLine(Name + " " + Rotate);
                 foreach (var pad in Package.Pads)
                 {
                     var rotatedPad = pad.ApplyRotation(Rotate.ToAngle());
@@ -49,6 +49,7 @@ namespace LagoVista.EaglePCB.Models
                     rotatedPad.Y += Y.Value;                    
                     pads.Add(rotatedPad);
                 }
+                Debug.WriteLine("-");
 
                 return pads;
             }

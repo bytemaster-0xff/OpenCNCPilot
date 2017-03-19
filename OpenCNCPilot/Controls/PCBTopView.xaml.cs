@@ -37,7 +37,7 @@ namespace LagoVista.GCode.Sender.Application.Controls
                     var elipse = new Ellipse() { Width = drill.Diameter * 10.0, Height = drill.Diameter * 10.0 };
                     elipse.Fill = Brushes.Black;
                     var x = ((drill.X - (drill.Diameter / 2)) + offsetX);
-                    var y = ((manager.Board.Height - (drill.Y - (drill.Diameter / 2))) + offsetY);
+                    var y = ((manager.Board.Height - (drill.Y + (drill.Diameter / 2))) + offsetY);
                     elipse.SetValue(Canvas.TopProperty, y * 10);
                     elipse.SetValue(Canvas.LeftProperty, x * 10);
                     elipse.ToolTip = $"{x + drill.Diameter / 2}x{y + drill.Diameter / 2} - {drill.Diameter}D";
