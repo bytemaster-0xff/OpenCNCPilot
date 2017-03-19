@@ -141,6 +141,9 @@
       <DependentUpon>MachineStatusControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\MaskingTextBox.cs" />
+    <Compile Include="Controls\PCBTopView.xaml.cs">
+      <DependentUpon>PCBTopView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\ScrollListBox.cs" />
     <Compile Include="Controls\ShapeDetection.cs" />
     <Compile Include="Converters\ColorConverters.cs" />
@@ -237,6 +240,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\MachineStatusControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\PCBTopView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
