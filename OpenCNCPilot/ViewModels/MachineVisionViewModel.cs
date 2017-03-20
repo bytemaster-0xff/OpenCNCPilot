@@ -309,14 +309,31 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
 
         public void CaptureDrillLocation()
         {
-            _drillWorkLocation = new Point2D<double>(Machine.NormalizedPosition.X, Machine.NormalizedPosition.Y);
+            if (Machine.Settings.MachineType == FirmwareTypes.GRBL1_1)
+            {
+                _drillWorkLocation = new Point2D<double>(Machine.NormalizedPosition.X, Machine.NormalizedPosition.Y);
+            }
+            else
+            {
+                _drillWorkLocation = new Point2D<double>(Machine.MachinePosition.X, Machine.MachinePosition.Y);
+            }
         }
 
         public async void CaptureCameraLocation()
         {
-            var deltaX = Machine.NormalizedPosition.X - _drillWorkLocation.X;
-            var deltaY = Machine.NormalizedPosition.Y - _drillWorkLocation.Y;
-            Machine.Settings.PositioningCamera.Tool1Offset = new Point2D<double>(deltaX, deltaY);
+            if (Machine.Settings.MachineType == FirmwareTypes.GRBL1_1)
+            {
+                var deltaX = Machine.NormalizedPosition.X - _drillWorkLocation.X;
+                var deltaY = Machine.NormalizedPosition.Y - _drillWorkLocation.Y;
+                Machine.Settings.PositioningCamera.Tool1Offset = new Point2D<double>(deltaX, deltaY);
+            }
+            else
+            {
+                var deltaX = Machine.MachinePosition.X - _drillWorkLocation.X;
+                var deltaY = Machine.MachinePosition.Y - _drillWorkLocation.Y;
+                Machine.Settings.PositioningCamera.Tool1Offset = new Point2D<double>(deltaX, deltaY);
+            }
+
             await Machine.MachineRepo.SaveAsync();
         }
 

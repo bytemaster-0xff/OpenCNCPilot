@@ -89,7 +89,7 @@ namespace LagoVista.GCode.Sender
                     }
                     else
                     {
-//                        Enqueue("M114");
+                        Enqueue("M114");
                     }
 
                     _lastPollTime = Now;

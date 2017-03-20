@@ -131,7 +131,7 @@ namespace LagoVista.GCode.Sender
                             HeightMapManager.ProbeCompleted(probeResult.Value);
                             break;
                         default:
-                            AddStatusMessage(StatusMessageTypes.Warning, "Unexpected PRM return message.");
+                            AddStatusMessage(StatusMessageTypes.Warning, "Unexpected PRB return message.");
                             break;
                     }
                 }

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace LagoVista.GCode.Sender.Managers
@@ -21,7 +22,9 @@ namespace LagoVista.GCode.Sender.Managers
 
     public partial class ProbingManager
     {
-        ITimer _timer;
+        //ITimer _timer;
+
+        Timer _timer;
 
         ProbeStatus _status = ProbeStatus.Idle;
 
@@ -58,15 +61,12 @@ namespace LagoVista.GCode.Sender.Managers
 
             if (Machine.SetMode(OperatingMode.ProbingHeight))
             {
-                _timer = Core.PlatformSupport.Services.TimerFactory.Create(TimeSpan.FromSeconds(Machine.Settings.ProbeTimeoutSeconds));
-                _timer.Interval = TimeSpan.FromSeconds(Machine.Settings.ProbeTimeoutSeconds);
-                _timer.Start();
-                _timer.Tick += _timer_Tick;
+                _timer = new Timer(Timer_Tick, null, Machine.Settings.ProbeTimeoutSeconds * 1000, 0);
                 Machine.SendCommand($"G38.3 Z-{Machine.Settings.ProbeMaxDepth.ToString("0.###", Constants.DecimalOutputFormat)} F{Machine.Settings.ProbeFeed.ToString("0.#", Constants.DecimalOutputFormat)}");
             }
         }
 
-        private void _timer_Tick(object sender, EventArgs e)
+        private void Timer_Tick(object state)
         {
             if (_timer != null)
             {
@@ -76,11 +76,9 @@ namespace LagoVista.GCode.Sender.Managers
 
                 _status = ProbeStatus.TimedOut;
 
-                if (_timer != null)
-                {
-                    _timer.Stop();
-                    _timer = null;
-                }
+                _timer.Change(Timeout.Infinite, Timeout.Infinite);
+                _timer.Dispose();
+                _timer = null;
             }
         }
 
@@ -92,7 +90,8 @@ namespace LagoVista.GCode.Sender.Managers
 
             if (_timer != null)
             {
-                _timer.Stop();
+                _timer.Change(Timeout.Infinite, Timeout.Infinite);
+                _timer.Dispose();
                 _timer = null;
             }
 
@@ -102,7 +101,7 @@ namespace LagoVista.GCode.Sender.Managers
         public void SetZAxis(double z)
         {
             Machine.SendCommand($"G92 Z{Machine.Settings.ProbeOffset.ToString("0.###", Constants.DecimalOutputFormat)}");
-       }
+        }
 
         public void ProbeCompleted(Vector3 position)
         {
@@ -110,7 +109,8 @@ namespace LagoVista.GCode.Sender.Managers
 
             if (_timer != null)
             {
-                _timer.Stop();
+                _timer.Change(Timeout.Infinite, Timeout.Infinite);
+                _timer.Dispose();
                 _timer = null;
             }
 
@@ -127,7 +127,8 @@ namespace LagoVista.GCode.Sender.Managers
 
             if (_timer != null)
             {
-                _timer.Stop();
+                _timer.Change(Timeout.Infinite, Timeout.Infinite);
+                _timer.Dispose();
                 _timer = null;
             }
         }

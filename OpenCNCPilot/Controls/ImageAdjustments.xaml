@@ -211,7 +211,7 @@
                     <Slider Value="{Binding Path=Profile.PolygonEpsilonFactor, Mode=TwoWay}" ToolTip="{Binding PolygonEpsilonHelp}" Minimum="0.01" Maximum="1.0" SmallChange="0.05" LargeChange="0.05" />
                     <StackPanel Orientation="Horizontal">
                         <Label Content="Min Area:" Width="210"/>
-                        <Label Content="{Binding Profile.ContourMinArea, FallbackValue=3, StringFormat=0.0}" HorizontalContentAlignment="Right" Width="80"/>
+                        <Label Content="{Binding Profile.ContourMinArea, FallbackValue=3}" HorizontalContentAlignment="Right" Width="80"/>
                     </StackPanel>
                     <Slider Value="{Binding Path=Profile.ContourMinArea, Mode=TwoWay}" ToolTip="{Binding PolygonEpsilonHelp}" Minimum="1" Maximum="500" SmallChange="1" LargeChange="10" />
                 </StackPanel>
@@ -221,11 +221,11 @@
                 <StackPanel>
                     <StackPanel Orientation="Horizontal">
                         <Label Content="Offset X:" Width="200"/>
-                        <Label Content="{Binding Path=Machine.Settings.PositioningCamera.Tool1Offset.X, StringFormat=0.0000}" HorizontalContentAlignment="Right" Width="80"/>
+                        <TextBlock Text="{Binding Path=Machine.Settings.PositioningCamera.Tool1Offset.X, StringFormat=\{0:0.0000\} }" TextAlignment="Right" Width="80"/>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
                         <Label Content="Offset Y:" Width="200"/>
-                        <Label Content="{Binding Path=Machine.Settings.PositioningCamera.Tool1Offset.Y, StringFormat=0.0000}" HorizontalContentAlignment="Right" Width="80" />
+                        <TextBlock Text="{Binding Path=Machine.Settings.PositioningCamera.Tool1Offset.Y, StringFormat=\{0:0.0000\} }" TextAlignment="Right" Width="80" />
                     </StackPanel>
 
                     <Label Content="Step1" FontWeight="Bold" />
