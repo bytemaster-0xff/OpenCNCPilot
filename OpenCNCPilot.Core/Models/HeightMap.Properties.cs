@@ -8,6 +8,7 @@ namespace LagoVista.GCode.Sender.Models
 {
     public enum HeightMapStatus
     {
+        NotAvailable,
         NotPopulated,
         Populating,
         Populated,

@@ -19,6 +19,9 @@ namespace LagoVista.GCode.Sender.Interfaces
         bool HasHeightMap { get; }
         bool HeightMapDirty { get; }
 
+        HeightMapStatus Status { get; }
+
+
         void NewHeightMap(HeightMap heightMap);
 
 

@@ -2,6 +2,8 @@
 using LagoVista.Core.GCode.Commands;
 using LagoVista.Core.Models.Drawing;
 using System;
+using System.Collections.Generic;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace LagoVista.GCode.Sender.Managers
@@ -75,6 +77,24 @@ namespace LagoVista.GCode.Sender.Managers
 
             Max = max;
             Min = min;
+        }
+
+        public async Task SaveFileAsync(String fileName)
+        {
+            if(File == null)
+            {
+                throw new Exception("Attempt to save file when none exists");
+            }
+
+            var lines = new List<string>();
+
+            foreach(var cmd in File.Commands)
+            {
+                lines.Add(cmd.Line);
+            }
+
+            await Core.PlatformSupport.Services.Storage.WriteAllLinesAsync(fileName, lines);
+            IsDirty = false;
         }
 
         public Task CloseFileAsync()

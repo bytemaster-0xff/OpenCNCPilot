@@ -11,13 +11,14 @@ namespace LagoVista.GCode.Sender.ViewModels
             OpenHeightMapCommand = new RelayCommand(OpenHeightMapFile, CanPerformFileOperation);
             OpenGCOdeCommand = new RelayCommand(OpenGCodeFile, CanPerformFileOperation);
             ClaerGCCdeCommand = new RelayCommand(CloseFile, CanPerformFileOperation);
-            ClearHeightMapCommand = new RelayCommand(ClearHeightMap, CanClearHeightMap);
             ArcToLineCommand = new RelayCommand(ArcToLine, CanConvertArcToLine);
 
 
             SaveHeightMapCommand = new RelayCommand(SaveHeightMap, CanSaveHeightMap);
 
             ApplyHeightMapCommand = new RelayCommand(ApplyHeightMap, CanApplyHeightMap);
+            ClearHeightMapCommand = new RelayCommand(ClearHeightMap, CanClearHeightMap);
+
             SaveModifiedGCodeCommamnd = new RelayCommand(SaveModifiedGCode, CanSaveModifiedGCode);
 
             StartProbeHeightMapCommand = new RelayCommand(ProbeHeightMap);
@@ -32,25 +33,47 @@ namespace LagoVista.GCode.Sender.ViewModels
             SetMetricUnitsCommand = new RelayCommand(SetMetricUnits, CanChangeUnits);
             SetImperialUnitsCommand = new RelayCommand(SetImperialUnits, CanChangeUnits);
 
-            OpenEagleBoardFileCommand = new RelayCommand(OpenEagleBoardFile);
-            CloseEagleBoardFileCommand = new RelayCommand(CloseEagleBoardFile);
+            OpenEagleBoardFileCommand = new RelayCommand(OpenEagleBoardFile, CanOpenEagleBoard);
+            CloseEagleBoardFileCommand = new RelayCommand(CloseEagleBoardFile, CanCloseEagleBoard);
 
             SetAbsolutePositionModeCommand = new RelayCommand(SetAbsolutePositionMode, CanSetPositionMode);
             SetIncrementalPositionModeCommand = new RelayCommand(SetIncrementalPositionMode, CanSetPositionMode);
 
             Machine.PropertyChanged += _machine_PropertyChanged;
             Machine.PCBManager.PropertyChanged += PCBManager_PropertyChanged;
+            Machine.HeightMapManager.PropertyChanged += HeightMapManager_PropertyChanged;
+        }
+
+        private void HeightMapManager_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(Machine.HeightMapManager.HasHeightMap) ||
+               e.PropertyName == nameof(Machine.HeightMapManager.Status) ||
+               e.PropertyName == nameof(Machine.HeightMapManager.HeightMapDirty))
+            {
+                DispatcherServices.Invoke(() =>
+                {
+                    ApplyHeightMapCommand.RaiseCanExecuteChanged();
+                    SaveHeightMapCommand.RaiseCanExecuteChanged();
+                    StartProbeHeightMapCommand.RaiseCanExecuteChanged();
+                    ClearHeightMapCommand.RaiseCanExecuteChanged();
+                });
+            }
         }
 
         private void PCBManager_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(Machine.PCBManager.HasBoard))
+            if (e.PropertyName == nameof(Machine.PCBManager.HasBoard) ||
+                e.PropertyName == nameof(Machine.PCBManager.HasProject) ||
+                e.PropertyName == nameof(Machine.PCBManager.HasTopEtching) ||
+                e.PropertyName == nameof(Machine.PCBManager.HasBottomEtching))
             {
                 DispatcherServices.Invoke(() =>
                 {
                     ShowHoldDownGCodeCommand.RaiseCanExecuteChanged();
                     ShowDrillGCodeCommand.RaiseCanExecuteChanged();
                     ShowCutoutMillingGCodeCommand.RaiseCanExecuteChanged();
+                    ShowTopEtchingGCodeCommand.RaiseCanExecuteChanged();
+                    ShowBottomEtchingGCodeCommand.RaiseCanExecuteChanged();
                 });
             }
         }
@@ -61,11 +84,16 @@ namespace LagoVista.GCode.Sender.ViewModels
             {
                 DispatcherServices.Invoke(() =>
                 {
+                    OpenEagleBoardFileCommand.RaiseCanExecuteChanged();
+                    CloseEagleBoardFileCommand.RaiseCanExecuteChanged();
                     OpenHeightMapCommand.RaiseCanExecuteChanged();
                     OpenGCOdeCommand.RaiseCanExecuteChanged();
                     ClaerGCCdeCommand.RaiseCanExecuteChanged();
                     SetMetricUnitsCommand.RaiseCanExecuteChanged();
                     SetImperialUnitsCommand.RaiseCanExecuteChanged();
+                    ShowBottomEtchingGCodeCommand.RaiseCanExecuteChanged();
+                    ShowTopEtchingGCodeCommand.RaiseCanExecuteChanged();
+                    ApplyHeightMapCommand.RaiseCanExecuteChanged();
                 });
             }
 
@@ -76,20 +104,30 @@ namespace LagoVista.GCode.Sender.ViewModels
             }
         }
 
+        public bool CanOpenEagleBoard()
+        {
+            return (Machine.Mode == OperatingMode.Manual || Machine.Mode == OperatingMode.Disconnected); 
+        }
+
+        public bool CanCloseEagleBoard()
+        {
+            return Machine.PCBManager.HasBoard && !Machine.PCBManager.HasProject && (Machine.Mode == OperatingMode.Manual || Machine.Mode == OperatingMode.Disconnected);
+        }
+
         public bool CanGenerateGCode()
         {
-            return Machine.PCBManager.HasBoard;
+            return Machine.PCBManager.HasBoard && (Machine.Mode == OperatingMode.Manual || Machine.Mode == OperatingMode.Disconnected);
         }
 
         public bool CanGenerateTopEtchingGCode()
         {
-            return true;
+            return Machine.PCBManager.HasTopEtching && (Machine.Mode == OperatingMode.Manual || Machine.Mode == OperatingMode.Disconnected);
         }
 
         public bool CanGenerateBottomEtchingGCode()
         {
 
-            return true;
+            return Machine.PCBManager.HasBottomEtching && (Machine.Mode == OperatingMode.Manual || Machine.Mode == OperatingMode.Disconnected);
         }
 
         public bool CanSetPositionMode()
@@ -109,21 +147,21 @@ namespace LagoVista.GCode.Sender.ViewModels
 
         public bool CanApplyHeightMap()
         {
-            return true;
-            /*return Machine.GCodeFileManager.HasValidFile &&
+            return Machine.GCodeFileManager.HasValidFile &&
                    Machine.HeightMapManager.HasHeightMap &&
-             
-                  Machine.HeightMapManager.HeightMap.Status == Models.HeightMapStatus.Populated;*/
+                  Machine.HeightMapManager.HeightMap.Status == Models.HeightMapStatus.Populated;
         }
 
         public bool CanSaveModifiedGCode()
         {
-            return true;
+            return Machine.GCodeFileManager.HasValidFile &&
+                   Machine.GCodeFileManager.IsDirty;
         }
 
         public bool CanSaveHeightMap()
         {
-            return true;
+            return Machine.HeightMapManager.HasHeightMap &&
+                  Machine.HeightMapManager.HeightMap.Status == Models.HeightMapStatus.Populated;
         }
 
         private bool CanPerformFileOperation(Object instance)
@@ -133,7 +171,8 @@ namespace LagoVista.GCode.Sender.ViewModels
 
         public bool CanClearHeightMap()
         {
-            return Machine.HeightMapManager.HeightMap != null;
+            return Machine.HeightMapManager.HasHeightMap &&
+                  Machine.HeightMapManager.HeightMap.Status == Models.HeightMapStatus.Populated;
         }
 
 

@@ -89,6 +89,13 @@ namespace LagoVista.GCode.Sender.Interfaces
         /// <param name="map"></param>
         void ApplyHeightMap(HeightMap map);
 
+
+        /// <summary>
+        /// Save the current GCode to a file
+        /// </summary>
+        /// <param name="file"></param>
+        Task SaveGCodeAsync(string file);
+
         /// <summary>
         /// Move the GCode by X and Y parameters
         /// </summary>

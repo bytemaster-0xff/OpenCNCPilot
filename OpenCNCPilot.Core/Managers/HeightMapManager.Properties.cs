@@ -15,6 +15,24 @@ namespace LagoVista.GCode.Sender.Managers
                 _heightMap = value;
                 RaisePropertyChanged();
                 RaisePropertyChanged(nameof(HasHeightMap));
+                RaisePropertyChanged(nameof(Status));
+            }
+        }
+
+        public HeightMapStatus Status
+        {
+            get
+            {
+                return (HasHeightMap) ? HeightMap.Status : HeightMapStatus.NotAvailable;
+            }
+            set
+            {
+                if(HasHeightMap)
+                {
+                    HeightMap.Status = value;
+                }
+
+                RaisePropertyChanged();
             }
         }
 
