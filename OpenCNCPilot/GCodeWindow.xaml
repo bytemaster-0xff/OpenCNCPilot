@@ -8,6 +8,6 @@
         mc:Ignorable="d"
         Title="GCode Details" Height="480" Width="649">
     <Grid>
-        <ctls:CurrentFileControl />
+        <ctls:CurrentFileControl x:Name="CurrentFile" />
     </Grid>
 </Window>

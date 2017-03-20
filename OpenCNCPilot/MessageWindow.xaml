@@ -31,6 +31,5 @@
                 </DataTemplate>
             </ctls:ListBoxScroll.ItemTemplate>
         </ctls:ListBoxScroll>
-
     </Grid>
 </Window>

@@ -25,6 +25,8 @@ namespace LagoVista.GCode.Sender.Application
             InitializeComponent();
 
             DataContext = mainViewModel;
+
+            CurrentFile.ShowGCodeWindow.Visibility = Visibility.Collapsed;
         }
     }
 }

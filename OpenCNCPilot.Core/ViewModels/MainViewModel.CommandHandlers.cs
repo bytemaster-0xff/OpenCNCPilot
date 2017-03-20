@@ -72,13 +72,6 @@ namespace LagoVista.GCode.Sender.ViewModels
             }
         }
 
-        public void ApplyHeightMap()
-        {
-            if (CanApplyHeightMap())
-            {
-                Machine.GCodeFileManager.ApplyHeightMap(Machine.HeightMapManager.HeightMap);
-            }
-        }
 
         public async void OpenGCodeFile(object instance)
         {
@@ -92,6 +85,20 @@ namespace LagoVista.GCode.Sender.ViewModels
             }
         }
 
+
+        public void CloseFile(object instance)
+        {
+            Machine.GCodeFileManager.CloseFileAsync();
+        }
+
+        public void ProbeHeightMap()
+        {
+
+        }
+
+
+
+
         public async void OpenHeightMapFile(object instance)
         {
             var file = await Popups.ShowOpenFileAsync(Constants.FileFilterHeightMap);
@@ -101,12 +108,21 @@ namespace LagoVista.GCode.Sender.ViewModels
             }
         }
 
-        public void CloseFile(object instance)
+        public void SaveHeightMap()
         {
-            Machine.GCodeFileManager.CloseFileAsync();
+
+
         }
 
-        public void ProbeHeightMap()
+        public void ApplyHeightMap()
+        {
+            if (CanApplyHeightMap())
+            {
+                Machine.GCodeFileManager.ApplyHeightMap(Machine.HeightMapManager.HeightMap);
+            }
+        }
+
+        public void SaveModifiedGCode()
         {
 
         }

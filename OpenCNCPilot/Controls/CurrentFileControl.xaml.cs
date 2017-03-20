@@ -11,6 +11,7 @@ namespace LagoVista.GCode.Sender.Application.Controls
     /// </summary>
     public partial class CurrentFileControl : UserControl
     {
+        GCodeWindow _gCodeWindow;
         public CurrentFileControl()
         {
             InitializeComponent();
@@ -19,9 +20,18 @@ namespace LagoVista.GCode.Sender.Application.Controls
 
         private void ShowGCodeWindow_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            var gcodeWindow = new GCodeWindow(DataContext as MainViewModel);
+            if (_gCodeWindow == null)
+            {
+                _gCodeWindow = new GCodeWindow(DataContext as MainViewModel);
+                _gCodeWindow.Owner = MainWindow.This;
+                _gCodeWindow.Closing += _window_Closing;
+                _gCodeWindow.Show();
+            }
+        }
 
-            gcodeWindow.Show();
+        private void _window_Closing(object sender, CancelEventArgs e)
+        {
+            _gCodeWindow = null;
         }
 
         private void EditGCode_Click(object sender, System.Windows.RoutedEventArgs e)

@@ -9,11 +9,16 @@ namespace LagoVista.GCode.Sender.ViewModels
         private void InitCommands()
         {
             OpenHeightMapCommand = new RelayCommand(OpenHeightMapFile, CanPerformFileOperation);
-            OpenGCodeFileCommand = new RelayCommand(OpenGCodeFile, CanPerformFileOperation);
-            CloseFileCommand = new RelayCommand(CloseFile, CanPerformFileOperation);
+            OpenGCOdeCommand = new RelayCommand(OpenGCodeFile, CanPerformFileOperation);
+            ClaerGCCdeCommand = new RelayCommand(CloseFile, CanPerformFileOperation);
             ClearHeightMapCommand = new RelayCommand(ClearHeightMap, CanClearHeightMap);
             ArcToLineCommand = new RelayCommand(ArcToLine, CanConvertArcToLine);
+
+
+            SaveHeightMapCommand = new RelayCommand(SaveHeightMap, CanSaveHeightMap);
+
             ApplyHeightMapCommand = new RelayCommand(ApplyHeightMap, CanApplyHeightMap);
+            SaveModifiedGCodeCommamnd = new RelayCommand(SaveModifiedGCode, CanSaveModifiedGCode);
 
             StartProbeHeightMapCommand = new RelayCommand(ProbeHeightMap);
 
@@ -57,8 +62,8 @@ namespace LagoVista.GCode.Sender.ViewModels
                 DispatcherServices.Invoke(() =>
                 {
                     OpenHeightMapCommand.RaiseCanExecuteChanged();
-                    OpenGCodeFileCommand.RaiseCanExecuteChanged();
-                    CloseFileCommand.RaiseCanExecuteChanged();
+                    OpenGCOdeCommand.RaiseCanExecuteChanged();
+                    ClaerGCCdeCommand.RaiseCanExecuteChanged();
                     SetMetricUnitsCommand.RaiseCanExecuteChanged();
                     SetImperialUnitsCommand.RaiseCanExecuteChanged();
                 });
@@ -107,7 +112,18 @@ namespace LagoVista.GCode.Sender.ViewModels
             return true;
             /*return Machine.GCodeFileManager.HasValidFile &&
                    Machine.HeightMapManager.HasHeightMap &&
-                   Machine.HeightMapManager.HeightMap.Status == Models.HeightMapStatus.Populated;*/
+             
+                  Machine.HeightMapManager.HeightMap.Status == Models.HeightMapStatus.Populated;*/
+        }
+
+        public bool CanSaveModifiedGCode()
+        {
+            return true;
+        }
+
+        public bool CanSaveHeightMap()
+        {
+            return true;
         }
 
         private bool CanPerformFileOperation(Object instance)
@@ -120,8 +136,16 @@ namespace LagoVista.GCode.Sender.ViewModels
             return Machine.HeightMapManager.HeightMap != null;
         }
 
+
+
+        public RelayCommand ArcToLineCommand { get; private set; }
+
+
+
         public RelayCommand OpenEagleBoardFileCommand { get; private set; }
         public RelayCommand CloseEagleBoardFileCommand { get; private set; }
+
+
 
         public RelayCommand SetImperialUnitsCommand { get; private set; }
         public RelayCommand SetMetricUnitsCommand { get; private set; }
@@ -129,22 +153,27 @@ namespace LagoVista.GCode.Sender.ViewModels
         public RelayCommand SetAbsolutePositionModeCommand { get; private set; }
         public RelayCommand SetIncrementalPositionModeCommand { get; private set; }
 
+
+
         public RelayCommand OpenHeightMapCommand { get; private set; }
-        public RelayCommand OpenGCodeFileCommand { get; private set; }
-        public RelayCommand CloseFileCommand { get; private set; }
-
-        public RelayCommand ClearHeightMapCommand { get; private set; }
-
+        public RelayCommand SaveHeightMapCommand { get; private set; }
         public RelayCommand ApplyHeightMapCommand { get; private set; }
-        public RelayCommand ArcToLineCommand { get; private set; }
+        public RelayCommand ClearHeightMapCommand { get; private set; }
+        public RelayCommand StartProbeHeightMapCommand { get; private set; }
+
+
+
+        public RelayCommand OpenGCOdeCommand { get; private set; }
+        public RelayCommand SaveModifiedGCodeCommamnd { get; private set; }
+        public RelayCommand ClaerGCCdeCommand { get; private set; }
+
+
 
         public RelayCommand ShowTopEtchingGCodeCommand { get; private set; }
         public RelayCommand ShowBottomEtchingGCodeCommand { get; private set; }
-
         public RelayCommand ShowCutoutMillingGCodeCommand { get; private set; }
         public RelayCommand ShowDrillGCodeCommand { get; private set; }
         public RelayCommand ShowHoldDownGCodeCommand { get; private set; }
-        public RelayCommand StartProbeHeightMapCommand { get; private set; }
 
     }
 }

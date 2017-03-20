@@ -8,6 +8,7 @@ namespace LagoVista.GCode.Sender.Application.Controls
     /// </summary>
     public partial class MachineResponseControl : UserControl
     {
+        MessageWindow _messagesWindow;
         public MachineResponseControl()
         {
             InitializeComponent();
@@ -15,10 +16,20 @@ namespace LagoVista.GCode.Sender.Application.Controls
 
         private void ShowLogWindow_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            var vm = DataContext as MainViewModel;
-            var msgsWindow = new MessageWindow(vm.Machine);
-            msgsWindow.Show();
+            if (_messagesWindow == null)
+            {
+                var vm = DataContext as MainViewModel;
+                _messagesWindow = new MessageWindow(vm.Machine);
+                _messagesWindow.Owner = MainWindow.This;
+                _messagesWindow.Closed += _messagesWindow_Closed;
+                _messagesWindow.Show();
+            }
 
+        }
+
+        private void _messagesWindow_Closed(object sender, System.EventArgs e)
+        {
+            _messagesWindow = null;
         }
     }
 }

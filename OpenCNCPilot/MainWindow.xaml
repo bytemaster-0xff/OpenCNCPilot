@@ -29,8 +29,6 @@
                 <MenuItem Header="Close GCode File" Command="{Binding CloseFileCommand}" />
                 <MenuItem  Header="Recent GCode Files" x:Name="RecentGCodeFiles" />
                 <Separator />
-                    <MenuItem Header="Generate Etching (PCBGCode)" x:Name="PCB2GCode" Click="PCB2GCode_Click" />
-                <Separator />
                 <MenuItem Header="PCB Hold Down" Command="{Binding ShowHoldDownGCodeCommand}" />
                 <MenuItem Header="Drills" Command="{Binding ShowDrillGCodeCommand}" />
                 <MenuItem Header="Probe Height Map" Command="{Binding ShowCutoutMillingGCodeCommand}" />
@@ -48,6 +46,8 @@
                 <MenuItem Header="Close project" x:Name="ClosePCBProject" Click="ClosePCBProject_Click" />
                 <MenuItem  Header="Recent Projects" x:Name="RecentProjects" />
                 <Separator />
+                <MenuItem Header="Generate Etching (PCBGCode)" x:Name="PCB2GCode" Click="PCB2GCode_Click" />
+                <Separator />
                 <MenuItem Header="Open Eagle Board File" Command="{Binding OpenEagleBoardFileCommand}" />
                 <MenuItem Header="Close Eagle Board File" Command="{Binding CloseEagleBoardFileCommand}" />
                 <MenuItem  Header="Recent Eagle Boards" x:Name="RecentBoards" />
@@ -55,20 +55,14 @@
 
             </MenuItem>
             <MenuItem Header="Height Map" >
-                
                 <MenuItem Header="New Generated HeightMap" x:Name="NewGeneratedHeigtMap" Click="NewGeneratedHeigtMap_Click" />
                 <MenuItem Header="Open HeightMap"  Command="{Binding OpenHeightMapCommand}" />
+                <MenuItem Header="Save HeightMap"  Command="{Binding SaveHeightMapCommand}" />
                 <Separator />
-                <MenuItem Header="Edit HeightMap" x:Name="EditHeightMap" Click="EditHeightMap_Click"/>
-                
-                <MenuItem Header="Save Updated Board"  Command="{Binding SaveModifiedBoardCommand}" />
+                <MenuItem Header="Apply to GCode" x:Name="EditHeightMap" Command="{Binding ApplyHeightMapCommand}"/>
+                <MenuItem Header="Save Updated GCode"  Command="{Binding SaveModifiedBoardCommand}" />
                 <Separator />
-                <MenuItem  Header="Close Height Map" Click="CloseMenu_Click" />
-            </MenuItem>
-            <MenuItem Header="Settings" >
-                <MenuItem x:Name="SettingsMenu" Click="SettingsMenu_Click" Header="Machine Settings" />
-                <MenuItem Header="Set Inches" Command="{Binding SetImperialUnitsCommand}" />
-                <MenuItem Header="Set Millimeters" Command="{Binding SetMetricUnitsCommand}" />
+                <MenuItem Header="Clear HeightMap"  Command="{Binding ClearHeightMapCommand}" />
             </MenuItem>
 
             <MenuItem Header="Machines" x:Name="MachinesMenu" >

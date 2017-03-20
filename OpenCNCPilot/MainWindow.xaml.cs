@@ -19,6 +19,7 @@ namespace LagoVista.GCode.Sender.Application
     {
         public MainWindow()
         {
+            _this = this;
             var designTime = System.ComponentModel.DesignerProperties.GetIsInDesignMode(new DependencyObject());
             if (!designTime)
             {
@@ -43,6 +44,10 @@ namespace LagoVista.GCode.Sender.Application
                 this.Loaded += MainWindow_Loaded;
             }
         }
+
+        /* Make the main Window Available to contorls */
+        static MainWindow _this;
+        public static MainWindow This { get { return _this; } }
 
         /* Doing this long syncronously here so the data will be ready before creating 
          * the ViewModel and creating the UI 
