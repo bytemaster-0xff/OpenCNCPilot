@@ -79,7 +79,7 @@ namespace LagoVista.GCode.Sender.Managers
             Min = min;
         }
 
-        public async Task SaveFileAsync(String fileName)
+        public async Task SaveGCodeAsync(String fileName)
         {
             if(File == null)
             {

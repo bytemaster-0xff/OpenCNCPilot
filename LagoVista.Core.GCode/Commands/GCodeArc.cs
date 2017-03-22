@@ -119,5 +119,11 @@ namespace LagoVista.Core.GCode.Commands
                 lastEnd = end;
             }
         }
+
+        public override void ApplyOffset(double x, double y, double angle)
+        {
+
+        }
+
     }
 }

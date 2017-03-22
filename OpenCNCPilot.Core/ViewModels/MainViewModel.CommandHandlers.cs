@@ -146,13 +146,13 @@ namespace LagoVista.GCode.Sender.ViewModels
         public void ShowTopEtchingGCode()
         {
             Machine.GCodeFileManager.OpenFileAsync(Machine.PCBManager.Project.TopEtchignFilePath);
-            Machine.GCodeFileManager.ApplyOffset(Machine.PCBManager.Project.ScrapSides, Machine.PCBManager.Project.ScrapTopBottom);
+            Machine.GCodeFileManager.ApplyOffset(Machine.PCBManager.Project.ScrapSides, Machine.PCBManager.Project.ScrapTopBottom, 0);
         }
 
         public void ShowBottomEtchingGCode()
         {
             Machine.GCodeFileManager.OpenFileAsync(Machine.PCBManager.Project.BottomEtchingFilePath);
-            Machine.GCodeFileManager.ApplyOffset(Machine.PCBManager.Project.ScrapSides + Machine.PCBManager.Board.Width, Machine.PCBManager.Project.ScrapTopBottom);
+            Machine.GCodeFileManager.ApplyOffset(Machine.PCBManager.Project.ScrapSides + Machine.PCBManager.Board.Width, Machine.PCBManager.Project.ScrapTopBottom, 0);
         }
     }
 }

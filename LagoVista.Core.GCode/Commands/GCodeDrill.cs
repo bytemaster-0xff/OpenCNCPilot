@@ -33,5 +33,11 @@ namespace LagoVista.Core.GCode.Commands
         {
             return new List<GCodeMotion>() { this };
         }
+
+        public override void ApplyOffset(double x, double y, double angle)
+        {
+
+        }
+
     }
 }

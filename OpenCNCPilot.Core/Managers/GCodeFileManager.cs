@@ -66,18 +66,11 @@ namespace LagoVista.GCode.Sender.Managers
                 {
                     if (_machine.Settings.PauseOnToolChange)
                     {
-                        Debug.WriteLine("Tool Change " + Head + ". Pausing Sending");
-
                         _pendingToolChangeLine = Head;
                     }
 
                     Head++;
                     return;
-                }
-
-                else
-                {
-                    Debug.WriteLine("Sending " + Head + ". " + _file.Commands[Head].Line);
                 }
 
                 _machine.SendCommand(_file.Commands[Head]);
@@ -103,15 +96,12 @@ namespace LagoVista.GCode.Sender.Managers
             if (_file.Commands[Tail].Status == GCodeCommand.StatusTypes.Sent)
             {
                 _file.Commands[Tail].Status = GCodeCommand.StatusTypes.Acknowledged;
-                Debug.WriteLine("Acknowledged:  " + Tail + ". " + _file.Commands[Tail].Line);
                 Tail++;
 
                 if (_pendingToolChangeLine != null && _pendingToolChangeLine.Value == Tail)
                 {
                     _file.Commands[Tail].Status = GCodeCommand.StatusTypes.Internal;
-                    Debug.WriteLine("Performing Tool Change " + Tail);
                     HandleToolChange(_file.Commands[Tail] as ToolChangeCommand);
-                    Debug.WriteLine("Cleared Tool Change " + Tail + ". continue");
                     Tail++;
                 }
 

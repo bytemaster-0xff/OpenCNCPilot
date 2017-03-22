@@ -18,5 +18,11 @@ namespace LagoVista.Core.GCode.Commands
         {
             get { return TimeSpan.Zero; }
         }
+
+        public override void ApplyOffset(double x, double y, double angle)
+        {
+
+        }
+
     }
 }

@@ -48,5 +48,7 @@ namespace LagoVista.Core.GCode.Commands
                 return parts[0];
             }
         }
+
+        public abstract void ApplyOffset(double x, double y, double angle);
     }
 }

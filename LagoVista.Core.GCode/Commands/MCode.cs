@@ -47,5 +47,11 @@ namespace LagoVista.Core.GCode.Commands
         public double DrillSize { get; private set; }
 
         public String Tool { get; private set; }
+
+        public override void ApplyOffset(double x, double y, double angle)
+        {
+
+        }
+
     }
 }

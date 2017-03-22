@@ -99,9 +99,10 @@ namespace LagoVista.GCode.Sender.Interfaces
         /// <summary>
         /// Move the GCode by X and Y parameters
         /// </summary>
-        /// <param name="xOffset"></param>
-        /// <param name="yOffset"></param>
-        void ApplyOffset(double xOffset, double yOffset);
+        /// <param name="xOffset">Offset to shft all the X locations in the file</param>
+        /// <param name="yOffset">Offset to shift all Y locations in the GCode File</param>
+        /// <param name="angle">Angle in Degress</param>
+        void ApplyOffset(double xOffset, double yOffset, double angle);
 
         /// <summary>
         /// Processes the file to turn any Arc GCode commands (G2, G3) to line commands (G0, G1) will not modify the source file but will allow the new file to be saved.  The job process will be marked as having a dirty file.

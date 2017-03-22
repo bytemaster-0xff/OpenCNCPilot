@@ -27,5 +27,11 @@ namespace LagoVista.Core.GCode.Commands
         {
             return $"{LineNumber}. - {Line} Set Tool: {ToolName}, ToolSize: {ToolSize}";
         }
+
+        public override void ApplyOffset(double x, double y, double angle)
+        {
+
+        }
+
     }
 }

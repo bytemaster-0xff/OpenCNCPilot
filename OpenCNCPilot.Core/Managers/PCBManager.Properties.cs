@@ -57,6 +57,16 @@ namespace LagoVista.GCode.Sender.Managers
             get { return _project != null; }
         }
 
+        public bool HasTopEtching
+        {
+            get { return _project != null && !String.IsNullOrEmpty(_project.TopEtchignFilePath); }
+        }
+
+        public bool HasBottomEtching
+        {
+            get { return _project != null && !String.IsNullOrEmpty(_project.BottomEtchingFilePath); }
+        }
+
         public String ProjectFilePath
         {
             get; set;

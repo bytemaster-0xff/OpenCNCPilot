@@ -12,6 +12,10 @@ namespace LagoVista.GCode.Sender.Interfaces
     {
         bool HasBoard { get; }
 
+        bool HasTopEtching { get; }
+
+        bool HasBottomEtching { get; }
+
         PCB Board { get; }
 
         Task<bool> OpenFileAsync(string boardFile);

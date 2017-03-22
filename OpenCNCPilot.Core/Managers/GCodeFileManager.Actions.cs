@@ -67,7 +67,7 @@ namespace LagoVista.GCode.Sender.Managers
             }
         }
 
-        public void ApplyOffset(double xOffset, double yOffset)
+        public void ApplyOffset(double xOffset, double yOffset, double angle = 0)
         {
             var newToolPath = new List<Core.GCode.Commands.GCodeCommand>();
 
@@ -86,7 +86,6 @@ namespace LagoVista.GCode.Sender.Managers
 
                     motionCommand.Start = new Core.Models.Drawing.Vector3(motionCommand.Start.X + xOffset, motionCommand.Start.Y + yOffset, motionCommand.Start.Z);
                     motionCommand.End = new Core.Models.Drawing.Vector3(motionCommand.End.X + xOffset, motionCommand.End.Y + yOffset, motionCommand.End.Z);
-
 
                     switch (motionCommand.Command)
                     {
@@ -134,8 +133,6 @@ namespace LagoVista.GCode.Sender.Managers
                             }
                             break;
                     }
-
-
                 }
                 else
                 {
