@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LagoVista.EaglePCB.Tests
+namespace LagoVista.GCodeSupport.Tests.Utils
 {
     [TestClass]
     public class MediaFilterTests

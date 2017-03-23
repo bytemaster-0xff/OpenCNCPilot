@@ -14,6 +14,19 @@ namespace LagoVista.Core.GCode.Commands
             Internal,
         }
 
+        public enum Axis
+        {
+            XAxis,
+            YAxis,
+            ZAxis
+        }
+
+        public enum Direction
+        {
+            Clockwise,
+            CounterClockwise
+        }
+
         private StatusTypes _status = StatusTypes.Ready;
         public StatusTypes Status
         {
@@ -39,6 +52,8 @@ namespace LagoVista.Core.GCode.Commands
 
         public string Command { get; set; }
 
-        public virtual void ApplyOffset(double x, double y, double z = 0, double angle = 0) { }
+        public virtual void ApplyOffset(double x, double y, double z = 0) { }
+
+        public virtual void Rotate(double degrees, Point2D<double> origin = null, Axis axis = Axis.ZAxis,Direction direction = Direction.CounterClockwise) { }
     }
 }

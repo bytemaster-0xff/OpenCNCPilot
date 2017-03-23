@@ -46,6 +46,7 @@
     <Compile Include="Commands\ToolChangeCommand.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Extensions\MathHelpers.cs" />
+    <Compile Include="Extensions\Rotation.cs" />
     <Compile Include="GCodeFile.cs" />
     <Compile Include="GCodeFile.Factory.cs">
       <DependentUpon>GCodeFile.cs</DependentUpon>

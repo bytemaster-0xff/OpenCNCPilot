@@ -11,28 +11,28 @@ using System.Threading.Tasks;
 namespace LagoVista.GCodeSupport.Tests.GCode
 {
     [TestClass]
-    public class ApplyLineOffsetTests
+    public class ApplyLineRotation
     {
-
         [TestMethod]
-        public void ApplyXOffsetTest()
+        public void ApplyZeroRotation()
         {
             var parser = new GCodeParser(new FakeLogger());
-            var cmd = parser.ParseLine("G1 X30", 10) as GCodeMotion;
-            cmd.ApplyOffset(10, 0);
-            Assert.AreEqual(40, cmd.End.X);
-            Assert.AreEqual("G1 X40", cmd.Line);
+            var cmd = parser.ParseLine("G1 X30 Y0", 0) as GCodeLine;
+            cmd.Rotate(0);
+            Assert.AreEqual(30, cmd.End.X);
+            Assert.AreEqual("G1 X30", cmd.Line);
         }
-
 
         [TestMethod]
-        public void ApplyYOffsetTest()
+        public void Apply90CC2Rotation()
         {
             var parser = new GCodeParser(new FakeLogger());
-            var cmd = parser.ParseLine("G1 Y30", 10) as GCodeMotion;
-            cmd.ApplyOffset(0, 10);
-            Assert.AreEqual(40, cmd.End.Y);
-            Assert.AreEqual("G1 Y40", cmd.Line);
+            var cmd = parser.ParseLine("G1 X30 Y0", 0) as GCodeLine;
+            cmd.Rotate(90);
+            Console.WriteLine(cmd.Line);
+            Assert.AreEqual(30, cmd.End.Y);
+            Assert.AreEqual("G1 Y30", cmd.Line);
         }
+
     }
 }

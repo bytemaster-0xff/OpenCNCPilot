@@ -157,7 +157,7 @@ namespace LagoVista.Core.GCode.Commands
             }
         }
 
-        public override void ApplyOffset(double x, double y, double z = 0, double angle = 0)
+        public override void ApplyOffset(double x, double y, double z = 0)
         {
 
         }

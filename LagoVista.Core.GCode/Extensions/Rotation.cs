@@ -1,12 +1,11 @@
 ﻿using LagoVista.Core.Models.Drawing;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LagoVista.EaglePCB
+namespace LagoVista
 {
     public static class RotationExtension
     {
@@ -16,10 +15,10 @@ namespace LagoVista.EaglePCB
 
             var cos = Math.Cos(radians);
             var sin = Math.Sin(radians);
-            
+
             var rotX = (cos * (point.X - origin.X)) - (sin * (point.Y - origin.Y));
             var rotY = (cos * (point.Y - origin.Y)) + (sin * (point.X - origin.X));
-            
+
             return new Point2D<double>(rotX, rotY);
         }
 
@@ -45,7 +44,7 @@ namespace LagoVista.EaglePCB
             }
 
             var angleStr = rotationString.Substring(startIndex);
-            if(double.TryParse(angleStr, out angle))
+            if (double.TryParse(angleStr, out angle))
             {
                 if (rotationString.Contains("L"))
                     return 360 - angle;

@@ -15,12 +15,33 @@ namespace LagoVista.Core.GCode.Commands
             get { return Delta.Magnitude; }
         }
 
-        public override void ApplyOffset(double x, double y, double z, double angle)
+        public override void ApplyOffset(double x, double y, double z)
         {
             Start = new Vector3(Start.X + x, Start.Y + y, Start.Z + z);
             End = new Vector3(End.X + x, End.Y + y, End.Z + z);
+
+            
         }
 
+        public override void Rotate(double degrees, Point2D<double> origin = null, Axis axis = Axis.ZAxis, Direction direction = Direction.CounterClockwise)
+        {
+            if (degrees != 0)
+            {
+                if(origin == null)
+                {
+                    origin = new Point2D<double>(0, 0);
+                }
+
+                var startPoint = new Point2D<double>(Start.X, Start.Y);
+                var endPoint = new Point2D<double>(End.X, End.Y);
+
+                var rotatedStartPoint = startPoint.Rotate(origin, degrees);
+                var rotatedEndPoint = endPoint.Rotate(origin, degrees);
+
+                Start = new Vector3(Math.Round(rotatedStartPoint.X, 4), Math.Round(rotatedStartPoint.Y, 4), Start.Z);
+                End = new Vector3(Math.Round(rotatedEndPoint.X, 4), Math.Round(rotatedEndPoint.Y, 4), End.Z);
+            }
+        }
 
         public override string Line
         {
@@ -29,22 +50,22 @@ namespace LagoVista.Core.GCode.Commands
                 var bldr = new StringBuilder();
                 bldr.Append(Command);
 
-                if (End.X != Start.X) 
+                if (End.X != Start.X)
                 {
                     bldr.Append($" X{End.X.ToDim()}");
                 }
 
-                if (End.Y != Start.Y) 
+                if (End.Y != Start.Y)
                 {
                     bldr.Append($" Y{End.Y.ToDim()}");
                 }
 
-                if (End.Z != Start.Z) 
+                if (End.Z != Start.Z)
                 {
                     bldr.Append($" Z{End.Z.ToDim()}");
                 }
 
-                if((Feed.HasValue && PreviousFeed.HasValue && Feed.Value != PreviousFeed.Value) || 
+                if ((Feed.HasValue && PreviousFeed.HasValue && Feed.Value != PreviousFeed.Value) ||
                     Feed.HasValue && !PreviousFeed.HasValue)
                 {
                     bldr.Append($" F{Feed.Value}");
@@ -59,7 +80,7 @@ namespace LagoVista.Core.GCode.Commands
                 return bldr.ToString();
             }
         }
-        
+
         public override Vector3 Interpolate(double ratio)
         {
             ratio = Math.Min(ratio, 1);
