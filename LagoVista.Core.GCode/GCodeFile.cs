@@ -89,11 +89,13 @@ namespace LagoVista.Core.GCode
                 {
                     foreach (var segment in ((GCodeArc)cmd).Split(length).Cast<GCodeArc>())
                     {
-                        var ilne = new GCodeLine();
-                        ilne.Start = segment.Start;
-                        ilne.End = segment.End;
-                        ilne.Feed = segment.Feed;
-                        ilne.Rapid = false;
+                        var ilne = new GCodeLine()
+                        {
+                            Start = segment.Start,
+                            End = segment.End,
+                            Feed = segment.Feed,
+                            Rapid = false
+                        };
                         newFile.Add(ilne);
                     }
                 }

@@ -38,6 +38,7 @@
     <Compile Include="Commands\GCodeArc.cs" />
     <Compile Include="Commands\GCodeConstants.cs" />
     <Compile Include="Commands\GCodeDrill.cs" />
+    <Compile Include="Commands\GCodeDwell.cs" />
     <Compile Include="Commands\GCodeLine.cs" />
     <Compile Include="Commands\MCode.cs" />
     <Compile Include="Commands\GCodeMotion.cs" />

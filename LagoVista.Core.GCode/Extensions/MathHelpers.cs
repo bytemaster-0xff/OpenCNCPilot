@@ -21,7 +21,11 @@ namespace LagoVista.Core
 
         public static string ToDim(this double value)
         {
-            return value.ToString("0.0000", new NumberFormatInfo() { NumberDecimalSeparator = "." });
+            /* First remove any trailing zeros */
+            var dim = value.ToString("0.0000", new NumberFormatInfo() { NumberDecimalSeparator = "." }).TrimEnd('0');
+
+            /* If at this point we have a whole number, remove the . */
+            return dim.TrimEnd('.');
         }
 
     }

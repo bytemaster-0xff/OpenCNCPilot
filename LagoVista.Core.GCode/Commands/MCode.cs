@@ -13,7 +13,7 @@ namespace LagoVista.Core.GCode.Commands
 
         public override string ToString()
         {
-            return $"{LineNumber}. - {Line}";
+            return $"{LineNumber}. - {OriginalLine}";
         }
 
         public override TimeSpan EstimatedRunTime
@@ -21,37 +21,19 @@ namespace LagoVista.Core.GCode.Commands
             get { return TimeSpan.Zero; }
         }
 
-        public override Vector3 CurrentPosition
-        {
-            get { return new Vector3(0, 0, 0); }
-        }
-
+        public override Vector3 CurrentPosition { get; set; }
+       
         public override void SetComment(string comment)
         {
             switch (Command)
             {
                 case "M6":
-                case "M06":
-                    if (String.IsNullOrEmpty(comment))
-                    {
-                        DrillSize = -1;
-                    }
-                    else
-                    {
-                        DrillSize = double.Parse(comment);
-                    }
-                    break;
+                case "M06": DrillSize = (String.IsNullOrEmpty(comment)) ? -1 : double.Parse(comment);  break;
             }
         }
-
+     
         public double DrillSize { get; private set; }
 
         public String Tool { get; private set; }
-
-        public override void ApplyOffset(double x, double y, double angle)
-        {
-
-        }
-
     }
 }

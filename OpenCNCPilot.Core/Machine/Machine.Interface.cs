@@ -175,7 +175,7 @@ namespace LagoVista.GCode.Sender
                 lock (_queueAccessLocker)
                 {
                     _jobToSend.Enqueue(cmd);
-                    UnacknowledgedBytesSent += cmd.Line.Length + 1;
+                    UnacknowledgedBytesSent += cmd.OriginalLine.Length + 1;
                 }
             }
         }

@@ -111,15 +111,7 @@ namespace LagoVista.Core.GCode.Parser
                 if (!ValidWords.Contains(words[i].Command.ToString()))
                 {
                     words.RemoveAt(i);
-                    continue;
                 }
-
-                if (words[i].Command != 'F')
-                    continue;
-
-                State.Feed = words[i].Parameter;
-                words.RemoveAt(i);
-                continue;
             }
         }
 

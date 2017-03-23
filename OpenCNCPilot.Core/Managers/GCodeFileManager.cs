@@ -80,7 +80,7 @@ namespace LagoVista.GCode.Sender.Managers
 
         public void SetGCode(string gcode)
         {
-            var file =  GCodeFile.FromString(gcode);
+            var file =  GCodeFile.FromString(gcode, _logger);
             FindExtents(file);
             File = file;
         }

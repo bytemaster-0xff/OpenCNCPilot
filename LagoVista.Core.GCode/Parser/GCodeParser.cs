@@ -16,6 +16,7 @@ namespace LagoVista.Core.GCode.Parser
 
         public ParserState State { get; private set; }
 
+        ILogger _logger;
 
         private Dictionary<string, string> _tools = new Dictionary<string, string>();
 
@@ -32,9 +33,10 @@ namespace LagoVista.Core.GCode.Parser
             _tools.Clear();
         }
 
-        public GCodeParser()
+        public GCodeParser(ILogger logger)
         {
             Reset();
+            _logger = logger;
         }
 
         public async void ParseFile(string path)
@@ -65,8 +67,6 @@ namespace LagoVista.Core.GCode.Parser
             }
 
             sw.Stop();
-
-            //Services.Logger.Log(LogLevel.Message, "GCodeParser_Parse", $"Parsing the GCode File took {sw.ElapsedMilliseconds} ms");
         }
 
         public GCodeCommand ParseLine(string line, int lineIndex)
@@ -106,7 +106,7 @@ namespace LagoVista.Core.GCode.Parser
                 {
                     var machineLine = new OtherCode();
                     machineLine.LineNumber = lineIndex;
-                    machineLine.Line = cleanedLine;
+                    machineLine.OriginalLine = cleanedLine;
                     return machineLine;
                 }
             }
@@ -179,7 +179,7 @@ namespace LagoVista.Core.GCode.Parser
         {
             return new OtherCode()
             {
-                Line = line,
+                OriginalLine = line,
                 LineNumber = lineNumber
             };
         }
@@ -196,7 +196,7 @@ namespace LagoVista.Core.GCode.Parser
 
             return new MCode()
             {
-                Line = line,
+                OriginalLine = line,
                 LineNumber = lineNumber
             };
         }
@@ -214,12 +214,12 @@ namespace LagoVista.Core.GCode.Parser
             var toolName = "??";
             var toolSize = "??";
 
-            foreach(var word in words)
+            foreach (var word in words)
             {
-                if(word.Command == 'T')
+                if (word.Command == 'T')
                 {
                     toolName = word.FullWord;
-                    if(_tools.ContainsKey(word.FullWord))
+                    if (_tools.ContainsKey(word.FullWord))
                     {
                         toolSize = _tools[toolName];
                     }
@@ -228,7 +228,7 @@ namespace LagoVista.Core.GCode.Parser
 
             return new ToolChangeCommand()
             {
-                Line = line,
+                OriginalLine = line,
                 LineNumber = lineNumber,
                 ToolName = toolName,
                 ToolSize = toolSize
@@ -267,17 +267,14 @@ namespace LagoVista.Core.GCode.Parser
             var feedRateCommand = words.Where(wrd => wrd.Command == 'F').FirstOrDefault();
             if (feedRateCommand != null)
             {
-                State.Feed = feedRateCommand.Parameter;
                 words.Remove(feedRateCommand);
             }
 
             var spindleRPM = words.Where(wrd => wrd.Command == 'S').FirstOrDefault();
             if (spindleRPM != null)
             {
-                State.SpindleRPM = spindleRPM.Parameter;
                 words.Remove(spindleRPM);
             }
-            
 
             double pauseTime = 0.0;
 
@@ -297,19 +294,40 @@ namespace LagoVista.Core.GCode.Parser
                     case 2:
                     case 3:
                         var motion = (motionMode <= 1) ? ParseLine(words, motionMode, EndPos) : ParseArc(words, motionMode, EndPos, UnitMultiplier);
-                        motion.Line = line;
-                        motion.Feed = State.Feed;
-                        motion.SpindlePRM = State.SpindleRPM;
+                        motion.Command = $"G{motionMode}";
+                        motion.OriginalLine = line;
+                        motion.PreviousFeed = State.Feed;
+                        motion.PreviousSpindleRPM = State.SpindleRPM;
+                        if (feedRateCommand != null)
+                        {
+                            State.Feed = feedRateCommand.Parameter;
+                            motion.Feed = State.Feed;
+                        }
+                        else
+                        {
+                            motion.Feed = motion.PreviousFeed;
+                        }
+
+                        if (spindleRPM != null)
+                        {
+                            State.SpindleRPM = spindleRPM.Parameter;
+                            motion.SpindleRPM = State.SpindleRPM;
+                        }
+                        else
+                        {
+                            motion.SpindleRPM = motion.PreviousSpindleRPM;
+                        }
+
                         motion.LineNumber = lineNumber;
                         State.Position = EndPos;
 
                         return motion;
 
                     case 4:
-                        return new OtherCode()
+                        return new GCodeDwell()
                         {
-                            PauseTime = pauseTime,
-                            Line = line,
+                            DwellTime = pauseTime,
+                            OriginalLine = line,
                         };
 
                     case 17: /* XY Plane Selection */
@@ -317,7 +335,7 @@ namespace LagoVista.Core.GCode.Parser
                     case 98: /* Return to initial Z Position */
                         return new OtherCode()
                         {
-                            Line = line,
+                            OriginalLine = line,
                         };
 
 

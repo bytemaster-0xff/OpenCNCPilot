@@ -97,22 +97,22 @@ namespace LagoVista.GCode.Sender.Managers
                             {
                                 if (!feed.HasValue || feed.Value != motionCommand.Feed)
                                 {
-                                    motionCommand.Line = $"{motionCommand.Command} X{motionCommand.End.X.ToDim()} Y{motionCommand.End.Y.ToDim()} Z{motionCommand.End.Z.ToDim()}  F{motionCommand.Feed}";
+                                    motionCommand.OriginalLine = $"{motionCommand.Command} X{motionCommand.End.X.ToDim()} Y{motionCommand.End.Y.ToDim()} Z{motionCommand.End.Z.ToDim()}  F{motionCommand.Feed}";
                                 }
                                 else
                                 {
-                                    motionCommand.Line = $"{motionCommand.Command} X{motionCommand.End.X.ToDim()} Y{motionCommand.End.Y.ToDim()}  Z{motionCommand.End.Z.ToDim()}";
+                                    motionCommand.OriginalLine = $"{motionCommand.Command} X{motionCommand.End.X.ToDim()} Y{motionCommand.End.Y.ToDim()}  Z{motionCommand.End.Z.ToDim()}";
                                 }
                             }
                             else
                             {
                                 if (!feed.HasValue || feed.Value != motionCommand.Feed)
                                 {
-                                    motionCommand.Line = $"{motionCommand.Command} X{motionCommand.End.X.ToDim()} Y{motionCommand.End.Y.ToDim()} S20 F{motionCommand.Feed}";
+                                    motionCommand.OriginalLine = $"{motionCommand.Command} X{motionCommand.End.X.ToDim()} Y{motionCommand.End.Y.ToDim()} S20 F{motionCommand.Feed}";
                                 }
                                 else
                                 {
-                                    motionCommand.Line = $"{motionCommand.Command} X{motionCommand.End.X.ToDim()} Y{motionCommand.End.Y.ToDim()} S20 ";
+                                    motionCommand.OriginalLine = $"{motionCommand.Command} X{motionCommand.End.X.ToDim()} Y{motionCommand.End.Y.ToDim()} S20 ";
                                 }
                             }
 

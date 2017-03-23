@@ -15,16 +15,14 @@ namespace LagoVista.EaglePCB.Tests
     public class RotationTests
     {
         [TestMethod]
-        public void TestRotation()
+        public void ShouldRotateCCW()
         {
-
-            var point = new Point2D<double>(0, 100);
+            var point = new Point2D<double>(0, -100);
 
             var result = point.Rotate(90);
 
             Assert.AreEqual(100,Math.Round( result.X));
             Assert.AreEqual(00, Math.Round( result.Y, 4));
-
 
             point = new Point2D<double>(100, 00);
 

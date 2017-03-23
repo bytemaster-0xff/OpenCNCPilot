@@ -6,8 +6,8 @@ namespace LagoVista.Core.GCode.Parser
     {
         public Vector3 Position;
         public ArcPlane Plane;
-        public double Feed;
-        public double SpindleRPM;
+        public double? Feed;
+        public double? SpindleRPM;
         public ParseDistanceMode DistanceMode;
         public ParseDistanceMode ArcDistanceMode;
         public ParseUnit Unit;

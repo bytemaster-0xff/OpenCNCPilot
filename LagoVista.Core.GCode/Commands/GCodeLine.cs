@@ -1,6 +1,7 @@
 ﻿using LagoVista.Core.Models.Drawing;
 using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace LagoVista.Core.GCode.Commands
 {
@@ -14,11 +15,51 @@ namespace LagoVista.Core.GCode.Commands
             get { return Delta.Magnitude; }
         }
 
-        public override void ApplyOffset(double x, double y, double angle)
+        public override void ApplyOffset(double x, double y, double z, double angle)
         {
-
+            Start = new Vector3(Start.X + x, Start.Y + y, Start.Z + z);
+            End = new Vector3(End.X + x, End.Y + y, End.Z + z);
         }
 
+
+        public override string Line
+        {
+            get
+            {
+                var bldr = new StringBuilder();
+                bldr.Append(Command);
+
+                if (End.X != Start.X) 
+                {
+                    bldr.Append($" X{End.X.ToDim()}");
+                }
+
+                if (End.Y != Start.Y) 
+                {
+                    bldr.Append($" Y{End.Y.ToDim()}");
+                }
+
+                if (End.Z != Start.Z) 
+                {
+                    bldr.Append($" Z{End.Z.ToDim()}");
+                }
+
+                if((Feed.HasValue && PreviousFeed.HasValue && Feed.Value != PreviousFeed.Value) || 
+                    Feed.HasValue && !PreviousFeed.HasValue)
+                {
+                    bldr.Append($" F{Feed.Value}");
+                }
+
+                if ((SpindleRPM.HasValue && PreviousSpindleRPM.HasValue && SpindleRPM.Value != PreviousSpindleRPM.Value) ||
+                   SpindleRPM.HasValue && !PreviousSpindleRPM.HasValue)
+                {
+                    bldr.Append($" S{SpindleRPM.Value}");
+                }
+
+                return bldr.ToString();
+            }
+        }
+        
         public override Vector3 Interpolate(double ratio)
         {
             ratio = Math.Min(ratio, 1);

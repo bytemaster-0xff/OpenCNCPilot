@@ -53,7 +53,7 @@ namespace LagoVista.GCode.Sender
     public class SimulatedGCodeMachine : Stream
     {
         private List<byte> _outputArray = new List<byte>();
-        GCodeParser _parser = new GCodeParser();
+        GCodeParser _parser = new GCodeParser(Core.PlatformSupport.Services.Logger);
         Queue<String> _commands = new Queue<string>();
         ITimer _timer;
         FirmwareTypes _firmwareType;
@@ -231,8 +231,8 @@ namespace LagoVista.GCode.Sender
             }
             else if(parsedLine.Command.StartsWith("G04"))
             {
-                var finishTime = DateTime.Now + TimeSpan.FromSeconds(parsedLine.PauseTime);
-                Debug.WriteLine("Handing Pause until " + finishTime + " or " + parsedLine.PauseTime + " seconds");
+                var finishTime = DateTime.Now + TimeSpan.FromSeconds(3);
+                Debug.WriteLine("Handing Pause until " + finishTime + " or " + 3 + " seconds");
                 SpinWait.SpinUntil(() => DateTime.Now > finishTime);
 
                 AddResponse("ok - " + cmd);

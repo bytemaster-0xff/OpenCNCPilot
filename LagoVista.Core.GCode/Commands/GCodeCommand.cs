@@ -21,34 +21,24 @@ namespace LagoVista.Core.GCode.Commands
             set { Set(ref _status, value); }
         }
 
-        public double SpindlePRM { get; set; }
+        public string OriginalLine { get; set; }
 
-        public double Feed { get; set; }
+        public virtual string Line { get { return OriginalLine; } }
 
-        public string Line { get; set; }
         public int LineNumber { get; set; }
 
         public abstract TimeSpan EstimatedRunTime { get; }
 
         public DateTime? StartTimeStamp { get; set; }
 
-        public abstract Vector3 CurrentPosition { get; }
+        public abstract Vector3 CurrentPosition { get; set; }
 
-        public int MessageLength { get { return Line.Length + 1; } }
+        public int MessageLength { get { return OriginalLine.Length + 1; } }
 
         public virtual void SetComment(string comment) { }
 
-        public double PauseTime { get; set; }
+        public string Command { get; set; }
 
-        public string Command
-        {
-            get
-            {
-                var parts = Line.Split(' ');
-                return parts[0];
-            }
-        }
-
-        public abstract void ApplyOffset(double x, double y, double angle);
+        public virtual void ApplyOffset(double x, double y, double z = 0, double angle = 0) { }
     }
 }

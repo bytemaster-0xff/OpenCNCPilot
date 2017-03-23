@@ -7,13 +7,15 @@ using LagoVista.Core.Models.Drawing;
 
 namespace LagoVista.Core.GCode.Commands
 {
-    public class OtherCode : GCodeCommand
+    public class GCodeDwell : GCodeCommand
     {
-        public override Vector3 CurrentPosition { get; set; }
-       
+        public double DwellTime { get; set; }
+
         public override TimeSpan EstimatedRunTime
         {
-            get { return TimeSpan.Zero; }
+            get { return TimeSpan.FromSeconds(DwellTime); }
         }
+
+        public override Vector3 CurrentPosition { get; set; }
     }
 }

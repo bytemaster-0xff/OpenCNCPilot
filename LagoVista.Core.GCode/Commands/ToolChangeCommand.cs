@@ -9,11 +9,8 @@ namespace LagoVista.Core.GCode.Commands
 {
     public class ToolChangeCommand : GCodeCommand
     {
-        public override Vector3 CurrentPosition
-        {
-            get { return new Vector3(0, 0, 0); }
-        }
-
+        public override Vector3 CurrentPosition { get; set; }
+       
         public override TimeSpan EstimatedRunTime
         {
             get { return TimeSpan.Zero; }
@@ -25,13 +22,12 @@ namespace LagoVista.Core.GCode.Commands
 
         public override string ToString()
         {
-            return $"{LineNumber}. - {Line} Set Tool: {ToolName}, ToolSize: {ToolSize}";
+            return $"{LineNumber}. - {OriginalLine} Set Tool: {ToolName}, ToolSize: {ToolSize}";
         }
 
-        public override void ApplyOffset(double x, double y, double angle)
+        public override void SetComment(string comment)
         {
-
+            ToolSize = comment.Trim();
         }
-
     }
 }

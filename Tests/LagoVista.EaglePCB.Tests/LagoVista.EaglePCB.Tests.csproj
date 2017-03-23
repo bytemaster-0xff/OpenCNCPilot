@@ -60,8 +60,6 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="GCodeArcTests.cs" />
-    <Compile Include="MediaFilterTests.cs" />
     <Compile Include="RotationTests.cs" />
     <Compile Include="EagleParsingTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -64,10 +64,13 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="GCode\ApplyLineOffsetTests.cs" />
+    <Compile Include="GCode\GCodeArcTests.cs" />
     <Compile Include="GCode\GCodeFileManagerTests.cs" />
     <Compile Include="GCode\GCodeSampleFile.cs" />
-    <Compile Include="GCode\GCode_Command_Tests.cs" />
+    <Compile Include="GCode\GCodeParserTests.cs" />
     <Compile Include="GCode\LineParser.cs" />
+    <Compile Include="Utils\MediaFilterTests.cs" />
     <Compile Include="Mocks\FakePlatformSupport.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

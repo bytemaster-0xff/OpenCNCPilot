@@ -1,16 +1,17 @@
 ﻿using LagoVista.Core.Models.Drawing;
 using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace LagoVista.Core.GCode.Commands
 {
     public class GCodeArc : GCodeMotion
     {
-        public ArcPlane Plane;
+        public ArcPlane Plane { get; set; }
+        public ArcPlane? PreviousPlane { get; set; }
         public ArcDirection Direction;
         public double U;    //absolute position of center in first axis of plane
         public double V;    //absolute position of center in second axis of plane
-
 
         public override double Length
         {
@@ -41,6 +42,50 @@ namespace LagoVista.Core.GCode.Commands
                 return Math.Atan2(Y, X);
             }
         }
+
+        public override string Line
+        {
+            get
+            {
+                var bldr = new StringBuilder();
+                bldr.Append(Command);
+
+                /* Wish I understood this better, arcs can either be expressed as center or as end with a radius, the parser converts
+                 * ones that are ends with radius to center (UV), likely have to teset on machine to be 100% certain this works right */
+
+                var center = new Vector3(U, V, 0).RollComponents((int)Plane) - Start;
+
+                if (center.X != 0 && Plane != ArcPlane.YZ)
+                {
+                    bldr.Append($" I{center.X.ToDim()}");
+                }
+
+                if (center.Y != 0 && Plane != ArcPlane.ZX)
+                {
+                    bldr.Append($" J{center.Y.ToDim()}");
+                }
+
+                if (center.Z != 0 && Plane != ArcPlane.XY)
+                {
+                    bldr.Append($" K{center.Z.ToDim()}");
+                }
+
+                if ((Feed.HasValue && PreviousFeed.HasValue && Feed.Value != PreviousFeed.Value) ||
+                    Feed.HasValue && !PreviousFeed.HasValue)
+                {
+                    bldr.Append($" F{Feed.Value}");
+                }
+
+                if ((SpindleRPM.HasValue && PreviousSpindleRPM.HasValue && Feed.Value != PreviousSpindleRPM.Value) ||
+                   SpindleRPM.HasValue && !PreviousSpindleRPM.HasValue)
+                {
+                    bldr.Append($" S{SpindleRPM.Value}");
+                }
+
+                return bldr.ToString();
+            }
+        }
+
 
         public double AngleSpan
         {
@@ -94,36 +139,27 @@ namespace LagoVista.Core.GCode.Commands
 
         public override IEnumerable<GCodeMotion> Split(double length)
         {
-            int divisions = (int)Math.Ceiling(Length / length);
+            var divisions = (int)Math.Ceiling(Length / length);
 
             if (divisions < 1)
                 divisions = 1;
 
-            Vector3 lastEnd = Start;
+            var previousEnd = Start;
 
-            for (int i = 1; i <= divisions; i++)
+            for (var i = 1; i <= divisions; i++)
             {
-                Vector3 end = Interpolate(((double)i) / divisions);
-
-                var immediate = new GCodeArc();
-                immediate.Start = lastEnd;
-                immediate.End = end;
-                immediate.Feed = Feed;
-                immediate.Direction = Direction;
-                immediate.Plane = Plane;
-                immediate.U = U;
-                immediate.V = V;
-
-                yield return immediate;
-
-                lastEnd = end;
+                var intermediate = this.MemberwiseClone() as GCodeArc;
+                intermediate.Start = previousEnd;
+                intermediate.End = Interpolate(((double)i) / divisions);
+                intermediate.OriginalLine = $"{OriginalLine} (Prior to Split)"; 
+                yield return intermediate;
+                previousEnd = intermediate.End;
             }
         }
 
-        public override void ApplyOffset(double x, double y, double angle)
+        public override void ApplyOffset(double x, double y, double z = 0, double angle = 0)
         {
 
         }
-
     }
 }

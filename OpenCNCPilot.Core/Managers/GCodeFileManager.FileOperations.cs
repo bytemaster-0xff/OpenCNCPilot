@@ -90,7 +90,7 @@ namespace LagoVista.GCode.Sender.Managers
 
             foreach(var cmd in File.Commands)
             {
-                lines.Add(cmd.Line);
+                lines.Add(cmd.OriginalLine);
             }
 
             await Core.PlatformSupport.Services.Storage.WriteAllLinesAsync(fileName, lines);

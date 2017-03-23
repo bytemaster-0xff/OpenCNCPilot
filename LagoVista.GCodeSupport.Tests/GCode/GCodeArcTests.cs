@@ -9,17 +9,19 @@ using System.Text;
 using System.Threading.Tasks;
 using LagoVista.Core;
 using LagoVista.Core.GCode;
+using LagoVista.GCodeSupport.Tests.Mocks;
 
-namespace LagoVista.EaglePCB.Tests
+namespace LagoVista.GCodeSupport.Tests
 {
     [TestClass]
     public class GCodeArcTests
     {
+        //TODO: Really need to beef up the tests for splitting arc and rendering line
+
 
         [TestMethod]
         public void SplitArc()
         {
-
             var gcode = new List<string>();
             gcode.Add("G00 X9.0 Y1.4000 F200");
             gcode.Add("G00 X97.0000 Y1.4000 F200");
@@ -33,8 +35,7 @@ namespace LagoVista.EaglePCB.Tests
             //gcode.Add("G00 X45 Y0");
             //gcode.Add("G03 X50 Y5 R5");
 
-
-            var parser = new GCodeParser();
+            var parser = new GCodeParser(new FakeLogger());
             parser.Parse(gcode);
 
             foreach (var cmd in parser.Commands)
@@ -47,8 +48,12 @@ namespace LagoVista.EaglePCB.Tests
                     var subCommands = arc.Split(arc.Length / 10);
                     foreach(var subCommand in subCommands)
                     {
-                        Debug.WriteLine(subCommand.ToString());
+                        Debug.WriteLine(subCommand.Line +  "  " + subCommand.ToString());
                     }
+                }
+                else
+                {
+                    Debug.WriteLine(cmd.Line);
                 }
             }
         }
@@ -56,7 +61,7 @@ namespace LagoVista.EaglePCB.Tests
         [TestMethod]
         public void Parse_CCW_ArcTest()
         {
-            var parser = new GCodeParser();
+            var parser = new GCodeParser(new FakeLogger());
             parser.State.Position.X = 45;
             parser.State.Position.Y = 3;
 
