@@ -25,8 +25,9 @@
                 <MenuItem  Header="Exit" Click="CloseMenu_Click" />
             </MenuItem>
             <MenuItem Header="GCode">
-                <MenuItem Header="Open GCode File" Command="{Binding OpenGCodeFileCommand}" />
-                <MenuItem Header="Close GCode File" Command="{Binding CloseFileCommand}" />
+                <MenuItem Header="Open GCode" Command="{Binding OpenGCodeCommand}" />
+                <MenuItem Header="Save Modified GCode" Command="{Binding SaveModifiedGCodeCommamnd}" />
+                <MenuItem Header="Close GCode File" Command="{Binding ClearGCodeCommand}" />
                 <MenuItem  Header="Recent GCode Files" x:Name="RecentGCodeFiles" />
                 <Separator />
                 <MenuItem Header="PCB Hold Down" Command="{Binding ShowHoldDownGCodeCommand}" />

@@ -9,10 +9,9 @@ namespace LagoVista.GCode.Sender.ViewModels
         private void InitCommands()
         {
             OpenHeightMapCommand = new RelayCommand(OpenHeightMapFile, CanPerformFileOperation);
-            OpenGCOdeCommand = new RelayCommand(OpenGCodeFile, CanPerformFileOperation);
-            ClaerGCCdeCommand = new RelayCommand(CloseFile, CanPerformFileOperation);
+            OpenGCodeCommand = new RelayCommand(OpenGCodeFile, CanPerformFileOperation);
+            ClearGCodeCommand = new RelayCommand(CloseFile, CanPerformFileOperation);
             ArcToLineCommand = new RelayCommand(ArcToLine, CanConvertArcToLine);
-
 
             SaveHeightMapCommand = new RelayCommand(SaveHeightMap, CanSaveHeightMap);
 
@@ -87,8 +86,8 @@ namespace LagoVista.GCode.Sender.ViewModels
                     OpenEagleBoardFileCommand.RaiseCanExecuteChanged();
                     CloseEagleBoardFileCommand.RaiseCanExecuteChanged();
                     OpenHeightMapCommand.RaiseCanExecuteChanged();
-                    OpenGCOdeCommand.RaiseCanExecuteChanged();
-                    ClaerGCCdeCommand.RaiseCanExecuteChanged();
+                    OpenGCodeCommand.RaiseCanExecuteChanged();
+                    ClearGCodeCommand.RaiseCanExecuteChanged();
                     SetMetricUnitsCommand.RaiseCanExecuteChanged();
                     SetImperialUnitsCommand.RaiseCanExecuteChanged();
                     ShowBottomEtchingGCodeCommand.RaiseCanExecuteChanged();
@@ -166,7 +165,7 @@ namespace LagoVista.GCode.Sender.ViewModels
 
         private bool CanPerformFileOperation(Object instance)
         {
-            return (Machine.Mode != OperatingMode.SendingGCodeFile);
+            return (Machine.Mode == OperatingMode.Manual || Machine.Mode == OperatingMode.Disconnected);
         }
 
         public bool CanClearHeightMap()
@@ -175,16 +174,10 @@ namespace LagoVista.GCode.Sender.ViewModels
                   Machine.HeightMapManager.HeightMap.Status == Models.HeightMapStatus.Populated;
         }
 
-
-
         public RelayCommand ArcToLineCommand { get; private set; }
-
-
 
         public RelayCommand OpenEagleBoardFileCommand { get; private set; }
         public RelayCommand CloseEagleBoardFileCommand { get; private set; }
-
-
 
         public RelayCommand SetImperialUnitsCommand { get; private set; }
         public RelayCommand SetMetricUnitsCommand { get; private set; }
@@ -192,27 +185,20 @@ namespace LagoVista.GCode.Sender.ViewModels
         public RelayCommand SetAbsolutePositionModeCommand { get; private set; }
         public RelayCommand SetIncrementalPositionModeCommand { get; private set; }
 
-
-
         public RelayCommand OpenHeightMapCommand { get; private set; }
         public RelayCommand SaveHeightMapCommand { get; private set; }
         public RelayCommand ApplyHeightMapCommand { get; private set; }
         public RelayCommand ClearHeightMapCommand { get; private set; }
         public RelayCommand StartProbeHeightMapCommand { get; private set; }
 
-
-
-        public RelayCommand OpenGCOdeCommand { get; private set; }
+        public RelayCommand OpenGCodeCommand { get; private set; }
         public RelayCommand SaveModifiedGCodeCommamnd { get; private set; }
-        public RelayCommand ClaerGCCdeCommand { get; private set; }
-
-
+        public RelayCommand ClearGCodeCommand { get; private set; }
 
         public RelayCommand ShowTopEtchingGCodeCommand { get; private set; }
         public RelayCommand ShowBottomEtchingGCodeCommand { get; private set; }
         public RelayCommand ShowCutoutMillingGCodeCommand { get; private set; }
         public RelayCommand ShowDrillGCodeCommand { get; private set; }
         public RelayCommand ShowHoldDownGCodeCommand { get; private set; }
-
     }
 }

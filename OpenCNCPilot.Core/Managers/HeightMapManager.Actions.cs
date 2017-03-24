@@ -10,7 +10,7 @@ namespace LagoVista.GCode.Sender.Managers
 {
     public partial class HeightMapManager
     {
-        public void ProbeCompleted(Vector3 position)
+        public async void ProbeCompleted(Vector3 position)
         {
             if (Machine.Mode != OperatingMode.ProbingHeightMap)
                 return;
@@ -25,6 +25,7 @@ namespace LagoVista.GCode.Sender.Managers
             {
                 Logger.Log(Core.PlatformSupport.LogLevel.Error, "HeightMap_ProbeCompleted", "Probe Completed without valid Height Map.");
                 Machine.AddStatusMessage(StatusMessageTypes.Warning, "Probe Height Map Completed without valid Height Map");
+                Status = HeightMapStatus.NotAvailable;
                 CancelProbing();
                 return;
             }
@@ -33,6 +34,7 @@ namespace LagoVista.GCode.Sender.Managers
             {
                 Logger.Log(Core.PlatformSupport.LogLevel.Error, "HeightMap_ProbeCompleted", "Probe Completed without Current Point.");
                 Machine.AddStatusMessage(StatusMessageTypes.Warning, "Probe Height Map Completed without valid Current Point");
+                Status = HeightMapStatus.NotPopulated;
                 CancelProbing();
                 return;
             }
@@ -45,21 +47,24 @@ namespace LagoVista.GCode.Sender.Managers
 
             if (HeightMap.Status == HeightMapStatus.Populated)
             {
+                Status = HeightMapStatus.Populated;
                 Machine.SendCommand($"G0Z{Machine.Settings.ProbeSafeHeight.ToString(Constants.DecimalOutputFormat)}");
                 Machine.AddStatusMessage(StatusMessageTypes.Info, $"Creating Height Map Completed");
                 Machine.AddStatusMessage(StatusMessageTypes.Info, $"Next - Apply Height Map to GCode");
                 CancelProbing();
 
-                return;
+                await Core.PlatformSupport.Services.Popups.ShowAsync("Capturing Height Map completed.  You can now save or apply this height map to your GCode.");
             }
-
-            HeightMapProbeNextPoint();
+            else
+            {
+                HeightMapProbeNextPoint();
+            }
         }
 
         public void NewHeightMap(HeightMap heightMap)
         {
             HeightMap = heightMap;
-
+          
             ConstructVisuals();
         }
 
@@ -79,21 +84,23 @@ namespace LagoVista.GCode.Sender.Managers
 
         }
 
+        private string _heightMapPath;
+
         public async Task OpenHeightMapAsync(string path)
         {
+            _heightMapPath = path;
             HeightMap = await Core.PlatformSupport.Services.Storage.GetAsync<HeightMap>(path);
         }
 
         public async Task SaveHeightMapAsync(string path)
         {
+            _heightMapPath = path;
             await Core.PlatformSupport.Services.Storage.StoreAsync(HeightMap, path);
         }
 
         public async Task SaveHeightMapAsync()
         {
-            var fileName = "foo";
-            await Core.PlatformSupport.Services.Storage.StoreAsync(HeightMap, fileName);
-
+            await Core.PlatformSupport.Services.Storage.StoreAsync(HeightMap, _heightMapPath);
         }
 
         public void CreateTestPattern()
@@ -111,11 +118,6 @@ namespace LagoVista.GCode.Sender.Managers
         {
             Machine.AddStatusMessage(StatusMessageTypes.FatalError, "Probe Failed! aborting");
             CancelProbing();
-        }
-
-        public void ProbeStart()
-        {
-
         }
 
         public void CancelProbing()
@@ -163,7 +165,7 @@ namespace LagoVista.GCode.Sender.Managers
 
             Machine.AddStatusMessage(StatusMessageTypes.Info, $"Probing Point X={_currentPoint.Point.X}, Y={_currentPoint.Point.Y}");
 
-            Machine.SendCommand($"G0 X{_currentPoint.Point.X.ToString("0.###", Constants.DecimalOutputFormat)} Y{_currentPoint.Point.Y.ToString("0.###", Constants.DecimalOutputFormat)} F{Machine.Settings.ProbeHeightMovementFeed}"); 
+            Machine.SendCommand($"G0 X{_currentPoint.Point.X.ToString("0.###", Constants.DecimalOutputFormat)} Y{_currentPoint.Point.Y.ToString("0.###", Constants.DecimalOutputFormat)} F{Machine.Settings.ProbeHeightMovementFeed}");
 
             Machine.SendCommand($"G38.3 Z-{Machine.Settings.ProbeMaxDepth.ToString("0.###", Constants.DecimalOutputFormat)}F{Machine.Settings.ProbeFeed.ToString("0.#", Constants.DecimalOutputFormat)}");
 
@@ -203,6 +205,8 @@ namespace LagoVista.GCode.Sender.Managers
                 Machine.AddStatusMessage(StatusMessageTypes.Warning, "Machine Couldn't Transition to Probe Mode.");
                 return;
             }
+
+            Status = HeightMapStatus.Populating;
 
             Machine.AddStatusMessage(StatusMessageTypes.Info, "Creating Height Map - Started");
 

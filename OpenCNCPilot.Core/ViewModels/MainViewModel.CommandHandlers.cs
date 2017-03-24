@@ -96,9 +96,6 @@ namespace LagoVista.GCode.Sender.ViewModels
 
         }
 
-
-
-
         public async void OpenHeightMapFile(object instance)
         {
             var file = await Popups.ShowOpenFileAsync(Constants.FileFilterHeightMap);
@@ -108,10 +105,13 @@ namespace LagoVista.GCode.Sender.ViewModels
             }
         }
 
-        public void SaveHeightMap()
+        public async void SaveHeightMap()
         {
-
-
+            var file = await Popups.ShowSaveFileAsync(Constants.FileFilterHeightMap);
+            if (!String.IsNullOrEmpty(file))
+            {
+                await Machine.HeightMapManager.SaveHeightMapAsync(file);
+            }
         }
 
         public void ApplyHeightMap()
