@@ -61,7 +61,7 @@
                 <MenuItem Header="Save HeightMap"  Command="{Binding SaveHeightMapCommand}" />
                 <Separator />
                 <MenuItem Header="Apply to GCode" x:Name="EditHeightMap" Command="{Binding ApplyHeightMapCommand}"/>
-                <MenuItem Header="Save Updated GCode"  Command="{Binding SaveModifiedBoardCommand}" />
+                <MenuItem Header="Save Updated GCode"  Command="{Binding SaveModifiedGCodeCommamnd}" />
                 <Separator />
                 <MenuItem Header="Clear HeightMap"  Command="{Binding ClearHeightMapCommand}" />
             </MenuItem>

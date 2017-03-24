@@ -42,7 +42,7 @@
                     <Button Content="..." Width="30" HorizontalAlignment="Left" Grid.Column="2" Margin="0,4,4,4" Command="{Binding OpenEagleBoardCommand}" />
 
                     <Label Content="Top Etching GCode" Grid.Row="1" />
-                    <ctls:MaskingTextBox Grid.Row="1" Text="{Binding Path=Project.TopEtchignFilePath, Mode=TwoWay}" Grid.Column="1" Margin="4,4,0,4" />
+                    <ctls:MaskingTextBox Grid.Row="1" Text="{Binding Path=Project.TopEtchingFilePath, Mode=TwoWay}" Grid.Column="1" Margin="4,4,0,4" />
                     <Button Grid.Row="1" Content="..." Width="30" HorizontalAlignment="Left" Grid.Column="2" Margin="0,4,4,4" Command="{Binding OpenTopEtchingCommand}"/>
 
                     <Label Grid.Row="2" Content="Bottom Etching GCode" />

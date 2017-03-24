@@ -38,7 +38,7 @@ namespace LagoVista.EaglePCB.Models
         }
 
         private string _topEtchingFilePath;
-        public string TopEtchignFilePath
+        public string TopEtchingFilePath
         {
             get { return _topEtchingFilePath; }
             set { Set(ref _topEtchingFilePath, value); }

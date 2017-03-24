@@ -25,11 +25,10 @@ namespace LagoVista.GCode.Sender.Models
             _min = new Vector2(0, 0);
             _max = new Vector2(100, 80);
             _gridSize = 10;
-            Refresh();
         }
 
         public void Refresh()
-        {
+        { 
             Points.Clear();
             RawBoardOutline.Clear();
 
@@ -107,6 +106,8 @@ namespace LagoVista.GCode.Sender.Models
             RaisePropertyChanged(nameof(Points));
             RaisePropertyChanged(nameof(Min));
             RaisePropertyChanged(nameof(Max));
+
+            Initialized = true;
         }
 
         public HeightMapProbePoint GetNextPoint()
@@ -149,7 +150,7 @@ namespace LagoVista.GCode.Sender.Models
 
         public void SetPointHeight(HeightMapProbePoint point, double height)
         {
-            point.Point = new Vector3(point.Point.X, point.Point.Y, height);
+            point.Point = new Vector3(Math.Round(point.Point.X,4), Math.Round(point.Point.Y,4), Math.Round(height, 4));
             point.Status = HeightMapProbePointStatus.Probed;
             Status = Completed ? HeightMapStatus.Populated : HeightMapStatus.Populating;
             MaxHeight = Math.Max(height, MaxHeight);

@@ -16,6 +16,7 @@ namespace LagoVista.GCode.Sender.Models
 
     public partial class HeightMap
     {
+        public bool Initialized { get; set; } = false;
 
         public int SizeX { get; set; }
         public int SizeY { get; set; }
@@ -33,7 +34,10 @@ namespace LagoVista.GCode.Sender.Models
             set
             {
                 Set(ref _min, value);
-                Refresh();
+                if(Initialized)
+                {
+                    Refresh();
+                }
             }
         }
 
@@ -44,7 +48,10 @@ namespace LagoVista.GCode.Sender.Models
             set
             {
                 Set(ref _max, value);
-                Refresh();
+                if (Initialized)
+                {
+                    Refresh();
+                }
             }
         }
 
@@ -55,7 +62,10 @@ namespace LagoVista.GCode.Sender.Models
             set
             {
                 Set(ref _gridSize, value);
-                Refresh();
+                if (Initialized)
+                {
+                    Refresh();
+                }
             }
         }
 

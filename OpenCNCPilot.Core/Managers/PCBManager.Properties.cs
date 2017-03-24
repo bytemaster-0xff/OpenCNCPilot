@@ -13,7 +13,15 @@ namespace LagoVista.GCode.Sender.Managers
             set
             {
                 _board = value;
-                DrillRack = LagoVista.EaglePCB.Managers.GCodeEngine.GetToolRack(_board, Project);
+                if (_board != null && HasProject)
+                {
+                    DrillRack = LagoVista.EaglePCB.Managers.GCodeEngine.GetToolRack(_board, Project);
+                }
+                else
+                {
+                    DrillRack = null;
+                }
+
                 RaisePropertyChanged(nameof(DrillRack));
 
                 RaisePropertyChanged();
@@ -59,7 +67,7 @@ namespace LagoVista.GCode.Sender.Managers
 
         public bool HasTopEtching
         {
-            get { return _project != null && !String.IsNullOrEmpty(_project.TopEtchignFilePath); }
+            get { return _project != null && !String.IsNullOrEmpty(_project.TopEtchingFilePath); }
         }
 
         public bool HasBottomEtching

@@ -91,7 +91,7 @@ namespace LagoVista.GCode.Sender.ViewModels
             var result = await Popups.ShowOpenFileAsync(Constants.FileFilterGCode);
             if (!String.IsNullOrEmpty(result))
             {
-                Project.TopEtchignFilePath = result;
+                Project.TopEtchingFilePath = result;
             }
         }
 

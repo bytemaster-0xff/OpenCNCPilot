@@ -424,6 +424,11 @@ namespace LagoVista.GCode.Sender.Application.Controls
                         _gcodeVisible = !_gcodeVisible;
                     }
                     break;
+                case "HeightMap":
+                    HeightMap.Visible = !HeightMap.Visible;
+                   // ModelHeightMapBoundary.Vis
+                     //   HeightMapPoints
+                    break;
             }
 
             if (ViewModel.Machine.PCBManager.HasBoard)

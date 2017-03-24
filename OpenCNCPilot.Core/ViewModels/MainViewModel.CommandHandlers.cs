@@ -145,7 +145,7 @@ namespace LagoVista.GCode.Sender.ViewModels
 
         public void ShowTopEtchingGCode()
         {
-            Machine.GCodeFileManager.OpenFileAsync(Machine.PCBManager.Project.TopEtchignFilePath);
+            Machine.GCodeFileManager.OpenFileAsync(Machine.PCBManager.Project.TopEtchingFilePath);
             Machine.GCodeFileManager.ApplyOffset(Machine.PCBManager.Project.ScrapSides, Machine.PCBManager.Project.ScrapTopBottom, 0);
         }
 

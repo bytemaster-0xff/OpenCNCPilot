@@ -64,7 +64,7 @@ namespace LagoVista.GCode.Sender.Managers
         public void NewHeightMap(HeightMap heightMap)
         {
             HeightMap = heightMap;
-          
+            HeightMap.Refresh();
             ConstructVisuals();
         }
 
@@ -90,6 +90,7 @@ namespace LagoVista.GCode.Sender.Managers
         {
             _heightMapPath = path;
             HeightMap = await Core.PlatformSupport.Services.Storage.GetAsync<HeightMap>(path);
+            HeightMap.Initialized = true;
         }
 
         public async Task SaveHeightMapAsync(string path)
@@ -106,6 +107,7 @@ namespace LagoVista.GCode.Sender.Managers
         public void CreateTestPattern()
         {
             HeightMap = new Models.HeightMap(Machine, Logger);
+            HeightMap.Refresh();
             HeightMap.FillWithTestPattern();
         }
 

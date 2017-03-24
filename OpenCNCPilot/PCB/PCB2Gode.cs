@@ -118,7 +118,7 @@ namespace LagoVista.GCode.Sender.Application.PCB
                 return;
             }
 
-            _project.TopEtchignFilePath = topEtchFilePath;
+            _project.TopEtchingFilePath = topEtchFilePath;
             _project.BottomEtchingFilePath = bottomEtchFilePath;
             await _project.SaveAsync();
 
