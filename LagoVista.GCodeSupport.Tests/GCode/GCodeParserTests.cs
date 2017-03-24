@@ -185,5 +185,14 @@ namespace LagoVista.GCodeSupport.Tests
             Assert.AreEqual(25, cmd.SpindleRPM.Value);
             Assert.AreEqual("G0 X10 S25", cmd.Line);
         }
+
+        [TestMethod]
+        public void ParseProbeCommand()
+        {
+            var parser = new GCodeParser(new FakeLogger());
+            var cmd = parser.ParseLine("G38.3 Z-5 F20", 0) as GCodeProbe;
+            Assert.AreEqual("G38.3", cmd.Command);
+            Assert.AreEqual(20, cmd.Feed);
+        }
     }
 }

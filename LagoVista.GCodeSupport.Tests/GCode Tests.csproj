@@ -70,7 +70,9 @@
     <Compile Include="GCode\GCodeFileManagerTests.cs" />
     <Compile Include="GCode\GCodeSampleFile.cs" />
     <Compile Include="GCode\GCodeParserTests.cs" />
+    <Compile Include="GCode\HeightMapTests.cs" />
     <Compile Include="GCode\LineParser.cs" />
+    <Compile Include="GCode\SplitTests.cs" />
     <Compile Include="Utils\MediaFilterTests.cs" />
     <Compile Include="Mocks\FakePlatformSupport.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

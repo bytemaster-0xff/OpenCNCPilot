@@ -11,13 +11,12 @@ namespace LagoVista.Core.GCode.Parser
         public ParseDistanceMode DistanceMode;
         public ParseDistanceMode ArcDistanceMode;
         public ParseUnit Unit;
-        public int LastMotionMode;
+        public double LastMotionMode;
 
         public ParserState()
         {
             Position = new Vector3();
             Plane = ArcPlane.XY;
-            Feed = 100;
             DistanceMode = ParseDistanceMode.Absolute;
             ArcDistanceMode = ParseDistanceMode.Incremental;
             Unit = ParseUnit.Metric;

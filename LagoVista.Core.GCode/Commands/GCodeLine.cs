@@ -23,7 +23,7 @@ namespace LagoVista.Core.GCode.Commands
             
         }
 
-        public override void Rotate(double degrees, Point2D<double> origin = null, Axis axis = Axis.ZAxis, Direction direction = Direction.CounterClockwise)
+        public override void Rotate(double degrees, Point2D<double> origin = null, Axis axis = Axis.ZAxis, RotateDirection direction = RotateDirection.CounterClockwise)
         {
             if (degrees != 0)
             {
@@ -89,16 +89,16 @@ namespace LagoVista.Core.GCode.Commands
 
         public override IEnumerable<GCodeMotion> Split(double length)
         {
-            int divisions = (int)Math.Ceiling(Length / length);
+            var divisions = (int)Math.Ceiling(Length / length);
 
             if (divisions < 1)
                 divisions = 1;
 
-            Vector3 lastEnd = Start;
+            var lastEnd = Start;
 
             for (int i = 1; i <= divisions; i++)
             {
-                Vector3 end = Interpolate(((double)i) / divisions);
+                var end = Interpolate(((double)i) / divisions);
 
                 var immediate = new GCodeLine();
                 immediate.Start = lastEnd;

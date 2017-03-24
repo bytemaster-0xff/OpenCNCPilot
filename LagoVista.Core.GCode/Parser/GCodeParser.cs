@@ -22,7 +22,7 @@ namespace LagoVista.Core.GCode.Parser
 
         //TODO: Removed compiled options
         private Regex GCodeSplitter = new Regex(@"([A-Z])\s*(\-?\d+\.?\d*)");
-        private double[] MotionCommands = new double[] { 0, 1, 2, 3, 20, 21, 90, 91 };
+        private double[] MotionCommands = new double[] { 0, 1, 2, 3, 38.2, 38.3, 38.4, 38.5, 20, 21, 90, 91 };
         private string ValidWords = "GMXYZSTPIJKFR";
         public List<GCodeCommand> Commands;
 
@@ -252,7 +252,7 @@ namespace LagoVista.Core.GCode.Parser
 
             if (words.First().Command == 'G')
             {
-                motionMode = (int)words.First().Parameter;
+                motionMode = words.First().Parameter;
                 State.LastMotionMode = motionMode;
                 words.RemoveAt(0);
 
@@ -329,13 +329,28 @@ namespace LagoVista.Core.GCode.Parser
                             DwellTime = pauseTime,
                             OriginalLine = line,
                         };
+                    case 38.2:
+                    case 38.3:
+                    case 38.4:
+                    case 38.5:
+                        var probeCommand = new GCodeProbe()
+                        {
+                            OriginalLine = line,
+                            Command = $"G{motionMode}"
+                        };
+                        if (feedRateCommand != null)
+                        {
+                            probeCommand.Feed = feedRateCommand.Parameter;
+                        }
 
+                        return probeCommand;
                     case 17: /* XY Plane Selection */
                     case 80: /* Cancel Canned Cycle */
                     case 98: /* Return to initial Z Position */
                         return new OtherCode()
                         {
                             OriginalLine = line,
+                            Command = $"G{motionMode}"
                         };
 
 

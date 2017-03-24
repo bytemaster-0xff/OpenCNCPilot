@@ -11,7 +11,7 @@ namespace LagoVista.Core.GCode.Parser
 {
     public partial class GCodeParser
     {
-        public GCodeArc ParseArc(List<Word> words, int motionMode, Vector3 EndPos, double UnitMultiplier)
+        public GCodeArc ParseArc(List<Word> words, double motionMode, Vector3 EndPos, double UnitMultiplier)
         {
             double U, V;
 
@@ -176,7 +176,7 @@ namespace LagoVista.Core.GCode.Parser
 
         }
 
-        private GCodeMotion ParseLine(List<Word> Words, int MotionMode, Vector3 EndPos)
+        private GCodeMotion ParseLine(List<Word> Words, double MotionMode, Vector3 EndPos)
         {
             if (Words.Count > 0)
             {

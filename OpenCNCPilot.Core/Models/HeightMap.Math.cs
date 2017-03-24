@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LagoVista.Core.GCode.Commands;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -40,33 +41,28 @@ namespace LagoVista.GCode.Sender.Models
             var fY = y - iLY;
 
             //TODO: Should be able to use Linq and pull via position
-            var linUpper = GetPoint(iHX,iHY).Point.Z * fX + GetPoint(iLX, iHY).Point.Z * (1 - fX);       //linear immediates
-            var linLower = GetPoint(iHX, iLY).Point.Z * fX + GetPoint(iLX, iLY).Point.Z  * (1 - fX);
+            var linUpper = GetPoint(iHX, iHY).Point.Z * fX + GetPoint(iLX, iHY).Point.Z * (1 - fX);       //linear immediates
+            var linLower = GetPoint(iHX, iLY).Point.Z * fX + GetPoint(iLX, iLY).Point.Z * (1 - fX);
 
             return linUpper * fY + linLower * (1 - fY);     //bilinear result
         }
 
         public Core.GCode.GCodeFile ApplyHeightMap(Core.GCode.GCodeFile file)
         {
-            if(!Completed)
+            if (!Completed)
             {
-                
+
             }
 
-            double segmentLength = Math.Min(GridX, GridY);
+            var segmentLength = Math.Min(GridX, GridY);
 
             var newToolPath = new List<Core.GCode.Commands.GCodeCommand>();
 
             foreach (var command in file.Commands)
             {
-                if (command is Core.GCode.Commands.MCode || command is Core.GCode.Commands.OtherCode)
+                if (command is GCodeMotion)
                 {
-                    newToolPath.Add(command);
-                    continue;
-                }
-                else
-                {
-                    Core.GCode.Commands.GCodeMotion m = (Core.GCode.Commands.GCodeMotion)command;
+                    var m = command as GCodeMotion;
 
                     foreach (var subMotion in m.Split(segmentLength))
                     {
@@ -78,6 +74,10 @@ namespace LagoVista.GCode.Sender.Models
 
                         newToolPath.Add(subMotion);
                     }
+                }
+                else
+                {
+                    newToolPath.Add(command);
                 }
             }
 

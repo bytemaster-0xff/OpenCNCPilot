@@ -21,7 +21,7 @@ namespace LagoVista.Core.GCode.Commands
             ZAxis
         }
 
-        public enum Direction
+        public enum RotateDirection
         {
             Clockwise,
             CounterClockwise
@@ -54,6 +54,6 @@ namespace LagoVista.Core.GCode.Commands
 
         public virtual void ApplyOffset(double x, double y, double z = 0) { }
 
-        public virtual void Rotate(double degrees, Point2D<double> origin = null, Axis axis = Axis.ZAxis,Direction direction = Direction.CounterClockwise) { }
+        public virtual void Rotate(double degrees, Point2D<double> origin = null, Axis axis = Axis.ZAxis,RotateDirection direction = RotateDirection.CounterClockwise) { }
     }
 }
