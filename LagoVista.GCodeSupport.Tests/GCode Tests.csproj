@@ -88,6 +88,10 @@
       <Project>{a5441c94-a9f8-4577-b2e6-7f50fb7c76f7}</Project>
       <Name>GCode Sender</Name>
     </ProjectReference>
+    <ProjectReference Include="..\src\LagoVista.EaglePCB\LagoVista.EaglePCB.csproj">
+      <Project>{b60c5358-d6ae-469a-8beb-78ce5c434952}</Project>
+      <Name>LagoVista.EaglePCB</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
