@@ -209,20 +209,14 @@ namespace LagoVista.GCode.Sender.Application.Controls
             {
                 var stockGroup = new Model3DGroup();
 
-                if (project != null)
+                var circleMeshBuilder = new MeshBuilder(false, false);
+                var holdDownDrills = project.GetHoldDownDrills(board);
+                foreach(var drl in holdDownDrills)
                 {
-                    foreach (var circle in board.Holes)
-                    {
-                        var circleMeshBuilder = new MeshBuilder(false, false);
-                        circleMeshBuilder.AddCylinder(new Point3D(project.ScrapSides - project.HoldDownBoardOffset, project.ScrapTopBottom + board.Height / 2, -boardThickness), new Point3D(project.ScrapSides - project.HoldDownBoardOffset, project.ScrapTopBottom + board.Height / 2, 0.01), project.HoldDownDiameter / 2);
-                        circleMeshBuilder.AddCylinder(new Point3D(project.ScrapSides + board.Width + project.HoldDownBoardOffset, project.ScrapTopBottom + board.Height / 2, -boardThickness), new Point3D(project.ScrapSides + board.Width + project.HoldDownBoardOffset, project.ScrapTopBottom + board.Height / 2, 0.01), project.HoldDownDiameter / 2);
-                        circleMeshBuilder.AddCylinder(new Point3D(project.ScrapSides + board.Width / 2, project.ScrapTopBottom + board.Height + project.HoldDownBoardOffset, -boardThickness), new Point3D(project.ScrapSides + board.Width / 2, project.ScrapTopBottom + board.Height + project.HoldDownBoardOffset, 0.01), project.HoldDownDiameter / 2);
-                        circleMeshBuilder.AddCylinder(new Point3D(project.ScrapSides + board.Width / 2, project.ScrapTopBottom - project.HoldDownBoardOffset, -boardThickness), new Point3D(project.ScrapSides + board.Width / 2, project.ScrapTopBottom - project.HoldDownBoardOffset, 0.01), project.HoldDownDiameter / 2);
-                        stockGroup.Children.Add(new GeometryModel3D() { Geometry = circleMeshBuilder.ToMesh(true), Material = blackMaterial });
-                    }
-
+                    circleMeshBuilder.AddCylinder(new Point3D(drl.X, drl.Y, -boardThickness), new Point3D(drl.X, drl.Y, 0.01), project.HoldDownDiameter / 2);
                 }
 
+                stockGroup.Children.Add(new GeometryModel3D() { Geometry = circleMeshBuilder.ToMesh(true), Material = blackMaterial });
 
                 if (_stockVisible)
                 {
@@ -230,6 +224,7 @@ namespace LagoVista.GCode.Sender.Application.Controls
                     stockMeshBuilder.AddBox(new Point3D(project.StockWidth / 2, project.StockHeight / 2, -boardThickness / 2), project.StockWidth, project.StockHeight, boardThickness - 0.05);
                     stockGroup.Children.Add(new GeometryModel3D() { Geometry = stockMeshBuilder.ToMesh(true), Material = copperMaterial });
                 }
+
                 StockLayer.Content = stockGroup;
             }
             else
@@ -426,8 +421,8 @@ namespace LagoVista.GCode.Sender.Application.Controls
                     break;
                 case "HeightMap":
                     HeightMap.Visible = !HeightMap.Visible;
-                   // ModelHeightMapBoundary.Vis
-                     //   HeightMapPoints
+                    // ModelHeightMapBoundary.Vis
+                    //   HeightMapPoints
                     break;
             }
 

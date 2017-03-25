@@ -64,42 +64,15 @@ namespace LagoVista.GCode.Sender.Application.Controls
 
                 if (manager.HasProject)
                 {
-
-                    var elipse = new Ellipse() { Width = manager.Project.HoldDownDiameter * 10.0, Height = manager.Project.HoldDownDiameter * 10.0 };
-                    var y = ((manager.Project.StockHeight / 2) - (manager.Project.HoldDownDiameter / 2));
-                    var x = ((manager.Project.ScrapSides - manager.Project.HoldDownBoardOffset) - (manager.Project.HoldDownDiameter / 2));
-                    elipse.Fill = Brushes.Black;
-                    elipse.SetValue(Canvas.TopProperty, y * 10.0);
-                    elipse.SetValue(Canvas.LeftProperty, x * 10.0);
-                    elipse.ToolTip = $"{x}x{y} - {manager.Project.HoldDownDiameter}D";
-                    BoardLayout.Children.Add(elipse);
-
-                    elipse = new Ellipse() { Width = manager.Project.HoldDownDiameter * 10.0, Height = manager.Project.HoldDownDiameter * 10.0 };
-                    elipse.Fill = Brushes.Black;
-                    y = ((manager.Project.StockHeight / 2) - (manager.Project.HoldDownDiameter / 2));
-                    x = ((manager.Board.Width + manager.Project.ScrapSides + manager.Project.HoldDownBoardOffset) - (manager.Project.HoldDownDiameter / 2));
-                    elipse.SetValue(Canvas.TopProperty, y * 10);
-                    elipse.SetValue(Canvas.LeftProperty, x * 10.0);
-                    elipse.ToolTip = $"{x + (manager.Project.HoldDownDiameter / 2)}x{y + (manager.Project.HoldDownDiameter / 2)} - {manager.Project.HoldDownDiameter}D";
-                    BoardLayout.Children.Add(elipse);
-
-                    elipse = new Ellipse() { Width = manager.Project.HoldDownDiameter * 10.0, Height = manager.Project.HoldDownDiameter * 10.0 };
-                    elipse.Fill = Brushes.Black;
-                    y = (manager.Project.StockHeight - (manager.Project.ScrapTopBottom - (manager.Project.HoldDownBoardOffset - manager.Project.HoldDownDiameter / 2)));
-                    x = ((manager.Project.StockWidth / 2) - (manager.Project.HoldDownDiameter / 2));
-                    elipse.SetValue(Canvas.TopProperty, y * 10.0);
-                    elipse.SetValue(Canvas.LeftProperty, x * 10.0);
-                    elipse.ToolTip = $"{x + (manager.Project.HoldDownDiameter / 2)}x{y + (manager.Project.HoldDownDiameter / 2)} - {manager.Project.HoldDownDiameter}D";
-                    BoardLayout.Children.Add(elipse);
-
-                    elipse = new Ellipse() { Width = manager.Project.HoldDownDiameter * 10.0, Height = manager.Project.HoldDownDiameter * 10.0 };
-                    elipse.Fill = Brushes.Black;
-                    y = (manager.Project.ScrapTopBottom - (manager.Project.HoldDownBoardOffset + manager.Project.HoldDownDiameter / 2));
-                    x = ((manager.Project.StockWidth / 2) - (manager.Project.HoldDownDiameter / 2));
-                    elipse.SetValue(Canvas.TopProperty, y * 10.0);
-                    elipse.SetValue(Canvas.LeftProperty, x * 10.0);
-                    elipse.ToolTip = $"{x + (manager.Project.HoldDownDiameter / 2)}x{y + (manager.Project.HoldDownDiameter / 2)} - {manager.Project.HoldDownDiameter}D";
-                    BoardLayout.Children.Add(elipse);
+                    foreach(var hole in manager.Project.GetHoldDownDrills(manager.Board))
+                    {
+                        var elipse = new Ellipse() { Width = manager.Project.HoldDownDiameter * 10.0, Height = manager.Project.HoldDownDiameter * 10.0 };
+                        elipse.Fill = Brushes.Black;
+                        elipse.SetValue(Canvas.TopProperty, (hole.Y- (manager.Project.HoldDownDiameter / 2))* 10.0);
+                        elipse.SetValue(Canvas.LeftProperty, (hole.X - (manager.Project.HoldDownDiameter / 2)) * 10.0);
+                        elipse.ToolTip = $"{hole.X}x{hole.Y} - {manager.Project.HoldDownDiameter}D";
+                        BoardLayout.Children.Add(elipse);
+                    }
                 }
             }
         }

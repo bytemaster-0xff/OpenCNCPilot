@@ -2,16 +2,17 @@
 using System.Collections.Generic;
 using System;
 using LagoVista.GCode.Sender.Models;
+using LagoVista.Core.GCode;
 
 namespace LagoVista.GCode.Sender.Managers
 {
     public partial class GCodeFileManager
     {
-        private void RenderPaths()
+        private void RenderPaths(GCodeFile file)
         {
             ClearPaths();
 
-            foreach (var cmd in _file.Commands)
+            foreach (var cmd in file.Commands)
             {
                 if (cmd is GCodeLine)
                 {

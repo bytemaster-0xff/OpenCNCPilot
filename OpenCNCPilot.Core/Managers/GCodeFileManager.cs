@@ -37,8 +37,6 @@ namespace LagoVista.GCode.Sender.Managers
             Lines = new System.Collections.ObjectModel.ObservableCollection<Line3D>();
             RapidMoves = new System.Collections.ObjectModel.ObservableCollection<Line3D>();
             Arcs = new System.Collections.ObjectModel.ObservableCollection<Line3D>();
-
-            HasValidFile = false;
         }
 
         private async void HandleToolChange(ToolChangeCommand mcode)

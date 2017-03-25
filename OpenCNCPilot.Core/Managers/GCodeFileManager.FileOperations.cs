@@ -34,8 +34,9 @@ namespace LagoVista.GCode.Sender.Managers
 
                 return Task.FromResult(true);
             }
-            catch(Exception)
+            catch(Exception ex)
             {
+                _logger.Log(Core.PlatformSupport.LogLevel.Error, "GCodeFileManager", ex.Message);
                 return Task.FromResult(false);
             }
         }

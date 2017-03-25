@@ -49,7 +49,7 @@ namespace LagoVista.GCode.Sender.Managers
                 RaisePropertyChanged(nameof(Lines));
                 RaisePropertyChanged(nameof(Arcs));
                 RaisePropertyChanged(nameof(RapidMoves));
-                RenderPaths();
+                RenderPaths(_file);
             }
         }
 
@@ -148,7 +148,7 @@ namespace LagoVista.GCode.Sender.Managers
             IsDirty = true;
             RaisePropertyChanged(nameof(IsDirty));
             RaisePropertyChanged(nameof(File));
-            RenderPaths();
+            RenderPaths(File);
         }
 
 

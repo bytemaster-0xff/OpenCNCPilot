@@ -38,9 +38,21 @@ namespace LagoVista.GCode.Sender.ViewModels
             SetAbsolutePositionModeCommand = new RelayCommand(SetAbsolutePositionMode, CanSetPositionMode);
             SetIncrementalPositionModeCommand = new RelayCommand(SetIncrementalPositionMode, CanSetPositionMode);
 
+            Machine.GCodeFileManager.PropertyChanged += GCodeFileManager_PropertyChanged;
             Machine.PropertyChanged += _machine_PropertyChanged;
             Machine.PCBManager.PropertyChanged += PCBManager_PropertyChanged;
             Machine.HeightMapManager.PropertyChanged += HeightMapManager_PropertyChanged;
+        }
+
+        private void GCodeFileManager_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if(e.PropertyName == nameof(Machine.GCodeFileManager.HasValidFile))
+            {
+                DispatcherServices.Invoke(() =>
+                {
+                    ApplyHeightMapCommand.RaiseCanExecuteChanged();
+                });
+            }
         }
 
         private void HeightMapManager_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -68,6 +80,7 @@ namespace LagoVista.GCode.Sender.ViewModels
             {
                 DispatcherServices.Invoke(() =>
                 {
+                    ApplyHeightMapCommand.RaiseCanExecuteChanged();
                     ShowHoldDownGCodeCommand.RaiseCanExecuteChanged();
                     ShowDrillGCodeCommand.RaiseCanExecuteChanged();
                     ShowCutoutMillingGCodeCommand.RaiseCanExecuteChanged();

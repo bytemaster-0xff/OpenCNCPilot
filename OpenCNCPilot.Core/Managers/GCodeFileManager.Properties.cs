@@ -63,12 +63,11 @@ namespace LagoVista.GCode.Sender.Managers
             get { return _file; }
             set
             {
-                _file = value;
 
                 if (value !=null)
                 {
                     FindExtents(value);
-                    RenderPaths();
+                    RenderPaths(value);
                 }
                 else
                 {
@@ -77,8 +76,12 @@ namespace LagoVista.GCode.Sender.Managers
                     Min = null;
                     ClearPaths();
                 }
-                
-                HasValidFile = _file != null;
+
+                _file = value;
+
+                _head = 0;
+                _tail = 0;
+
                 RaisePropertyChanged(nameof(HasValidFile));
                 RaisePropertyChanged(nameof(Commands));
                 RaisePropertyChanged(nameof(EstimatedTimeRemaining));
@@ -86,9 +89,6 @@ namespace LagoVista.GCode.Sender.Managers
                 RaisePropertyChanged(nameof(EstimatedCompletion));
                 RaisePropertyChanged(nameof(TotalLines));
                 RaisePropertyChanged(nameof(CurrentIndex));
-
-                _head = 0;
-                _tail = 0;
             }
         }
 
@@ -104,11 +104,9 @@ namespace LagoVista.GCode.Sender.Managers
             get { return _file == null ? null : _file.Commands; }
         }
 
-        private bool _hasValidFile = false;
         public bool HasValidFile
         {
-            get { return _hasValidFile; }
-            set { Set(ref _hasValidFile, value); }
+            get { return _file != null; }
         }
 
         public bool IsDirty

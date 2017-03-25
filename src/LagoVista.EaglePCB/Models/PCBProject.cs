@@ -60,6 +60,19 @@ namespace LagoVista.EaglePCB.Models
         public double StockHeight { get; set; }
         public double StockThickness { get; set; }
 
+        public List<Drill> GetHoldDownDrills(PCB board)
+        {
+
+            var radius = HoldDownDiameter / 2;
+            var drills = new List<Drill>
+            {
+                new Drill() { X = ScrapSides - (HoldDownBoardOffset + radius), Y = ScrapTopBottom - (HoldDownBoardOffset + radius), Diameter = HoldDownDiameter, Name = "HoldDown_BottomLeft" },
+                new Drill() { X = board.Width + ScrapSides + HoldDownBoardOffset + radius, Y = ScrapTopBottom - (HoldDownBoardOffset + radius), Diameter = HoldDownDiameter, Name = "HoldDown_BottomRight" },
+                new Drill() { X = ScrapSides - (HoldDownBoardOffset + radius), Y = board.Height + ScrapTopBottom + HoldDownBoardOffset + radius, Diameter = HoldDownDiameter, Name = "HoldDown_TopLeft" },
+                new Drill() { X = board.Width + ScrapSides + HoldDownBoardOffset + radius, Y = board.Height + ScrapTopBottom + HoldDownBoardOffset + radius, Diameter = HoldDownDiameter, Name = "HoldDown_TopRight" }
+            };
+            return drills;
+        }
 
         public bool PauseForToolChange { get; set; }
         public double DrillSpindleDwell { get; set; }

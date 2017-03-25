@@ -77,6 +77,12 @@ namespace LagoVista.GCode.Sender.ViewModels
                 return;
             }
 
+            var existingProjectItem = MRUs.ProjectFiles.IndexOf(projectFile);
+            if(existingProjectItem > -1)
+            {
+                MRUs.ProjectFiles.RemoveAt(existingProjectItem);
+            }
+
             MRUs.ProjectFiles.Insert(0, projectFile);
             if(MRUs.ProjectFiles.Count > 10)
             {
@@ -92,6 +98,7 @@ namespace LagoVista.GCode.Sender.ViewModels
             {
                 Project = await PCBProject.OpenAsync(projectFile);
                 Machine.PCBManager.ProjectFilePath = projectFile;
+                AddProjectFileMRU(projectFile);
                 return true;
             }
             catch
