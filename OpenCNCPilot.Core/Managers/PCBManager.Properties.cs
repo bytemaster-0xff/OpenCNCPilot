@@ -58,6 +58,20 @@ namespace LagoVista.GCode.Sender.Managers
             }
         }
 
+        Drill _firstFiducial;
+        public Drill FirstFiducial
+        {
+            get { return _firstFiducial; }
+            set { Set(ref _firstFiducial, value); }
+        }
+
+        Drill _secondFiducial;
+        public Drill SecondFiducial
+        {
+            get { return _secondFiducial; }
+            set { Set(ref _secondFiducial, value); }
+        }
+
         public List<DrillRackInfo> DrillRack { get; private set; }
 
         public bool HasProject

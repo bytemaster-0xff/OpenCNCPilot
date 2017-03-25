@@ -67,6 +67,7 @@
       <DependentUpon>Machine.cs</DependentUpon>
     </Compile>
     <Compile Include="Machine\SimulatedMachine.cs" />
+    <Compile Include="Managers\BoardAlignmentManager.cs" />
     <Compile Include="Managers\GCodeFileManager.Actions.cs">
       <DependentUpon>GCodeFileManager.cs</DependentUpon>
     </Compile>

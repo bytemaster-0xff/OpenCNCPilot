@@ -1,7 +1,9 @@
-﻿using System;
+﻿using LagoVista.EaglePCB.Models;
+using System;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
 
@@ -34,15 +36,17 @@ namespace LagoVista.GCode.Sender.Application.Controls
 
                 foreach (var drill in manager.Board.Drills)
                 {
-                    var elipse = new Ellipse() { Width = drill.Diameter * 10.0, Height = drill.Diameter * 10.0 };
-                    elipse.Fill = Brushes.Black;
+                    var ellipse = new Ellipse() { Width = drill.Diameter * 10.0, Height = drill.Diameter * 10.0 };
+                    ellipse.Fill = Brushes.Black;
                     var x = ((drill.X - (drill.Diameter / 2)) + offsetX);
                     var y = ((manager.Board.Height - (drill.Y + (drill.Diameter / 2))) + offsetY);
-                    elipse.SetValue(Canvas.TopProperty, y * 10);
-                    elipse.SetValue(Canvas.LeftProperty, x * 10);
-                    elipse.ToolTip = $"{x + drill.Diameter / 2}x{y + drill.Diameter / 2} - {drill.Diameter}D";
-
-                    BoardLayout.Children.Add(elipse);
+                    ellipse.SetValue(Canvas.TopProperty, y * 10);
+                    ellipse.SetValue(Canvas.LeftProperty, x * 10);
+                    ellipse.ToolTip = $"{x + drill.Diameter / 2}x{y + drill.Diameter / 2} - {drill.Diameter}D";
+                    ellipse.Cursor = Cursors.Hand;
+                    ellipse.Tag = drill;
+                    ellipse.MouseUp += Elipse_MouseUp;
+                    BoardLayout.Children.Add(ellipse);
                 }
 
                 var outline = new Rectangle();
@@ -66,15 +70,36 @@ namespace LagoVista.GCode.Sender.Application.Controls
                 {
                     foreach(var hole in manager.Project.GetHoldDownDrills(manager.Board))
                     {
-                        var elipse = new Ellipse() { Width = manager.Project.HoldDownDiameter * 10.0, Height = manager.Project.HoldDownDiameter * 10.0 };
-                        elipse.Fill = Brushes.Black;
-                        elipse.SetValue(Canvas.TopProperty, (hole.Y- (manager.Project.HoldDownDiameter / 2))* 10.0);
-                        elipse.SetValue(Canvas.LeftProperty, (hole.X - (manager.Project.HoldDownDiameter / 2)) * 10.0);
-                        elipse.ToolTip = $"{hole.X}x{hole.Y} - {manager.Project.HoldDownDiameter}D";
-                        BoardLayout.Children.Add(elipse);
+                        var ellipse = new Ellipse() { Width = manager.Project.HoldDownDiameter * 10.0, Height = manager.Project.HoldDownDiameter * 10.0 };
+                        ellipse.Fill = Brushes.Black;
+                        ellipse.SetValue(Canvas.TopProperty, (hole.Y- (manager.Project.HoldDownDiameter / 2))* 10.0);
+                        ellipse.SetValue(Canvas.LeftProperty, (hole.X - (manager.Project.HoldDownDiameter / 2)) * 10.0);
+                        ellipse.ToolTip = $"{hole.X}x{hole.Y} - {manager.Project.HoldDownDiameter}D";
+                        ellipse.Cursor = Cursors.Hand;
+                        ellipse.Tag = hole;
+                        ellipse.MouseUp += Elipse_MouseUp;
+                        BoardLayout.Children.Add(ellipse);
                     }
                 }
             }
+        }
+
+        bool _shouldSetFirstFiducial = true;
+
+        private void Elipse_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            var manager = DataContext as LagoVista.GCode.Sender.Managers.PCBManager;
+            if (_shouldSetFirstFiducial)
+            {
+                manager.FirstFiducial = (sender as Ellipse).Tag as Drill;
+            }
+            else
+            {
+                manager.SecondFiducial = (sender as Ellipse).Tag as Drill;
+            }
+
+            _shouldSetFirstFiducial = !_shouldSetFirstFiducial;
+
         }
     }
 }

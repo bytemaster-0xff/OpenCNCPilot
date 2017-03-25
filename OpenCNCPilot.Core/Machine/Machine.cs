@@ -34,6 +34,7 @@ namespace LagoVista.GCode.Sender
             HeightMapManager = new Managers.HeightMapManager(this, Core.PlatformSupport.Services.Logger, PCBManager);
             ProbingManager = new Managers.ProbingManager(this, Core.PlatformSupport.Services.Logger);
             MachineVisionManager = new Managers.MachineVisionManager(this, Core.PlatformSupport.Services.Logger, PCBManager);
+            BoardAlignmentManager = new Managers.BoardAlignmentManager(this, Core.PlatformSupport.Services.Logger, PCBManager);
         }
 
         public Task InitAsync()

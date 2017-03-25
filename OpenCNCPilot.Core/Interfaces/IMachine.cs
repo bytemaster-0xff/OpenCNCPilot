@@ -96,6 +96,11 @@ namespace LagoVista.GCode.Sender.Interfaces
         /// </summary>
         IProbingManager ProbingManager { get; }
 
+        /// <summary>
+        /// Business logic to accurately determine the board position and alignment using Machine Vision.
+        /// </summary>
+        IBoardAlignmentManager BoardAlignmentManager { get; }
+
         MachinesRepo MachineRepo { get; }
 
 

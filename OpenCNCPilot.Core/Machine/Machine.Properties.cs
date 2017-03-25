@@ -92,6 +92,18 @@ namespace LagoVista.GCode.Sender
             }
         }
 
+
+        IBoardAlignmentManager _boardAlignmentManager;
+        public IBoardAlignmentManager BoardAlignmentManager
+        {
+            get { return _boardAlignmentManager; }
+            private set
+            {
+                _boardAlignmentManager = value;
+                RaisePropertyChanged();
+            }
+        }
+
         ObservableCollection<Models.StatusMessage> _messages;
         public ObservableCollection<Models.StatusMessage> Messages
         {

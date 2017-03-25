@@ -18,13 +18,13 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
         FloatMedianFilter _cornerMedianFilter = new FloatMedianFilter(12, 3);
         FloatMedianFilter _circleMedianFilter = new FloatMedianFilter(12, 3);
 
-
         public MachineVisionViewModel(IMachine machine) : base(machine)
         {
             Profile = new Models.VisionProfile();
             SaveProfileCommand = new RelayCommand(SaveProfile);
             CaptureCameraCommand = new RelayCommand(CaptureCameraLocation);
             CaptureDrillLocationCommand = new RelayCommand(CaptureDrillLocation);
+            AlignBoardCommand = new RelayCommand(AlignBoard);
         }
 
         public override async Task InitAsync()
@@ -91,6 +91,13 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                 return null;
             }
 
+
+            var width = img.Size.Width;
+            var height = img.Size.Height;
+
+            var centerX = img.Size.Width / 2;
+            var centerY = img.Size.Height / 2;
+
             using (var gray = new Image<Gray, byte>(img.Bitmap))
             using (var blurredGray = new Image<Gray, float>(gray.Size))
             using (var finalOutput = new Mat())
@@ -122,6 +129,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                     var circles = CvInvoke.HoughCircles(blurredGray, HoughType.Gradient, Profile.HoughCirclesDP, Profile.HoughCirclesMinDistance, Profile.HoughCirclesParam1, Profile.HoughCirclesParam2, Profile.HoughCirclesMinRadius, Profile.HoughCirclesMaxRadius);
 
                     var foundCircle = false;
+                    /* Above will return ALL maching circles, we only want the first one that is in the target image radius in the middle of the screen */
                     foreach (var circle in circles)
                     {
                         if (circle.Center.X > ((img.Size.Width / 2) - Profile.TargetImageRadius) && circle.Center.X < ((img.Size.Width / 2) + Profile.TargetImageRadius) &&
@@ -151,17 +159,14 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                         {
                             Circle(destImage, (int)avg.X, (int)avg.Y, 3, System.Drawing.Color.Red);
                         }
+
+                        var offset = new Point2D<double>(centerX - avg.X, centerY - avg.Y);
+                        Machine.BoardAlignmentManager.CircleLocated(offset);
                     }
                 }
 
                 if (ShowCrossHairs)
                 {
-                    var width = img.Size.Width;
-                    var height = img.Size.Height;
-
-                    var centerX = img.Size.Width / 2;
-                    var centerY = img.Size.Height / 2;
-
                     Circle(destImage, centerX, centerY, Profile.TargetImageRadius, System.Drawing.Color.Yellow);
 
                     Line(destImage, 0, centerY, centerX - Profile.TargetImageRadius, centerY, System.Drawing.Color.Yellow);
@@ -202,6 +207,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                         var minY = (img.Size.Height / 2) - Profile.TargetImageRadius;
                         var maxY = (img.Size.Height / 2) + Profile.TargetImageRadius;
 
+                        /* Go through all the returned points and find the one with the highest intensity.  This will be our corner */
                         for (int j = minX; j < maxX; j++)
                         {
                             for (int i = minY; i < maxY; i++)
@@ -219,18 +225,21 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                         if (x > 0 && y > 0)
                         {
                             _cornerMedianFilter.Add(new Point2D<float>(x, y));
+
                         }
 
-                        var filtered = _cornerMedianFilter.Filtered;
-                        if (filtered != null)
+                        var avg = _cornerMedianFilter.Filtered;
+                        if (avg != null)
                         {
-                            Circle(destImage, (int)filtered.X, (int)filtered.Y, 5, System.Drawing.Color.Blue);
-                            Line(destImage, 0, (int)filtered.Y, img.Width, (int)filtered.Y, System.Drawing.Color.Blue);
-                            Line(destImage, (int)filtered.X, 0, (int)filtered.X, img.Height, System.Drawing.Color.Blue);
+                            Circle(destImage, (int)avg.X, (int)avg.Y, 5, System.Drawing.Color.Blue);
+                            Line(destImage, 0, (int)avg.Y, img.Width, (int)avg.Y, System.Drawing.Color.Blue);
+                            Line(destImage, (int)avg.X, 0, (int)avg.X, img.Height, System.Drawing.Color.Blue);
+
+                            var offset = new Point2D<double>(centerX - avg.X, centerY - avg.Y);
+                            Machine.BoardAlignmentManager.CornerLocated(offset);
                         }
                     }
                 }
-
 
                 #region Calculate Polygons/Contours
                 var triangleList = new List<Triangle2DF>();
@@ -307,6 +316,11 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
 
         private Point2D<double> _drillWorkLocation;
 
+        public void AlignBoard()
+        {
+
+        }
+
         public void CaptureDrillLocation()
         {
             if (Machine.Settings.MachineType == FirmwareTypes.GRBL1_1)
@@ -340,5 +354,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
         public RelayCommand CaptureDrillLocationCommand { get; private set; }
 
         public RelayCommand CaptureCameraCommand { get; private set; }
+
+        public RelayCommand AlignBoardCommand { get; private set; }
     }
 }
