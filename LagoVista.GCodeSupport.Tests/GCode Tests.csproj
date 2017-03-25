@@ -73,6 +73,7 @@
     <Compile Include="GCode\HeightMapTests.cs" />
     <Compile Include="GCode\LineParser.cs" />
     <Compile Include="GCode\SplitTests.cs" />
+    <Compile Include="Managers\BoardAlignmentTests.cs" />
     <Compile Include="Utils\MediaFilterTests.cs" />
     <Compile Include="Mocks\FakePlatformSupport.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

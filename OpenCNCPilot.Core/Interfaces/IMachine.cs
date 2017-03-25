@@ -41,7 +41,7 @@ namespace LagoVista.GCode.Sender.Interfaces
         /// <summary>
         /// The current XYZ position of the machine with respect to the resetted home position of the work.
         /// </summary>
-        Vector3 WorkPosition { get; }
+        Vector3 WorkPositionOffset { get; }
 
         Vector3 NormalizedPosition{ get; }
 

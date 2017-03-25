@@ -67,7 +67,7 @@ namespace LagoVista.GCode.Sender
 
         public Core.Models.Drawing.Vector3 NormalizedPosition
         {
-            get { return MachinePosition - WorkPosition; }
+            get { return MachinePosition - WorkPositionOffset; }
         }
 
         bool _isInitialized = false;

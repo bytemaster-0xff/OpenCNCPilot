@@ -256,8 +256,8 @@
                             <TextBlock TextAlignment="Right" Grid.Column="1" >
                                 <TextBlock.Text>
                                     <MultiBinding StringFormat="{}{0:0.000}x{1:0.000}">
-                                        <Binding Path="Machine.PCBManager.FirstFiducial.X"/>
-                                        <Binding Path="Machine.PCBManager.FirstFiducial.Y"/>
+                                        <Binding Path="Machine.BoardAlignmentManager.FirstFiducial.X"/>
+                                        <Binding Path="Machine.BoardAlignmentManager.FirstFiducial.Y"/>
                                     </MultiBinding>
                                 </TextBlock.Text>
                             </TextBlock>
@@ -272,8 +272,8 @@
                             <TextBlock TextAlignment="Right" Grid.Column="1" >
                                 <TextBlock.Text>
                                     <MultiBinding StringFormat="{}{0:0.000}x{1:0.000}">
-                                        <Binding Path="Machine.PCBManager.SecondFiducial.X"/>
-                                        <Binding Path="Machine.PCBManager.SecondFiducial.Y"/>
+                                        <Binding Path="Machine.BoardAlignmentManager.SecondFiducial.X"/>
+                                        <Binding Path="Machine.BoardAlignmentManager.SecondFiducial.Y"/>
                                     </MultiBinding>
                                 </TextBlock.Text>
                             </TextBlock>

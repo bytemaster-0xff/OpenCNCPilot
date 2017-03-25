@@ -50,19 +50,19 @@ namespace LagoVista.GCode.Sender
             {
                 var newWorkPosition = new Vector3(double.Parse(wx.Value, Constants.DecimalParseFormat), double.Parse(wy.Value, Constants.DecimalParseFormat), double.Parse(wz.Value, Constants.DecimalParseFormat));
 
-                if (WorkPosition != newWorkPosition)
+                if (WorkPositionOffset != newWorkPosition)
                 {
 
-                    WorkPosition = newWorkPosition;
+                    WorkPositionOffset = newWorkPosition;
                 }
             }
             else if (wcox.Success)
             {
                 var newWorkPosition = new Vector3(double.Parse(wcox.Value, Constants.DecimalParseFormat), double.Parse(wcoy.Value, Constants.DecimalParseFormat), double.Parse(wcoz.Value, Constants.DecimalParseFormat));
 
-                if (WorkPosition != newWorkPosition)
+                if (WorkPositionOffset != newWorkPosition)
                 {
-                    WorkPosition = newWorkPosition;
+                    WorkPositionOffset = newWorkPosition;
                 }
             }
 
@@ -94,9 +94,9 @@ namespace LagoVista.GCode.Sender
             {
                 var newWorkPosition = new Vector3(double.Parse(wx.Value, Constants.DecimalParseFormat), double.Parse(wy.Value, Constants.DecimalParseFormat), double.Parse(wz.Value, Constants.DecimalParseFormat));
 
-                if (WorkPosition != newWorkPosition)
+                if (WorkPositionOffset != newWorkPosition)
                 {
-                    WorkPosition = newWorkPosition;
+                    WorkPositionOffset = newWorkPosition;
                 }
             }
 

@@ -7,7 +7,11 @@ namespace LagoVista.GCode.Sender
 {
     public partial class Machine
     {
+
         private Vector3 _machinePosition = new Vector3();
+        /// <summary>
+        /// X,Y Position as returned from the machine.
+        /// </summary>
         public Vector3 MachinePosition
         {
             get { return _machinePosition; }
@@ -19,13 +23,16 @@ namespace LagoVista.GCode.Sender
             }
         }
 
-        private Vector3 _workPosition = new Vector3();
-        public Vector3 WorkPosition
+        private Vector3 _workPositionOffset = new Vector3();
+        /// <summary>
+        ///  X, Y Machine of the origin of the material
+        /// </summary>
+        public Vector3 WorkPositionOffset
         {
-            get { return _workPosition; }
+            get { return _workPositionOffset; }
             set
             {
-                _workPosition = value;
+                _workPositionOffset = value;
                 RaisePropertyChanged();
                 RaisePropertyChanged(nameof(NormalizedPosition));
             }

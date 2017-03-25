@@ -75,7 +75,7 @@ namespace LagoVista.GCode.Sender
                 Connected = false;
 
                 MachinePosition = new Vector3();
-                WorkPosition = new Vector3();
+                WorkPositionOffset = new Vector3();
 
                 Status = "Disconnected";
                 DistanceMode = ParseDistanceMode.Absolute;

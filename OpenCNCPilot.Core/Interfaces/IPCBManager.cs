@@ -19,7 +19,9 @@ namespace LagoVista.GCode.Sender.Interfaces
         PCB Board { get; }
 
         Task<bool> OpenFileAsync(string boardFile);
+        Drill FirstFiducial { get; set; }
 
+        Drill SecondFiducial { get; set; }
 
         Task<bool> OpenProjectAsync(string projectFile);
 

@@ -51,7 +51,7 @@ namespace LagoVista.GCode.Sender.Managers
 
             var probePos = new Vector3(double.Parse(mx.Value, Constants.DecimalParseFormat), double.Parse(my.Value, Constants.DecimalParseFormat), double.Parse(mz.Value, Constants.DecimalParseFormat));
 
-            probePos += Machine.WorkPosition - Machine.MachinePosition;     //Mpos, Wpos only get updated by the same dispatcher, so this should be thread safe
+            probePos += Machine.WorkPositionOffset - Machine.MachinePosition;     //Mpos, Wpos only get updated by the same dispatcher, so this should be thread safe
             return probePos;
         }
 
