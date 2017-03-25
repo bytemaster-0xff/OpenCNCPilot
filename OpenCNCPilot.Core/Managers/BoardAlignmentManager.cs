@@ -12,7 +12,7 @@ using LagoVista.Core;
 
 namespace LagoVista.GCode.Sender.Managers
 {
-    public class BoardAlignmentManager : Core.Models.ModelBase, IBoardAlignmentManager
+    public class BoardAlignmentManager : Core.Models.ModelBase, IBoardAlignmentManager, IDisposable
     {
         /*   
          *   
@@ -96,11 +96,11 @@ namespace LagoVista.GCode.Sender.Managers
         ILogger _logger;
         IPCBManager _boardManager;
 
-
         /* Actual measured when the machine finds the first fiducial */
         Point2D<double> _machineLocationFirstFiducial;
 
         Point2D<double> _targetLocation;
+        Point2D<double> _expectedMachineLocationSecondFiducial;
 
         /* Actual measured when the machine finds the second fiducial */
         Point2D<double> _machineLocationSecondFiducial;
@@ -122,6 +122,7 @@ namespace LagoVista.GCode.Sender.Managers
         public enum States
         {
             Idle,
+            EvaluatingInitialAlignment,
             CenteringFirstFiducial,
             StabilzingAfterFirstFiducialMove,
             MovingToSecondFiducial,
@@ -129,6 +130,7 @@ namespace LagoVista.GCode.Sender.Managers
             CenteringSecondFiducial,
             StabilzingAfterSecondFiducialMove,
             BoardAlignmentDetermined,
+            TimedOut,
             Failed,
         }
 
@@ -142,14 +144,45 @@ namespace LagoVista.GCode.Sender.Managers
             _machine.PropertyChanged += _machine_PropertyChanged;
             _stablizationList = new List<Point2D<double>>();
 
-            _timer = new Timer(Timer_Tick, null, 0, 1000);
+            _timer = new Timer(Timer_Tick, null, Timeout.Infinite, Timeout.Infinite);
         }
 
         public void Timer_Tick(object state)
         {
             switch (_state)
             {
-
+                case States.StabilzingAfterFirstFiducialMove:
+                case States.StabilzingAfterSecondFiducialMove:
+                case States.EvaluatingInitialAlignment:
+                    /* 
+                     * This is after the move has stabilzed and we are looking for circle with
+                     * an in tolerance center point.  If this times out there could be too
+                     * much noise coming from the vision center OR it's not locating the fiducial
+                     */
+                    if ((DateTime.Now - _lastEvent).TotalSeconds > 5)
+                    {
+                        _timer.Change(Timeout.Infinite, Timeout.Infinite);
+                        State = States.TimedOut;
+                        _machine.AddStatusMessage(StatusMessageTypes.FatalError, "TimeedOut - Board Alignment: " + State.ToString());
+                    }
+                    break;
+                case States.CenteringSecondFiducial:
+                case States.CenteringFirstFiducial:
+                    if ((DateTime.Now - _lastEvent).TotalSeconds > 3)
+                    {
+                        _timer.Change(Timeout.Infinite, Timeout.Infinite);
+                        State = States.TimedOut;
+                        _machine.AddStatusMessage(StatusMessageTypes.FatalError, "TimeedOut - Board Alignment: " + State.ToString());
+                    }
+                    break;
+                case States.MovingToSecondFiducial:
+                    if ((DateTime.Now - _lastEvent).TotalSeconds > 10)
+                    {
+                        _timer.Change(Timeout.Infinite, Timeout.Infinite);
+                        State = States.TimedOut;
+                        _machine.AddStatusMessage(StatusMessageTypes.FatalError, "TimeedOut - Board Alignment: " + State.ToString());
+                    }
+                    break;
             }
         }
 
@@ -171,6 +204,7 @@ namespace LagoVista.GCode.Sender.Managers
                     {
                         State = States.LocatingSecondFiducial;
                         _lastEvent = DateTime.Now;
+                        _machine.AddStatusMessage(StatusMessageTypes.Info, "Board Alignment - At Second Fiducial ");
                     }
                     break;
                 case States.CenteringFirstFiducial:
@@ -178,13 +212,15 @@ namespace LagoVista.GCode.Sender.Managers
                     {
                         State = States.StabilzingAfterFirstFiducialMove;
                         _lastEvent = DateTime.Now;
+                        _machine.AddStatusMessage(StatusMessageTypes.Info, "Board Alignment - Jogged to Center First Fiducial ");
                     }
                     break;
                 case States.CenteringSecondFiducial:
-                    if(isOnTargetLocation)
+                    if (isOnTargetLocation)
                     {
                         State = States.StabilzingAfterSecondFiducialMove;
                         _lastEvent = DateTime.Now;
+                        _machine.AddStatusMessage(StatusMessageTypes.Info, "Board Alignment - Jogged to Center Second Fiducial ");
                     }
                     break;
             }
@@ -193,7 +229,10 @@ namespace LagoVista.GCode.Sender.Managers
 
         public void JogToFindCenter(Point2D<double> machine, Point2D<double> cameraOffsetPixels)
         {
+            _targetLocation = new Point2D<double>(cameraOffsetPixels.X / 10, cameraOffsetPixels.Y / 10);
             _lastEvent = DateTime.Now;
+
+            _machine.SendCommand($"G0 X{_targetLocation.X.ToDim()} Y{_targetLocation.Y.ToDim()}");
         }
 
         private void _machine_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -202,6 +241,22 @@ namespace LagoVista.GCode.Sender.Managers
             {
                 SetNewMachineLocation(new Point2D<double>(_machine.MachinePosition.X, _machine.MachinePosition.Y));
             }
+        }
+
+        public void CalculateOffsets()
+        {
+            var actualTheta = Math.Atan2(_machineLocationSecondFiducial.Y - _machineLocationFirstFiducial.Y, _machineLocationSecondFiducial.X - _machineLocationFirstFiducial.X);
+            var expectedTheta = Math.Atan2(_expectedMachineLocationSecondFiducial.Y - _expectedMachineLocationSecondFiducial.Y, _machineLocationSecondFiducial.X - _machineLocationFirstFiducial.X);
+            var deltaTheta = actualTheta - expectedTheta;
+
+            var initialX = _machineLocationFirstFiducial.X - _boardManager.FirstFiducial.X;
+            var initialY = _machineLocationFirstFiducial.Y - _boardManager.FirstFiducial.Y;
+
+            var initialPoint = new Point2D<double>(initialX, initialY);
+            var rotatedPoint = initialPoint.Rotate(deltaTheta);
+
+            _machine.AddStatusMessage(StatusMessageTypes.Info, $"Board Angle: {Math.Round(deltaTheta.ToDegrees(),4)}");
+            _machine.AddStatusMessage(StatusMessageTypes.Info, $"Board Offset: {rotatedPoint.X.ToDim()}x{rotatedPoint.Y.ToDim()}");
         }
 
         public void CircleLocated(Point2D<double> cameraOffsetPixels)
@@ -227,6 +282,7 @@ namespace LagoVista.GCode.Sender.Managers
 
             switch (_state)
             {
+                case States.EvaluatingInitialAlignment:
                 case States.StabilzingAfterFirstFiducialMove:
                     if (stablizedPoint != null)
                     {
@@ -240,6 +296,11 @@ namespace LagoVista.GCode.Sender.Managers
                                 Y = _machinePosition.Y + (_boardManager.SecondFiducial.X - _boardManager.FirstFiducial.Y),
                             };
 
+                            _expectedMachineLocationSecondFiducial = _targetLocation;
+
+                            _machine.AddStatusMessage(StatusMessageTypes.Info, "Board Alignment - Centered First Fiducial ");
+                            _machine.AddStatusMessage(StatusMessageTypes.Info, "Board Alignment - Jogging to Expected Second Fiducial");
+
                             _machine.SendCommand($"G0 X{_targetLocation.X.ToDim()} Y{_targetLocation.Y.ToDim()}");
                             _state = States.MovingToSecondFiducial;
                             _lastEvent = DateTime.Now;
@@ -247,6 +308,7 @@ namespace LagoVista.GCode.Sender.Managers
                         }
                         else
                         {
+                            _machine.AddStatusMessage(StatusMessageTypes.Info, "Board Alignment - Jogging to Center First Fiducial ");
                             JogToFindCenter(_machinePosition, cameraOffsetPixels);
                             State = States.CenteringFirstFiducial;
                         }
@@ -264,14 +326,22 @@ namespace LagoVista.GCode.Sender.Managers
                         if (Math.Abs(stablizedPoint.X) < EPSILON_FIDUCIAL_PIXELS &&
                             Math.Abs(stablizedPoint.X) < EPSILON_FIDUCIAL_PIXELS)
                         {
+                            _machine.AddStatusMessage(StatusMessageTypes.Info, "Board Alignment - Centered Second Fiducial ");
+                            _machine.AddStatusMessage(StatusMessageTypes.Info, "Board Alignment - Completed ");
+
                             _machineLocationSecondFiducial = _machinePosition;
                             _state = States.BoardAlignmentDetermined;
                             _lastEvent = DateTime.Now;
+
+                            CalculateOffsets();
+
+                            _timer.Change(Timeout.Infinite, Timeout.Infinite);
                         }
                         else
                         {
                             JogToFindCenter(_machinePosition, cameraOffsetPixels);
                             State = States.CenteringSecondFiducial;
+                            _machine.AddStatusMessage(StatusMessageTypes.Info, "Board Alignment - Jogging to Center Second Fiducial ");
                         }
                     }
                     break;
@@ -307,9 +377,18 @@ namespace LagoVista.GCode.Sender.Managers
         /* This should be called once the camera is realtively close to centered over the first fiducial */
         public void AlignBoard()
         {
-            _state = States.CenteringFirstFiducial;
+            _state = States.EvaluatingInitialAlignment;
+            _timer.Change(0, 500);
+        }
 
-
+        public void Dispose()
+        {
+            if (_timer != null)
+            {
+                _timer.Change(Timeout.Infinite, Timeout.Infinite);
+                _timer.Dispose();
+                _timer = null;
+            }
         }
     }
 }
