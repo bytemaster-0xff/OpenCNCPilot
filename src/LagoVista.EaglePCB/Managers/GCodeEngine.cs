@@ -35,7 +35,9 @@ namespace LagoVista.EaglePCB.Managers
         {
             if (pcbProject.PauseForToolChange)
             {
+                //All the holes that need to be drilled in the board.
                 var allDrills = pcb.Drills.ToList();
+
 
                 var modifiedDrills = new List<Drill>();
                 foreach (var drill in allDrills)
@@ -46,8 +48,11 @@ namespace LagoVista.EaglePCB.Managers
                         Y = drill.Y,
                     };
 
+                    /* Attempt to find a match for drill based on diameter */
                     var consolidatedBit = GetConsolidated(drill, pcbProject.ConsolidatedDrillRack);
-                    modifiedDrill.Name = consolidatedBit == null ? drill.Name : consolidatedBit.ToolName;
+
+                    /* If it found a match replace it, otherwise assign to original */
+                    modifiedDrill.Name = consolidatedBit == null ? String.Empty : consolidatedBit.ToolName;
                     modifiedDrill.Diameter = consolidatedBit == null ? drill.Diameter : consolidatedBit.Diameter;
 
                     modifiedDrills.Add(modifiedDrill);
@@ -55,15 +60,26 @@ namespace LagoVista.EaglePCB.Managers
 
                 var tools = modifiedDrills.GroupBy(drl => drl.Diameter);
 
-                return (from tool
+                var bits = (from tool
                          in tools
                         orderby tool.First().Diameter
                         select new DrillRackInfo()
                         {
                             Diameter = tool.First().Diameter,
                             DrillCount = tool.Count(),
-                            DrillName = tool.First().Name
+                            DrillName = tool.First().Name,
                         }).ToList();
+
+                var idx = 1;
+                foreach (var bit in bits)
+                {
+                    if (bit.DrillName != null)
+                    {
+                        bit.DrillName = $"T{idx++}";
+                    }
+                }
+
+                return bits;
             }
             else
             {

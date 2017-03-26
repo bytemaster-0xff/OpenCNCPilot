@@ -37,7 +37,10 @@ namespace LagoVista.EaglePCB.Models
                         drills.Add(new Drill() { X = via.X, Y = via.Y, Diameter = via.DrillDiameter });
                     }
                 }
-                
+
+                var drillFromHolesLayer = Layers.Where(layer => layer.Number == 45).FirstOrDefault().Drills;
+                drills.AddRange(drillFromHolesLayer);
+
                 return drills;
             }
         }

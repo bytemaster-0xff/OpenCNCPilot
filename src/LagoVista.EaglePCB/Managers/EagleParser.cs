@@ -66,7 +66,8 @@ namespace LagoVista.EaglePCB.Managers
                         //foreach (var hole in element.Package.Holes)
                         foreach(var hole in element.Holes)
                         {
-                            layer.Holes.Add(new Models.Hole() { Drill = hole.Drill, X = hole.X, Y = hole.Y, Name=hole.Name });
+                            layer.Holes.Add(new Models.Hole() { Drill = hole.Drill, X = hole.X, Y = hole.Y, Name=element.Name });
+                            layer.Drills.Add(new Models.Drill() { Diameter = hole.Drill, X = hole.X, Y = hole.Y, Name = element.Name });
                         }
                     }
                 }
