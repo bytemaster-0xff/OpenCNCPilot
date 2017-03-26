@@ -51,7 +51,6 @@ namespace LagoVista.GCode.Sender.Models
         {
             if (!Completed)
             {
-
             }
 
             var segmentLength = Math.Min(GridX, GridY);
@@ -81,7 +80,15 @@ namespace LagoVista.GCode.Sender.Models
                 }
             }
 
-            return Core.GCode.GCodeFile.FromCommands(newToolPath);
+            var bldr = new StringBuilder();
+
+            foreach(var cmd in newToolPath)
+            {
+                bldr.AppendLine(cmd.Line);
+            }
+
+            //return Core.GCode.GCodeFile.FromCommands(newToolPath);
+            return Core.GCode.GCodeFile.FromString(bldr.ToString());
         }
     }
 }

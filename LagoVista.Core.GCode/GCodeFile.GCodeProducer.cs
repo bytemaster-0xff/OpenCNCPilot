@@ -14,7 +14,8 @@ namespace LagoVista.Core.GCode
     {
         public List<string> GetGCode()
         {
-            List<string> GCode = new List<string>(Commands.Count + 1) { "G90 G91.1 G21 G17" };
+            /* TODO: Need to think through setting these params as first step */
+            var GCode = new List<string>(Commands.Count + 1) { "G90 G91.1 G21 G17" };
 
             var nfi = new NumberFormatInfo();
             nfi.NumberDecimalSeparator = ".";   //prevent problems with international versions of windows (eg Germany would write 25.4 as 25,4 which is not compatible with standard GCode)

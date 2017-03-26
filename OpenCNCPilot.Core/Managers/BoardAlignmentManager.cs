@@ -231,7 +231,7 @@ namespace LagoVista.GCode.Sender.Managers
         {
             if (e.PropertyName == nameof(_machine.MachinePosition))
             {
-                SetNewMachineLocation(new Point2D<double>(_machine.MachinePosition.X, _machine.MachinePosition.Y));
+                SetNewMachineLocation(new Point2D<double>(_machine.NormalizedPosition.X, _machine.NormalizedPosition.Y));
             }
         }
 
