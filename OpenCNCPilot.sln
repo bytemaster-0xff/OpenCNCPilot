@@ -43,6 +43,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PCB2Gode Source", "PCB2Gode
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A09AE1D6-16A1-4AA6-A77E-6F0845806D39}"
 	ProjectSection(SolutionItems) = preProject
+		Drills.md = Drills.md
+		HeightMap.md = HeightMap.md
+		HoldDowns.md = HoldDowns.md
 		README.md = README.md
 		SupportedGCodes.md = SupportedGCodes.md
 	EndProjectSection

@@ -188,41 +188,46 @@ namespace LagoVista.GCode.Sender.Managers
 
         public void SetNewMachineLocation(Point2D<double> machinePosition)
         {
-            _machinePositionLastUpdated = DateTime.Now;
-            _machinePosition = machinePosition;
+            if (_targetLocation != null) {
+                _machinePositionLastUpdated = DateTime.Now;
+                _machinePosition = machinePosition;
 
-            var isOnTargetLocation = false;
+                var isOnTargetLocation = false;
 
-            var deltaX = Math.Abs(machinePosition.X - _targetLocation.X);
-            var deltaY = Math.Abs(machinePosition.Y - _targetLocation.Y);
-            isOnTargetLocation = (deltaX < EPSILON_MACHINE_POSITION && deltaY < EPSILON_MACHINE_POSITION);
+                var deltaX = Math.Abs(machinePosition.X - _targetLocation.X);
+                var deltaY = Math.Abs(machinePosition.Y - _targetLocation.Y);
+                isOnTargetLocation = (deltaX < EPSILON_MACHINE_POSITION && deltaY < EPSILON_MACHINE_POSITION);
 
-            switch (State)
-            {
-                case States.MovingToSecondFiducial:
-                    if (isOnTargetLocation)
-                    {
-                        State = States.LocatingSecondFiducial;
-                        _lastEvent = DateTime.Now;
-                        _machine.AddStatusMessage(StatusMessageTypes.Info, "Board Alignment - At Second Fiducial ");
-                    }
-                    break;
-                case States.CenteringFirstFiducial:
-                    if (isOnTargetLocation)
-                    {
-                        State = States.StabilzingAfterFirstFiducialMove;
-                        _lastEvent = DateTime.Now;
-                        _machine.AddStatusMessage(StatusMessageTypes.Info, "Board Alignment - Jogged to Center First Fiducial ");
-                    }
-                    break;
-                case States.CenteringSecondFiducial:
-                    if (isOnTargetLocation)
-                    {
-                        State = States.StabilzingAfterSecondFiducialMove;
-                        _lastEvent = DateTime.Now;
-                        _machine.AddStatusMessage(StatusMessageTypes.Info, "Board Alignment - Jogged to Center Second Fiducial ");
-                    }
-                    break;
+                switch (State)
+                {
+                    case States.MovingToSecondFiducial:
+                        if (isOnTargetLocation)
+                        {
+                            State = States.LocatingSecondFiducial;
+                            _lastEvent = DateTime.Now;
+                            _machine.AddStatusMessage(StatusMessageTypes.Info, "Board Alignment - At Second Fiducial ");
+                            _targetLocation = null;
+                        }
+                        break;
+                    case States.CenteringFirstFiducial:
+                        if (isOnTargetLocation)
+                        {
+                            State = States.StabilzingAfterFirstFiducialMove;
+                            _lastEvent = DateTime.Now;
+                            _machine.AddStatusMessage(StatusMessageTypes.Info, "Board Alignment - Jogged to Center First Fiducial ");
+                            _targetLocation = null;
+                        }
+                        break;
+                    case States.CenteringSecondFiducial:
+                        if (isOnTargetLocation)
+                        {
+                            State = States.StabilzingAfterSecondFiducialMove;
+                            _lastEvent = DateTime.Now;
+                            _machine.AddStatusMessage(StatusMessageTypes.Info, "Board Alignment - Jogged to Center Second Fiducial ");
+                            _targetLocation = null;
+                        }
+                        break;
+                }
             }
 
         }
