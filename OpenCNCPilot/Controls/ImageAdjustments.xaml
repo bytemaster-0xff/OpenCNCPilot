@@ -94,7 +94,7 @@
             </TabItem>
             <TabItem Header="Corner">
                 <StackPanel>
-                    <Label Content="Line Detection" FontSize="36" />
+                    <Label Content="Corner Detection" FontSize="36" />
 
                     <StackPanel Orientation="Horizontal">
                         <Label Content="K: " Style="{StaticResource Caption}"/>
@@ -106,14 +106,13 @@
                         <Label Content="Block Size: " Style="{StaticResource Caption}"/>
                         <Label Content="{Binding Profile.HarrisCornerBlockSize, FallbackValue=3}" Style="{StaticResource Value}" />
                     </StackPanel>
-                    <Slider Value="{Binding Path=Profile.HarrisCornerBlockSize, Mode=TwoWay}" Minimum="1" MaxHeight="10" ToolTip="{Binding CannyGradientHelp}" />
-
+                    <Slider Value="{Binding Path=Profile.HarrisCornerBlockSize, Mode=TwoWay}" Minimum="1" Maximum="10" ToolTip="{Binding CannyGradientHelp}" />
 
                     <StackPanel Orientation="Horizontal">
-                        <Label Content="Apeterture: " Style="{StaticResource Caption}"/>
+                        <Label Content="Aperture: " Style="{StaticResource Caption}"/>
                         <Label Content="{Binding Profile.HarrisCornerAperture, FallbackValue=3}" Style="{StaticResource Value}" />
                     </StackPanel>
-                    <Slider Value="{Binding Path=Profile.HarrisCornerAperture, Mode=TwoWay}" Minimum="1" MaxHeight="10" ToolTip="{Binding CannyGradientHelp}" />
+                    <Slider Value="{Binding Path=Profile.HarrisCornerAperture, Mode=TwoWay}" Minimum="1" Maximum="10" ToolTip="{Binding CannyGradientHelp}" />
 
                     <StackPanel Orientation="Horizontal">
                         <Label Content="Threshold: " Style="{StaticResource Caption}"/>
@@ -256,8 +255,8 @@
                             <TextBlock TextAlignment="Right" Grid.Column="1" >
                                 <TextBlock.Text>
                                     <MultiBinding StringFormat="{}{0:0.000}x{1:0.000}">
-                                        <Binding Path="Machine.BoardAlignmentManager.FirstFiducial.X"/>
-                                        <Binding Path="Machine.BoardAlignmentManager.FirstFiducial.Y"/>
+                                        <Binding Path="Machine.PCBManager.FirstFiducial.X"/>
+                                        <Binding Path="Machine.PCBManager.FirstFiducial.Y"/>
                                     </MultiBinding>
                                 </TextBlock.Text>
                             </TextBlock>
@@ -272,8 +271,8 @@
                             <TextBlock TextAlignment="Right" Grid.Column="1" >
                                 <TextBlock.Text>
                                     <MultiBinding StringFormat="{}{0:0.000}x{1:0.000}">
-                                        <Binding Path="Machine.BoardAlignmentManager.SecondFiducial.X"/>
-                                        <Binding Path="Machine.BoardAlignmentManager.SecondFiducial.Y"/>
+                                        <Binding Path="Machine.PCBManager.SecondFiducial.X"/>
+                                        <Binding Path="Machine.PCBManager.SecondFiducial.Y"/>
                                     </MultiBinding>
                                 </TextBlock.Text>
                             </TextBlock>

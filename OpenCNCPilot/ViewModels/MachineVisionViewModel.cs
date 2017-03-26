@@ -10,6 +10,7 @@ using LagoVista.GCode.Sender.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Windows.Threading;
 
 namespace LagoVista.GCode.Sender.Application.ViewModels
 {
@@ -59,7 +60,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
 
         private void Line(IInputOutputArray img, int x1, int y1, int x2, int y2, System.Drawing.Color color, int thickness = 1)
         {
-            if(!ShowOriginalImage)
+            if (!ShowOriginalImage)
             {
                 color = System.Drawing.Color.White;
             }
@@ -73,7 +74,18 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
         public Point2D<double> CircleCenter
         {
             get { return _circleCenter; }
-            set { Set(ref _circleCenter, value); }
+            set
+            {
+                if(value == null)
+                {
+                    Set(ref _circleCenter, null);
+                }
+                else if (_circleCenter == null || (_circleCenter.X != value.X ||
+                    _circleCenter.Y != value.Y))
+                {
+                    Set(ref _circleCenter, value);
+                }
+            }
         }
 
 
@@ -86,7 +98,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
 
         public Mat PerformShapeDetection(Mat img)
         {
-            if(img == null)
+            if (img == null)
             {
                 return null;
             }
@@ -102,7 +114,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             using (var blurredGray = new Image<Gray, float>(gray.Size))
             using (var finalOutput = new Mat())
             {
-                
+
                 var whiteColor = new Bgr(System.Drawing.Color.White).MCvScalar;
 
                 CvInvoke.GaussianBlur(gray, blurredGray, System.Drawing.Size.Empty, Profile.GaussianSigmaX);
@@ -154,14 +166,20 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                         Line(destImage, 0, (int)avg.Y, img.Width, (int)avg.Y, System.Drawing.Color.Red);
                         Line(destImage, (int)avg.X, 0, (int)avg.X, img.Size.Height, System.Drawing.Color.Red);
 
-                        if((avg.X >= ((img.Width / 2) - 1)) && avg.Y <= ((img.Width / 2) + 1) &&
+                        if ((avg.X >= ((img.Width / 2) - 1)) && avg.X <= ((img.Width / 2) + 1) &&
                            (avg.Y >= ((img.Height / 2) - 1)) && avg.Y <= ((img.Height / 2) + 1))
                         {
                             Circle(destImage, (int)avg.X, (int)avg.Y, 3, System.Drawing.Color.Red);
                         }
 
+                        CircleCenter = new Point2D<double>(Math.Round(avg.X, 2), Math.Round(avg.Y, 2));
+
                         var offset = new Point2D<double>(centerX - avg.X, centerY - avg.Y);
                         Machine.BoardAlignmentManager.CircleLocated(offset);
+                    }
+                    else
+                    {
+                        CircleCenter = null;
                     }
                 }
 
@@ -172,7 +190,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                     Line(destImage, 0, centerY, centerX - Profile.TargetImageRadius, centerY, System.Drawing.Color.Yellow);
                     Line(destImage, centerX + Profile.TargetImageRadius, centerY, width, centerY, System.Drawing.Color.Yellow);
 
-                    Line(destImage, centerX, 0, centerX, centerY - Profile.TargetImageRadius,  System.Drawing.Color.Yellow );
+                    Line(destImage, centerX, 0, centerX, centerY - Profile.TargetImageRadius, System.Drawing.Color.Yellow);
                     Line(destImage, centerX, centerY + Profile.TargetImageRadius, centerX, height, System.Drawing.Color.Yellow);
                 }
 
@@ -188,7 +206,6 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
 
                 if (ShowHarrisCorners)
                 {
-
                     using (var cornerDest = new Image<Gray, float>(blurredGray.Size))
                     using (var matNormalized = new Image<Gray, float>(blurredGray.Size))
                     using (var matScaled = new Image<Gray, float>(blurredGray.Size))
@@ -318,7 +335,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
 
         public void AlignBoard()
         {
-
+            Machine.BoardAlignmentManager.AlignBoard();
         }
 
         public void CaptureDrillLocation()

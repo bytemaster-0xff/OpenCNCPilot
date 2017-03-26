@@ -13,6 +13,10 @@ namespace LagoVista.GCode.Sender.Interfaces
 
         bool HasStabilizedPoint { get; }
 
+        int PointCount { get; }
+
+        void Reset();
+
         Point2D<double> StabilizedPoint { get; }
     }
 }

@@ -73,9 +73,13 @@ namespace LagoVista.GCode.Sender.Application.Controls
                     {
                         var ellipse = new Ellipse() { Width = manager.Project.HoldDownDiameter * 10.0, Height = manager.Project.HoldDownDiameter * 10.0 };
                         ellipse.Fill = Brushes.Black;
-                        ellipse.SetValue(Canvas.TopProperty, (hole.Y- (manager.Project.HoldDownDiameter / 2))* 10.0);
-                        ellipse.SetValue(Canvas.LeftProperty, (hole.X - (manager.Project.HoldDownDiameter / 2)) * 10.0);
-                        ellipse.ToolTip = $"{hole.X}x{hole.Y} - {manager.Project.HoldDownDiameter}D";
+
+                        var x = hole.X;
+                        var y = manager.Board.Height - hole.Y;
+
+                        ellipse.SetValue(Canvas.TopProperty, (manager.Board.Height - (y + (manager.Project.HoldDownDiameter / 2)))* 10.0);
+                        ellipse.SetValue(Canvas.LeftProperty, (x - (manager.Project.HoldDownDiameter / 2)) * 10.0);
+                        ellipse.ToolTip = $"{x}x{y} - {manager.Project.HoldDownDiameter}D";
                         ellipse.Cursor = Cursors.Hand;
                         ellipse.Tag = hole;
                         ellipse.MouseUp += Elipse_MouseUp;

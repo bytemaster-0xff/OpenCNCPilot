@@ -36,13 +36,19 @@ namespace LagoVista.GCode.Sender.Util
                 var avgX = _stablizationList.Average(pt => pt.X);
                 var avgY = _stablizationList.Average(pt => pt.Y);
 
-                if (cameraOffsetPixels.X - avgX > _pixelEpsilon || cameraOffsetPixels.Y - avgY > _pixelEpsilon)
+                var deltaX = Math.Abs(cameraOffsetPixels.X) - Math.Abs(avgX);
+                var deltaY = Math.Abs(cameraOffsetPixels.Y) - Math.Abs(avgY);
+
+                /* If the current one coming in is not within the range of the average clear the list,
+                 * values coming in are already filtered. */
+                if (Math.Abs(deltaX) > _pixelEpsilon || Math.Abs(deltaY) > _pixelEpsilon)
                 {
                     _stablizationList.Clear();
                 }
-                else
+
+                if (_stablizationList.Count < _inToleranceCount)
                 {
-                    _stablizationList.Add(new Point2D<double>(Math.Abs(cameraOffsetPixels.X), Math.Abs(cameraOffsetPixels.Y)));
+                    _stablizationList.Add(new Point2D<double>(cameraOffsetPixels.X, cameraOffsetPixels.Y));
                 }
 
                 if (_stablizationList.Count >= _inToleranceCount)
@@ -52,8 +58,13 @@ namespace LagoVista.GCode.Sender.Util
             }
             else
             {
-                _stablizationList.Add(new Point2D<double>(Math.Abs(cameraOffsetPixels.X), Math.Abs(cameraOffsetPixels.Y)));
+                _stablizationList.Add(new Point2D<double>(cameraOffsetPixels.X, cameraOffsetPixels.Y));
             }
+        }
+
+        public void Reset()
+        {
+            _stablizationList.Clear();
         }
 
         public bool HasStabilizedPoint
@@ -67,6 +78,11 @@ namespace LagoVista.GCode.Sender.Util
         public Point2D<double> StabilizedPoint
         {
             get { return _stabilizedPoint; }
+        }
+
+        public int PointCount
+        {
+            get { return _stablizationList.Count; }
         }
     }
 }

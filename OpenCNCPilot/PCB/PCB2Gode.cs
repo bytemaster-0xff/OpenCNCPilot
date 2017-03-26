@@ -130,9 +130,7 @@ namespace LagoVista.GCode.Sender.Application.PCB
                     return;
                 }
             }
-
-            
-
+           
             _project.TopEtchingFilePath = topEtchFilePath;
             _project.BottomEtchingFilePath = bottomEtchFilePath;
             if (_project.IsEditing)

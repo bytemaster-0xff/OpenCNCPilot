@@ -61,6 +61,7 @@ namespace LagoVista.GCodeSupport.Tests.Utils
             filter.Add(new Core.Models.Drawing.Point2D<double>(5, 5));
             filter.Add(new Core.Models.Drawing.Point2D<double>(8, 8));
             Assert.IsFalse(filter.HasStabilizedPoint);
+            Assert.AreEqual(1, filter.PointCount);
         }
 
         [TestMethod]

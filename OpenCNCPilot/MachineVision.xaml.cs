@@ -1,20 +1,12 @@
 ﻿using LagoVista.GCode.Sender.ViewModels;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Windows;
 using Emgu.CV;
-using Emgu.CV.CvEnum;
-using Emgu.CV.Structure;
-using Emgu.CV.Util;
 using System.Windows.Input;
-using LagoVista.Core.WPF.PlatformSupport;
 using System.Threading.Tasks;
 using System.Threading;
 using System.Windows.Media.Imaging;
 using LagoVista.GCode.Sender.Interfaces;
-using LagoVista.GCode.Sender.Models;
-using System.Diagnostics;
 using LagoVista.GCode.Sender.Application.ViewModels;
 
 namespace LagoVista.GCode.Sender.Application
@@ -39,10 +31,23 @@ namespace LagoVista.GCode.Sender.Application
             if (!designTime)
             {
                 ViewModel = new MachineVisionViewModel(machine);
+                DataContext = ViewModel;
+                this.Closing += MachineVision_Closing;
                 this.Loaded += MachineVision_Loaded;
+                this.DataContextChanged += MachineVision_DataContextChanged;
 
                 JogGrid.DataContext = new MachineControlViewModel(machine);
             }
+        }
+
+        private void MachineVision_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            StopCapture();
+        }
+
+        private void MachineVision_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            ViewModel = DataContext as MachineVisionViewModel;
         }
 
         private async void MachineVision_Loaded(object sender, RoutedEventArgs e)
@@ -77,9 +82,9 @@ namespace LagoVista.GCode.Sender.Application
                 return;
             }
 
-            Dispatcher.BeginInvoke(new Action(() =>
+            lock (_videoCaptureLocker)
             {
-                lock (_videoCaptureLocker)
+                Dispatcher.BeginInvoke(new Action(() =>
                 {
                     if (_videoCapture != null)
                     {
@@ -98,7 +103,6 @@ namespace LagoVista.GCode.Sender.Application
                             _lastContrast = ViewModel.Profile.Contrast;
                         }
 
-
                         if (_lastExposure != ViewModel.Profile.Exposure)
                         {
                             _videoCapture.SetCaptureProperty(Emgu.CV.CvEnum.CapProp.Exposure, ViewModel.Profile.Exposure);
@@ -106,13 +110,22 @@ namespace LagoVista.GCode.Sender.Application
                         }
 
                         using (var originalFrame = _videoCapture.QueryFrame())
-                        using (var results = ViewModel.PerformShapeDetection(originalFrame))
                         {
-                            WebCamImage.Source = Emgu.CV.WPF.BitmapSourceConvert.ToBitmapSource(results);
+                            using (var results = ViewModel.PerformShapeDetection(originalFrame))
+                            {
+
+                                if (LoadingMask.Visibility == Visibility.Visible)
+                                {
+                                    LoadingMask.Visibility = Visibility.Collapsed;
+                                }
+
+                                WebCamImage.Source = Emgu.CV.WPF.BitmapSourceConvert.ToBitmapSource(results);
+                            }
+
                         }
                     }
-                }
-            }));
+                }));
+            }
         }
 
         public async void StartCapture()
@@ -127,7 +140,7 @@ namespace LagoVista.GCode.Sender.Application
 
             if (ViewModel.Machine.Settings.PositioningCamera == null)
             {
-                MessageBox.Show("Please select a camera");
+                MessageBox.Show("Please Select a Camera");
                 new SettingsWindow(ViewModel.Machine, ViewModel.Machine.Settings, 2).ShowDialog();
                 return;
             }
@@ -145,54 +158,64 @@ namespace LagoVista.GCode.Sender.Application
                 _timer = new System.Threading.Timer(ProcessFrame, _videoCapture, 0, 100);
                 _timerStopped = false;
             }
-            catch (NullReferenceException excpt)
+            catch (Exception ex)
             {
-                MessageBox.Show(excpt.Message);
-            }
-            finally
-            {
-                LoadingMask.Visibility = Visibility.Collapsed;
+                MessageBox.Show("Could not start video, please restart your application: " + ex.Message);
             }
 
         }
 
         public void StopCapture()
         {
-            if (_timer != null)
+            try
             {
-                _timerStopped = true;
-                _timer.Change(Timeout.Infinite, Timeout.Infinite);
-                _timer.Dispose();
-                _timer = null;
-            }
-
-            lock (_videoCaptureLocker)
-            {
-                if (_videoCapture != null)
+                if (_timer != null)
                 {
-                    _videoCapture.Stop();
-                    _videoCapture = null;
+                    _timerStopped = true;
+                    _timer.Change(Timeout.Infinite, Timeout.Infinite);
+                    _timer.Dispose();
+                    _timer = null;
                 }
+
+                lock (_videoCaptureLocker)
+                {
+                    if (_videoCapture != null)
+                    {
+                        _videoCapture.Stop();
+                        _videoCapture.Dispose();
+                        _videoCapture = null;
+                    }
+                }
+
+                var src = new BitmapImage();
+                src.BeginInit();
+                src.UriSource = new Uri("pack://application:,,/Imgs/TestPattern.jpg");
+                src.CacheOption = BitmapCacheOption.OnLoad;
+                src.EndInit();
+                WebCamImage.Source = src;
+                Play.Visibility = Visibility.Visible;
             }
+            catch (Exception ex)
+            {
 
-            Play.Visibility = Visibility.Visible;
-            Stop.Visibility = Visibility.Collapsed;
-
-            var src = new BitmapImage();
-            src.BeginInit();
-            src.UriSource = new Uri("pack://application:,,/Imgs/TestPattern.jpg");
-            src.CacheOption = BitmapCacheOption.OnLoad;
-            src.EndInit();
-            WebCamImage.Source = src;
+                MessageBox.Show("Error Shutting Down Video, please restart the application." + ex.Message);
+            }
+            finally
+            {
+                Stop.Visibility = Visibility.Collapsed;
+                Stop.IsEnabled = true;
+            }
         }
 
 
+        MachineVisionViewModel _viewModel;
+
         public MachineVisionViewModel ViewModel
         {
-            get { return DataContext as MachineVisionViewModel; }
+            get { return _viewModel; }
             set
             {
-                DataContext = value;
+                _viewModel = value;
             }
         }
 
@@ -204,6 +227,8 @@ namespace LagoVista.GCode.Sender.Application
 
         private void Stop_Click(object sender, RoutedEventArgs e)
         {
+            Stop.IsEnabled = false;
+            StopCapture();
 
         }
 
