@@ -33,17 +33,7 @@ namespace LagoVista.GCode.Sender.Application
 
         private void PCBProject_Loaded(object sender, RoutedEventArgs e)
         {
-            if (!String.IsNullOrEmpty(ViewModel.Project.EagleBRDFilePath))
-            {
-                if (!System.IO.File.Exists(ViewModel.Project.EagleBRDFilePath))
-                {
-                    MessageBox.Show("Could not find Eagle Board File, please check your settings and try again.");
-                }
-                else
-                {
-                    ViewModel.GenerateIsolationEvent += (s, a) => PCB.PCB2Gode.CreateGCode(ViewModel.Project.EagleBRDFilePath, ViewModel.Project);
-                }
-            }
+            ViewModel.GenerateIsolationEvent += (s, a) => PCB.PCB2Gode.CreateGCode(ViewModel.Project.EagleBRDFilePath, ViewModel.Project);
         }
 
         public bool IsNew

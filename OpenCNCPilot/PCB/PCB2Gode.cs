@@ -15,6 +15,19 @@ namespace LagoVista.GCode.Sender.Application.PCB
 
         public static void CreateGCode(String boardFile, LagoVista.EaglePCB.Models.PCBProject project)
         {
+            if (String.IsNullOrEmpty(project.EagleBRDFilePath))
+            {
+                MessageBox.Show("Please add an Eagle Board File to your Project.");
+                return;
+            }
+
+
+            if (!System.IO.File.Exists(project.EagleBRDFilePath))
+            {
+                MessageBox.Show("Could not find Eagle Board File, please check your settings and try again.");
+                return;
+            }
+
             _project = project;
             if (String.IsNullOrEmpty(Properties.Settings.Default.EagleConExecutable) ||
                 !System.IO.File.Exists(Properties.Settings.Default.EagleConExecutable))
@@ -88,6 +101,12 @@ namespace LagoVista.GCode.Sender.Application.PCB
 
         private static async void EagleULP_Exited(object sender, EventArgs e)
         {
+            if (_project == null)
+            {
+                MessageBox.Show("Sorry, there was an error associating the generated files to your project.  Please manually attach them under project settings.");
+                return;
+            }
+
             var boardFileInfo = new System.IO.FileInfo(_project.EagleBRDFilePath);
             var baseBoardName = boardFileInfo.Name.Replace(".brd", "");
 
@@ -112,15 +131,14 @@ namespace LagoVista.GCode.Sender.Application.PCB
                 }
             }
 
-            if(_project == null)
-            {
-                MessageBox.Show("Sorry, there was an error associating the genreated files to your project.  Please manually attach them under project settings.");
-                return;
-            }
+            
 
             _project.TopEtchingFilePath = topEtchFilePath;
             _project.BottomEtchingFilePath = bottomEtchFilePath;
-            await _project.SaveAsync();
+            if (_project.IsEditing)
+            {
+                await _project.SaveAsync();
+            }
 
             _project = null;
         }

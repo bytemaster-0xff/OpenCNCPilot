@@ -287,7 +287,7 @@ namespace LagoVista.Core.GCode.Parser
 
             try
             {
-                switch (motionMode)
+                switch ((int)motionMode)
                 {
                     case 0:
                     case 1:
@@ -329,10 +329,7 @@ namespace LagoVista.Core.GCode.Parser
                             DwellTime = pauseTime,
                             OriginalLine = line,
                         };
-                    case 38.2:
-                    case 38.3:
-                    case 38.4:
-                    case 38.5:
+                    case 38:
                         var probeCommand = new GCodeProbe()
                         {
                             OriginalLine = line,

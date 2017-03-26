@@ -1,4 +1,5 @@
 ﻿using LagoVista.Core.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -8,10 +9,13 @@ namespace LagoVista.EaglePCB.Models
 {
     public class PCBProject : ModelBase
     {
+        private bool _isEditing;
+
         public PCBProject()
         {
             Fiducials = new ObservableCollection<Hole>();
             ConsolidatedDrillRack = new ObservableCollection<ConsolidatedDrillBit>();
+            _isEditing = false;
         }
 
         private string _currentFileName;
@@ -74,6 +78,9 @@ namespace LagoVista.EaglePCB.Models
             return drills;
         }
 
+        [JsonIgnore]
+        public bool IsEditing { get { return _isEditing; } }
+
         public bool PauseForToolChange { get; set; }
         public double DrillSpindleDwell { get; set; }
         public int DrillSpindleRPM { get; set; }
@@ -110,6 +117,7 @@ namespace LagoVista.EaglePCB.Models
 
         public async Task SaveAsync(String fileName = null)
         {
+
             if(String.IsNullOrEmpty(fileName))
             {
                 if(_currentFileName == null)
@@ -119,13 +127,19 @@ namespace LagoVista.EaglePCB.Models
 
                 fileName = _currentFileName;
             }
+
             await Core.PlatformSupport.Services.Storage.StoreAsync(this, fileName);
+
+            _currentFileName = fileName;
+
+            _isEditing = true;
         }
 
         public static async Task<PCBProject> OpenAsync(String fileName)
         {
             var project = await Core.PlatformSupport.Services.Storage.GetAsync<PCBProject>(fileName);
             project._currentFileName = fileName;
+            project._isEditing = true;
             return project;
         }
 
