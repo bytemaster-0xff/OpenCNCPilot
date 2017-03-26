@@ -1,4 +1,5 @@
-﻿using LagoVista.EaglePCB.Models;
+﻿using LagoVista.Core.Models.Drawing;
+using LagoVista.EaglePCB.Models;
 using System;
 using System.Linq;
 using System.Windows;
@@ -89,13 +90,14 @@ namespace LagoVista.GCode.Sender.Application.Controls
         private void Elipse_MouseUp(object sender, MouseButtonEventArgs e)
         {
             var manager = DataContext as LagoVista.GCode.Sender.Managers.PCBManager;
+            var drill = (sender as Ellipse).Tag as Drill;
             if (_shouldSetFirstFiducial)
             {
-                manager.FirstFiducial = (sender as Ellipse).Tag as Drill;
+                manager.FirstFiducial = new Point2D<double>(drill.X, drill.Y);
             }
             else
             {
-                manager.SecondFiducial = (sender as Ellipse).Tag as Drill;
+                manager.SecondFiducial = new Point2D<double>(drill.X, drill.Y);
             }
 
             _shouldSetFirstFiducial = !_shouldSetFirstFiducial;

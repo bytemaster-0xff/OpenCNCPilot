@@ -1,4 +1,5 @@
-﻿using LagoVista.EaglePCB.Models;
+﻿using LagoVista.Core.Models.Drawing;
+using LagoVista.EaglePCB.Models;
 using System;
 using System.Collections.Generic;
 
@@ -58,15 +59,15 @@ namespace LagoVista.GCode.Sender.Managers
             }
         }
 
-        Drill _firstFiducial;
-        public Drill FirstFiducial
+        Point2D<double> _firstFiducial;
+        public Point2D<double> FirstFiducial
         {
             get { return _firstFiducial; }
             set { Set(ref _firstFiducial, value); }
         }
 
-        Drill _secondFiducial;
-        public Drill SecondFiducial
+        Point2D<double> _secondFiducial;
+        public Point2D<double> SecondFiducial
         {
             get { return _secondFiducial; }
             set { Set(ref _secondFiducial, value); }

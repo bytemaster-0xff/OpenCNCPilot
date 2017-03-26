@@ -3,6 +3,9 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using LagoVista.GCode.Sender.Interfaces;
 using LagoVista.GCode.Sender.Managers;
 using LagoVista.GCodeSupport.Tests.Mocks;
+using LagoVista.Core.Models.Drawing;
+using Moq;
+using LagoVista.Core;
 
 namespace LagoVista.GCodeSupport.Tests.Managers
 {
@@ -25,23 +28,90 @@ namespace LagoVista.GCodeSupport.Tests.Managers
         }
 
 
+        [TestCleanup]
+        public void Cleanup()
+        {
+            _boardAlignmentManager.Dispose();
+        }
+
+        private void SetupFiducials(double x1, double y1, double x2, double y2)
+        {
+            _pcbManager.Setup(pcb => pcb.FirstFiducial).Returns(new Point2D<double> { X = x1, Y = y1 });
+            _pcbManager.Setup(pcb => pcb.SecondFiducial).Returns(new Point2D<double> { X = x2, Y = y2 }); /* Difference is 30 */
+        }
+
+        private void SetMachineLocation(double x1, double y1)
+        {
+            _machine.Setup(mach => mach.MachinePosition).Returns(new Core.Models.Drawing.Vector3(x1, y1, 0));
+            _boardAlignmentManager.SetNewMachineLocation(new Point2D<double>(x1, y1));
+        }
+
+        public bool HasPointStabilized
+        {
+            set
+            {
+                _pointStabilizationFilter.Setup(pf => pf.HasStabilizedPoint).Returns(value);
+            }
+        }
+
+        public Point2D<double> StabilizedPoint
+        {
+            set
+            {
+                _pointStabilizationFilter.Setup(pf => pf.StabilizedPoint).Returns(value);
+            }
+        }
+
+        Point2D<double> _machineLocation;
+
+        public Point2D<double> MachineLocation
+        {
+            get { return _machineLocation; }
+            set
+            {
+                _machineLocation = value;
+                SetMachineLocation(value.X, value.Y);
+            }
+        }
+
+        public void CircleCaptured(Point2D<double> point)
+        {
+            _boardAlignmentManager.CircleLocated(point);
+        }
 
         [TestMethod]
-        public void TestMethod1()
+        public void ShouldChangeStateToMoveToSecondFiducialAfterFirstFiducialLocated()
         {
-            _pcbManager.Setup(pcb => pcb.FirstFiducial).Returns(new EaglePCB.Models.Drill() { X = 7.5, Y = 7.5 });
-            _pcbManager.Setup(pcb => pcb.SecondFiducial).Returns(new EaglePCB.Models.Drill() { X = 37.5, Y = 37.5 }); /* Difference is 30 */
+            SetupFiducials(5, 5, 35, 35);
+            HasPointStabilized = true;
+            MachineLocation = new Point2D<double>(10, 10);
+            StabilizedPoint = new Point2D<double>(0.5, 0.5);
+            _boardAlignmentManager.State = BoardAlignmentManagerStates.StabilzingAfterFirstFiducialMove;
 
-            _boardAlignmentManager.AlignBoard();
+            CircleCaptured(new Point2D<double>(5, 5));
 
-            _machine.Setup(mach => mach.MachinePosition).Returns(new Core.Models.Drawing.Vector3(15.5, 15.5, 0));
-            /* Assume Move/Jog has been complete and we are directly on the first point */
-            _boardAlignmentManager.CircleLocated(new Core.Models.Drawing.Point2D<double>(0, 0));
-
-            _machine.Setup(mach => mach.MachinePosition).Returns(new Core.Models.Drawing.Vector3(45.5, 45.5, 0));
-            /* Assume Move/Jog has been complete and we are directly on the second point */
-            _boardAlignmentManager.CircleLocated(new Core.Models.Drawing.Point2D<double>(0, 0));
-
+            Assert.AreEqual(BoardAlignmentManagerStates.MovingToSecondFiducial, _boardAlignmentManager.State);
         }
+
+
+        [TestMethod]
+        public void ShouldSendGCodeToJogToSecondExpectedFiducialLocation()
+        {
+            SetupFiducials(5, 5, 35, 35);
+            HasPointStabilized = true;
+            MachineLocation = new Point2D<double>(10, 10);
+            StabilizedPoint = new Point2D<double>(0.5, 0.5);
+            _boardAlignmentManager.State = BoardAlignmentManagerStates.StabilzingAfterFirstFiducialMove;
+
+            _machine.Setup(mac => mac.SendCommand(It.IsAny<string>()));
+
+            CircleCaptured(new Point2D<double>(5, 5));
+
+            var secondFiducialX = MachineLocation.X + (_pcbManager.Object.SecondFiducial.X - _pcbManager.Object.FirstFiducial.X);
+            var secondFiducialY = MachineLocation.Y + (_pcbManager.Object.SecondFiducial.Y - _pcbManager.Object.FirstFiducial.Y);
+
+            _machine.Verify(mac => mac.SendCommand($"G0 X{secondFiducialX.ToDim()} Y{secondFiducialY.ToDim()}"),Moq.Times.Once);
+        }
+
     }
 }

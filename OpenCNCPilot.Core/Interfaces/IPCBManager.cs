@@ -1,4 +1,5 @@
-﻿using LagoVista.EaglePCB.Models;
+﻿using LagoVista.Core.Models.Drawing;
+using LagoVista.EaglePCB.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -19,9 +20,9 @@ namespace LagoVista.GCode.Sender.Interfaces
         PCB Board { get; }
 
         Task<bool> OpenFileAsync(string boardFile);
-        Drill FirstFiducial { get; set; }
+        Point2D<double> FirstFiducial { get; set; }
 
-        Drill SecondFiducial { get; set; }
+        Point2D<double> SecondFiducial { get; set; }
 
         Task<bool> OpenProjectAsync(string projectFile);
 
