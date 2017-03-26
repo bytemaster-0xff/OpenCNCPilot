@@ -63,6 +63,7 @@ namespace LagoVista.GCode.Sender
         PendingToolChange,
         ProbingHeightMap,
         ProbingHeight,
+        AligningBoard,
         Disconnected
     }
 
@@ -98,7 +99,7 @@ namespace LagoVista.GCode.Sender
             }
         }
 
-        public const double PixelToleranceEpsilon = 1;
+        public const double PixelToleranceEpsilon = 1.5;
         public const int PixelStabilizationToleranceCount = 10;
 
         public static string PCBProject = "PCB Project|*.pcbproj|All Files|*.*";

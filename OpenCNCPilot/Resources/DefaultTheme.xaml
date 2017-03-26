@@ -7,11 +7,11 @@
                 <DiffuseMaterial.Brush>
                     <LinearGradientBrush StartPoint="0,0" EndPoint="0, 1">
                         <LinearGradientBrush.GradientStops>
-                            <GradientStop Color="Blue" Offset="-0.5"/>
-                            <GradientStop Color="Cyan" Offset="-0.25"/>
+                            <GradientStop Color="Blue" Offset="-0.2"/>
+                            <GradientStop Color="Cyan" Offset="-0.1"/>
                             <GradientStop Color="Green" Offset="0"/>
-                            <GradientStop Color="Yellow" Offset="0.25"/>
-                            <GradientStop Color="Red" Offset="0.5"/>
+                            <GradientStop Color="Yellow" Offset="0.1"/>
+                            <GradientStop Color="Red" Offset="0.2"/>
                         </LinearGradientBrush.GradientStops>
                     </LinearGradientBrush>
                 </DiffuseMaterial.Brush>

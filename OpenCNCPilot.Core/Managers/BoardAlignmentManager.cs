@@ -144,6 +144,8 @@ namespace LagoVista.GCode.Sender.Managers
                         _timer.Change(Timeout.Infinite, Timeout.Infinite);
                         _machine.AddStatusMessage(StatusMessageTypes.FatalError, "TimeedOut - Board Alignment: " + State.ToString());
                         State = BoardAlignmentManagerStates.TimedOut;
+                        _machine.SetMode(OperatingMode.Manual);
+                        _targetLocation = null;
                     }
                     break;
                 case BoardAlignmentManagerStates.CenteringSecondFiducial:
@@ -153,6 +155,8 @@ namespace LagoVista.GCode.Sender.Managers
                         _timer.Change(Timeout.Infinite, Timeout.Infinite);
                         _machine.AddStatusMessage(StatusMessageTypes.FatalError, "TimeedOut - Board Alignment: " + State.ToString());
                         State = BoardAlignmentManagerStates.TimedOut;
+                        _machine.SetMode(OperatingMode.Manual);
+                        _targetLocation = null;
                     }
                     break;
                 case BoardAlignmentManagerStates.MovingToSecondFiducial:
@@ -161,6 +165,8 @@ namespace LagoVista.GCode.Sender.Managers
                         _timer.Change(Timeout.Infinite, Timeout.Infinite);
                         _machine.AddStatusMessage(StatusMessageTypes.FatalError, "TimeedOut - Board Alignment: " + State.ToString());
                         State = BoardAlignmentManagerStates.TimedOut;
+                        _machine.SetMode(OperatingMode.Manual);
+                        _targetLocation = null;
                     }
                     break;
             }
@@ -239,9 +245,14 @@ namespace LagoVista.GCode.Sender.Managers
             var initialY = _machineLocationFirstFiducial.Y - _boardManager.FirstFiducial.Y;
 
             var initialPoint = new Point2D<double>(initialX, initialY);
-            var rotatedPoint = initialPoint.Rotate(deltaTheta);
+            //var rotatedPoint = initialPoint.Rotate(deltaTheta);
+            var rotatedPoint = initialPoint;
 
-            _machine.AddStatusMessage(StatusMessageTypes.Info, $"Board Angle: {Math.Round(deltaTheta.ToDegrees(), 1)}deg");
+            _boardManager.SetMeasuredOffset(rotatedPoint, deltaTheta);
+
+            _machine.GotoPoint(rotatedPoint);
+
+            _machine.AddStatusMessage(StatusMessageTypes.Info, $"Board Angle: {Math.Round(deltaTheta.ToDegrees(), 3)}deg");
             _machine.AddStatusMessage(StatusMessageTypes.Info, $"Board Offset: {rotatedPoint.X.ToDim()}x{rotatedPoint.Y.ToDim()}");
         }
 
@@ -277,7 +288,7 @@ namespace LagoVista.GCode.Sender.Managers
 
                         _machine.SendCommand($"G0 X{_targetLocation.X.ToDim()} Y{_targetLocation.Y.ToDim()}");
                         _state = BoardAlignmentManagerStates.MovingToSecondFiducial;
-                        _lastEvent = DateTime.Now;                        
+                        _lastEvent = DateTime.Now;
                     }
                     else
                     {
@@ -304,6 +315,8 @@ namespace LagoVista.GCode.Sender.Managers
                         _lastEvent = DateTime.Now;
 
                         CalculateOffsets();
+
+                        _machine.SetMode(OperatingMode.Manual);
 
                         _timer.Change(Timeout.Infinite, Timeout.Infinite);
                     }
@@ -347,9 +360,12 @@ namespace LagoVista.GCode.Sender.Managers
         /* This should be called once the camera is realtively close to centered over the first fiducial */
         public void AlignBoard()
         {
-            _lastEvent = DateTime.Now;
-            _state = BoardAlignmentManagerStates.EvaluatingInitialAlignment;
-            _timer.Change(0, 500);
+            //if (_machine.SetMode(OperatingMode.AligningBoard))
+            {
+                _lastEvent = DateTime.Now;
+                _state = BoardAlignmentManagerStates.EvaluatingInitialAlignment;
+                _timer.Change(0, 500);
+            }
         }
 
         public void Dispose()

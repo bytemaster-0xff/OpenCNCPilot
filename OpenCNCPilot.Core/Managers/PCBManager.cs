@@ -18,5 +18,10 @@ namespace LagoVista.GCode.Sender.Managers
             _logger = logger;
             _machine = machine;
         }
+
+        public IMachine Machine
+        {
+            get { return _machine; }
+        }
     }
 }

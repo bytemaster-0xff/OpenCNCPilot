@@ -13,6 +13,8 @@ namespace LagoVista.GCode.Sender.Managers
     {
         private bool _hasSetFirstProbeOffsetToZero = false;
 
+        private double _initialOffset; 
+
         public async void ProbeCompleted(Vector3 position)
         {
             if (Machine.Mode != OperatingMode.ProbingHeightMap)
@@ -42,19 +44,24 @@ namespace LagoVista.GCode.Sender.Managers
                 return;
             }
 
-            Machine.AddStatusMessage(StatusMessageTypes.Info, $"Completed Point X={_currentPoint.Point.X.ToDim()}, Y={_currentPoint.Point.Y.ToDim()}, Z={position.Z.ToDim()}");
-
             if (!_hasSetFirstProbeOffsetToZero)
             {
-                Machine.SendCommand($"G92 Z0");
+                _initialOffset = position.Z;
+
+                Machine.SendCommand("G10 L20 P0 Z0");                
                 HeightMap.SetPointHeight(_currentPoint, 0);
                 _hasSetFirstProbeOffsetToZero = true;
-                Machine.AddStatusMessage(StatusMessageTypes.Info, $"Set new Z-Axis Zero");
+                await Task.Delay(2000);
+                Machine.AddStatusMessage(StatusMessageTypes.Info, $"First Completed - Zero Z Axis.");
             }
             else
             {
-                HeightMap.SetPointHeight(_currentPoint, position.Z - Machine.WorkPositionOffset.Z);
+                var offset = position.Z - _initialOffset;
+                Machine.AddStatusMessage(StatusMessageTypes.Info, $"Completed Point X={_currentPoint.Point.X.ToDim()}, Y={_currentPoint.Point.Y.ToDim()}, Z={offset.ToDim()}");
+                HeightMap.SetPointHeight(_currentPoint, offset );
             }
+
+            Machine.AddStatusMessage(StatusMessageTypes.Info, $"Postion as returned {position.Z.ToDim()}.");
 
             RaisePropertyChanged(nameof(HeightMap));
             _currentPoint = null;
@@ -62,7 +69,7 @@ namespace LagoVista.GCode.Sender.Managers
             if (HeightMap.Status == HeightMapStatus.Populated)
             {
                 Status = HeightMapStatus.Populated;
-                Machine.SendCommand($"G0vZ{Machine.Settings.ProbeSafeHeight.ToDim()}");
+                Machine.SendCommand($"G0 Z{Machine.Settings.ProbeSafeHeight.ToDim()}");
                 Machine.AddStatusMessage(StatusMessageTypes.Info, $"Creating Height Map Completed");
                 Machine.AddStatusMessage(StatusMessageTypes.Info, $"Next - Apply Height Map to GCode");
                 CancelProbing();
@@ -181,13 +188,10 @@ namespace LagoVista.GCode.Sender.Managers
 
             Machine.AddStatusMessage(StatusMessageTypes.Info, $"Probing Point X={_currentPoint.Point.X.ToDim()}, Y={_currentPoint.Point.Y.ToDim()}");
 
-            Machine.SendCommand($"G0 X{_currentPoint.Point.X.ToDim()} Y{_currentPoint.Point.Y.ToDim()} F{Machine.Settings.ProbeHeightMovementFeed}");
+            Machine.SendCommand($"G0 Z{Machine.Settings.ProbeMinimumHeight.ToDim()}");
+            Machine.SendCommand($"G0 X{_currentPoint.Point.X.ToDim()} Y{_currentPoint.Point.Y.ToDim()}");
 
             Machine.SendCommand($"G38.3 Z-{Machine.Settings.ProbeMaxDepth.ToDim()} F{Machine.Settings.ProbeFeed}");
-
-            Machine.SendCommand("G91");
-            Machine.SendCommand($"G0 Z{Machine.Settings.ProbeMinimumHeight.ToDim()} F{Machine.Settings.ProbeHeightMovementFeed}");
-            Machine.SendCommand("G90");
         }
 
         public void StartProbing()
@@ -230,10 +234,13 @@ namespace LagoVista.GCode.Sender.Managers
             Machine.AddStatusMessage(StatusMessageTypes.Info, "Creating Height Map - Started");
 
             Machine.SendCommand("G90");
-
-            Machine.SendCommand($"G0Z{Machine.Settings.ProbeSafeHeight.ToString("0.###", Constants.DecimalOutputFormat)}");
-
+            
             HeightMapProbeNextPoint();
+        }
+
+        public void Reset()
+        {
+            HeightMap.Reset();
         }
 
         public void PauseProbing()

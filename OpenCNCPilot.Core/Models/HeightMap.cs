@@ -115,6 +115,11 @@ namespace LagoVista.GCode.Sender.Models
             return Points.Where(pnt => pnt.Status == HeightMapProbePointStatus.NotProbed).FirstOrDefault();
         }
 
+        public void Reset()
+        {
+            Refresh();
+        }
+
         public void FillWithTestPattern()
         {
             Points.Clear();

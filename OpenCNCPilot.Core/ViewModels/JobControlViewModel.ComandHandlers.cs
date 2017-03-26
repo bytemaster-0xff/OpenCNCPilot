@@ -15,6 +15,7 @@ namespace LagoVista.GCode.Sender.ViewModels
 
         public void StopJob()
         {
+            Machine.HeightMapManager.Reset();
             Machine.GCodeFileManager.ResetJob();
             Machine.SetMode(OperatingMode.Manual);
         }

@@ -25,7 +25,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             SaveProfileCommand = new RelayCommand(SaveProfile);
             CaptureCameraCommand = new RelayCommand(CaptureCameraLocation);
             CaptureDrillLocationCommand = new RelayCommand(CaptureDrillLocation);
-            AlignBoardCommand = new RelayCommand(AlignBoard);
+            AlignBoardCommand = new RelayCommand(AlignBoard, CanAlignBoard);
         }
 
         public override async Task InitAsync()
@@ -36,6 +36,26 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                 Profile = profile;
             }
 
+            Machine.PropertyChanged += Machine_PropertyChanged;
+            Machine.PCBManager.PropertyChanged += PCBManager_PropertyChanged;
+        }
+
+        private void PCBManager_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            AlignBoardCommand.RaiseCanExecuteChanged();
+        }
+
+        private void Machine_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            AlignBoardCommand.RaiseCanExecuteChanged();
+        }
+
+        public bool CanAlignBoard()
+        {
+            return Machine.Mode == OperatingMode.Manual &&
+                   Machine.PCBManager.HasBoard &&
+                   Machine.PCBManager.FirstFiducial != null &&
+                   Machine.PCBManager.SecondFiducial != null;
         }
 
         public async void SaveProfile()
@@ -372,6 +392,6 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
 
         public RelayCommand CaptureCameraCommand { get; private set; }
 
-        public RelayCommand AlignBoardCommand { get; private set; }
+        public RelayCommand AlignBoardCommand { get; private set; }        
     }
 }

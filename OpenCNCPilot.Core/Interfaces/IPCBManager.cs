@@ -32,5 +32,20 @@ namespace LagoVista.GCode.Sender.Interfaces
         PCBProject Project { get; set; }
 
         String ProjectFilePath { get; set; }
+
+        void SetMeasuredOffset(Point2D<double> offset, double angleDegrees);
+
+        void ClearMeasuredOffset();
+
+        double MeasuredOffsetAngle { get; }
+
+        Point2D<double> MeasuredOffset { get; }
+
+        /// <summary>
+        /// If there is an offset and angle stored, apply that to the point, otherwise return original point.
+        /// </summary>
+        /// <param name="point"></param>
+        /// <returns></returns>
+        Point2D<double> GetAdjustedPoint(Point2D<double> point);
     }
 }

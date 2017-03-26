@@ -93,19 +93,29 @@ namespace LagoVista.GCode.Sender.Application.Controls
 
         private void Elipse_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            var manager = DataContext as LagoVista.GCode.Sender.Managers.PCBManager;
             var drill = (sender as Ellipse).Tag as Drill;
-            if (_shouldSetFirstFiducial)
+            var point = new Point2D<double>(drill.X, drill.Y);
+
+            var manager = DataContext as LagoVista.GCode.Sender.Managers.PCBManager;
+            if (manager.IsSetFiducialMode)
             {
-                manager.FirstFiducial = new Point2D<double>(drill.X, drill.Y);
+                
+                if (_shouldSetFirstFiducial)
+                {
+                    manager.FirstFiducial = point;
+                }
+                else
+                {
+                    manager.SecondFiducial = point;
+                }
+
+                _shouldSetFirstFiducial = !_shouldSetFirstFiducial;
             }
             else
             {
-                manager.SecondFiducial = new Point2D<double>(drill.X, drill.Y);
+                var adjustedPoint = manager.GetAdjustedPoint(point);
+                manager.Machine.GotoPoint(adjustedPoint);
             }
-
-            _shouldSetFirstFiducial = !_shouldSetFirstFiducial;
-
         }
     }
 }

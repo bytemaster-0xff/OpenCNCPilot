@@ -104,6 +104,7 @@ namespace LagoVista.EaglePCB.Managers
             bldr.AppendLine("(Absolute Coordinates)");
             bldr.AppendLine("G90");
             bldr.AppendLine("M05");
+            bldr.AppendLine($"G04 P{pcbProject.DrillSpindleDwell}");
 
             if (pcbProject.PauseForToolChange)
             {
@@ -139,7 +140,7 @@ namespace LagoVista.EaglePCB.Managers
                         bldr.AppendLine($"G00 X0.0000 Y0.0000");
                         bldr.AppendLine("M03");
                         bldr.AppendLine($"S{pcbProject.DrillSpindleRPM}");
-                        //      bldr.AppendLine($"G04 {pcbProject.DrillSpindleDwell}");
+                        bldr.AppendLine($"G04 P{pcbProject.DrillSpindleDwell}");
                     }
 
                     foreach (var drill in tool.OrderBy(drl => drl.X).ThenBy(drl => drl.Y))
@@ -201,6 +202,7 @@ namespace LagoVista.EaglePCB.Managers
             bldr.AppendLine($"G00 X0.0000 Y0.0000");
             bldr.AppendLine($"M06 {pcbProject.HoldDownDiameter.ToDim()}");
             bldr.AppendLine($"G0 Z{pcbProject.DrillSafeHeight.ToDim()}");
+            bldr.AppendLine($"G04 P{pcbProject.DrillSpindleDwell}");
 
             bldr.AppendLine("M03");
             bldr.AppendLine($"S{pcbProject.DrillSpindleRPM}");

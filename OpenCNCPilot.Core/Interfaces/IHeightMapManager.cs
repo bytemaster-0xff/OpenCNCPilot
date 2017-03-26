@@ -31,6 +31,8 @@ namespace LagoVista.GCode.Sender.Interfaces
         Task SaveHeightMapAsync();
         void CloseHeightMap();
 
+        void Reset();
+
         void CreateTestPattern();
 
         /// <summary>

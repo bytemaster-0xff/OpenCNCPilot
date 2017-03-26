@@ -40,6 +40,12 @@
                 <ScaleTransform ScaleX=".5" ScaleY=".5" />
             </Controls:PCBTopView.LayoutTransform>
         </Controls:PCBTopView>
+
+        <StackPanel>
+            <RadioButton GroupName="ClickMode" Content="Navigation" IsChecked="{Binding Path=Machine.PCBManager.IsNavigationMode, Mode=TwoWay}"  Foreground="White" />
+            <RadioButton GroupName="ClickMode" Content="Fiducial" IsChecked="{Binding Path=Machine.PCBManager.IsSetFiducialMode, Mode=TwoWay}" Foreground="White" />
+        </StackPanel>
+
         <Grid HorizontalAlignment="Right" VerticalAlignment="Top"  Width="150" Height="180">
             <Grid.Resources>
                 <Style TargetType="Label">

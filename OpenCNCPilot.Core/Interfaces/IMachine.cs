@@ -150,6 +150,12 @@ namespace LagoVista.GCode.Sender.Interfaces
 
         void LaserOff();
 
+        void GotoPoint(Point2D<double> point, bool rapidMove = true);
+
+        void GotoPoint(double x, double y, bool rapidMove = true);
+
+        void GotoPoint(double x, double y, double z, bool rapidMove = true);
+
         void GotoWorkspaceHome();
 
         /// <summary>

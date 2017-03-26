@@ -73,6 +73,45 @@ namespace LagoVista.GCode.Sender.Managers
             set { Set(ref _secondFiducial, value); }
         }
 
+
+
+        private Point2D<double> _measuredOffset;
+        public Point2D<double> MeasuredOffset
+        {
+            get { return _measuredOffset; }        
+        }
+
+        private double _measuredOffsetAngle;
+        public double MeasuredOffsetAngle
+        {
+            get { return _measuredOffsetAngle; }
+        }
+
+        public void SetMeasuredOffset(Point2D<double> offset, double angleDegrees)
+        {
+            _measuredOffset = offset;
+            _measuredOffsetAngle = angleDegrees;
+            RaisePropertyChanged(nameof(HasMeasuredOffset));
+            RaisePropertyChanged(nameof(MeasuredOffsetAngle));
+            RaisePropertyChanged(nameof(MeasuredOffset));
+        }
+
+        public void ClearMeasuredOffset()
+        {
+            _measuredOffset = null;
+            _measuredOffsetAngle = 0;
+
+            RaisePropertyChanged(nameof(HasMeasuredOffset));
+            RaisePropertyChanged(nameof(MeasuredOffsetAngle));
+            RaisePropertyChanged(nameof(MeasuredOffset));
+        }
+
+
+        public bool HasMeasuredOffset
+        {
+            get { return  _measuredOffset != null; }
+        }
+
         public List<DrillRackInfo> DrillRack { get; private set; }
 
         public bool HasProject
@@ -93,6 +132,20 @@ namespace LagoVista.GCode.Sender.Managers
         public String ProjectFilePath
         {
             get; set;
+        }
+
+        private bool _issNavigationMode = false;
+        public bool IsNavigationMode
+        {
+            get { return _issNavigationMode; }
+            set { Set(ref _issNavigationMode, value); }
+        }
+
+        private bool _isSetFiducialMode = true;
+        public bool IsSetFiducialMode
+        {
+            get { return _isSetFiducialMode; }
+            set { Set(ref _isSetFiducialMode, value); }
         }
     }
 }

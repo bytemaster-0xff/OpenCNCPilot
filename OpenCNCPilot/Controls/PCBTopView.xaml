@@ -6,6 +6,13 @@
              xmlns:local="clr-namespace:LagoVista.GCode.Sender.Application.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="800">
-        <Canvas x:Name="BoardLayout" Background="#B63" Width="800" Height="600">
-        </Canvas>
+    <Canvas x:Name="BoardLayout" Background="#B63" Width="800" Height="600">
+        <StackPanel >
+            <StackPanel>
+                <TextBlock Width="60"></TextBlock>
+            </StackPanel>
+
+
+        </StackPanel>
+    </Canvas>
 </UserControl>

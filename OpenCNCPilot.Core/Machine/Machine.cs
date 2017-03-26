@@ -8,6 +8,7 @@ using LagoVista.Core.GCode;
 using System.ComponentModel;
 using LagoVista.GCode.Sender.Util;
 using System.Threading.Tasks;
+using LagoVista.Core;
 using LagoVista.GCode.Sender.Interfaces;
 using System.Collections.Generic;
 
@@ -110,13 +111,35 @@ namespace LagoVista.GCode.Sender
 
         public bool CanSetMode(OperatingMode mode)
         {
-            throw new NotImplementedException();
+            return true;
         }
 
         public bool SetMode(OperatingMode mode)
         {
             Mode = mode;
             return true;
+        }
+    
+
+        public void GotoPoint(Point2D<double> point, bool rapidMove = true)
+        {
+            var cmd = rapidMove ? "G0" : "G1";
+
+            SendCommand($"{cmd} X{point.X.ToDim()} Y{point.Y.ToDim()}");
+        }
+
+        public void GotoPoint(double x, double y, bool rapidMove = true)
+        {
+            var cmd = rapidMove ? "G0" : "G1";
+
+            SendCommand($"{cmd} X{x.ToDim()} Y{y.ToDim()}");
+        }
+
+        public void GotoPoint(double x, double y, double z, bool rapidMove = true)
+        {
+            var cmd = rapidMove ? "G0" : "G1";
+
+            SendCommand($"{cmd} X{x.ToDim()} Y{y.ToDim()} Z{z.ToDim()}");
         }
     }
 }

@@ -5,28 +5,28 @@ using System.Collections.Generic;
 namespace LagoVista.Core.GCode.Commands
 {
     public abstract class GCodeMotion : GCodeCommand
-    {       
+    {
         public Vector3 Start { get; set; }
-		public Vector3 End { get; set; }
-		public Vector3 Delta
-		{
-			get
-			{
-				return End - Start;
-			}
-		}
+        public Vector3 End { get; set; }
+        public Vector3 Delta
+        {
+            get
+            {
+                return End - Start;
+            }
+        }
 
-		/// <summary>
-		/// Total travel distance of tool
-		/// </summary>
-		public abstract double Length { get; }
+        /// <summary>
+        /// Total travel distance of tool
+        /// </summary>
+        public abstract double Length { get; }
 
-		/// <summary>
-		/// get intermediate point along the path
-		/// </summary>
-		/// <param name="ratio">ratio between intermediate point and end</param>
-		/// <returns>intermediate point</returns>
-		public abstract Vector3 Interpolate(double ratio);
+        /// <summary>
+        /// get intermediate point along the path
+        /// </summary>
+        /// <param name="ratio">ratio between intermediate point and end</param>
+        /// <returns>intermediate point</returns>
+        public abstract Vector3 Interpolate(double ratio);
 
         public double? PreviousFeed { get; set; }
 
@@ -47,7 +47,7 @@ namespace LagoVista.Core.GCode.Commands
         {
             get
             {
-                if(Length == 0 || !Feed.HasValue) 
+                if (Length == 0 || !Feed.HasValue)
                 {
                     return TimeSpan.Zero;
                 }
@@ -60,14 +60,14 @@ namespace LagoVista.Core.GCode.Commands
 
         public override string ToString()
         {
-            return String.Format("{0}. - {1}    Duration:[{2:0}ms]    Length[{3:0.0}mm]   Feed[{4:0}]", LineNumber, OriginalLine.Trim('\r','\n'), EstimatedRunTime.TotalMilliseconds, Length, Feed);
+            return String.Format("{0}. - {1} Duration:[{2:0}ms]    Length[{3:0.0}mm]   Feed[{4:0}]", LineNumber, Line.Trim('\r', '\n'), EstimatedRunTime.TotalMilliseconds, Length, Feed);
         }
 
         public override Vector3 CurrentPosition
         {
             get
             {
-                if(StartTimeStamp.HasValue && EstimatedRunTime.TotalMilliseconds > 0)
+                if (StartTimeStamp.HasValue && EstimatedRunTime.TotalMilliseconds > 0)
                 {
                     var ms = (DateTime.Now - StartTimeStamp.Value).TotalMilliseconds;
                     var percentComplete = ms / EstimatedRunTime.TotalMilliseconds;
