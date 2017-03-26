@@ -123,7 +123,7 @@ namespace LagoVista.GCodeSupport.Tests
         }
 
         [TestMethod]
-        public void ShouldAddFeedIfNotPresent()
+        public void ShouldAddFeedIfNotExisting()
         {
             var parser = new GCodeParser(new FakeLogger());
             var cmd = parser.ParseLine("G0 X10 F300", 0) as GCodeMotion;

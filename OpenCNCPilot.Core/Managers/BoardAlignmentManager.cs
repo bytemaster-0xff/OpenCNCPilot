@@ -75,15 +75,16 @@ namespace LagoVista.GCode.Sender.Managers
          */
 
 
-        /* This is the maximum error in pixels that will be allowed to determine that we have 
-         * found the fiducial */
-        private const double EPSILON_FIDUCIAL_PIXELS = 2.0;
 
         /* 
          * Once we move to the second fiducial, we want to see a whole wihtin 10 pixels of the 
          * the center.
          */
         private const double EPSILON_MACHINE_PIXELS = 10;
+
+        /* This is the maximum error in pixels that will be allowed to determine that we have 
+         * found the fiducial */
+        private const double EPSILON_FIDUCIAL_PIXELS = 2.0;
 
         /* 
          * When waiting for a machine position we need to be less 
@@ -95,6 +96,7 @@ namespace LagoVista.GCode.Sender.Managers
         IMachine _machine;
         ILogger _logger;
         IPCBManager _boardManager;
+        IPointStabilizationFilter _pointStabilizationFilter;
 
         /* Actual measured when the machine finds the first fiducial */
         Point2D<double> _machineLocationFirstFiducial;
@@ -105,10 +107,8 @@ namespace LagoVista.GCode.Sender.Managers
         /* Actual measured when the machine finds the second fiducial */
         Point2D<double> _machineLocationSecondFiducial;
 
-        List<Point2D<double>> _stablizationList;
 
-        public const int IN_TOLERANCE_COUNT_REQUIRED = 10;
-
+       
         /* This is the number of consectutive points that are within the
          * tolerance of finding the center of the hole. */
         int _inToleranceCount = 0;
@@ -136,13 +136,13 @@ namespace LagoVista.GCode.Sender.Managers
 
         States _state;
 
-        public BoardAlignmentManager(IMachine machine, ILogger logger, IPCBManager boardManager)
+        public BoardAlignmentManager(IMachine machine, ILogger logger, IPCBManager boardManager, IPointStabilizationFilter pointStabilizationFilter)
         {
             _machine = machine;
             _logger = logger;
             _boardManager = boardManager;
             _machine.PropertyChanged += _machine_PropertyChanged;
-            _stablizationList = new List<Point2D<double>>();
+            _pointStabilizationFilter = pointStabilizationFilter;
 
             _timer = new Timer(Timer_Tick, null, Timeout.Infinite, Timeout.Infinite);
         }
@@ -229,7 +229,6 @@ namespace LagoVista.GCode.Sender.Managers
                         break;
                 }
             }
-
         }
 
         public void JogToFindCenter(Point2D<double> machine, Point2D<double> cameraOffsetPixels)
@@ -266,33 +265,21 @@ namespace LagoVista.GCode.Sender.Managers
 
         public void CircleLocated(Point2D<double> cameraOffsetPixels)
         {
-            Point2D<double> stablizedPoint = null;
-
-            if (_stablizationList.Any())
+            _pointStabilizationFilter.Add(cameraOffsetPixels);
+            if(!_pointStabilizationFilter.HasStabilizedPoint)
             {
-                var avgX = _stablizationList.Average(pt => pt.X);
-                var avgY = _stablizationList.Average(pt => pt.Y);
-
-                if (cameraOffsetPixels.X - avgX > EPSILON_FIDUCIAL_PIXELS || cameraOffsetPixels.Y - avgY > EPSILON_FIDUCIAL_PIXELS)
-                {
-                    _stablizationList.Clear();
-                }
-                else if (_stablizationList.Count > IN_TOLERANCE_COUNT_REQUIRED)
-                {
-                    stablizedPoint = new Point2D<double>(avgX, avgY);
-                }
+                return;
             }
 
-            _stablizationList.Add(new Point2D<double>(Math.Abs(cameraOffsetPixels.X), Math.Abs(cameraOffsetPixels.Y)));
+            var stabilizedPoint = _pointStabilizationFilter.StabilizedPoint;
+
 
             switch (_state)
             {
                 case States.EvaluatingInitialAlignment:
                 case States.StabilzingAfterFirstFiducialMove:
-                    if (stablizedPoint != null)
-                    {
-                        if (Math.Abs(stablizedPoint.X) < EPSILON_FIDUCIAL_PIXELS &&
-                            Math.Abs(stablizedPoint.X) < EPSILON_FIDUCIAL_PIXELS)
+                        if (Math.Abs(stabilizedPoint.X) < EPSILON_FIDUCIAL_PIXELS &&
+                            Math.Abs(stabilizedPoint.X) < EPSILON_FIDUCIAL_PIXELS)
                         {
                             _machineLocationFirstFiducial = _machinePosition;
                             _targetLocation = new Point2D<double>()
@@ -309,7 +296,6 @@ namespace LagoVista.GCode.Sender.Managers
                             _machine.SendCommand($"G0 X{_targetLocation.X.ToDim()} Y{_targetLocation.Y.ToDim()}");
                             _state = States.MovingToSecondFiducial;
                             _lastEvent = DateTime.Now;
-
                         }
                         else
                         {
@@ -317,8 +303,7 @@ namespace LagoVista.GCode.Sender.Managers
                             JogToFindCenter(_machinePosition, cameraOffsetPixels);
                             State = States.CenteringFirstFiducial;
                         }
-                    }
-
+            
                     break;
 
                 case States.CenteringFirstFiducial: break;
@@ -326,10 +311,8 @@ namespace LagoVista.GCode.Sender.Managers
                 case States.LocatingSecondFiducial: break;
 
                 case States.StabilzingAfterSecondFiducialMove:
-                    if (stablizedPoint != null)
-                    {
-                        if (Math.Abs(stablizedPoint.X) < EPSILON_FIDUCIAL_PIXELS &&
-                            Math.Abs(stablizedPoint.X) < EPSILON_FIDUCIAL_PIXELS)
+                        if (Math.Abs(stabilizedPoint.X) < EPSILON_FIDUCIAL_PIXELS &&
+                            Math.Abs(stabilizedPoint.X) < EPSILON_FIDUCIAL_PIXELS)
                         {
                             _machine.AddStatusMessage(StatusMessageTypes.Info, "Board Alignment - Centered Second Fiducial ");
                             _machine.AddStatusMessage(StatusMessageTypes.Info, "Board Alignment - Completed ");
@@ -348,7 +331,6 @@ namespace LagoVista.GCode.Sender.Managers
                             State = States.CenteringSecondFiducial;
                             _machine.AddStatusMessage(StatusMessageTypes.Info, "Board Alignment - Jogging to Center Second Fiducial ");
                         }
-                    }
                     break;
 
 

@@ -98,6 +98,9 @@ namespace LagoVista.GCode.Sender
             }
         }
 
+        public const double PixelToleranceEpsilon = 2;
+        public const int PixelStabilizationToleranceCount = 5;
+
         public static string PCBProject = "PCB Project|*.pcbproj|All Files|*.*";
         public static string FileFilterPCB = "Eagle|*.brd|All Files|*.*";
         public static string FileFilterGCode = "GCode|*.g;*.tap;*.nc;*.ngc|All Files|*.*";

@@ -39,6 +39,7 @@
     <Compile Include="Interfaces\IGCodeFileManager.cs" />
     <Compile Include="Interfaces\IMachine.cs" />
     <Compile Include="Interfaces\IMachineVisionManager.cs" />
+    <Compile Include="Interfaces\IPointStabilizationFilter.cs" />
     <Compile Include="Interfaces\IProbingManager.cs" />
     <Compile Include="Interfaces\IToolChangeManager.cs" />
     <Compile Include="MachinesRepo.cs" />
@@ -137,6 +138,7 @@
     <Compile Include="Models\StatusMessage.cs" />
     <Compile Include="Models\VisionProfile.cs" />
     <Compile Include="Util\MedianFilter.cs" />
+    <Compile Include="Util\PointStabilizationFilter.cs" />
     <Compile Include="ViewModels\GCodeAppViewModelBase.cs" />
     <Compile Include="ViewModels\JobControlViewModel.ComandHandlers.cs">
       <DependentUpon>JobControlViewModel.cs</DependentUpon>

@@ -11,7 +11,7 @@ namespace LagoVista.GCodeSupport.Tests.Managers
     {
         Moq.Mock<IMachine> _machine;
         Moq.Mock<IPCBManager> _pcbManager;
-
+        Moq.Mock<IPointStabilizationFilter> _pointStabilizationFilter;
         IBoardAlignmentManager _boardAlignmentManager;
 
         [TestInitialize]
@@ -20,9 +20,9 @@ namespace LagoVista.GCodeSupport.Tests.Managers
         {
             _machine = new Moq.Mock<IMachine>();
             _pcbManager = new Moq.Mock<IPCBManager>();
-            _boardAlignmentManager = new BoardAlignmentManager(_machine.Object, new FakeLogger(),  _pcbManager.Object);
+            _pointStabilizationFilter = new Moq.Mock<IPointStabilizationFilter>();
+            _boardAlignmentManager = new BoardAlignmentManager(_machine.Object, new FakeLogger(),  _pcbManager.Object, _pointStabilizationFilter.Object);
         }
-
 
 
 
