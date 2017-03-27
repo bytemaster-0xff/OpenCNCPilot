@@ -13,7 +13,7 @@ namespace LagoVista.Core.GCode.Commands
 
         public override string ToString()
         {
-            return $"{LineNumber}. - {OriginalLine}";
+            return $"{LineNumber}. - {Line}";
         }
 
         public override TimeSpan EstimatedRunTime

@@ -51,6 +51,7 @@ namespace LagoVista.GCode.Sender.Models
         {
             if (!Completed)
             {
+                throw new Exception("Attempt to apply an uncomplete height map.");
             }
 
             var segmentLength = Math.Min(GridX, GridY);

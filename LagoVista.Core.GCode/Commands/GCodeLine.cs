@@ -100,12 +100,13 @@ namespace LagoVista.Core.GCode.Commands
             {
                 var end = Interpolate(((double)i) / divisions);
 
-                var immediate = new GCodeLine();
-                immediate.Start = lastEnd;
-                immediate.End = end;
-                immediate.Feed = Feed;
+                var intermediate = this.MemberwiseClone() as GCodeLine;
+                intermediate.Start = lastEnd;
+                intermediate.End = end;
+                intermediate.Feed = Feed;
+                intermediate.OriginalLine = $"{OriginalLine} (Prior to Split)";
 
-                yield return immediate;
+                yield return intermediate;
 
                 lastEnd = end;
             }

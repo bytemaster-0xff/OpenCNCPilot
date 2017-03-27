@@ -22,7 +22,7 @@ namespace LagoVista.Core.GCode.Commands
 
         public override string ToString()
         {
-            return $"{LineNumber}. - {OriginalLine} Set Tool: {ToolName}, ToolSize: {ToolSize}";
+            return $"{LineNumber}. - {Line} Set Tool: {ToolName}, ToolSize: {ToolSize}";
         }
 
         public override void SetComment(string comment)

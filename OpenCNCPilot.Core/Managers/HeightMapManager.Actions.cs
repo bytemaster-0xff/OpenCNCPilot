@@ -48,7 +48,7 @@ namespace LagoVista.GCode.Sender.Managers
             {
                 _initialOffset = position.Z;
 
-                Machine.SendCommand("G10 L20 P0 Z0");                
+    //            Machine.SendCommand("G10 L20 P0 Z0");                
                 HeightMap.SetPointHeight(_currentPoint, 0);
                 _hasSetFirstProbeOffsetToZero = true;
                 await Task.Delay(2000);

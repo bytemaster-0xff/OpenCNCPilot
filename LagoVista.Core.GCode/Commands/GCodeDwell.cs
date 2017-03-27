@@ -9,11 +9,11 @@ namespace LagoVista.Core.GCode.Commands
 {
     public class GCodeDwell : GCodeCommand
     {
-        public double DwellTime { get; set; }
+        public TimeSpan DwellTime { get; set; }
 
         public override TimeSpan EstimatedRunTime
         {
-            get { return TimeSpan.FromSeconds(DwellTime); }
+            get { return DwellTime; }
         }
 
         public override Vector3 CurrentPosition { get; set; }

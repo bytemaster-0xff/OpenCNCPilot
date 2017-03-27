@@ -276,12 +276,12 @@ namespace LagoVista.Core.GCode.Parser
                 words.Remove(spindleRPM);
             }
 
-            double pauseTime = 0.0;
+            TimeSpan pauseTime = TimeSpan.Zero;
 
             var pauseParameter = words.Where(wrd => wrd.Command == 'P').FirstOrDefault();
             if (pauseParameter != null)
             {
-                pauseTime = Convert.ToDouble(pauseParameter.Parameter);
+                pauseTime =TimeSpan.FromSeconds(Convert.ToDouble(pauseParameter.Parameter));
                 words.Remove(pauseParameter);
             }
 
@@ -328,6 +328,7 @@ namespace LagoVista.Core.GCode.Parser
                         {
                             DwellTime = pauseTime,
                             OriginalLine = line,
+                            Command = $"G4"
                         };
                     case 38:
                         var probeCommand = new GCodeProbe()
@@ -354,10 +355,12 @@ namespace LagoVista.Core.GCode.Parser
                     case 81:
                         var drillCode = new GCodeDrill()
                         {
+                            Command = "G81",
                             Start = State.Position,
                             End = State.Position,
                             LineNumber = lineNumber,
-                            Feed = State.Feed
+                            Feed = State.Feed,
+                            OriginalLine = line
                         };
                         break;
 

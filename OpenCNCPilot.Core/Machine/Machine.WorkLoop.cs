@@ -62,16 +62,17 @@ namespace LagoVista.GCode.Sender
         {
             var sendCommand = _jobToSend.Peek();
 
-            _writer.Write(sendCommand.OriginalLine.Trim('\r', '\n'));
+            /* Make sure we normalize the line ending so it's only \n */
+            _writer.Write(sendCommand.Line.Trim('\r', '\n'));
             _writer.Write('\n');
             _writer.Flush();
 
-            Debug.WriteLine(">>> " + sendCommand.OriginalLine);
+            Debug.WriteLine(">>> " + sendCommand.Line);
 
-            UpdateStatus(sendCommand.OriginalLine.ToString());
-            AddStatusMessage(StatusMessageTypes.SentLine, sendCommand.OriginalLine.ToString());
+            UpdateStatus(sendCommand.Line.ToString());
+            AddStatusMessage(StatusMessageTypes.SentLine, sendCommand.Line.ToString());
 
-            _sentQueue.Enqueue(sendCommand.OriginalLine);
+            _sentQueue.Enqueue(sendCommand.Line);
             _jobToSend.Dequeue();
         }
 

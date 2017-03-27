@@ -46,7 +46,7 @@ namespace LagoVista.Core.GCode.Commands
 
         public abstract Vector3 CurrentPosition { get; set; }
 
-        public int MessageLength { get { return OriginalLine.Length + 1; } }
+        public int MessageLength { get { return Line.Length + 1; } }
 
         public virtual void SetComment(string comment) { }
 
