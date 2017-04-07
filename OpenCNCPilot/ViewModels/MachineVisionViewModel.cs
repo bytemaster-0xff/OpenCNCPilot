@@ -9,6 +9,7 @@ using LagoVista.GCode.Sender.Util;
 using LagoVista.GCode.Sender.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows.Threading;
 
@@ -116,7 +117,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             set { Set(ref _foundCorner, value); }
         }
 
-        public Mat PerformShapeDetection(Mat img)
+        public IImage PerformShapeDetection(Mat img)
         {
             if (img == null)
             {
@@ -128,22 +129,21 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             var height = img.Size.Height;
 
             var centerX = img.Size.Width / 2;
-            var centerY = img.Size.Height / 2;
+            var centerY = img.Size.Height / 2;            
 
             using (var gray = new Image<Gray, byte>(img.Bitmap))
             using (var blurredGray = new Image<Gray, float>(gray.Size))
-            using (var finalOutput = new Mat())
             {
-
                 var whiteColor = new Bgr(System.Drawing.Color.White).MCvScalar;
 
-                CvInvoke.GaussianBlur(gray, blurredGray, System.Drawing.Size.Empty, Profile.GaussianSigmaX);
+                CvInvoke.GaussianBlur(gray, blurredGray, new System.Drawing.Size(5,5), Profile.GaussianSigmaX);
+                
 
                 UMat pyrDown = new UMat();
-                CvInvoke.PyrDown(blurredGray, pyrDown);
-                CvInvoke.PyrUp(pyrDown, blurredGray);
+                //CvInvoke.PyrDown(gray, pyrDown);
+                //CvInvoke.PyrUp(pyrDown, gray);
 
-                var destImage = ShowOriginalImage ? img : (IInputOutputArray)blurredGray;
+                var destImage = ShowOriginalImage ? img : (IInputOutputArray)gray;
 
                 UMat edges = new UMat();
 
@@ -156,9 +156,11 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                     CvInvoke.Threshold(blurredGray, edges, Profile.ThresholdEdgeDetection, 255, ThresholdType.Binary);
                 }
 
+                CircleF _circle;
+
                 if (ShowCircles)
                 {
-                    var circles = CvInvoke.HoughCircles(blurredGray, HoughType.Gradient, Profile.HoughCirclesDP, Profile.HoughCirclesMinDistance, Profile.HoughCirclesParam1, Profile.HoughCirclesParam2, Profile.HoughCirclesMinRadius, Profile.HoughCirclesMaxRadius);
+                    var circles = CvInvoke.HoughCircles(gray, HoughType.Gradient, Profile.HoughCirclesDP, Profile.HoughCirclesMinDistance, Profile.HoughCirclesParam1, Profile.HoughCirclesParam2, Profile.HoughCirclesMinRadius, Profile.HoughCirclesMaxRadius);
 
                     var foundCircle = false;
                     /* Above will return ALL maching circles, we only want the first one that is in the target image radius in the middle of the screen */
@@ -168,8 +170,11 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                            circle.Center.Y > ((img.Size.Height / 2) - Profile.TargetImageRadius) && circle.Center.Y < ((img.Size.Height / 2) + Profile.TargetImageRadius))
                         {
                             _circleMedianFilter.Add(circle.Center.X, circle.Center.Y);
-
+                            Debug.WriteLine(circle.Center.X.ToString("0.00") + circle.Center.Y.ToString("0.00"));
                             foundCircle = true;
+
+                            Line(destImage, 0, (int)circle.Center.Y, img.Width, (int)circle.Center.Y, System.Drawing.Color.Red);
+                            Line(destImage, (int)circle.Center.X, 0, (int)circle.Center.X, img.Size.Height, System.Drawing.Color.Red);
 
                             break;
                         }
@@ -181,7 +186,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                     }
 
                     var avg = _circleMedianFilter.Filtered;
-                    if (avg != null)
+                    if (avg != null && false)
                     {
                         Line(destImage, 0, (int)avg.Y, img.Width, (int)avg.Y, System.Drawing.Color.Red);
                         Line(destImage, (int)avg.X, 0, (int)avg.X, img.Size.Height, System.Drawing.Color.Red);
@@ -347,7 +352,12 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                 }
                 #endregion
 
-                return (destImage as Mat).Clone();
+                if (ShowOriginalImage)
+                {
+                    return img;
+                }
+                else
+                    return (gray.Clone());
             }
         }
 
