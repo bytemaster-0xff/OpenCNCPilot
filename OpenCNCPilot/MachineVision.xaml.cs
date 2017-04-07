@@ -71,61 +71,66 @@ namespace LagoVista.GCode.Sender.Application
             });
         }
 
+        private bool _running;
+
         private double _lastContrast = -9999;
         private double _lastBrightness = -9999;
         private double _lastExposure = -9999;
 
-        private void ProcessFrame(Object state)
+        private void StartImageRecognization()
         {
-            if (_timerStopped)
+            Task.Run(async () =>
             {
-                return;
-            }
-
-            lock (_videoCaptureLocker)
-            {
-                Dispatcher.BeginInvoke(new Action(() =>
+                while (_running)
                 {
-                    if (_videoCapture != null)
+
+                    await Dispatcher.BeginInvoke(new Action(() =>
                     {
-                        _videoCapture.SetCaptureProperty(Emgu.CV.CvEnum.CapProp.AutoExposure, 0);
-
-                        if (_lastBrightness != ViewModel.Profile.Brightness)
+                        lock (_videoCaptureLocker)
                         {
-                            _videoCapture.SetCaptureProperty(Emgu.CV.CvEnum.CapProp.Brightness, ViewModel.Profile.Brightness);
-                            _lastBrightness = ViewModel.Profile.Brightness;
-                        }
-
-
-                        if (_lastContrast != ViewModel.Profile.Contrast)
-                        {
-                            _videoCapture.SetCaptureProperty(Emgu.CV.CvEnum.CapProp.Contrast, ViewModel.Profile.Contrast);
-                            _lastContrast = ViewModel.Profile.Contrast;
-                        }
-
-                        if (_lastExposure != ViewModel.Profile.Exposure)
-                        {
-                            _videoCapture.SetCaptureProperty(Emgu.CV.CvEnum.CapProp.Exposure, ViewModel.Profile.Exposure);
-                            _lastExposure = ViewModel.Profile.Exposure;
-                        }
-
-                        using (var originalFrame = _videoCapture.QueryFrame())
-                        {
-                            using (var results = ViewModel.PerformShapeDetection(originalFrame))
+                            if (_videoCapture != null)
                             {
+                                _videoCapture.SetCaptureProperty(Emgu.CV.CvEnum.CapProp.AutoExposure, 0);
 
-                                if (LoadingMask.Visibility == Visibility.Visible)
+                                if (_lastBrightness != ViewModel.Profile.Brightness)
                                 {
-                                    LoadingMask.Visibility = Visibility.Collapsed;
+                                    _videoCapture.SetCaptureProperty(Emgu.CV.CvEnum.CapProp.Brightness, ViewModel.Profile.Brightness);
+                                    _lastBrightness = ViewModel.Profile.Brightness;
                                 }
 
-                                WebCamImage.Source = Emgu.CV.WPF.BitmapSourceConvert.ToBitmapSource(results);
-                            }
+                                if (_lastContrast != ViewModel.Profile.Contrast)
+                                {
+                                    _videoCapture.SetCaptureProperty(Emgu.CV.CvEnum.CapProp.Contrast, ViewModel.Profile.Contrast);
+                                    _lastContrast = ViewModel.Profile.Contrast;
+                                }
 
+                                if (_lastExposure != ViewModel.Profile.Exposure)
+                                {
+                                    _videoCapture.SetCaptureProperty(Emgu.CV.CvEnum.CapProp.Exposure, ViewModel.Profile.Exposure);
+                                    _lastExposure = ViewModel.Profile.Exposure;
+                                }
+
+                                using (var originalFrame = _videoCapture.QueryFrame())
+                                {
+                                    using (var results = ViewModel.PerformShapeDetection(originalFrame))
+                                    {
+
+                                        if (LoadingMask.Visibility == Visibility.Visible)
+                                        {
+                                            LoadingMask.Visibility = Visibility.Collapsed;
+                                        }
+
+                                        WebCamImage.Source = Emgu.CV.WPF.BitmapSourceConvert.ToBitmapSource(results);
+                                    }
+
+                                }
+                            }
                         }
-                    }
-                }));
-            }
+                    }));
+
+                    await Task.Delay(100);
+                }
+            });
         }
 
         public async void StartCapture()
@@ -152,11 +157,9 @@ namespace LagoVista.GCode.Sender.Application
 
                 Play.Visibility = Visibility.Collapsed;
                 Stop.Visibility = Visibility.Visible;
+                _running = true;
+                StartImageRecognization();
 
-                ProcessFrame(null);
-
-                _timer = new System.Threading.Timer(ProcessFrame, _videoCapture, 0, 100);
-                _timerStopped = false;
             }
             catch (Exception ex)
             {
@@ -169,13 +172,7 @@ namespace LagoVista.GCode.Sender.Application
         {
             try
             {
-                if (_timer != null)
-                {
-                    _timerStopped = true;
-                    _timer.Change(Timeout.Infinite, Timeout.Infinite);
-                    _timer.Dispose();
-                    _timer = null;
-                }
+                _running = false;
 
                 lock (_videoCaptureLocker)
                 {

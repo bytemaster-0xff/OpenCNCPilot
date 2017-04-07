@@ -200,12 +200,16 @@ namespace LagoVista.GCode.Sender.Models
             get { return _houghLinesCircleMinDistance; }
             set { _houghLinesCircleMinDistance = Math.Round(value, 1); RaisePropertyChanged(); }
         }
+
+        //Canny Threshold
         private double _houghCirclesParam1 = 30;
         public double HoughCirclesParam1
         {
             get { return _houghCirclesParam1; }
             set { _houghCirclesParam1 = Math.Round(value, 1); RaisePropertyChanged(); }
         }
+
+        //Circle Accumulator Threshold
         private double _houghCirclesParam2 = 550;
         public double HoughCirclesParam2
         {

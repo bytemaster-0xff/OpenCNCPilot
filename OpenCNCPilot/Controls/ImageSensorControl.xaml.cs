@@ -20,7 +20,6 @@ namespace LagoVista.GCode.Sender.Application.Controls
         [DllImport("gdi32")]
         private static extern int DeleteObject(IntPtr o);
 
-        Timer _timer;
         bool _timerStopped = true;
         VideoCapture _videoCapture;
         Object _videoCaptureLocker = new object();
@@ -59,113 +58,35 @@ namespace LagoVista.GCode.Sender.Application.Controls
             }
         }
 
+        private bool _running;
         public bool CameraHasData;
-        /*
-        private void FinishProcessing(Image<Gray, Byte> cannyEdges, Image<Bgr, Byte> frame)
+      
+        private void CaptureLoop()
         {
-            List<Triangle2DF> triangleList = new List<Triangle2DF>();
-            var boxList = new List<Emgu.CV.Structure.MCvBox2D>(); //a box is a rotated rectangle
-            using (var storage = new MemStorage()) //allocate storage for contour approximation
+            Task.Run(async () =>
             {
-                var rectangles = new List<Rectangle>();
-
-                var contoursDetected = new VectorOfVectorOfPoint();
-                CvInvoke.FindContours(cannyEdges, contoursDetected,null, Emgu.CV.CvEnum.RetrType.List, Emgu.CV.CvEnum.ChainApproxMethod.ChainApproxSimple);
-                var contoursArray = new List<VectorOfPoint>();
-                int count = contoursDetected.Size;
-                for (int i = 0; i < count; i++)
+                while (_running)
                 {
-                    CvInvoke.ApproxPolyDP()
-                    rectangles.Add(CvInvoke.BoundingRectangle(contoursArray[i]));
-
-                    using (VectorOfPoint currContour = contoursDetected[i])
+                    await Dispatcher.BeginInvoke(new Action(() =>
                     {
-                        contoursArray.Add(currContour);
-                    }
-                }
-                
-                foreach(var contour in contoursArray)
-                { 
-                    var currentContour = contour.ApproxPoly(contour.Perimeter * 0.05, storage);
-
-                    if (currentContour.Area > 400 && currentContour.Area < 20000) //only consider contours with area greater than 250
-                    {
-                        if (currentContour.Total == 4) //The contour has 4 vertices.
+                        lock (_videoCaptureLocker)
                         {
-                            // determine if all the angles in the contour are within [80, 100] degree
-                            bool isRectangle = true;
-                            var pts = currentContour.ToArray();
-                            var edges = PointCollection.PolyLine(pts, true);
-
-                            for (int i = 0; i < edges.Length; i++)
+                            if (_videoCapture != null)
                             {
-                                double angle = Math.Abs(
-                                   edges[(i + 1) % edges.Length].GetExteriorAngleDegree(edges[i]));
-                                if (angle < 80 || angle > 100)
+                                using (var originalFrame = _videoCapture.QueryFrame())
                                 {
-                                    isRectangle = false;
-                                    break;
+                                    var result = PerformShapeDetection(null, originalFrame);
                                 }
+
                             }
-
-                            if (isRectangle) boxList.Add(currentContour.GetMinAreaRect());
                         }
-                    }
-                    
+                    }));
+
+                    await Task.Delay(100);
                 }
-            Image<Bgr, Byte> triangleRectangleImage = frame.CopyBlank();
-            foreach (Triangle2DF triangle in triangleList)
-                triangleRectangleImage.Draw(triangle, new Bgr(Color.DarkBlue), 2);
-            foreach (var box in boxList)
-            {*/
-        /*
-        frm.SetText(frm.Controls["textBoxImageY"], box.center.Y.ToString());
-        frm.SetText(frm.Controls["textBoxDeg"], box.angle.ToString());
-        frm.SetText(frm.Controls["textBoxImageX"], box.center.X.ToString());
-         * */
-        /*                CameraHasData = true;
+            });
 
-                        triangleRectangleImage.Draw(box, new Bgr(Color.DarkOrange), 2);
-                    }
-                    // add cross hairs to image
-                    int totalwidth = frame.Width;
-                    int totalheight = frame.Height;
-                    PointF[] linepointshor = new PointF[] {
-                            new PointF(0, totalheight/2),
-                            new PointF(totalwidth, totalheight/2)
-
-                        };
-                    PointF[] linepointsver = new PointF[] {
-                            new PointF(totalwidth/2, 0),
-                            new PointF(totalwidth/2, totalheight)
-
-                        };
-                    triangleRectangleImage.DrawPolyline(Array.ConvertAll<PointF, System.Drawing.Point>(linepointshor, System.Drawing.Point.Round), false, new Bgr(Color.AntiqueWhite), 1);
-                    triangleRectangleImage.DrawPolyline(Array.ConvertAll<PointF, System.Drawing.Point>(linepointsver, System.Drawing.Point.Round), false, new Bgr(Color.AntiqueWhite), 1);
-                    ImageOverlay.Source = Emgu.CV.WPF.BitmapSourceConvert.ToBitmapSource(triangleRectangleImage);            
-                }*/
-
-        private void ProcessFrame(Object state)
-        {
-            if (_timerStopped)
-            {
-                return;
-            }
-
-            Dispatcher.BeginInvoke(new Action(() =>
-            {
-                lock (_videoCaptureLocker)
-                {
-                    if (_videoCapture != null)
-                    {
-                        using (var originalFrame = _videoCapture.QueryFrame())
-                        {
-                            var result = PerformShapeDetection(null, originalFrame);
-                        }
-                     
-                    }
-                }
-            }));
+            
         }
 
         private async Task InitCapture(int cameraIndex)
@@ -214,9 +135,8 @@ namespace LagoVista.GCode.Sender.Application.Controls
                 Play.Visibility = Visibility.Collapsed;
                 Stop.Visibility = Visibility.Visible;
 
-                ProcessFrame(null);
+                CaptureLoop();
 
-                _timer = new Timer(ProcessFrame, _videoCapture, 0, 1000);
                 _timerStopped = false;
             }
             catch (NullReferenceException excpt)
@@ -232,13 +152,8 @@ namespace LagoVista.GCode.Sender.Application.Controls
 
         public void StopCapture()
         {
-            if (_timer != null)
-            {
-                _timerStopped = true;
-                _timer.Change(Timeout.Infinite, Timeout.Infinite);
-                _timer.Dispose();
-                _timer = null;
-            }
+
+            _running = false;
 
             lock (_videoCaptureLocker)
             {
