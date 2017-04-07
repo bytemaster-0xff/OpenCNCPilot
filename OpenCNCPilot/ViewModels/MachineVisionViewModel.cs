@@ -4,7 +4,9 @@ using Emgu.CV.Structure;
 using Emgu.CV.Util;
 using LagoVista.Core.Commanding;
 using LagoVista.Core.Models.Drawing;
+using LagoVista.EaglePCB.Models;
 using LagoVista.GCode.Sender.Interfaces;
+using System.Linq;
 using LagoVista.GCode.Sender.Util;
 using LagoVista.GCode.Sender.ViewModels;
 using System;
@@ -35,6 +37,11 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             if (profile != null)
             {
                 Profile = profile;
+            }
+
+            if (Machine.PCBManager.HasBoard)
+            {
+                PartsList = Machine.PCBManager.Board.Components.OrderBy(cmp => cmp.Name).ToList();
             }
 
             Machine.PropertyChanged += Machine_PropertyChanged;
@@ -97,7 +104,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             get { return _circleCenter; }
             set
             {
-                if(value == null)
+                if (value == null)
                 {
                     Set(ref _circleCenter, null);
                 }
@@ -129,15 +136,15 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             var height = img.Size.Height;
 
             var centerX = img.Size.Width / 2;
-            var centerY = img.Size.Height / 2;            
+            var centerY = img.Size.Height / 2;
 
             using (var gray = new Image<Gray, byte>(img.Bitmap))
             using (var blurredGray = new Image<Gray, float>(gray.Size))
             {
                 var whiteColor = new Bgr(System.Drawing.Color.White).MCvScalar;
 
-                CvInvoke.GaussianBlur(gray, blurredGray, new System.Drawing.Size(5,5), Profile.GaussianSigmaX);
-                
+                CvInvoke.GaussianBlur(gray, blurredGray, new System.Drawing.Size(5, 5), Profile.GaussianSigmaX);
+
 
                 UMat pyrDown = new UMat();
                 //CvInvoke.PyrDown(gray, pyrDown);
@@ -173,8 +180,8 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                             Debug.WriteLine(circle.Center.X.ToString("0.00") + circle.Center.Y.ToString("0.00"));
                             foundCircle = true;
 
-                            Line(destImage, 0, (int)circle.Center.Y, img.Width, (int)circle.Center.Y, System.Drawing.Color.Red);
-                            Line(destImage, (int)circle.Center.X, 0, (int)circle.Center.X, img.Size.Height, System.Drawing.Color.Red);
+                            //                            Line(destImage, 0, (int)circle.Center.Y, img.Width, (int)circle.Center.Y, System.Drawing.Color.Red);
+                            //                          Line(destImage, (int)circle.Center.X, 0, (int)circle.Center.X, img.Size.Height, System.Drawing.Color.Red);
 
                             break;
                         }
@@ -186,7 +193,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                     }
 
                     var avg = _circleMedianFilter.Filtered;
-                    if (avg != null && false)
+                    if (avg != null)
                     {
                         Line(destImage, 0, (int)avg.Y, img.Width, (int)avg.Y, System.Drawing.Color.Red);
                         Line(destImage, (int)avg.X, 0, (int)avg.X, img.Size.Height, System.Drawing.Color.Red);
@@ -398,10 +405,30 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             await Machine.MachineRepo.SaveAsync();
         }
 
+        Component _selectedComponent;
+        public Component SelectedComponent
+        {
+            set
+            {
+                Set(ref _selectedComponent, value);
+                var point = new Point2D<double>(value.X.Value, value.Y.Value);
+                var adjustedPoint = Machine.PCBManager.GetAdjustedPoint(point);
+                Machine.GotoPoint(adjustedPoint);
+            }
+            get { return _selectedComponent; }
+        }
+
+        List<Component> _partsList;
+        public List<Component> PartsList
+        {
+            get { return _partsList; }
+            set { Set(ref _partsList, value); }
+        }
+
         public RelayCommand CaptureDrillLocationCommand { get; private set; }
 
         public RelayCommand CaptureCameraCommand { get; private set; }
 
-        public RelayCommand AlignBoardCommand { get; private set; }        
+        public RelayCommand AlignBoardCommand { get; private set; }
     }
 }

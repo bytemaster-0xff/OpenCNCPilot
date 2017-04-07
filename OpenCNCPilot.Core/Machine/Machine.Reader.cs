@@ -12,16 +12,11 @@ namespace LagoVista.GCode.Sender
 {
     public partial class Machine
     {
-        private void ProcessResponseLine(String line)
+        private StringBuilder _messageBuffer = new StringBuilder();
+     
+        private void ParseMessage(string fullMessageLine)
         {
-            if (String.IsNullOrEmpty(line))
-            {
-                return;
-            }
-
-            //Debug.WriteLine(DateTime.Now.ToString() + "  >>> " + line);
-
-            if (line.StartsWith("ok"))
+            if (fullMessageLine.StartsWith("ok"))
             {
                 if (GCodeFileManager.HasValidFile && Mode == OperatingMode.SendingGCodeFile)
                 {
@@ -63,20 +58,20 @@ namespace LagoVista.GCode.Sender
                     UnacknowledgedBytesSent = 0;
                 }
             }
-            else if (line.Contains("endstops"))
+            else if (fullMessageLine.Contains("endstops"))
             {
-                AddStatusMessage(StatusMessageTypes.FatalError, line);
+                AddStatusMessage(StatusMessageTypes.FatalError, fullMessageLine);
             }
-            else if (line != null)
+            else if (fullMessageLine != null)
             {
-                if (line.StartsWith("error:"))
+                if (fullMessageLine.StartsWith("error:"))
                 {
                     var errorline = _sentQueue.Any() ? _sentQueue.Dequeue() : "?????";
 
 
                     var errNumbRegEx = new Regex("error:(?'ErrorCode'-?[0-9\\.]*)?");
 
-                    var errMatch = errNumbRegEx.Match(line);
+                    var errMatch = errNumbRegEx.Match(fullMessageLine);
                     if (errMatch.Success)
                     {
                         var strErrorCode = errMatch.Groups["ErrorCode"].Value;
@@ -84,7 +79,7 @@ namespace LagoVista.GCode.Sender
                         AddStatusMessage(StatusMessageTypes.Warning, err, MessageVerbosityLevels.Normal);
                     }
                     else
-                        AddStatusMessage(StatusMessageTypes.Warning, $"{line}: {errorline}", MessageVerbosityLevels.Normal);
+                        AddStatusMessage(StatusMessageTypes.Warning, $"{fullMessageLine}: {errorline}", MessageVerbosityLevels.Normal);
 
                     if (_sentQueue.Count != 0)
                     {
@@ -95,7 +90,7 @@ namespace LagoVista.GCode.Sender
                     {
                         if ((DateTime.Now - _connectTime).TotalMilliseconds > 200)
                         {
-                            AddStatusMessage(StatusMessageTypes.Warning, $"Received <{line}> without anything in the Sent Buffer", MessageVerbosityLevels.Normal);
+                            AddStatusMessage(StatusMessageTypes.Warning, $"Received <{fullMessageLine}> without anything in the Sent Buffer", MessageVerbosityLevels.Normal);
                         }
 
                         UnacknowledgedBytesSent = 0;
@@ -103,24 +98,24 @@ namespace LagoVista.GCode.Sender
 
                     Mode = OperatingMode.Manual;
                 }
-                else if (line.StartsWith("<"))
+                else if (fullMessageLine.StartsWith("<"))
                 {
-                    if (ParseStatus(line))
+                    if (ParseStatus(fullMessageLine))
                     {
-                        AddStatusMessage(StatusMessageTypes.ReceivedLine, line, MessageVerbosityLevels.Diagnostics);
+                        AddStatusMessage(StatusMessageTypes.ReceivedLine, fullMessageLine, MessageVerbosityLevels.Diagnostics);
                     }
-                    else if (ParseLine(line))
+                    else if (ParseLine(fullMessageLine))
                     {
-                        AddStatusMessage(StatusMessageTypes.ReceivedLine, line, MessageVerbosityLevels.Diagnostics);
+                        AddStatusMessage(StatusMessageTypes.ReceivedLine, fullMessageLine, MessageVerbosityLevels.Diagnostics);
                     }
                     else
                     {
-                        AddStatusMessage(StatusMessageTypes.ReceivedLine, line);
+                        AddStatusMessage(StatusMessageTypes.ReceivedLine, fullMessageLine);
                     }
                 }
-                else if (line.StartsWith("[PRB:"))
+                else if (fullMessageLine.StartsWith("[PRB:"))
                 {
-                    var probeResult = ProbingManager.ParseProbeLine(line);
+                    var probeResult = ProbingManager.ParseProbeLine(fullMessageLine);
 
                     switch (Mode)
                     {
@@ -135,22 +130,22 @@ namespace LagoVista.GCode.Sender
                             break;
                     }
                 }
-                else if (line.StartsWith("["))
+                else if (fullMessageLine.StartsWith("["))
                 {
-                    UpdateStatus(line);
+                    UpdateStatus(fullMessageLine);
 
-                    AddStatusMessage(StatusMessageTypes.ReceivedLine, line);
+                    AddStatusMessage(StatusMessageTypes.ReceivedLine, fullMessageLine);
                 }
-                else if (line.StartsWith("ALARM"))
+                else if (fullMessageLine.StartsWith("ALARM"))
                 {
-                    AddStatusMessage(StatusMessageTypes.FatalError, line);
+                    AddStatusMessage(StatusMessageTypes.FatalError, fullMessageLine);
                     Mode = OperatingMode.Manual;
                 }
-                else if (line.Length > 0)
+                else if (fullMessageLine.Length > 0)
                 {
-                    if (!ParseLine(line))
+                    if (!ParseLine(fullMessageLine))
                     {
-                        AddStatusMessage(StatusMessageTypes.ReceivedLine, line);
+                        AddStatusMessage(StatusMessageTypes.ReceivedLine, fullMessageLine);
                     }
                     lock (_queueAccessLocker)
                     {
@@ -166,6 +161,31 @@ namespace LagoVista.GCode.Sender
             {
                 AddStatusMessage(StatusMessageTypes.Warning, $"Empty Response From Machine.", MessageVerbosityLevels.Normal);
             }
+        }
+
+
+        private void ProcessResponseLine(String line)
+        {
+            
+            if (String.IsNullOrEmpty(line))
+            {
+                return;
+            }
+
+            ParseMessage(line);
+
+/*            foreach (var ch in line.ToCharArray())
+            {
+                if (ch == '\r')
+                {
+                    ParseMessage(_messageBuffer.ToString());
+                    _messageBuffer.Clear();
+                }
+                else
+                {
+                    _messageBuffer.Append(ch);
+                }
+            }*/
         }
     }
 }
