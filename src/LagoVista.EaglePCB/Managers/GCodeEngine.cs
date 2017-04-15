@@ -62,13 +62,13 @@ namespace LagoVista.EaglePCB.Managers
 
                 var bits = (from tool
                          in tools
-                        orderby tool.First().Diameter
-                        select new DrillRackInfo()
-                        {
-                            Diameter = tool.First().Diameter,
-                            DrillCount = tool.Count(),
-                            DrillName = tool.First().Name,
-                        }).ToList();
+                            orderby tool.First().Diameter
+                            select new DrillRackInfo()
+                            {
+                                Diameter = tool.First().Diameter,
+                                DrillCount = tool.Count(),
+                                DrillName = tool.First().Name,
+                            }).ToList();
 
                 var idx = 1;
                 foreach (var bit in bits)
@@ -103,8 +103,6 @@ namespace LagoVista.EaglePCB.Managers
             bldr.AppendLine("G21");
             bldr.AppendLine("(Absolute Coordinates)");
             bldr.AppendLine("G90");
-            bldr.AppendLine("M05");
-            bldr.AppendLine($"G04 P{pcbProject.DrillSpindleDwell}");
 
             if (pcbProject.PauseForToolChange)
             {
@@ -131,17 +129,14 @@ namespace LagoVista.EaglePCB.Managers
                 /* Should be OK to do first here */
                 foreach (var tool in tools.OrderBy(tl => tl.First().Diameter))
                 {
-                    if (pcbProject.PauseForToolChange)
-                    {
-                        bldr.AppendLine("M05");
-                        bldr.AppendLine($"G0 Z{pcbProject.DrillSafeHeight.ToDim()}");
-                        bldr.AppendLine($"M06 {tool.First().Diameter.ToDim()}");
-                        bldr.AppendLine($"G0 Z{pcbProject.DrillSafeHeight.ToDim()}");
-                        bldr.AppendLine($"G00 X0.0000 Y0.0000");
-                        bldr.AppendLine("M03");
-                        bldr.AppendLine($"S{pcbProject.DrillSpindleRPM}");
-                        bldr.AppendLine($"G04 P{pcbProject.DrillSpindleDwell}");
-                    }
+                    bldr.AppendLine("M05");
+                    bldr.AppendLine($"G0 Z{pcbProject.DrillSafeHeight.ToDim()}");
+                    bldr.AppendLine($"M06 {tool.First().Diameter.ToDim()}");
+                    bldr.AppendLine($"G0 Z{pcbProject.DrillSafeHeight.ToDim()}");
+                    bldr.AppendLine($"G00 X0.0000 Y0.0000");
+                    bldr.AppendLine("M03");
+                    bldr.AppendLine($"S{pcbProject.DrillSpindleRPM}");
+                    bldr.AppendLine($"G04 P{pcbProject.DrillSpindleDwell}");
 
                     foreach (var drill in tool.OrderBy(drl => drl.X).ThenBy(drl => drl.Y))
                     {
@@ -155,6 +150,10 @@ namespace LagoVista.EaglePCB.Managers
             else
             {
                 var allDrills = pcb.Drills.OrderBy(drl => drl.X).ThenBy(drl => drl.Y);
+
+                bldr.AppendLine("M03");
+                bldr.AppendLine($"S{pcbProject.DrillSpindleRPM}");
+                bldr.AppendLine($"G04 P{pcbProject.DrillSpindleDwell}");
 
                 foreach (var drill in allDrills)
                 {
@@ -202,22 +201,23 @@ namespace LagoVista.EaglePCB.Managers
             bldr.AppendLine($"G00 X0.0000 Y0.0000");
             bldr.AppendLine($"M06 {pcbProject.HoldDownDiameter.ToDim()}");
             bldr.AppendLine($"G0 Z{pcbProject.DrillSafeHeight.ToDim()}");
-            bldr.AppendLine($"G04 P{pcbProject.DrillSpindleDwell}");
-
             bldr.AppendLine("M03");
             bldr.AppendLine($"S{pcbProject.DrillSpindleRPM}");
+
+            bldr.AppendLine($"G04 P{pcbProject.DrillSpindleDwell}");
+
             //bldr.AppendLine($"G04 {pcbProject.DrillSpindleDwell}");
 
             var initialDrillDepth = pcbProject.HoldDownDiameter == pcbProject.HoldDownDrillDiameter && drillIntoUnderlayment ? -pcbProject.HoldDownDrillDepth : -pcbProject.StockThickness;
             var drills = pcbProject.GetHoldDownDrills(pcb);
-            foreach(var hole in drills)
+            foreach (var hole in drills)
             {
                 bldr.AppendLine($"G00 X{hole.X.ToDim()} Y{hole.Y.ToDim()}");
                 bldr.AppendLine($"G00 Z2 F{pcbProject.SafePlungeRecoverRate}");
                 bldr.AppendLine($"G01 Z{initialDrillDepth.ToDim()} F{pcbProject.DrillPlungeRate}");
                 bldr.AppendLine($"G00 Z{pcbProject.DrillSafeHeight} F{pcbProject.SafePlungeRecoverRate}");
             }
-           
+
             if (pcbProject.HoldDownDiameter != pcbProject.HoldDownDrillDiameter && drillIntoUnderlayment)
             {
                 bldr.AppendLine("M05");

@@ -22,7 +22,7 @@ namespace LagoVista.Core.GCode.Parser
 
         //TODO: Removed compiled options
         private Regex GCodeSplitter = new Regex(@"([A-Z])\s*(\-?\d+\.?\d*)");
-        private double[] MotionCommands = new double[] { 0, 1, 2, 3, 38.2, 38.3, 38.4, 38.5, 20, 21, 90, 91 };
+        private double[] MotionCommands = new double[] { 0, 1, 2, 3, 4, 38.2, 38.3, 38.4, 38.5, 20, 21, 90, 91 };
         private string ValidWords = "GMXYZSTPIJKFR";
         public List<GCodeCommand> Commands;
 

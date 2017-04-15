@@ -240,7 +240,10 @@ namespace LagoVista.GCode.Sender.Managers
 
         public void Reset()
         {
-            HeightMap.Reset();
+            if (HeightMap != null)
+            {
+                HeightMap.Reset();
+            }
         }
 
         public void PauseProbing()

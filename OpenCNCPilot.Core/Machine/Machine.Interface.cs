@@ -222,8 +222,7 @@ namespace LagoVista.GCode.Sender
             }
             else
             {
-                Enqueue("G28 X0");
-                Enqueue("G28 Y0");
+                Enqueue("G28");
             }
         }
 

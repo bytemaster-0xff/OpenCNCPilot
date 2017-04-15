@@ -23,6 +23,8 @@ namespace LagoVista.GCode.Sender.Managers
                 var file = GCodeFile.Load(path);
                 if (file != null)
                 {
+                    Head = 0;
+                    Tail = 0;
                     File = file;
                     var parts = path.Split('\\');
                     FileName = parts[parts.Length - 1];

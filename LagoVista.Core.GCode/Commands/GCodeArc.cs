@@ -76,6 +76,10 @@ namespace LagoVista.Core.GCode.Commands
                     bldr.Append($" F{Feed.Value}");
                 }
 
+                bldr.Append($" X{End.X.ToDim()}");
+                bldr.Append($" Y{End.Y.ToDim()}");
+                bldr.Append($" Z{End.Z.ToDim()}");
+
                 if ((SpindleRPM.HasValue && PreviousSpindleRPM.HasValue && Feed.Value != PreviousSpindleRPM.Value) ||
                    SpindleRPM.HasValue && !PreviousSpindleRPM.HasValue)
                 {

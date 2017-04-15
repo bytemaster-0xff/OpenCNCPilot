@@ -55,7 +55,7 @@ namespace LagoVista.GCode.Sender.Managers
         public int Tail
         {
             get { return _tail; }
-            set { Set(ref _tail, value); }
+            set { Set(ref _tail, Math.Max(value, 0)); }
         }
 
         public GCodeFile File
