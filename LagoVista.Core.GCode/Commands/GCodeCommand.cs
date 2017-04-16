@@ -36,7 +36,7 @@ namespace LagoVista.Core.GCode.Commands
 
         public string OriginalLine { get; set; }
 
-        public virtual string Line { get { return OriginalLine; } }
+        public virtual string Line { get { return OriginalLine.TrimEnd(); } }
 
         public int LineNumber { get; set; }
 

@@ -112,7 +112,12 @@ namespace LagoVista.GCode.Sender.Managers
             get { return  _measuredOffset != null; }
         }
 
-        public List<DrillRackInfo> DrillRack { get; private set; }
+
+
+        public List<DrillRackInfo> DrillRack
+        {
+            get; private set;
+        }
 
         public bool HasProject
         {

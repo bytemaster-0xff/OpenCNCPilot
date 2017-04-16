@@ -129,7 +129,7 @@ namespace LagoVista.Core.GCode.Parser
 
             int start = -1;
 
-            var toolRegEx1 = new Regex(@"\( (?'ToolNumber'-?T[0-9]*) : (?'ToolSize'-?[0-9\.]*) \)");
+            var toolRegEx1 = new Regex(@"\( (?'ToolNumber'-?[T][C]?[0-9]*) : (?'ToolSize'-?[0-9\.]*) \)");
             var toolMatch1 = toolRegEx1.Match(line);
             if (toolMatch1.Success)
             {
@@ -225,6 +225,21 @@ namespace LagoVista.Core.GCode.Parser
                     }
                 }
             }
+
+            /*if (toolSize == "??")
+            {
+                /* NOTE: Might be making an assumption here, assume if we have an M06 and a decimal
+                 * it's the size of the tool */
+                /*var parts = line.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                foreach (var part in parts)
+                {
+                    double toolSizeValue;
+                    if (double.TryParse(part, out toolSizeValue))
+                    {
+                        toolSize = toolSizeValue.ToDim();
+                    }
+                }
+            }*/
 
             return new ToolChangeCommand()
             {

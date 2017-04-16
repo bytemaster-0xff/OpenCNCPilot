@@ -118,20 +118,25 @@ namespace LagoVista.EaglePCB.Managers
                     };
 
                     var consolidatedBit = GetConsolidated(drill, pcbProject.ConsolidatedDrillRack);
-                    modifiedDrill.Name = consolidatedBit == null ? drill.Name : consolidatedBit.ToolName;
+                    modifiedDrill.Name = consolidatedBit == null ? drill.Name : consolidatedBit.ToolName.Replace("TC","T");
                     modifiedDrill.Diameter = consolidatedBit == null ? drill.Diameter : consolidatedBit.Diameter;
 
                     modifiedDrills.Add(modifiedDrill);
                 }
 
                 var tools = modifiedDrills.GroupBy(drl => drl.Diameter);
+                foreach(var tool in tools)
+                {
+                    bldr.AppendLine($"( {tool.First().Name.Replace("TC","T")} : {tool.First().Diameter.ToDim()} ) ");
+                }
+                
 
                 /* Should be OK to do first here */
                 foreach (var tool in tools.OrderBy(tl => tl.First().Diameter))
                 {
                     bldr.AppendLine("M05");
                     bldr.AppendLine($"G0 Z{pcbProject.DrillSafeHeight.ToDim()}");
-                    bldr.AppendLine($"M06 {tool.First().Diameter.ToDim()}");
+                    bldr.AppendLine($"M06 {tool.First().Name.Replace("TC","T")}; {tool.First().Diameter.ToDim()}");
                     bldr.AppendLine($"G0 Z{pcbProject.DrillSafeHeight.ToDim()}");
                     bldr.AppendLine($"G00 X0.0000 Y0.0000");
                     bldr.AppendLine("M03");
@@ -257,7 +262,7 @@ namespace LagoVista.EaglePCB.Managers
 
             bldr.AppendLine("M03");
             bldr.AppendLine($"S{pcbProject.MillSpindleRPM}");
-            //bldr.AppendLine($"G04 {pcbProject.MillSpindleDwell}");
+            bldr.AppendLine($"G04 P{pcbProject.MillSpindleDwell}");
 
             double millRadius = pcbProject.MillToolSize / 2;
             double scrapX = pcbProject.ScrapSides;

@@ -15,15 +15,15 @@ namespace LagoVista.GCode.Sender.Managers
 
         private async Task<bool> PerformToolChange()
         {
-            await Core.PlatformSupport.Services.Popups.ShowAsync("Confirm Probe Set and Press OK.");
+            if (!await Core.PlatformSupport.Services.Popups.ConfirmAsync("Tool Change", "Confirm Is Attached.\r\n\r\nThen press Yes to Continue or No to Abort."))
+            {
+                return false;
+            }
+
             Machine.SendCommand("G0 Z10 F1000");
             Machine.ProbingManager.StartProbe();
 
-            Debug.WriteLine("Spinning until timeout or back in manual mode " + DateTime.Now);
-
             SpinWait.SpinUntil(() => Machine.Mode == OperatingMode.Manual, Machine.Settings.ProbeTimeoutSeconds * 1000);
-
-            Debug.WriteLine("Done Spinning or timed out" + DateTime.Now);
 
             return Machine.ProbingManager.Status == ProbeStatus.Success;
         }
@@ -33,7 +33,7 @@ namespace LagoVista.GCode.Sender.Managers
             Machine.SetMode(OperatingMode.Manual);
             Machine.SpindleOff();
 
-            if (await Core.PlatformSupport.Services.Popups.ConfirmAsync("Tool Change", "Start Tool Change cycle?  Last Changed Tool: " + _oldTool + "\nNew tool: " + mcode.ToolSize))
+            if (await Core.PlatformSupport.Services.Popups.ConfirmAsync("Tool Change", $"Start Tool Change cycle?\r\n\r\nLast Changed Tool: {_oldTool}\r\n\r\nNew tool: {mcode.ToolName} ({mcode.ToolSize})"))
             {
                 Machine.SendCommand("G0 Z18 F1000");
                 Machine.SendCommand("G0 X0 Y0 F1000");
@@ -45,16 +45,15 @@ namespace LagoVista.GCode.Sender.Managers
                     {
                         _oldTool = mcode.ToolSize;
 
-                        Debug.WriteLine("Tool Change Proble Success, Continue");
-                        await Core.PlatformSupport.Services.Popups.ShowAsync("WARNING - Confirm Probe is Removed and Press OK.");
+                        await Core.PlatformSupport.Services.Popups.ShowAsync("IMPORTANT!\r\n\r\nConfirm Probe is Removed and Press Yes.");
                         Machine.SetMode(OperatingMode.SendingGCodeFile);
                         shouldRetry = false;
                     }
                     else
                     {
-                        if (!await Core.PlatformSupport.Services.Popups.ConfirmAsync("Probe Failed", "Try Again?"))
+                        if (!await Core.PlatformSupport.Services.Popups.ConfirmAsync("Tool Change", "The Probing Cycle has Failed\r\n\r\nRetry Tool Change Cycle?"))
                         {
-                            if (!await Core.PlatformSupport.Services.Popups.ConfirmAsync("Probe Failed", "Press OK to Continue Job, Cancel to Abort"))
+                            if (!await Core.PlatformSupport.Services.Popups.ConfirmAsync("Tool Change", "The Tool Change Process has Failed.\r\n\r\nPress Yes to Continue Job.\r\n\r\nNo to Abort"))
                             {
                                 Machine.GCodeFileManager.ResetJob();
                                 shouldRetry = false;

@@ -50,17 +50,17 @@ namespace LagoVista.Core.GCode.Commands
                 var bldr = new StringBuilder();
                 bldr.Append(Command);
 
-                if (End.X != Start.X)
+                if (End.X != Start.X || End.X == 0)
                 {
                     bldr.Append($" X{End.X.ToDim()}");
                 }
 
-                if (End.Y != Start.Y)
+                if (End.Y != Start.Y || Start.X == 0)
                 {
                     bldr.Append($" Y{End.Y.ToDim()}");
                 }
 
-                if (End.Z != Start.Z)
+                if (End.Z != Start.Z || Start.Z == 0)
                 {
                     bldr.Append($" Z{End.Z.ToDim()}");
                 }
