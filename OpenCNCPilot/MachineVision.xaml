@@ -12,6 +12,7 @@
     <Grid >
 
         <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="36"/>
         </Grid.RowDefinitions>
@@ -20,10 +21,22 @@
             <ColumnDefinition Width="300" />
         </Grid.ColumnDefinitions>
 
+        <ToolBar>
+            <Button  Command="{Binding SetCameraOffsetCommand}"  Width="32" Height="32" >
+                <Button.Content>
+                    <fa:ImageAwesome Icon="Camera"   ToolTip="Homing Cycle" />
+                </Button.Content>
+            </Button>
+            <Button  Command="{Binding NoOffsetCommand}"  Width="32" Height="32" >
+                <Button.Content>
+                    <fa:ImageAwesome Icon="Wrench"   ToolTip="Homing Cycle" />
+                </Button.Content>
+            </Button>            
+        </ToolBar>
 
-        <Image x:Name="WebCamImage" Stretch="Uniform"  Source="/Imgs/TestPattern.jpg" Grid.RowSpan="2" />
+        <Image x:Name="WebCamImage" Stretch="Uniform"  Source="/Imgs/TestPattern.jpg" Grid.Row="1" Grid.RowSpan="2" />
 
-        <Grid HorizontalAlignment="Right" VerticalAlignment="Bottom"  Width="150" Height="30">
+        <Grid HorizontalAlignment="Right" VerticalAlignment="Bottom"  Width="150" Height="30" Grid.Row="1">
             <Grid.Resources>
 
             </Grid.Resources>
@@ -35,7 +48,7 @@
             <TextBlock Text="{Binding CircleCenter.X}" Foreground="White" TextAlignment="Right" />
             <TextBlock Text="{Binding CircleCenter.Y}" Foreground="White" TextAlignment="Right" Grid.Column="1" />
         </Grid>
-        <TabControl Background="Transparent">
+        <TabControl Background="Transparent" Grid.Row="1">
             <TabItem Header="Board Layout">
                 <Grid>
                     <Controls:PCBTopView HorizontalAlignment="Left" VerticalAlignment="Top" Opacity="0.76" DataContext="{Binding Path=Machine.PCBManager}" >
@@ -77,7 +90,7 @@
 
 
 
-        <Grid HorizontalAlignment="Right" VerticalAlignment="Top"  Width="150" Height="180">
+        <Grid HorizontalAlignment="Right" VerticalAlignment="Top"  Width="150" Height="180" Grid.Row="1">
             <Grid.Resources>
                 <Style TargetType="Label">
                     <Setter Property="Foreground" Value="White" />
@@ -115,7 +128,7 @@
             <CheckBox IsChecked="{Binding ShowPolygons, Mode=TwoWay}" Grid.Row="4" Grid.Column="1" />
         </Grid>
 
-        <Grid Grid.ColumnSpan="2" Grid.Row="1">
+        <Grid Grid.ColumnSpan="2" Grid.Row="2">
             <Rectangle Grid.Row="1" Fill="Black" Opacity="0.5">
 
             </Rectangle>
@@ -140,7 +153,7 @@
             </StackPanel>
         </Grid>
 
-        <Grid Grid.Column="1">
+        <Grid Grid.Column="1" Grid.Row="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
                 <RowDefinition Height="auto" />
@@ -159,7 +172,7 @@
         </Grid>
 
 
-        <Grid Grid.ColumnSpan="2" x:Name="LoadingMask"  Visibility="Collapsed" >
+        <Grid Grid.ColumnSpan="2" Grid.Row="1" x:Name="LoadingMask"  Visibility="Collapsed" >
             <Rectangle Fill="Black" Opacity="0.5"/>
             <TextBlock Text="Please wait..."  FontSize="42" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,20"/>
         </Grid>

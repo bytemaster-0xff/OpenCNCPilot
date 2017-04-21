@@ -1,5 +1,6 @@
 ﻿using LagoVista.Core.Models.Drawing;
 using LagoVista.EaglePCB.Models;
+using LagoVista.GCode.Sender.Interfaces;
 using System;
 using System.Linq;
 using System.Windows;
@@ -29,7 +30,6 @@ namespace LagoVista.GCode.Sender.Application.Controls
         private void PCBTopView_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             var manager = DataContext as LagoVista.GCode.Sender.Managers.PCBManager;
-
             if (manager.HasBoard)
             {
                 var offsetX = manager.HasProject ? manager.Project.ScrapSides : 0;
@@ -69,7 +69,7 @@ namespace LagoVista.GCode.Sender.Application.Controls
 
                 if (manager.HasProject)
                 {
-                    foreach(var hole in manager.Project.GetHoldDownDrills(manager.Board))
+                    foreach (var hole in manager.Project.GetHoldDownDrills(manager.Board))
                     {
                         var ellipse = new Ellipse() { Width = manager.Project.HoldDownDiameter * 10.0, Height = manager.Project.HoldDownDiameter * 10.0 };
                         ellipse.Fill = Brushes.Black;
@@ -77,7 +77,7 @@ namespace LagoVista.GCode.Sender.Application.Controls
                         var x = hole.X;
                         var y = manager.Board.Height - hole.Y;
 
-                        ellipse.SetValue(Canvas.TopProperty, (manager.Board.Height - (y + (manager.Project.HoldDownDiameter / 2)))* 10.0);
+                        ellipse.SetValue(Canvas.TopProperty, (manager.Board.Height - (y + (manager.Project.HoldDownDiameter / 2))) * 10.0);
                         ellipse.SetValue(Canvas.LeftProperty, (x - (manager.Project.HoldDownDiameter / 2)) * 10.0);
                         ellipse.ToolTip = $"{x}x{y} - {manager.Project.HoldDownDiameter}D";
                         ellipse.Cursor = Cursors.Hand;
@@ -88,8 +88,11 @@ namespace LagoVista.GCode.Sender.Application.Controls
                 }
             }
         }
+       
 
         bool _shouldSetFirstFiducial = true;
+
+        Point2D<double> _lastPoint = null;
 
         private void Elipse_MouseUp(object sender, MouseButtonEventArgs e)
         {
@@ -99,7 +102,6 @@ namespace LagoVista.GCode.Sender.Application.Controls
             var manager = DataContext as LagoVista.GCode.Sender.Managers.PCBManager;
             if (manager.IsSetFiducialMode)
             {
-                
                 if (_shouldSetFirstFiducial)
                 {
                     manager.FirstFiducial = point;
@@ -113,8 +115,17 @@ namespace LagoVista.GCode.Sender.Application.Controls
             }
             else
             {
-                var adjustedPoint = manager.GetAdjustedPoint(point);
-                manager.Machine.GotoPoint(adjustedPoint);
+                if (manager.JogMode == BoardJogModes.Camera)
+                {
+                    var adjustedPoint = manager.GetAdjustedPoint(point);
+                    manager.Machine.GotoPoint(adjustedPoint);
+                }
+                else
+                {
+                    manager.Machine.GotoPoint(point);
+                }
+
+                _lastPoint = point;
             }
         }
     }

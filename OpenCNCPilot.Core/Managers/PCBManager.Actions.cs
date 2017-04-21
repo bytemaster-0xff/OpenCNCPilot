@@ -14,7 +14,21 @@ namespace LagoVista.GCode.Sender.Managers
         {
             if(!HasMeasuredOffset)
             {
-                return point;
+                if (Machine.Settings.PositioningCamera != null &&
+                    Machine.Settings.PositioningCamera.Tool1Offset != null &&
+                    Machine.PCBManager.JogMode == Interfaces.BoardJogModes.Camera)
+                {
+                    return new Point2D<double>()
+                    {
+                        X = point.X + Machine.Settings.PositioningCamera.Tool1Offset.X,
+                        Y = point.Y+ Machine.Settings.PositioningCamera.Tool1Offset.Y,
+                    };
+                        
+                }
+                else
+                {
+                    return point;
+                }
             }
             else
             {
@@ -22,7 +36,20 @@ namespace LagoVista.GCode.Sender.Managers
                 var offsetPoint = new Point2D<double>(MeasuredOffset.X + point.X, MeasuredOffset.Y + point.Y);
                 var rotatedPoint = offsetPoint.Rotate(MeasuredOffsetAngle);
 
-                return rotatedPoint;
+                if (Machine.Settings.PositioningCamera != null && 
+                    Machine.Settings.PositioningCamera.Tool1Offset != null &&
+                    Machine.PCBManager.JogMode == Interfaces.BoardJogModes.Camera)
+                {
+                    return new Point2D<double>()
+                    {
+                        X = rotatedPoint.X + Machine.Settings.PositioningCamera.Tool1Offset.X,
+                        Y = rotatedPoint.Y + Machine.Settings.PositioningCamera.Tool1Offset.Y,
+                    };
+                }
+                else
+                {
+                    return rotatedPoint;
+                }
             }
 
         }

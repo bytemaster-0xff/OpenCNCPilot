@@ -1,5 +1,6 @@
 ﻿using LagoVista.Core.Models.Drawing;
 using LagoVista.EaglePCB.Models;
+using LagoVista.GCode.Sender.Interfaces;
 using System;
 using System.Collections.Generic;
 
@@ -28,6 +29,13 @@ namespace LagoVista.GCode.Sender.Managers
                 RaisePropertyChanged();
                 RaisePropertyChanged(nameof(HasBoard));
             }
+        }
+
+        BoardJogModes _jogMode;
+        public BoardJogModes JogMode
+        {
+            get { return _jogMode; }
+            set { Set(ref _jogMode, value); }
         }
 
         public bool HasBoard

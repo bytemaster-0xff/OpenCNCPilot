@@ -9,6 +9,13 @@ using System.Threading.Tasks;
 
 namespace LagoVista.GCode.Sender.Interfaces
 {
+    public enum BoardJogModes
+    {
+        Camera,
+        Tool
+    }
+
+
     public interface IPCBManager : INotifyPropertyChanged
     {
         bool HasBoard { get; }
@@ -47,5 +54,8 @@ namespace LagoVista.GCode.Sender.Interfaces
         /// <param name="point"></param>
         /// <returns></returns>
         Point2D<double> GetAdjustedPoint(Point2D<double> point);
+
+        BoardJogModes JogMode { get; set; }
+
     }
 }
