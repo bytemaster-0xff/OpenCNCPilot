@@ -119,18 +119,26 @@ namespace LagoVista.GCode.Sender
             Mode = mode;
             return true;
         }
-    
+
 
         public void GotoPoint(Point2D<double> point, bool rapidMove = true)
         {
             var cmd = rapidMove ? "G0" : "G1";
 
-            SendCommand($"{cmd} X{point.X.ToDim()} Y{point.Y.ToDim()}");
+            GotoPoint(point.X, point.Y, rapidMove);
         }
 
         public void GotoPoint(double x, double y, bool rapidMove = true)
         {
             var cmd = rapidMove ? "G0" : "G1";
+
+            if (PCBManager.CameraNavigation &&
+               Settings.PositioningCamera != null &&
+               Settings.PositioningCamera.Tool1Offset != null)
+            {
+                x += Settings.PositioningCamera.Tool1Offset.X;
+                y += Settings.PositioningCamera.Tool1Offset.Y;
+            }
 
             SendCommand($"{cmd} X{x.ToDim()} Y{y.ToDim()}");
         }
@@ -138,6 +146,13 @@ namespace LagoVista.GCode.Sender
         public void GotoPoint(double x, double y, double z, bool rapidMove = true)
         {
             var cmd = rapidMove ? "G0" : "G1";
+            if (PCBManager.CameraNavigation &&
+                Settings.PositioningCamera != null &&
+                Settings.PositioningCamera.Tool1Offset != null)
+            {
+                x += Settings.PositioningCamera.Tool1Offset.X;
+                y += Settings.PositioningCamera.Tool1Offset.Y;
+            }
 
             SendCommand($"{cmd} X{x.ToDim()} Y{y.ToDim()} Z{z.ToDim()}");
         }

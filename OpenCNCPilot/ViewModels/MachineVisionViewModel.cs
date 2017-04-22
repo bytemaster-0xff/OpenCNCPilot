@@ -29,9 +29,6 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             CaptureCameraCommand = new RelayCommand(CaptureCameraLocation);
             CaptureDrillLocationCommand = new RelayCommand(CaptureDrillLocation);
             AlignBoardCommand = new RelayCommand(AlignBoard, CanAlignBoard);
-
-            SetCameraOffsetCommand = new RelayCommand(SetCameraOffset);
-            NoOffsetCommand = new RelayCommand(SetNoOffset);
         }
 
         public override async Task InitAsync()
@@ -414,50 +411,10 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             set
             {
                 Set(ref _selectedComponent, value);
-                if (Machine.PCBManager.JogMode == BoardJogModes.Camera)
-                {
-                    var point = new Point2D<double>(value.X.Value, value.Y.Value);
-                    var adjustedPoint = Machine.PCBManager.GetAdjustedPoint(point);
-                    Machine.GotoPoint(adjustedPoint);
-                }
-                else
-                {
-                    var point = new Point2D<double>(value.X.Value, value.Y.Value);
-                    Machine.GotoPoint(point);
-                }
+                var point = new Point2D<double>(value.X.Value, value.Y.Value);
+                Machine.GotoPoint(point);
             }
             get { return _selectedComponent; }
-        }
-
-
-
-        public void SetCameraOffset()
-        {
-            if (Machine.PCBManager.JogMode != BoardJogModes.Camera)
-            {
-                Machine.PCBManager.JogMode = BoardJogModes.Camera;
-                var newPoint = new Point2D<double>()
-                {
-                    X = Machine.NormalizedPosition.X + Machine.Settings.PositioningCamera.Tool1Offset.X,
-                    Y = Machine.NormalizedPosition.Y + Machine.Settings.PositioningCamera.Tool1Offset.Y,
-                };
-                Machine.GotoPoint(newPoint, true);
-            }
-        }
-
-        public void SetNoOffset()
-        {
-            if (Machine.PCBManager.JogMode != BoardJogModes.Tool)
-            {
-                Machine.PCBManager.JogMode = BoardJogModes.Tool;
-                var newPoint = new Point2D<double>()
-                {
-                    X = Machine.NormalizedPosition.X - Machine.Settings.PositioningCamera.Tool1Offset.X,
-                    Y = Machine.NormalizedPosition.Y - Machine.Settings.PositioningCamera.Tool1Offset.Y,
-                };
-
-                Machine.GotoPoint(newPoint);
-            }
         }
 
         List<Component> _partsList;
@@ -472,9 +429,5 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
         public RelayCommand CaptureCameraCommand { get; private set; }
 
         public RelayCommand AlignBoardCommand { get; private set; }
-
-        public RelayCommand SetCameraOffsetCommand { get; private set; }
-
-        public RelayCommand NoOffsetCommand { get; private set; }
     }
 }

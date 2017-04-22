@@ -22,16 +22,26 @@
         </Grid.ColumnDefinitions>
 
         <ToolBar>
-            <Button  Command="{Binding SetCameraOffsetCommand}"  Width="32" Height="32" >
-                <Button.Content>
-                    <fa:ImageAwesome Icon="Camera"   ToolTip="Homing Cycle" />
-                </Button.Content>
-            </Button>
-            <Button  Command="{Binding NoOffsetCommand}"  Width="32" Height="32" >
-                <Button.Content>
-                    <fa:ImageAwesome Icon="Wrench"   ToolTip="Homing Cycle" />
-                </Button.Content>
-            </Button>            
+            <ToggleButton  Width="32" Height="32" IsChecked="{Binding Path=Machine.PCBManager.CameraNavigation, Mode=TwoWay}">
+                <ToggleButton.Content>
+                    <fa:ImageAwesome Icon="Camera"  ToolTip="Camera Placement" />
+                </ToggleButton.Content>
+            </ToggleButton>
+            <ToggleButton  Width="32" Height="32" IsChecked="{Binding Path=Machine.PCBManager.Tool1Navigation, Mode=TwoWay}">
+                <ToggleButton.Content>
+                    <fa:ImageAwesome Icon="Wrench"   ToolTip="Tool Navigation" />
+                </ToggleButton.Content>
+            </ToggleButton>
+            <ToggleButton Width="32" Height="32"  IsChecked="{Binding Path=Machine.PCBManager.IsSetFiducialMode, Mode=TwoWay}" >
+                <ToggleButton.Content>
+                    <fa:ImageAwesome Icon="Circle"   ToolTip="Fuducial Selection Mode" />
+                </ToggleButton.Content>
+            </ToggleButton>
+            <ToggleButton Width="32" Height="32" IsChecked="{Binding Path=Machine.PCBManager.IsNavigationMode, Mode=TwoWay}" >
+                <ToggleButton.Content>
+                    <fa:ImageAwesome Icon="Arrows"   ToolTip="Navigation Mode" />
+                </ToggleButton.Content>
+            </ToggleButton>
         </ToolBar>
 
         <Image x:Name="WebCamImage" Stretch="Uniform"  Source="/Imgs/TestPattern.jpg" Grid.Row="1" Grid.RowSpan="2" />
@@ -56,10 +66,6 @@
                             <ScaleTransform ScaleX=".5" ScaleY=".5" />
                         </Controls:PCBTopView.LayoutTransform>
                     </Controls:PCBTopView>
-                    <StackPanel>
-                        <RadioButton GroupName="ClickMode" Content="Navigation" IsChecked="{Binding Path=Machine.PCBManager.IsNavigationMode, Mode=TwoWay}"  Foreground="White" />
-                        <RadioButton GroupName="ClickMode" Content="Fiducial" IsChecked="{Binding Path=Machine.PCBManager.IsSetFiducialMode, Mode=TwoWay}" Foreground="White" />
-                    </StackPanel>
                 </Grid>
             </TabItem>
             <TabItem Header="Parts List" >

@@ -29,14 +29,7 @@ namespace LagoVista.GCode.Sender.Managers
                 RaisePropertyChanged();
                 RaisePropertyChanged(nameof(HasBoard));
             }
-        }
-
-        BoardJogModes _jogMode;
-        public BoardJogModes JogMode
-        {
-            get { return _jogMode; }
-            set { Set(ref _jogMode, value); }
-        }
+        }        
 
         public bool HasBoard
         {
@@ -80,8 +73,6 @@ namespace LagoVista.GCode.Sender.Managers
             get { return _secondFiducial; }
             set { Set(ref _secondFiducial, value); }
         }
-
-
 
         private Point2D<double> _measuredOffset;
         public Point2D<double> MeasuredOffset
@@ -147,18 +138,60 @@ namespace LagoVista.GCode.Sender.Managers
             get; set;
         }
 
-        private bool _issNavigationMode = false;
+        private bool _issNavigationMode = true;
         public bool IsNavigationMode
         {
             get { return _issNavigationMode; }
             set { Set(ref _issNavigationMode, value); }
         }
 
-        private bool _isSetFiducialMode = true;
+        private bool _isSetFiducialMode = false;
         public bool IsSetFiducialMode
         {
             get { return _isSetFiducialMode; }
             set { Set(ref _isSetFiducialMode, value); }
+        }
+
+        private bool _cameraNavigation = false;
+        public bool CameraNavigation
+        {
+            get { return _cameraNavigation; }
+            set
+            {
+                _tool1Navigation = !value;
+                _tool2Navigation = false;
+                RaisePropertyChanged(nameof(Tool1Navigation));
+                RaisePropertyChanged(nameof(Tool2Navigation));
+                Set(ref _cameraNavigation, value);
+            }
+        }
+
+        private bool _tool1Navigation = true;
+        public bool Tool1Navigation
+        {
+            get { return _tool1Navigation; }
+            set
+            {
+                _cameraNavigation = !value;
+                _tool2Navigation = false;
+                RaisePropertyChanged(nameof(CameraNavigation));
+                RaisePropertyChanged(nameof(Tool2Navigation));
+                Set(ref _tool1Navigation, value);
+            }
+        }
+
+        private bool _tool2Navigation = true;
+        public bool Tool2Navigation
+        {
+            get { return _tool2Navigation; }
+            set
+            {
+                _cameraNavigation = !value;
+                _tool1Navigation = false;
+                RaisePropertyChanged(nameof(CameraNavigation));
+                RaisePropertyChanged(nameof(Tool1Navigation));
+                Set(ref _tool2Navigation, value);
+            }
         }
     }
 }

@@ -88,7 +88,7 @@ namespace LagoVista.GCode.Sender.Application.Controls
                 }
             }
         }
-       
+
 
         bool _shouldSetFirstFiducial = true;
 
@@ -115,15 +115,7 @@ namespace LagoVista.GCode.Sender.Application.Controls
             }
             else
             {
-                if (manager.JogMode == BoardJogModes.Camera)
-                {
-                    var adjustedPoint = manager.GetAdjustedPoint(point);
-                    manager.Machine.GotoPoint(adjustedPoint);
-                }
-                else
-                {
-                    manager.Machine.GotoPoint(point);
-                }
+                manager.Machine.GotoPoint(point);
 
                 _lastPoint = point;
             }
