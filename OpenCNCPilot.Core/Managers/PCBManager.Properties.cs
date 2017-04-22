@@ -163,6 +163,14 @@ namespace LagoVista.GCode.Sender.Managers
                 RaisePropertyChanged(nameof(Tool1Navigation));
                 RaisePropertyChanged(nameof(Tool2Navigation));
                 Set(ref _cameraNavigation, value);
+
+                var currentPoint = new Point2D<double>()
+                {
+                    X = Machine.NormalizedPosition.X,
+                    Y = Machine.NormalizedPosition.Y
+                };                
+
+                Machine.GotoPoint(currentPoint);    
             }
         }
 
@@ -177,6 +185,14 @@ namespace LagoVista.GCode.Sender.Managers
                 RaisePropertyChanged(nameof(CameraNavigation));
                 RaisePropertyChanged(nameof(Tool2Navigation));
                 Set(ref _tool1Navigation, value);
+
+                var currentPoint = new Point2D<double>()
+                {
+                    X = Machine.NormalizedPosition.X,
+                    Y = Machine.NormalizedPosition.Y
+                };
+
+                Machine.GotoPoint(currentPoint);
             }
         }
 
@@ -191,6 +207,14 @@ namespace LagoVista.GCode.Sender.Managers
                 RaisePropertyChanged(nameof(CameraNavigation));
                 RaisePropertyChanged(nameof(Tool1Navigation));
                 Set(ref _tool2Navigation, value);
+
+                var currentPoint = new Point2D<double>()
+                {
+                    X = Machine.NormalizedPosition.X,
+                    Y = Machine.NormalizedPosition.Y
+                };
+
+                Machine.GotoPoint(currentPoint);
             }
         }
     }
