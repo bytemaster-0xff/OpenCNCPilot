@@ -186,13 +186,17 @@ namespace LagoVista.GCode.Sender.Managers
                 RaisePropertyChanged(nameof(Tool2Navigation));
                 Set(ref _tool1Navigation, value);
 
-                var currentPoint = new Point2D<double>()
+                if (Machine.Settings.PositioningCamera != null &&
+                                   Machine.Settings.PositioningCamera.Tool1Offset != null)
                 {
-                    X = Machine.NormalizedPosition.X,
-                    Y = Machine.NormalizedPosition.Y
-                };
+                    var currentPoint = new Point2D<double>()
+                    {
+                        X = Machine.NormalizedPosition.X - Machine.Settings.PositioningCamera.Tool1Offset.X,
+                        Y = Machine.NormalizedPosition.Y - Machine.Settings.PositioningCamera.Tool1Offset.Y
+                    };
 
-                Machine.GotoPoint(currentPoint);
+                    Machine.GotoPoint(currentPoint);
+                }
             }
         }
 
@@ -208,13 +212,18 @@ namespace LagoVista.GCode.Sender.Managers
                 RaisePropertyChanged(nameof(Tool1Navigation));
                 Set(ref _tool2Navigation, value);
 
-                var currentPoint = new Point2D<double>()
-                {
-                    X = Machine.NormalizedPosition.X,
-                    Y = Machine.NormalizedPosition.Y
-                };
 
-                Machine.GotoPoint(currentPoint);
+                if (Machine.Settings.PositioningCamera != null &&
+                    Machine.Settings.PositioningCamera.Tool1Offset != null)
+                {
+                    var currentPoint = new Point2D<double>()
+                    {
+                        X = Machine.NormalizedPosition.X - Machine.Settings.PositioningCamera.Tool1Offset.X,
+                        Y = Machine.NormalizedPosition.Y - Machine.Settings.PositioningCamera.Tool1Offset.Y
+                    };
+
+                    Machine.GotoPoint(currentPoint);
+                }
             }
         }
     }

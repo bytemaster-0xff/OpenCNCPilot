@@ -40,7 +40,9 @@ namespace LagoVista.GCode.Sender.Application.Controls
                     var ellipse = new Ellipse() { Width = drill.Diameter * 10.0, Height = drill.Diameter * 10.0 };
                     ellipse.Fill = Brushes.Black;
                     var x = ((drill.X - (drill.Diameter / 2)) + offsetX);
-                    var y = ((manager.Board.Height - (drill.Y + (drill.Diameter / 2))) + offsetY);
+
+                    var y = manager.Machine.Settings.MachineType != FirmwareTypes.GRBL1_1 ? ((manager.Board.Height - (drill.Y + (drill.Diameter / 2))) + offsetY) :
+                        (drill.Y + (drill.Diameter / 2)) + offsetY;
                     ellipse.SetValue(Canvas.TopProperty, y * 10);
                     ellipse.SetValue(Canvas.LeftProperty, x * 10);
                     ellipse.ToolTip = $"{x + drill.Diameter / 2}x{y + drill.Diameter / 2} - {drill.Diameter}D";
@@ -75,7 +77,7 @@ namespace LagoVista.GCode.Sender.Application.Controls
                         ellipse.Fill = Brushes.Black;
 
                         var x = hole.X;
-                        var y = manager.Board.Height - hole.Y;
+                        var y = manager.Machine.Settings.MachineType != FirmwareTypes.GRBL1_1 ? manager.Board.Height - hole.Y : hole.Y;
 
                         ellipse.SetValue(Canvas.TopProperty, (manager.Board.Height - (y + (manager.Project.HoldDownDiameter / 2))) * 10.0);
                         ellipse.SetValue(Canvas.LeftProperty, (x - (manager.Project.HoldDownDiameter / 2)) * 10.0);
