@@ -1,4 +1,5 @@
-﻿using LagoVista.Core.Models.Drawing;
+﻿using LagoVista.Core.Commanding;
+using LagoVista.Core.Models.Drawing;
 using LagoVista.EaglePCB.Models;
 using LagoVista.GCode.Sender.Interfaces;
 using System;
@@ -29,7 +30,7 @@ namespace LagoVista.GCode.Sender.Managers
                 RaisePropertyChanged();
                 RaisePropertyChanged(nameof(HasBoard));
             }
-        }        
+        }
 
         public bool HasBoard
         {
@@ -77,7 +78,7 @@ namespace LagoVista.GCode.Sender.Managers
         private Point2D<double> _measuredOffset;
         public Point2D<double> MeasuredOffset
         {
-            get { return _measuredOffset; }        
+            get { return _measuredOffset; }
         }
 
         private double _measuredOffsetAngle;
@@ -108,7 +109,7 @@ namespace LagoVista.GCode.Sender.Managers
 
         public bool HasMeasuredOffset
         {
-            get { return  _measuredOffset != null; }
+            get { return _measuredOffset != null; }
         }
 
 
@@ -142,14 +143,24 @@ namespace LagoVista.GCode.Sender.Managers
         public bool IsNavigationMode
         {
             get { return _issNavigationMode; }
-            set { Set(ref _issNavigationMode, value); }
+            set
+            {
+                _isSetFiducialMode = !value;
+                Set(ref _issNavigationMode, value);
+                RaisePropertyChanged(nameof(IsSetFiducialMode));
+            }
         }
 
         private bool _isSetFiducialMode = false;
         public bool IsSetFiducialMode
         {
             get { return _isSetFiducialMode; }
-            set { Set(ref _isSetFiducialMode, value); }
+            set
+            {
+                _issNavigationMode = !value;
+                Set(ref _isSetFiducialMode, value);
+                RaisePropertyChanged(nameof(IsNavigationMode));
+            }
         }
 
         private bool _cameraNavigation = false;
@@ -168,9 +179,9 @@ namespace LagoVista.GCode.Sender.Managers
                 {
                     X = Machine.NormalizedPosition.X,
                     Y = Machine.NormalizedPosition.Y
-                };                
+                };
 
-                Machine.GotoPoint(currentPoint);    
+                Machine.GotoPoint(currentPoint);
             }
         }
 
@@ -226,5 +237,7 @@ namespace LagoVista.GCode.Sender.Managers
                 }
             }
         }
+
+        public RelayCommand EnabledFiducialPickerCommand { get; private set; }
     }
 }

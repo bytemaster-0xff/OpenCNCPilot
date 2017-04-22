@@ -244,7 +244,8 @@
 
                         <TextBlock TextWrapping="Wrap" Text="You can use this function to use Machine Vision to accurately determine the location and orientation of your PCB to peform milling or etching operations." />
 
-                        <TextBlock Margin="0,10,0,0" TextWrapping="Wrap" Text="1) Place the board on your work surface so it's relatively straight." />
+                        <TextBlock Margin="0,10,0,0" TextWrapping="Wrap" Text="1) Place the board on your work surface so it's relatively straight and press Enable Fiducial PIcker" />
+                        <Button Command="{Binding EnabledFiducialPickerCommand}" Content="Enable Fiducial Picker" />
                         <TextBlock Margin="0,10,0,10" TextWrapping="Wrap" Text="2) Using the Computer Generated Board Outline on this screen, find and click on a hole towards the bottom left of your board.  This will be the Fudicial for locating your board" />
                         <Grid >
                             <Grid.ColumnDefinitions>

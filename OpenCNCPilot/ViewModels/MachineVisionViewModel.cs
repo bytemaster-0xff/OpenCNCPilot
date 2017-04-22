@@ -224,6 +224,9 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
 
                     Line(destImage, centerX, 0, centerX, centerY - Profile.TargetImageRadius, System.Drawing.Color.Yellow);
                     Line(destImage, centerX, centerY + Profile.TargetImageRadius, centerX, height, System.Drawing.Color.Yellow);
+
+                    Line(destImage, centerX - Profile.TargetImageRadius, centerY, centerX + Profile.TargetImageRadius, centerY,  System.Drawing.Color.FromArgb(0x7f, 0xFF, 0xFF, 0XFF));
+                    Line(destImage, centerX, centerY - Profile.TargetImageRadius, centerX, centerY + Profile.TargetImageRadius, System.Drawing.Color.FromArgb(0x7f, 0xFF, 0xFF, 0XFF));
                 }
 
 

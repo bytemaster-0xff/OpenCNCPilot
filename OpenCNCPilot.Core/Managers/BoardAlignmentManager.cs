@@ -244,13 +244,14 @@ namespace LagoVista.GCode.Sender.Managers
             var initialX = _machineLocationFirstFiducial.X - _boardManager.FirstFiducial.X;
             var initialY = _machineLocationFirstFiducial.Y - _boardManager.FirstFiducial.Y;
 
-            var initialPoint = new Point2D<double>(initialX, initialY);
-            //var rotatedPoint = initialPoint.Rotate(deltaTheta);
+            var initialPoint = new Point2D<double>(initialX, initialY);            
             var rotatedPoint = initialPoint;
 
             _boardManager.SetMeasuredOffset(rotatedPoint, deltaTheta);
 
-            _machine.GotoPoint(rotatedPoint);
+            _machine.PCBManager.Tool1Navigation = true;
+            _machine.GotoPoint(rotatedPoint);            
+            _machine.SendCommand("G10 L20 P0 X0 Y0");
 
             _machine.AddStatusMessage(StatusMessageTypes.Info, $"Board Angle: {Math.Round(deltaTheta.ToDegrees(), 3)}deg");
             _machine.AddStatusMessage(StatusMessageTypes.Info, $"Board Offset: {rotatedPoint.X.ToDim()}x{rotatedPoint.Y.ToDim()}");
@@ -306,6 +307,7 @@ namespace LagoVista.GCode.Sender.Managers
                     if (Math.Abs(stabilizedPoint.X) < EPSILON_FIDUCIAL_PIXELS &&
                         Math.Abs(stabilizedPoint.X) < EPSILON_FIDUCIAL_PIXELS)
                     {
+                        /* this means we found it! */
                         _pointStabilizationFilter.Reset();
                         _machine.AddStatusMessage(StatusMessageTypes.Info, "Board Alignment - Centered Second Fiducial ");
                         _machine.AddStatusMessage(StatusMessageTypes.Info, "Board Alignment - Completed ");
@@ -319,6 +321,7 @@ namespace LagoVista.GCode.Sender.Managers
                         _machine.SetMode(OperatingMode.Manual);
 
                         _timer.Change(Timeout.Infinite, Timeout.Infinite);
+
                     }
                     else
                     {

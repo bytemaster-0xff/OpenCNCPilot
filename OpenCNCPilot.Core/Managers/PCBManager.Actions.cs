@@ -23,5 +23,10 @@ namespace LagoVista.GCode.Sender.Managers
                 return offsetPoint.Rotate(MeasuredOffsetAngle);
             }
         }
+
+        public void EnableFiducialPicker()
+        {
+            IsSetFiducialMode = true;
+        }
     }
 }
