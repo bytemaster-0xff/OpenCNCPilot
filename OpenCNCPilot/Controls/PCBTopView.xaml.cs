@@ -40,14 +40,19 @@ namespace LagoVista.GCode.Sender.Application.Controls
                     var ellipse = new Ellipse() { Width = drill.Diameter * 10.0, Height = drill.Diameter * 10.0 };
                     ellipse.Fill = Brushes.Black;
                     var x = ((drill.X - (drill.Diameter / 2)) + offsetX);
-                    var y = ((manager.Board.Height - (drill.Y + (drill.Diameter / 2))) + offsetY);                    
+                    var y = ((manager.Board.Height - (drill.Y + (drill.Diameter / 2))) + offsetY);
 
                     ellipse.SetValue(Canvas.TopProperty, y * 10);
                     ellipse.SetValue(Canvas.LeftProperty, x * 10);
 
-                    ellipse.ToolTip = $"{drill.X + drill.Diameter / 2}x{drill.Y + drill.Diameter / 2} - {drill.Diameter}D";
+                    ellipse.ToolTip = $"{drill.X + offsetX}x{drill.Y + offsetY} - {drill.Diameter}D";
                     ellipse.Cursor = Cursors.Hand;
-                    ellipse.Tag = drill;
+                    ellipse.Tag = new LagoVista.Core.Models.Drawing.Point2D<double>
+                    {
+                        X = drill.X + offsetX,
+                        Y = drill.Y + offsetY
+                    };
+
                     ellipse.MouseUp += Elipse_MouseUp;
                     BoardLayout.Children.Add(ellipse);
                 }
@@ -77,13 +82,17 @@ namespace LagoVista.GCode.Sender.Application.Controls
                         ellipse.Fill = Brushes.Black;
 
                         var x = hole.X;
-                        var y = manager.Board.Height - hole.Y
+                        var y = hole.Y;
 
-                        ellipse.SetValue(Canvas.TopProperty, (manager.Board.Height - (y + (manager.Project.HoldDownDiameter / 2))) * 10.0);
+                        ellipse.SetValue(Canvas.TopProperty, ((BoardLayout.Height / 10) - (y + (manager.Project.HoldDownDiameter / 2))) * 10.0);
                         ellipse.SetValue(Canvas.LeftProperty, (x - (manager.Project.HoldDownDiameter / 2)) * 10.0);
                         ellipse.ToolTip = $"{hole.X}x{hole.Y} - {manager.Project.HoldDownDiameter}D";
                         ellipse.Cursor = Cursors.Hand;
-                        ellipse.Tag = hole;
+                        ellipse.Tag = new Point2D<double>()
+                        {
+                            X = hole.X,
+                            Y = hole.Y
+                        };
                         ellipse.MouseUp += Elipse_MouseUp;
                         BoardLayout.Children.Add(ellipse);
                     }
@@ -98,8 +107,7 @@ namespace LagoVista.GCode.Sender.Application.Controls
 
         private void Elipse_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            var drill = (sender as Ellipse).Tag as Drill;
-            var point = new Point2D<double>(drill.X, drill.Y);
+            var point = (sender as Ellipse).Tag as Point2D<double>;
 
             var manager = DataContext as LagoVista.GCode.Sender.Managers.PCBManager;
             if (manager.IsSetFiducialMode)
