@@ -321,7 +321,6 @@ namespace LagoVista.GCode.Sender.Managers
                         _machine.SetMode(OperatingMode.Manual);
 
                         _timer.Change(Timeout.Infinite, Timeout.Infinite);
-
                     }
                     else
                     {

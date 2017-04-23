@@ -48,7 +48,9 @@ namespace LagoVista.GCode.Sender.Application.Controls
 
         void ReadController(object state)
         {
-            if (_controller.IsConnected)
+            if (_controller.IsConnected  && 
+                !_viewModel.Machine.Connected && 
+                _viewModel.Machine.Mode == OperatingMode.Manual)
             {
                 var controllerState = _controller.GetState();
                 if (_lastState.HasValue)
@@ -77,8 +79,6 @@ namespace LagoVista.GCode.Sender.Application.Controls
                         _viewModel.XYStepMode = StepModes.Large;
                         _viewModel.ZStepMode = StepModes.Large;
                     }
-
-
 
                     if (WasPressed(_lastState.Value, controllerState, GamepadButtonFlags.DPadDown))
                     {
@@ -109,8 +109,6 @@ namespace LagoVista.GCode.Sender.Application.Controls
                     {
                         _viewModel.Jog(JogDirections.ZPlus);
                     }
-
-
                 }
 
                 _lastState = controllerState;
