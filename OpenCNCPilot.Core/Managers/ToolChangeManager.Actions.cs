@@ -15,7 +15,7 @@ namespace LagoVista.GCode.Sender.Managers
 
         private async Task<bool> PerformToolChange()
         {
-            if (!await Core.PlatformSupport.Services.Popups.ConfirmAsync("Tool Change", "Confirm Is Attached.\r\n\r\nThen press Yes to Continue or No to Abort."))
+            if (!await Core.PlatformSupport.Services.Popups.ConfirmAsync("Tool Change", "Please confirm the probe is attached.\r\n\r\nThen press Yes to Continue or No to Abort."))
             {
                 return false;
             }
@@ -45,7 +45,7 @@ namespace LagoVista.GCode.Sender.Managers
                     {
                         _oldTool = mcode.ToolSize;
 
-                        await Core.PlatformSupport.Services.Popups.ShowAsync("IMPORTANT!\r\n\r\nConfirm Probe is Removed and Press Yes.");
+                        await Core.PlatformSupport.Services.Popups.ShowAsync("IMPORTANT!\r\n\r\nConfirm Probe is Removed and Press Ok.");
                         Machine.SetMode(OperatingMode.SendingGCodeFile);
                         shouldRetry = false;
                     }
