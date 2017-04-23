@@ -47,7 +47,7 @@ namespace LagoVista.GCode.Sender.Application.Controls
             return new Point();
         }
 
-        private void RenderBoard(LagoVista.EaglePCB.Models.PCB board, LagoVista.EaglePCB.Models.PCBProject project)
+        private void RenderBoard(LagoVista.EaglePCB.Models.PCB board, LagoVista.EaglePCB.Models.PCBProject project, bool resetZoomAndView = true)
         {
             var linePoints = new Point3DCollection();
 
@@ -232,7 +232,10 @@ namespace LagoVista.GCode.Sender.Application.Controls
                 StockLayer.Content = null;
             }
 
-            RefreshExtents();
+            if (resetZoomAndView)
+            {
+                RefreshExtents();
+            }
         }
 
         private void PCBManager_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -427,7 +430,7 @@ namespace LagoVista.GCode.Sender.Application.Controls
             }
 
             if (ViewModel.Machine.PCBManager.HasBoard)
-                RenderBoard(ViewModel.Machine.PCBManager.Board, ViewModel.Machine.PCBManager.Project);
+                RenderBoard(ViewModel.Machine.PCBManager.Board, ViewModel.Machine.PCBManager.Project, false);
         }
 
         ImageModes _imageMode = ImageModes.Front;

@@ -92,7 +92,7 @@ namespace LagoVista.GCode.Sender.Application
 
         private void ChangeMachine_Click(object sender, RoutedEventArgs e)
         {
-            if(ViewModel.Machine.Connected)
+            if (ViewModel.Machine.Connected)
             {
                 MessageBox.Show("Please disconnect before switching machines.");
             }
@@ -102,7 +102,7 @@ namespace LagoVista.GCode.Sender.Application
                 foreach (var item in MachinesMenu.Items)
                 {
                     var menuItem = item as MenuItem;
-                    if(menuItem != null)
+                    if (menuItem != null)
                     {
                         menuItem.IsChecked = (string)menuItem.Tag == ViewModel.Machine.MachineRepo.CurrentMachineId;
 
@@ -117,7 +117,7 @@ namespace LagoVista.GCode.Sender.Application
             await GrblErrorProvider.InitAsync();
             await ViewModel.LoadMRUs();
 
-            foreach(var file in ViewModel.MRUs.BoardFiles)
+            foreach (var file in ViewModel.MRUs.BoardFiles)
             {
                 var boardMenu = new MenuItem() { Header = file, Tag = file };
                 boardMenu.Click += BoardMenu_Click;
@@ -126,7 +126,7 @@ namespace LagoVista.GCode.Sender.Application
 
             foreach (var file in ViewModel.MRUs.ProjectFiles)
             {
-                var projectMenu = new MenuItem() {Header = file, Tag = file };
+                var projectMenu = new MenuItem() { Header = file, Tag = file };
                 projectMenu.Click += ProjectMenu_Click;
                 RecentProjects.Items.Add(projectMenu);
             }
@@ -209,8 +209,7 @@ namespace LagoVista.GCode.Sender.Application
         private void NewGeneratedHeigtMap_Click(object sender, RoutedEventArgs e)
         {
             var heightMap = new HeightMap(ViewModel.Machine, ViewModel.Logger);
-            heightMap.FillWithTestPattern();
-            ViewModel.Machine.HeightMapManager.NewHeightMap(heightMap);
+            ViewModel.Machine.HeightMapManager.CreateTestPattern();
         }
 
         private void EditHeightMap_Click(object sender, RoutedEventArgs e)
@@ -258,7 +257,7 @@ namespace LagoVista.GCode.Sender.Application
             var dlg = new SettingsWindow(ViewModel.Machine, clonedSettings);
             dlg.Owner = this;
             dlg.ShowDialog();
-            if(dlg.DialogResult.HasValue && dlg.DialogResult.Value)
+            if (dlg.DialogResult.HasValue && dlg.DialogResult.Value)
             {
                 ViewModel.Machine.MachineRepo.Machines.Remove(ViewModel.Machine.Settings);
                 ViewModel.Machine.MachineRepo.Machines.Add(clonedSettings);
@@ -316,7 +315,7 @@ namespace LagoVista.GCode.Sender.Application
 
         private void EditPCBProject_Click(object sender, RoutedEventArgs e)
         {
-            if(ViewModel.Project == null)
+            if (ViewModel.Project == null)
             {
                 MessageBox.Show("Please Open or Create a Project First.");
                 return;
@@ -347,7 +346,7 @@ namespace LagoVista.GCode.Sender.Application
             pcbWindow.Owner = this;
             pcbWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
             pcbWindow.ShowDialog();
-            if(pcbWindow.DialogResult.HasValue && pcbWindow.DialogResult.Value)
+            if (pcbWindow.DialogResult.HasValue && pcbWindow.DialogResult.Value)
             {
                 ViewModel.Project = vm.Project;
                 ViewModel.AddProjectFileMRU(pcbWindow.PCBFilepath);

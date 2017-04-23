@@ -47,8 +47,6 @@ namespace LagoVista.GCode.Sender.Managers
             if (!_hasSetFirstProbeOffsetToZero)
             {
                 _initialOffset = position.Z;
-
-    //            Machine.SendCommand("G10 L20 P0 Z0");                
                 HeightMap.SetPointHeight(_currentPoint, 0);
                 _hasSetFirstProbeOffsetToZero = true;
                 await Task.Delay(2000);
@@ -127,9 +125,17 @@ namespace LagoVista.GCode.Sender.Managers
 
         public void CreateTestPattern()
         {
-            HeightMap = new Models.HeightMap(Machine, Logger);
-            HeightMap.Refresh();
-            HeightMap.FillWithTestPattern();
+            var heightMap = new Models.HeightMap(Machine, Logger);
+            if (Machine.PCBManager.HasBoard)
+            {
+                heightMap.Min = new Core.Models.Drawing.Vector2(Machine.PCBManager.Project.ScrapSides, Machine.PCBManager.Project.ScrapTopBottom);
+                heightMap.Max = new Core.Models.Drawing.Vector2(Machine.PCBManager.Board.Width + Machine.PCBManager.Project.ScrapSides, Machine.PCBManager.Board.Height + Machine.PCBManager.Project.ScrapTopBottom);
+                heightMap.GridSize = Machine.PCBManager.Project.HeightMapGridSize;
+            }
+
+            heightMap.Refresh();
+            heightMap.FillWithTestPattern();
+            HeightMap = heightMap;
         }
 
         public void CloseHeightMap()

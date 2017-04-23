@@ -125,14 +125,15 @@ namespace LagoVista.GCode.Sender.Models
             Points.Clear();
             RawBoardOutline.Clear();
 
+            var rnd = new Random();
             for (var x = 0; x < SizeX; x++)
             {
                 for (var y = 0; y < SizeY; y++)
                 {
-                    var yPosition = (x * (Max.X - Min.X)) / (SizeX - 1) + Min.X;
-                    var xPosition = (y * (Max.Y - Min.Y)) / (SizeY - 1) + Min.Y;
-
-                    var height = (xPosition * xPosition + yPosition * yPosition) / 1000.0;
+                    var xPosition = (x * (Max.X - Min.X)) / (SizeX - 1) + Min.X;
+                    var yPosition = (y * (Max.Y - Min.Y)) / (SizeY - 1) + Min.Y;
+                 
+                    var height = (0.5 - rnd.NextDouble());
                     Points.Add(new HeightMapProbePoint() { XIndex = x, YIndex = y, Point = new Vector3(xPosition, yPosition, height), Status = HeightMapProbePointStatus.Probed });
 
                     MaxHeight = Math.Max(height, MaxHeight);
@@ -144,6 +145,8 @@ namespace LagoVista.GCode.Sender.Models
             RawBoardOutline.Add(Line3D.Create(Min.X, Max.Y, 0, Max.X, Max.Y, 0));
             RawBoardOutline.Add(Line3D.Create(Max.X, Max.Y, 0, Max.X, Min.Y, 0));
             RawBoardOutline.Add(Line3D.Create(Max.X, Min.Y, 0, Min.X, Min.Y, 0));
+
+            Status = HeightMapStatus.Populated;
 
             RaisePropertyChanged(nameof(RawBoardOutline));
             RaisePropertyChanged(nameof(Points));

@@ -31,18 +31,24 @@ namespace LagoVista.GCode.Sender.Models
             x /= GridX;
             y /= GridY;
 
+            /* Grab XY of Bottom Left of cell where this point exits*/
             var iLX = (int)Math.Floor(x);   //lower integer part
             var iLY = (int)Math.Floor(y);
 
+            /* Grab XY of Top RIght Corner of cell where this point exists */
             var iHX = (int)Math.Ceiling(x); //upper integer part
             var iHY = (int)Math.Ceiling(y);
 
             var fX = x - iLX;             //fractional part
             var fY = y - iLY;
 
-            //TODO: Should be able to use Linq and pull via position
-            var linUpper = GetPoint(iHX, iHY).Point.Z * fX + GetPoint(iLX, iHY).Point.Z * (1 - fX);       //linear immediates
-            var linLower = GetPoint(iHX, iLY).Point.Z * fX + GetPoint(iLX, iLY).Point.Z * (1 - fX);
+            var bottomLeft = GetPoint(iLX, iLY).Point.Z;
+            var topRight = GetPoint(iHX, iHY).Point.Z;
+            var topLeft = GetPoint(iLX, iHY).Point.Z;
+            var bottomRight = GetPoint(iHX, iLY).Point.Z;
+            
+            var linUpper = topRight * fX + topLeft * (1 - fX);       //linear immediates
+            var linLower = bottomRight * fX + bottomLeft * (1 - fX);
 
             return linUpper * fY + linLower * (1 - fY);     //bilinear result
         }
@@ -88,7 +94,6 @@ namespace LagoVista.GCode.Sender.Models
                 bldr.AppendLine(cmd.Line);
             }
 
-            //return Core.GCode.GCodeFile.FromCommands(newToolPath);
             return Core.GCode.GCodeFile.FromString(bldr.ToString());
         }
     }
