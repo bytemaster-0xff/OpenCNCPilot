@@ -1,6 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:cvtrs="clr-namespace:LagoVista.GCode.Sender.Application.Converters">
+    <cvtrs:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
     <cvtrs:ColorEnabledConverter x:Key="ColorEnabledConverter" />
     <cvtrs:PointConverter x:Key="PointConverter" />
     <cvtrs:ToolTopPointConverter x:Key="ToolTopPointConverter" />

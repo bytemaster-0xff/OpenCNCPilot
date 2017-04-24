@@ -43,13 +43,13 @@ namespace LagoVista.GCode.Sender.ViewModels
             var file = await Popups.ShowOpenFileAsync(Constants.FileFilterPCB);
             if (!String.IsNullOrEmpty(file))
             {
-                if(await Machine.PCBManager.OpenFileAsync(file))
+                if (await Machine.PCBManager.OpenFileAsync(file))
                 {
                     AddBoardFileMRU(file);
                 }
 
             }
-         }
+        }
 
         public void CloseEagleBoardFile()
         {
@@ -78,7 +78,7 @@ namespace LagoVista.GCode.Sender.ViewModels
             var file = await Popups.ShowOpenFileAsync(Constants.FileFilterGCode);
             if (!String.IsNullOrEmpty(file))
             {
-                if(await Machine.GCodeFileManager.OpenFileAsync(file))
+                if (await Machine.GCodeFileManager.OpenFileAsync(file))
                 {
                     AddGCodeFileMRU(file);
                 }
@@ -114,11 +114,19 @@ namespace LagoVista.GCode.Sender.ViewModels
             }
         }
 
-        public void ApplyHeightMap()
+        public async void ApplyHeightMap()
         {
             if (CanApplyHeightMap())
             {
-                Machine.GCodeFileManager.ApplyHeightMap(Machine.HeightMapManager.HeightMap);
+                if (Machine.GCodeFileManager.HeightMapApplied)
+                {
+                    if (await Popups.ConfirmAsync("Height Map", "Height Map has already been applied, doing so again will likely produce incorrect results.\r\n\r\nYou should reload the original GCode File then re-apply the height map.\r\n\r\nContinue? "))
+                    {
+                        Machine.GCodeFileManager.ApplyHeightMap(Machine.HeightMapManager.HeightMap);
+                    }
+                }
+                else
+                    Machine.GCodeFileManager.ApplyHeightMap(Machine.HeightMapManager.HeightMap);
             }
         }
 

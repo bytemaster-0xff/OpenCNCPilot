@@ -58,25 +58,25 @@ namespace LagoVista.GCode.Sender.Application.Controls
                     var btn = controllerState.Gamepad.Buttons;
                     if (WasPressed(_lastState.Value, controllerState, GamepadButtonFlags.A))
                     {
-                        _viewModel.XYStepMode = StepModes.Micro;
+                        _viewModel.XYStepMode = StepModes.Small;
                         _viewModel.ZStepMode = StepModes.Micro;
                     }
 
                     if (WasPressed(_lastState.Value, controllerState, GamepadButtonFlags.X))
                     {
-                        _viewModel.XYStepMode = StepModes.Small;
+                        _viewModel.XYStepMode = StepModes.Medium;
                         _viewModel.ZStepMode = StepModes.Small;
                     }
 
                     if (WasPressed(_lastState.Value, controllerState, GamepadButtonFlags.B))
                     {
-                        _viewModel.XYStepMode = StepModes.Medium;
+                        _viewModel.XYStepMode = StepModes.Large;
                         _viewModel.ZStepMode = StepModes.Medium;
                     }
 
                     if (WasPressed(_lastState.Value, controllerState, GamepadButtonFlags.Y))
                     {
-                        _viewModel.XYStepMode = StepModes.Large;
+                        _viewModel.XYStepMode = StepModes.XLarge;
                         _viewModel.ZStepMode = StepModes.Large;
                     }
 

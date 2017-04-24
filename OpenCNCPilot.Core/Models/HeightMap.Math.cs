@@ -94,7 +94,9 @@ namespace LagoVista.GCode.Sender.Models
                 bldr.AppendLine(cmd.Line);
             }
 
-            return Core.GCode.GCodeFile.FromString(bldr.ToString());
+            var outputFile = Core.GCode.GCodeFile.FromString(bldr.ToString());
+            outputFile.HeightMapApplied = true;
+            return outputFile;
         }
     }
 }

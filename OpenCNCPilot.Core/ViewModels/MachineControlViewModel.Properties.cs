@@ -111,9 +111,16 @@ namespace LagoVista.GCode.Sender.ViewModels
                 RaisePropertyChanged();
                 switch (XYStepMode)
                 {
+                    case StepModes.XLarge:
+                        XYStepInterval = 5;
+                        XYStepMax = 100;
+                        XYStepMin = 20;
+                        XYStepSize = 50;
+                        XYStepSizeSlider = XYStepSize;
+                        break;
                     case StepModes.Large:
-                        XYStepInterval = 2.5;
-                        XYStepMax = 50;
+                        XYStepInterval = 1;
+                        XYStepMax = 20;
                         XYStepMin = 10;
                         XYStepSize = 10;
                         XYStepSizeSlider = XYStepSize;
@@ -122,21 +129,21 @@ namespace LagoVista.GCode.Sender.ViewModels
                         XYStepInterval = 1;
                         XYStepMax = 10;
                         XYStepMin = 1;
-                        XYStepSize = 5;
+                        XYStepSize = 1;
                         XYStepSizeSlider = XYStepSize;
                         break;
                     case StepModes.Small:
                         XYStepInterval = 0.1;
                         XYStepMax = 1;
                         XYStepMin = 0.1;
-                        XYStepSize = 0.5;
+                        XYStepSize = 0.1;
                         XYStepSizeSlider = XYStepSize;
                         break;
                     case StepModes.Micro:
                         XYStepInterval = 0.01;
                         XYStepMax = 0.1;
                         XYStepMin = 0.01;
-                        XYStepSize = 0.05;
+                        XYStepSize = 0.01;
                         XYStepSizeSlider = XYStepSize;
                         break;
                 }
@@ -153,8 +160,8 @@ namespace LagoVista.GCode.Sender.ViewModels
                 switch (ZStepMode)
                 {
                     case StepModes.Large:
-                        ZStepInterval = 2.5;
-                        ZStepMax = 50;
+                        ZStepInterval = 1;
+                        ZStepMax = 20;
                         ZStepMin = 10;
                         ZStepSize = 10;
                         ZStepSizeSlider = ZStepSize;
@@ -163,34 +170,50 @@ namespace LagoVista.GCode.Sender.ViewModels
                         ZStepInterval = 1;
                         ZStepMax = 10;
                         ZStepMin = 1;
-                        ZStepSize = 5;
+                        ZStepSize = 1;
                         ZStepSizeSlider = ZStepSize;
                         break;
                     case StepModes.Small:
                         ZStepInterval = 0.1;
                         ZStepMax = 1;
                         ZStepMin = 0.1;
-                        ZStepSize = 0.5;
+                        ZStepSize = 0.1;
                         ZStepSizeSlider = ZStepSize;
                         break;
                     case StepModes.Micro:
                         ZStepInterval = 0.01;
                         ZStepMax = 0.1;
                         ZStepMin = 0.01;
-                        ZStepSize = 0.05;
+                        ZStepSize = 0.01;
                         ZStepSizeSlider = ZStepSize;
                         break;
                 }
             }
         }
 
-        public List<KeyValuePair<StepModes, string>> StepSizes
+        public List<KeyValuePair<StepModes, string>> StepSizesXY
         {
             get
             {
                 return new List<KeyValuePair<StepModes, string>>()
                 {
-                    new KeyValuePair<StepModes, string>(StepModes.Large, "10 - 50"),
+                    new KeyValuePair<StepModes, string>(StepModes.XLarge, "20 - 100"),
+                    new KeyValuePair<StepModes, string>(StepModes.Large, "10 - 20"),
+                    new KeyValuePair<StepModes, string>(StepModes.Medium, "1 - 10"),
+                    new KeyValuePair<StepModes, string>(StepModes.Small, "0.1 - 1.0"),
+                    new KeyValuePair<StepModes, string>(StepModes.Micro, "0.01 - 0.1"),
+                };
+            }
+            set { }
+        }
+
+        public List<KeyValuePair<StepModes, string>> StepSizesZ
+        {
+            get
+            {
+                return new List<KeyValuePair<StepModes, string>>()
+                {
+                    new KeyValuePair<StepModes, string>(StepModes.Large, "10 - 20"),
                     new KeyValuePair<StepModes, string>(StepModes.Medium, "1 - 10"),
                     new KeyValuePair<StepModes, string>(StepModes.Small, "0.1 - 1.0"),
                     new KeyValuePair<StepModes, string>(StepModes.Micro, "0.01 - 0.1"),

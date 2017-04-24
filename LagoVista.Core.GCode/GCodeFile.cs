@@ -117,5 +117,15 @@ namespace LagoVista.Core.GCode
             }
         }
 
+        private bool _heightMapApplied = false;
+        public bool HeightMapApplied
+        {
+            get { return _heightMapApplied; }
+            set
+            {
+                _heightMapApplied = true;
+            }
+        } 
+
     }
 }

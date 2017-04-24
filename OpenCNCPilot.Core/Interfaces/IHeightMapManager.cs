@@ -17,6 +17,7 @@ namespace LagoVista.GCode.Sender.Interfaces
         /// Returns true if we have a height map associated with the board.
         /// </summary>
         bool HasHeightMap { get; }
+
         bool HeightMapDirty { get; }
 
         HeightMapStatus Status { get; }

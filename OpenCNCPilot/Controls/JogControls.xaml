@@ -66,12 +66,12 @@
                       DisplayMemberPath="Value" 
                       SelectedValuePath="Key" 
                       SelectedValue="{Binding Path=XYStepMode, Mode=TwoWay}"
-                      ItemsSource="{Binding StepSizes}" />
+                      ItemsSource="{Binding StepSizesXY}" />
 
         <ComboBox IsReadOnly="True" Grid.Column="4" Grid.Row="4" Margin="4" FontSize="16"
                       DisplayMemberPath="Value" 
                       SelectedValuePath="Key" 
                       SelectedValue="{Binding Path=ZStepMode, Mode=TwoWay}"
-                      ItemsSource="{Binding StepSizes}" />
+                      ItemsSource="{Binding StepSizesZ}" />
     </Grid>
 </UserControl>

@@ -45,7 +45,8 @@ namespace LagoVista.GCode.Sender
         Micro,
         Small,
         Medium,
-        Large
+        Large,
+        XLarge
     }
 
     public enum FirmwareTypes

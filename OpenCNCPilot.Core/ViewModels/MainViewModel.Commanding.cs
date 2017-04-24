@@ -46,7 +46,7 @@ namespace LagoVista.GCode.Sender.ViewModels
 
         private void GCodeFileManager_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if(e.PropertyName == nameof(Machine.GCodeFileManager.HasValidFile))
+            if (e.PropertyName == nameof(Machine.GCodeFileManager.HasValidFile))
             {
                 DispatcherServices.Invoke(() =>
                 {
@@ -118,7 +118,7 @@ namespace LagoVista.GCode.Sender.ViewModels
 
         public bool CanOpenEagleBoard()
         {
-            return (Machine.Mode == OperatingMode.Manual || Machine.Mode == OperatingMode.Disconnected); 
+            return (Machine.Mode == OperatingMode.Manual || Machine.Mode == OperatingMode.Disconnected);
         }
 
         public bool CanCloseEagleBoard()

@@ -18,8 +18,8 @@ namespace LagoVista.GCodeSupport.Tests.HeightMapTests
             _heightMap = new HeightMap(null, null);
 
             _heightMap.GridSize = 10;
-            _heightMap.SizeX = 1;
-            _heightMap.SizeY = 1;
+            _heightMap.SizeX = 2;
+            _heightMap.SizeY = 2;
             _heightMap.Min = new Core.Models.Drawing.Vector2(0, 0);
             _heightMap.Max = new Core.Models.Drawing.Vector2(10, 10);
         }
@@ -37,17 +37,39 @@ namespace LagoVista.GCodeSupport.Tests.HeightMapTests
         }
 
         [TestMethod]
-        public void FlatQuandarant()
+        public void Quardrant1Test()
         {
+            /* Low point - bottom left, hight point - top right */
             Init();
             AddPoint(0, 0, 0, 0, 0);
             AddPoint(0, 1, 0, 10, 0.5);
             AddPoint(1, 0, 10, 0, 0.5);
             AddPoint(1, 1, 10, 10, 1);
 
-            var z = _heightMap.InterpolateZ(5, 5);
-            Assert.AreEqual(0.5, z);
+            Assert.AreEqual(0.5, _heightMap.InterpolateZ(5, 5));
+            Assert.AreEqual(0, _heightMap.InterpolateZ(0, 0));
+            Assert.AreEqual(1, _heightMap.InterpolateZ(10, 10));
+            Assert.AreEqual(0.25, _heightMap.InterpolateZ(0, 5));
+        }
 
+
+        [TestMethod]
+        public void Quardrant2Test()
+        {
+            /* Low point - Left Middle, hight point right middle*/
+            Init();
+            AddPoint(0, 0, 0, 0, 0); /* BL */
+            AddPoint(0, 1, 0, 10, 0); /* TL */
+            AddPoint(1, 0, 10, 0, 1); /* BR */
+            AddPoint(1, 1, 10, 10, 1); /* TR */
+
+            Assert.AreEqual(0.5, _heightMap.InterpolateZ(5, 5));
+            Assert.AreEqual(0, _heightMap.InterpolateZ(0, 0));
+            Assert.AreEqual(1, _heightMap.InterpolateZ(10, 10));
+            Assert.AreEqual(0, _heightMap.InterpolateZ(0, 5));
+            Assert.AreEqual(1, _heightMap.InterpolateZ(10, 5));
+            Assert.AreEqual(0.5,  _heightMap.InterpolateZ(5, 0));
+            Assert.AreEqual(0.5, _heightMap.InterpolateZ(5, 10));
         }
     }
 }

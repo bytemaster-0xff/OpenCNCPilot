@@ -27,11 +27,13 @@ namespace LagoVista.GCode.Sender.Application.Controls
             }
         }
 
-        private void PCBTopView_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        private void RenderBoard()
         {
             var manager = DataContext as LagoVista.GCode.Sender.Managers.PCBManager;
             if (manager.HasBoard)
             {
+                BoardLayout.Children.Clear();
+
                 var offsetX = manager.HasProject ? manager.Project.ScrapSides : 0;
                 var offsetY = manager.HasProject ? manager.Project.ScrapTopBottom : 0;
 
@@ -39,19 +41,21 @@ namespace LagoVista.GCode.Sender.Application.Controls
                 {
                     var ellipse = new Ellipse() { Width = drill.Diameter * 10.0, Height = drill.Diameter * 10.0 };
                     ellipse.Fill = Brushes.Black;
-                    var x = ((drill.X - (drill.Diameter / 2)) + offsetX);
+                    var x = Mirrored ? ((manager.Board.Width - (drill.X + (drill.Diameter / 2))) + offsetX) : ((drill.X - (drill.Diameter / 2)) + offsetX);
                     var y = ((manager.Board.Height - (drill.Y + (drill.Diameter / 2))) + offsetY);
 
                     ellipse.SetValue(Canvas.TopProperty, y * 10);
                     ellipse.SetValue(Canvas.LeftProperty, x * 10);
 
-                    ellipse.ToolTip = $"{drill.X + offsetX}x{drill.Y + offsetY} - {drill.Diameter}D";
                     ellipse.Cursor = Cursors.Hand;
-                    ellipse.Tag = new LagoVista.Core.Models.Drawing.Point2D<double>
+                    var drillPoint = new LagoVista.Core.Models.Drawing.Point2D<double>
                     {
-                        X = drill.X + offsetX,
+                        X = Mirrored ? ((manager.Board.Width - drill.X) + offsetX) : (drill.X + offsetX),
                         Y = drill.Y + offsetY
                     };
+                    ellipse.ToolTip = $"{drillPoint.X}x{drillPoint.Y} - {drill.Diameter} Dia.";
+
+                    ellipse.Tag = drillPoint;
 
                     ellipse.MouseUp += Elipse_MouseUp;
                     BoardLayout.Children.Add(ellipse);
@@ -100,6 +104,22 @@ namespace LagoVista.GCode.Sender.Application.Controls
             }
         }
 
+        private void PCBTopView_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            RenderBoard();
+        }
+
+        private bool _mirrored;
+        public bool Mirrored
+        {
+            get { return _mirrored; }
+            set
+            {
+                _mirrored = value;
+                RenderBoard();
+            }
+        }
+
 
         bool _shouldSetFirstFiducial = true;
 
@@ -125,9 +145,12 @@ namespace LagoVista.GCode.Sender.Application.Controls
             }
             else
             {
-                manager.Machine.GotoPoint(point);
+                if (manager.Machine.Connected)
+                {
+                    manager.Machine.GotoPoint(point);
 
-                _lastPoint = point;
+                    _lastPoint = point;
+                }
             }
         }
     }

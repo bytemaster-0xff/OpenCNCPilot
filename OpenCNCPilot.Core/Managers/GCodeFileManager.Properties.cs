@@ -24,6 +24,14 @@ namespace LagoVista.GCode.Sender.Managers
         public int CurrentIndex { get { return _head; } }
         public int TotalLines { get { return _file == null ? 0 : _file.Commands.Count; } }
 
+        public bool HeightMapApplied
+        {
+            get
+            {
+                return _file == null ? false : _file.HeightMapApplied;
+            }
+        }
+
         LagoVista.Core.Models.Drawing.Point3D<double> _min;
         public LagoVista.Core.Models.Drawing.Point3D<double> Min
         {

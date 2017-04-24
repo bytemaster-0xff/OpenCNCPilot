@@ -2,6 +2,7 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:cvtrs="clr-namespace:LagoVista.GCode.Sender.Application.Converters"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:LagoVista.GCode.Sender.Application"
         xmlns:fa="http://schemas.fontawesome.io/icons/"
@@ -24,7 +25,7 @@
         <ToolBar>
             <ToggleButton  Width="32" Height="32" IsChecked="{Binding Path=Machine.PCBManager.CameraNavigation, Mode=TwoWay}">
                 <ToggleButton.Content>
-                    <fa:ImageAwesome Icon="Camera"  ToolTip="Camera Placement" />
+                    <fa:ImageAwesome Icon="Camera"  ToolTip="Camera Navigation" />
                 </ToggleButton.Content>
             </ToggleButton>
             <ToggleButton  Width="32" Height="32" IsChecked="{Binding Path=Machine.PCBManager.Tool1Navigation, Mode=TwoWay}">
@@ -40,6 +41,11 @@
             <ToggleButton Width="32" Height="32" IsChecked="{Binding Path=Machine.PCBManager.IsNavigationMode, Mode=TwoWay}" >
                 <ToggleButton.Content>
                     <fa:ImageAwesome Icon="Arrows"   ToolTip="Navigation Mode" />
+                </ToggleButton.Content>
+            </ToggleButton>
+            <ToggleButton Width="32" Height="32" IsChecked="{Binding Path=Mirrored, ElementName=PCBView}" >
+                <ToggleButton.Content>
+                    <fa:ImageAwesome Icon="RotateLeft"   ToolTip="Mirror Board" />
                 </ToggleButton.Content>
             </ToggleButton>
         </ToolBar>
@@ -58,10 +64,10 @@
             <TextBlock Text="{Binding CircleCenter.X}" Foreground="White" TextAlignment="Right" />
             <TextBlock Text="{Binding CircleCenter.Y}" Foreground="White" TextAlignment="Right" Grid.Column="1" />
         </Grid>
-        <TabControl Background="Transparent" Grid.Row="1">
+        <TabControl Background="Transparent" Grid.Row="1" x:Name="PCBInformation" Visibility="{Binding Machine.PCBManager.HasBoard, Converter={StaticResource BoolToVisibilityConverter}}">
             <TabItem Header="Board Layout">
                 <Grid>
-                    <Controls:PCBTopView HorizontalAlignment="Left" VerticalAlignment="Top" Opacity="0.76" DataContext="{Binding Path=Machine.PCBManager}" >
+                    <Controls:PCBTopView HorizontalAlignment="Left" VerticalAlignment="Top" Opacity="0.76" x:Name="PCBView" DataContext="{Binding Path=Machine.PCBManager}" >
                         <Controls:PCBTopView.LayoutTransform>
                             <ScaleTransform ScaleX=".5" ScaleY=".5" />
                         </Controls:PCBTopView.LayoutTransform>
@@ -143,8 +149,6 @@
                     <fa:ImageAwesome Foreground="White" Icon="Gear" />
                 </Button.Content>
             </Button>
-
-
             <StackPanel Orientation="Horizontal" Grid.Row="1" >
                 <Button  x:Name="Stop" Click="Stop_Click"  Margin="2" Style="{StaticResource VideoControlButton}" Visibility="Collapsed"  >
                     <Button.Content>

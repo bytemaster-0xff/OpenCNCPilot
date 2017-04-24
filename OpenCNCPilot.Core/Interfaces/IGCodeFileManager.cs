@@ -44,6 +44,13 @@ namespace LagoVista.GCode.Sender.Interfaces
         /// </summary>
         bool IsDirty { get; }
 
+
+        /// <summary>
+        /// Has a height map been applied?  If so we can't apply it again or it will modify a modified file which will produce incorret results.
+        /// </summary>
+        bool HeightMapApplied { get; }
+
+
         /// <summary>
         /// This gets set once the last item in the job has been acknowledged completed by the machine.
         /// </summary>
