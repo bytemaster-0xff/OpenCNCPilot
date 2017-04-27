@@ -100,7 +100,14 @@ namespace LagoVista.GCode.Sender
                 }
                 else if (fullMessageLine.StartsWith("<"))
                 {
-                    if (ParseStatus(fullMessageLine))
+                    if(Settings.MachineType == FirmwareTypes.LagoVista)
+                    {
+                        if (ParseLagoVistaLine(fullMessageLine))
+                        {
+                            AddStatusMessage(StatusMessageTypes.ReceivedLine, fullMessageLine, MessageVerbosityLevels.Diagnostics);
+                        }
+                    }
+                    else if (ParseStatus(fullMessageLine))
                     {
                         AddStatusMessage(StatusMessageTypes.ReceivedLine, fullMessageLine, MessageVerbosityLevels.Diagnostics);
                     }

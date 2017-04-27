@@ -53,7 +53,8 @@ namespace LagoVista.GCode.Sender
     {
         GRBL1_1,
         Marlin,
-        Marlin_Laser
+        Marlin_Laser,
+        LagoVista
     }
 
     public enum OperatingMode
