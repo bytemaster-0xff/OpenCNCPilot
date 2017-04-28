@@ -45,15 +45,6 @@ namespace LagoVista.GCodeSupport.Tests
                     var arc = cmd as GCodeArc;
                     arc.U = 97;
                     arc.V = 9;
-                    var subCommands = arc.Split(arc.Length / 10);
-                    foreach(var subCommand in subCommands)
-                    {
-                        Debug.WriteLine(subCommand.Line +  "  " + subCommand.ToString());
-                    }
-                }
-                else
-                {
-                    Debug.WriteLine(cmd.Line);
                 }
             }
         }

@@ -163,8 +163,6 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                     CvInvoke.Threshold(blurredGray, edges, Profile.ThresholdEdgeDetection, 255, ThresholdType.Binary);
                 }
 
-                CircleF _circle;
-
                 if (ShowCircles)
                 {
                     var circles = CvInvoke.HoughCircles(gray, HoughType.Gradient, Profile.HoughCirclesDP, Profile.HoughCirclesMinDistance, Profile.HoughCirclesParam1, Profile.HoughCirclesParam2, Profile.HoughCirclesMinRadius, Profile.HoughCirclesMaxRadius);
@@ -177,12 +175,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                            circle.Center.Y > ((img.Size.Height / 2) - Profile.TargetImageRadius) && circle.Center.Y < ((img.Size.Height / 2) + Profile.TargetImageRadius))
                         {
                             _circleMedianFilter.Add(circle.Center.X, circle.Center.Y);
-                            Debug.WriteLine(circle.Center.X.ToString("0.00") + circle.Center.Y.ToString("0.00"));
                             foundCircle = true;
-
-                            //                            Line(destImage, 0, (int)circle.Center.Y, img.Width, (int)circle.Center.Y, System.Drawing.Color.Red);
-                            //                          Line(destImage, (int)circle.Center.X, 0, (int)circle.Center.X, img.Size.Height, System.Drawing.Color.Red);
-
                             break;
                         }
                     }

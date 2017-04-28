@@ -52,6 +52,8 @@
 
         <Image x:Name="WebCamImage" Stretch="Uniform"  Source="/Imgs/TestPattern.jpg" Grid.Row="1" Grid.RowSpan="2" />
 
+        <TextBlock Text="{Binding Machine.BoardAlignmentManager.Status, FallbackValue=Idle}" FontSize="48" Margin="0,200,0,0" Grid.Row="1" Grid.RowSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" Opacity=".80"/>
+
         <Grid HorizontalAlignment="Right" VerticalAlignment="Bottom"  Width="150" Height="30" Grid.Row="1">
             <Grid.Resources>
 

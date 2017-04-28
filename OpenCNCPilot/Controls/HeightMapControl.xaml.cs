@@ -467,7 +467,6 @@ namespace LagoVista.GCode.Sender.Application.Controls
                     }
 
 
-                    Debug.WriteLine("ZI: " + Camera.Position.X + " " + Camera.Position.Y + " " + Camera.Position.Z);
                     break;
                 case "ZoomOut":
                     switch (_imageMode)
@@ -477,7 +476,6 @@ namespace LagoVista.GCode.Sender.Application.Controls
                         case ImageModes.Top: Camera.Position = new Point3D(Camera.Position.X, Camera.Position.Y, Camera.Position.Z * 1.1); break;
                     }
 
-                    Debug.WriteLine("ZO: " + Camera.Position.X + " " + Camera.Position.Y + " " + Camera.Position.Z);
                     break;
                 case "ShowObject":
                     break;

@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using LagoVista.Core;
+using System.Diagnostics;
 
 namespace LagoVista.GCode.Sender.Managers
 {
@@ -221,7 +222,7 @@ namespace LagoVista.GCode.Sender.Managers
 
         public void JogToFindCenter(Point2D<double> machine, Point2D<double> cameraOffsetPixels)
         {
-            _targetLocation = new Point2D<double>(_machinePosition.X - (cameraOffsetPixels.X / 10), _machinePosition.Y + (cameraOffsetPixels.Y / 10));
+            _targetLocation = new Point2D<double>(_machinePosition.X - (cameraOffsetPixels.X / 20), _machinePosition.Y + (cameraOffsetPixels.Y / 20));
             _lastEvent = DateTime.Now;
 
             _machine.SendCommand($"G0 X{_targetLocation.X.ToDim()} Y{_targetLocation.Y.ToDim()}");
@@ -244,13 +245,13 @@ namespace LagoVista.GCode.Sender.Managers
             var initialX = _machineLocationFirstFiducial.X - _boardManager.FirstFiducial.X;
             var initialY = _machineLocationFirstFiducial.Y - _boardManager.FirstFiducial.Y;
 
-            var initialPoint = new Point2D<double>(initialX, initialY);            
+            var initialPoint = new Point2D<double>(initialX, initialY);
             var rotatedPoint = initialPoint;
 
             _boardManager.SetMeasuredOffset(rotatedPoint, deltaTheta);
 
             _machine.PCBManager.Tool1Navigation = true;
-            _machine.GotoPoint(rotatedPoint);            
+            _machine.GotoPoint(rotatedPoint);
             _machine.SendCommand("G10 L20 P0 X0 Y0");
 
             _machine.AddStatusMessage(StatusMessageTypes.Info, $"Board Angle: {Math.Round(deltaTheta.ToDegrees(), 3)}deg");
@@ -351,7 +352,23 @@ namespace LagoVista.GCode.Sender.Managers
         public BoardAlignmentManagerStates State
         {
             get { return _state; }
-            set { Set(ref _state, value); }
+            set
+            {
+                Set(ref _state, value);
+                switch(value)
+                {
+                    case BoardAlignmentManagerStates.BoardAlignmentDetermined: Status = "Finished"; break;
+                    case BoardAlignmentManagerStates.CenteringFirstFiducial: Status = "Centering on First Fiducial"; break;
+                    case BoardAlignmentManagerStates.CenteringSecondFiducial: Status = "Centering on Second Fiducial"; break;
+                    case BoardAlignmentManagerStates.EvaluatingInitialAlignment: Status = "Evaluating Initial Alignment"; break;
+                    case BoardAlignmentManagerStates.Failed: Status = "Board Alignment Failed"; break;
+                    case BoardAlignmentManagerStates.Idle: Status = "Idle"; break;
+                    case BoardAlignmentManagerStates.MovingToSecondFiducial: Status = "Moving to Second Fiducial"; break;
+                    case BoardAlignmentManagerStates.StabilzingAfterFirstFiducialMove: Status = "Stabilizing on First Fiducial"; break;
+                    case BoardAlignmentManagerStates.StabilzingAfterSecondFiducialMove: Status = "Stabilizing on Second Fiducial"; break;
+                    case BoardAlignmentManagerStates.TimedOut: Status = "Timed Out"; break;
+                }
+            }
         }
 
         public void CornerLocated(Point2D<double> offsetFromCenter)
@@ -377,6 +394,17 @@ namespace LagoVista.GCode.Sender.Managers
                 _timer.Change(Timeout.Infinite, Timeout.Infinite);
                 _timer.Dispose();
                 _timer = null;
+            }
+        }
+
+        private string _status;
+        public string Status
+        {
+            get { return _status; }
+            set
+            {
+                _status = value;
+                RaisePropertyChanged();
             }
         }
     }

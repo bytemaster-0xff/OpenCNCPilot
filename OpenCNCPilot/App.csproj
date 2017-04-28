@@ -381,6 +381,8 @@
     <Resource Include="Imgs\LayerPCB.png" />
     <Resource Include="Imgs\LayerStock.png" />
     <Resource Include="Imgs\LayerTopTraces.png" />
+    <Resource Include="Imgs\BottomLight.png" />
+    <Resource Include="Imgs\TopLight.png" />
     <Content Include="KegeratorController.brd">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

@@ -212,6 +212,16 @@
                         <Image Source="/imgs/GotoFavorite2.png"/>
                     </Button.Content>
                 </Button>
+                <ToggleButton IsChecked="{Binding TopLightOn, Mode=TwoWay}">
+                    <ToggleButton.Content>
+                        <Image Source="/imgs/TopLight.png" />
+                    </ToggleButton.Content>
+                </ToggleButton>
+                <ToggleButton IsChecked="{Binding BottomLightOn, Mode=TwoWay}">
+                    <ToggleButton.Content>
+                        <Image Source="/imgs/BottomLight.png" />
+                    </ToggleButton.Content>
+                </ToggleButton>
             </StackPanel>
         </Grid>
     </Grid>
