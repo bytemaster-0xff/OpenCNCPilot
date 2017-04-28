@@ -115,7 +115,17 @@ namespace LagoVista.GCode.Sender
             }
         }
 
-
+        private bool _motorsEnabled;
+        public bool MotorsEnabled
+        {
+            get { return _motorsEnabled; }
+            set
+            {
+                _motorsEnabled = value;
+                SendCommand(value ? "M17" : "M18");
+            }
+        }
+      
         public int MessageCount
         {
             get

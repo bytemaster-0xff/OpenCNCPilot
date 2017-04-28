@@ -121,6 +121,8 @@ namespace LagoVista.GCode.Sender.Interfaces
         /// </summary>
         /// <returns></returns>
         Task DisconnectAsync();
+
+        bool MotorsEnabled { get; set; }
         
         /// <summary>
         /// Perform a soft reset
