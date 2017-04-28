@@ -147,6 +147,7 @@ namespace LagoVista.GCode.Sender.Application.Controls
             {
                 if (manager.Machine.Connected)
                 {
+                    point = manager.Machine.PCBManager.GetAdjustedPoint(point);
                     manager.Machine.GotoPoint(point);
 
                     _lastPoint = point;

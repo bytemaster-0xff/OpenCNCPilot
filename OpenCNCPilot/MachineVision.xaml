@@ -52,7 +52,8 @@
 
         <Image x:Name="WebCamImage" Stretch="Uniform"  Source="/Imgs/TestPattern.jpg" Grid.Row="1" Grid.RowSpan="2" />
 
-        <TextBlock Text="{Binding Machine.BoardAlignmentManager.Status, FallbackValue=Idle}" FontSize="48" Margin="0,200,0,0" Grid.Row="1" Grid.RowSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" Opacity=".80"/>
+        <TextBlock Text="{Binding Machine.BoardAlignmentManager.Status, FallbackValue=Idle}" FontSize="48" Margin="0,300,0,0" Grid.Row="1" Grid.RowSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="Black" />
+        <TextBlock Text="{Binding Machine.BoardAlignmentManager.Status, FallbackValue=Idle}" FontSize="48" Margin="02,303,0,0" Grid.Row="1" Grid.RowSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" />
 
         <Grid HorizontalAlignment="Right" VerticalAlignment="Bottom"  Width="150" Height="30" Grid.Row="1">
             <Grid.Resources>

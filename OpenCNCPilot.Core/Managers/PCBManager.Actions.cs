@@ -12,16 +12,7 @@ namespace LagoVista.GCode.Sender.Managers
 
         public Point2D<double> GetAdjustedPoint(Point2D<double> point)
         {
-            if (!HasMeasuredOffset)
-            {
-                return point;
-            }
-            else
-            {
-                //TDODO: REALLY NEED to create overloaded operators for Point2D
-                var offsetPoint = new Point2D<double>(MeasuredOffset.X + point.X, MeasuredOffset.Y + point.Y);
-                return offsetPoint.Rotate(MeasuredOffsetAngle);
-            }
+            return point.Rotate(MeasuredOffsetAngle);
         }
 
         public void EnableFiducialPicker()

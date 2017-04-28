@@ -188,9 +188,16 @@ namespace LagoVista.GCode.Sender
 
         public void GotoWorkspaceHome()
         {
-            Enqueue("G0 Z20");
+            if (Settings.MachineType == FirmwareTypes.GRBL1_1)
+            {
+                Enqueue("G0 Z20");
+            }
+
             Enqueue("G0 X0 Y0");
-            Enqueue("G0 Z0");
+
+            if (Settings.MachineType == FirmwareTypes.GRBL1_1) { 
+                Enqueue("G0 Z0");
+            }
         }
 
         public void SetFavorite1()
@@ -233,7 +240,13 @@ namespace LagoVista.GCode.Sender
 
         public void ClearAlarm()
         {
-            Enqueue("$X\n", true);
+            if(Settings.MachineType == FirmwareTypes.GRBL1_1) {
+                Enqueue("$X\n", true);
+            }
+            else
+            {
+                _toSendPriority.Enqueue(((char)0x06).ToString());
+            }            
         }
 
         public void CycleStart()

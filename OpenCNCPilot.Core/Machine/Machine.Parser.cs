@@ -13,9 +13,11 @@ namespace LagoVista.GCode.Sender
 
         private static Regex CurrentPositionRegEx = new Regex(@"X:(?'MX'-?[0-9\.]*)\s?Y:(?'MY'-?[0-9\.]*)\s?Z:(?'MZ'-?[0-9\.]*)\s?E:(?'E'-?[0-9\.]*)\s?Count\s?X:(?'WX'.-?[0-9\.]*)\s?Y:(?'WY'.-?[0-9\.]*)\s?Z:(?'WZ'.-?[0-9\.]*)");
 
-        private static Regex LagoVistaStatusRegEx = new Regex(@"<(?'State'Idle|Run|Hold|Home|Check|Door)(:[0-9])?(?:.MPos:(?'MX'-?[0-9\.]*),(?'MY'-?[0-9\.]*),(?'MZP'-?[0-9\.]*),(?'MZS'-?[0-9\.]*),(?'MC'-?[0-9\.]*))?(?:,WPos:(?'WX'-?[0-9\.]*),(?'WY'-?[0-9\.]*),(?'WZP'-?[0-9\.]*),(?'WZS'-?[0-9\.]*),(?'WC'-?[0-9\.]*))?(?:,T:(?'T'-?[0-9])),?(?:,P:(?'P'-?[0-9]))>");
+        private static Regex LagoVistaStatusRegEx = new Regex(@"<(?'State'Idle|Alarm|Run|Hold|Home|Check|Door)(:[0-9])?(?:.MPos:(?'MX'-?[0-9\.]*),(?'MY'-?[0-9\.]*),(?'MZP'-?[0-9\.]*),(?'MZS'-?[0-9\.]*),(?'MC'-?[0-9\.]*))?(?:,WPos:(?'WX'-?[0-9\.]*),(?'WY'-?[0-9\.]*),(?'WZP'-?[0-9\.]*),(?'WZS'-?[0-9\.]*),(?'WC'-?[0-9\.]*))?(?:,T:(?'T'-?[0-9])),?(?:,P:(?'P'-?[0-9]))>");
 
         private static Regex LagoVistaErrorRegEx = new Regex(@"<(?'State'Alarm|Message|EndStop)?:(?'Msg'[\w]*)>");
+
+        private static Regex LagoVistaEndStopMsgRegEx = new Regex(@"<EndStop:(?'Axis'[\w]*),(?'Stop'[\w]*)>");
 
         /// <summary>
         /// Parses a recevied status report (answer to '?')
@@ -77,8 +79,19 @@ namespace LagoVista.GCode.Sender
         {
             var lgvStatusMatch = LagoVistaStatusRegEx.Match(line);
             var lgvErrorMatch = LagoVistaErrorRegEx.Match(line);
+            var endStopMessage = LagoVistaEndStopMsgRegEx.Match(line);
+
+
             if (lgvStatusMatch.Success)
             {
+                Group status = lgvStatusMatch.Groups["State"];
+
+                if (status.Success)
+                {
+                    Status = status.Value;
+                }
+
+
                 Group mx = lgvStatusMatch.Groups["MX"], my = lgvStatusMatch.Groups["MY"], mzp = lgvStatusMatch.Groups["MZP"], mzs = lgvStatusMatch.Groups["MZS"], mc = lgvStatusMatch.Groups["MC"], t = lgvStatusMatch.Groups["T"], p = lgvStatusMatch.Groups["P"];
                 Group wx = lgvStatusMatch.Groups["WX"], wy = lgvStatusMatch.Groups["WY"], wzp = lgvStatusMatch.Groups["WZP"], wzs = lgvStatusMatch.Groups["WZS"], wc = lgvStatusMatch.Groups["WC"]; ;
 
@@ -97,11 +110,32 @@ namespace LagoVista.GCode.Sender
                 if (WorkPositionOffset != newWorkPosition)
                 {
                     WorkPositionOffset = newWorkPosition;
-                }                
+                }
+
+                return true;
             }
             else if (lgvErrorMatch.Success)
             {
                 Group state = lgvStatusMatch.Groups["State"], msg = lgvStatusMatch.Groups["Msg"];
+                if(state.Success)
+                {
+                    Status = state.Value;
+                    Mode = OperatingMode.Alarm;
+                    AddStatusMessage(StatusMessageTypes.Warning, "Returned: " + Status, MessageVerbosityLevels.Normal);
+                    return true;
+                }
+
+                
+            }
+            else if (endStopMessage.Success)
+            {
+                Group axis = endStopMessage.Groups["Axis"], stop = endStopMessage.Groups["Stop"];
+                if (axis.Success)
+                {
+                    AddStatusMessage(StatusMessageTypes.FatalError, "Endstop Hit: " + axis.Value + " " + stop.Value);
+                    Mode = OperatingMode.Alarm;
+                    return true;
+                }
             }
 
             return false;

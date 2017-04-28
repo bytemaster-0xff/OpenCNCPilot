@@ -240,10 +240,12 @@ namespace LagoVista.GCode.Sender.Managers
         {
             var actualTheta = Math.Atan2(_machineLocationSecondFiducial.Y - _machineLocationFirstFiducial.Y, _machineLocationSecondFiducial.X - _machineLocationFirstFiducial.X);
             var expectedTheta = Math.Atan2(_expectedMachineLocationSecondFiducial.Y - _machineLocationFirstFiducial.Y, _machineLocationSecondFiducial.X - _machineLocationFirstFiducial.X);
-            var deltaTheta = actualTheta - expectedTheta;
+            var deltaTheta =  expectedTheta - actualTheta;
 
             var initialX = _machineLocationFirstFiducial.X - _boardManager.FirstFiducial.X;
             var initialY = _machineLocationFirstFiducial.Y - _boardManager.FirstFiducial.Y;
+
+            Debug.WriteLine($"{initialX.ToDim()}x{initialY.ToDim()} - {actualTheta.ToDegrees().ToDim()} - {expectedTheta.ToDegrees().ToDim()}");
 
             var initialPoint = new Point2D<double>(initialX, initialY);
             var rotatedPoint = initialPoint;
@@ -289,7 +291,7 @@ namespace LagoVista.GCode.Sender.Managers
                         _machine.AddStatusMessage(StatusMessageTypes.Info, "Board Alignment - Jogging to Expected Second Fiducial");
 
                         _machine.SendCommand($"G0 X{_targetLocation.X.ToDim()} Y{_targetLocation.Y.ToDim()}");
-                        _state = BoardAlignmentManagerStates.MovingToSecondFiducial;
+                        State = BoardAlignmentManagerStates.MovingToSecondFiducial;
                         _lastEvent = DateTime.Now;
                     }
                     else
@@ -314,7 +316,7 @@ namespace LagoVista.GCode.Sender.Managers
                         _machine.AddStatusMessage(StatusMessageTypes.Info, "Board Alignment - Completed ");
 
                         _machineLocationSecondFiducial = _machinePosition;
-                        _state = BoardAlignmentManagerStates.BoardAlignmentDetermined;
+                        State = BoardAlignmentManagerStates.BoardAlignmentDetermined;
                         _lastEvent = DateTime.Now;
 
                         CalculateOffsets();
@@ -382,7 +384,7 @@ namespace LagoVista.GCode.Sender.Managers
             //if (_machine.SetMode(OperatingMode.AligningBoard))
             {
                 _lastEvent = DateTime.Now;
-                _state = BoardAlignmentManagerStates.EvaluatingInitialAlignment;
+                State = BoardAlignmentManagerStates.EvaluatingInitialAlignment;
                 _timer.Change(0, 500);
             }
         }
