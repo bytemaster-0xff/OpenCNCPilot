@@ -131,6 +131,9 @@
     <Compile Include="Controls\JobControl.xaml.cs">
       <DependentUpon>JobControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\PnPButtons.xaml.cs">
+      <DependentUpon>PnPButtons.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\JogButtons.xaml.cs">
       <DependentUpon>JogButtons.xaml</DependentUpon>
     </Compile>
@@ -228,6 +231,10 @@
     <Page Include="Controls\JobControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\PnPButtons.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Controls\JogButtons.xaml">
       <SubType>Designer</SubType>

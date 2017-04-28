@@ -13,6 +13,10 @@ namespace LagoVista.GCode.Sender
 
         private static Regex CurrentPositionRegEx = new Regex(@"X:(?'MX'-?[0-9\.]*)\s?Y:(?'MY'-?[0-9\.]*)\s?Z:(?'MZ'-?[0-9\.]*)\s?E:(?'E'-?[0-9\.]*)\s?Count\s?X:(?'WX'.-?[0-9\.]*)\s?Y:(?'WY'.-?[0-9\.]*)\s?Z:(?'WZ'.-?[0-9\.]*)");
 
+        private static Regex LagoVistaStatusRegEx = new Regex(@"<(?'State'Idle|Run|Hold|Home|Check|Door)(:[0-9])?(?:.MPos:(?'MX'-?[0-9\.]*),(?'MY'-?[0-9\.]*),(?'MZP'-?[0-9\.]*),(?'MZS'-?[0-9\.]*),(?'MC'-?[0-9\.]*))?(?:,WPos:(?'WX'-?[0-9\.]*),(?'WY'-?[0-9\.]*),(?'WZP'-?[0-9\.]*),(?'WZS'-?[0-9\.]*),(?'WC'-?[0-9\.]*))?(?:,T:(?'T'-?[0-9])),?(?:,P:(?'P'-?[0-9]))>");
+
+        private static Regex LagoVistaErrorRegEx = new Regex(@"<(?'State'Alarm|Message|EndStop)?:(?'Msg'[\w]*)>");
+
         /// <summary>
         /// Parses a recevied status report (answer to '?')
         /// </summary>
@@ -39,8 +43,9 @@ namespace LagoVista.GCode.Sender
                 var newMachinePosition = new Vector3(double.Parse(mx.Value, Constants.DecimalParseFormat), double.Parse(my.Value, Constants.DecimalParseFormat), double.Parse(mz.Value, Constants.DecimalParseFormat));
 
                 if (MachinePosition != newMachinePosition)
-
-                MachinePosition = newMachinePosition;
+                {
+                    MachinePosition = newMachinePosition;
+                }
             }
 
             Group wx = grblStatusMatch.Groups["WX"], wy = grblStatusMatch.Groups["WY"], wz = grblStatusMatch.Groups["WZ"];
@@ -52,7 +57,6 @@ namespace LagoVista.GCode.Sender
 
                 if (WorkPositionOffset != newWorkPosition)
                 {
-
                     WorkPositionOffset = newWorkPosition;
                 }
             }
@@ -69,10 +73,45 @@ namespace LagoVista.GCode.Sender
             return true;
         }
 
+        public bool ParseLagoVistaLine(String line)
+        {
+            var lgvStatusMatch = LagoVistaStatusRegEx.Match(line);
+            var lgvErrorMatch = LagoVistaErrorRegEx.Match(line);
+            if (lgvStatusMatch.Success)
+            {
+                Group mx = lgvStatusMatch.Groups["MX"], my = lgvStatusMatch.Groups["MY"], mzp = lgvStatusMatch.Groups["MZP"], mzs = lgvStatusMatch.Groups["MZS"], mc = lgvStatusMatch.Groups["MC"], t = lgvStatusMatch.Groups["T"], p = lgvStatusMatch.Groups["P"];
+                Group wx = lgvStatusMatch.Groups["WX"], wy = lgvStatusMatch.Groups["WY"], wzp = lgvStatusMatch.Groups["WZP"], wzs = lgvStatusMatch.Groups["WZS"], wc = lgvStatusMatch.Groups["WC"]; ;
+
+                var tool = int.Parse(t.Value);
+
+                var newMachinePosition = new Vector3(double.Parse(mx.Value, Constants.DecimalParseFormat), double.Parse(my.Value, Constants.DecimalParseFormat), double.Parse(tool == 0 ? mzp.Value : mzs.Value, Constants.DecimalParseFormat));
+
+                if (MachinePosition != newMachinePosition)
+                {
+                    MachinePosition = newMachinePosition;
+                }
+
+
+                var newWorkPosition = new Vector3(double.Parse(wx.Value, Constants.DecimalParseFormat), double.Parse(wy.Value, Constants.DecimalParseFormat), double.Parse(tool == 0 ? wzp.Value : wzs.Value, Constants.DecimalParseFormat));
+
+                if (WorkPositionOffset != newWorkPosition)
+                {
+                    WorkPositionOffset = newWorkPosition;
+                }                
+            }
+            else if (lgvErrorMatch.Success)
+            {
+                Group state = lgvStatusMatch.Groups["State"], msg = lgvStatusMatch.Groups["Msg"];
+            }
+
+            return false;
+
+        }
+
         public bool ParseLine(String line)
         {
             var m114PositionMatch = CurrentPositionRegEx.Match(line);
-            if(!m114PositionMatch.Success)
+            if (!m114PositionMatch.Success)
             {
                 return false;
             }
@@ -103,6 +142,6 @@ namespace LagoVista.GCode.Sender
             return true;
         }
 
-      
+
     }
 }

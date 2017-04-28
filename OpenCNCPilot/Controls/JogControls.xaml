@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:LagoVista.GCode.Sender.Application.Controls"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="110" d:DesignWidth="300">
     <Grid Grid.ColumnSpan="4"  >
         <Grid.Resources>
             <Style TargetType="Button" x:Key="JogSize">
@@ -19,15 +19,14 @@
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="40" />
+            <ColumnDefinition Width="50" />
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="50" />
             <ColumnDefinition Width="100" />
         </Grid.ColumnDefinitions>
-        <Slider Grid.Row="2" Grid.Column="1"
+        <Slider Grid.Row="1" Grid.Column="1"
                     Grid.ColumnSpan="2"
                     Minimum="0"
                     Maximum="5000" 
@@ -36,19 +35,18 @@
                     Value="{Binding Machine.Settings.JogFeedRate, Mode=TwoWay}" 
                     VerticalAlignment="Center"  />
 
-        <TextBlock Text="Jog" Grid.ColumnSpan="3" FontSize="24" Margin="4" />
-        <TextBlock Text="Rate" Grid.Row="2" FontSize="16" Margin="8,4,4,4" />
-        <TextBlock Text="XY" Grid.Row="3" FontSize="16" Margin="8,4,4,4" />
-        <TextBlock Text="Z" Grid.Row="4" FontSize="16" Margin="8,4,4,4"/>
+        <TextBlock Text="Rate" Grid.Row="1" FontSize="16" Margin="8,4,4,4" />
+        <TextBlock Text="XY" Grid.Row="2" FontSize="16" Margin="8,4,4,4" />
+        <TextBlock Text="Z" Grid.Row="3" FontSize="16" Margin="8,4,4,4"/>
 
-        <Slider Grid.Row="3" Grid.Column="1"
+        <Slider Grid.Row="2" Grid.Column="1"
                     Minimum="{Binding XYStepMin}"
                     Maximum="{Binding XYStepMax}" 
                     LargeChange="{Binding XYStepInterval}" 
                     SmallChange="{Binding XYStepInterval}"
                     Value="{Binding XYStepSizeSlider, Mode=TwoWay}" 
                     VerticalAlignment="Center"  />
-        <Slider Grid.Row="4" Grid.Column="1"  
+        <Slider Grid.Row="3" Grid.Column="1"  
                     Minimum="{Binding ZStepMin}"
                     Maximum="{Binding ZStepMax}" 
                     LargeChange="{Binding Path=ZStepInterval}" 
@@ -56,19 +54,19 @@
                     Value="{Binding ZStepSizeSlider, Mode=TwoWay}"  
                     VerticalAlignment="Center" />
         <TextBlock Text="{Binding Machine.Settings.JogFeedRate, FallbackValue=1000, StringFormat=0.00}"
-                       Grid.Row="2" Grid.Column="3" FontSize="16" Margin="4" TextAlignment="Right" />
+                       Grid.Row="1" Grid.Column="3" FontSize="16" Margin="4" TextAlignment="Right" />
         <TextBlock Text="{Binding XYStepSize, FallbackValue=0.5, StringFormat=0.00}"
-                       Grid.Row="3" Grid.Column="2" FontSize="16" Margin="4" TextAlignment="Right" />
+                       Grid.Row="2" Grid.Column="2" FontSize="16" Margin="4" TextAlignment="Right" />
         <TextBlock Text="{Binding ZStepSize, FallbackValue=0.5, StringFormat=0.00}"
-                       Grid.Row="4" Grid.Column="2" FontSize="16" Margin="4" TextAlignment="Right" />
+                       Grid.Row="3" Grid.Column="2" FontSize="16" Margin="4" TextAlignment="Right" />
 
-        <ComboBox IsReadOnly="True" Grid.Column="4" Grid.Row="3" Margin="4" FontSize="16" 
+        <ComboBox IsReadOnly="True" Grid.Column="4" Grid.Row="2" Margin="4" FontSize="16" 
                       DisplayMemberPath="Value" 
                       SelectedValuePath="Key" 
                       SelectedValue="{Binding Path=XYStepMode, Mode=TwoWay}"
                       ItemsSource="{Binding StepSizesXY}" />
 
-        <ComboBox IsReadOnly="True" Grid.Column="4" Grid.Row="4" Margin="4" FontSize="16"
+        <ComboBox IsReadOnly="True" Grid.Column="4" Grid.Row="3" Margin="4" FontSize="16"
                       DisplayMemberPath="Value" 
                       SelectedValuePath="Key" 
                       SelectedValue="{Binding Path=ZStepMode, Mode=TwoWay}"
