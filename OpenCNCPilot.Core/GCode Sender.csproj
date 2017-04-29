@@ -207,13 +207,11 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="LagoVista.Core, Version=1.1.0.32, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\LagoVista.Core.0.8.92-alpha00522\lib\portable46-net451+win81\LagoVista.Core.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="LagoVista.Core, Version=0.8.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\LagoVista.Core.0.8.146-alpha01178\lib\netstandard1.2\LagoVista.Core.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\portable-net45+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.10.0.1\lib\portable-net45+win8+wpa81+wp8\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore">
       <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6\PresentationCore.dll</HintPath>

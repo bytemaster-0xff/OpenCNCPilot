@@ -38,6 +38,7 @@
     <Compile Include="Extensions\XElementExtensions.cs" />
     <Compile Include="Managers\EagleParser.cs" />
     <Compile Include="Managers\GCodeEngine.cs" />
+    <Compile Include="Models\BOM.cs" />
     <Compile Include="Models\Circle.cs" />
     <Compile Include="Models\Component.cs" />
     <Compile Include="Models\ConsolidatedDrillBit.cs" />
@@ -45,6 +46,7 @@
     <Compile Include="Models\Drill.cs" />
     <Compile Include="Models\DrillBit.cs" />
     <Compile Include="Models\DrillRackInfo.cs" />
+    <Compile Include="Models\BOMEntry.cs" />
     <Compile Include="Models\PCBProject.cs" />
     <Compile Include="Models\Fiducial.cs" />
     <Compile Include="Models\Hole.cs" />
@@ -64,23 +66,21 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="LagoVista.Core, Version=1.1.0.32, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\LagoVista.Core.0.8.92-alpha00522\lib\portable46-net451+win81\LagoVista.Core.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Newtonsoft.Json.9.0.1\lib\portable-net45+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\..\LagoVista.Core.GCode\GCode Core.csproj">
       <Project>{26a18c19-479e-495b-a8f2-1baa591d7df8}</Project>
       <Name>GCode Core</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="LagoVista.Core, Version=0.8.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\LagoVista.Core.0.8.146-alpha01178\lib\netstandard1.2\LagoVista.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Newtonsoft.Json.10.0.1\lib\portable-net45+win8+wpa81+wp8\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

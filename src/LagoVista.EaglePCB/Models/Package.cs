@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Linq;
 
 namespace LagoVista.EaglePCB.Models
@@ -20,6 +18,8 @@ namespace LagoVista.EaglePCB.Models
         public List<Circle> Circles { get; set; }
         public List<Hole> Holes { get; set; }
         public List<Rect> Rects { get; set; }
+
+        public bool IsSMD { get { return SMDs.Any(); } }
 
         public static Package Create(XElement element)
         {
