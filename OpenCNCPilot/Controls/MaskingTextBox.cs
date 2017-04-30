@@ -29,7 +29,9 @@ namespace LagoVista.GCode.Sender.Application.Controls
 
                 switch (UnitType)
                 {
+
                     /* For now it's all...if we want text we wont want to do min/max compare */
+                    case UnitTypes.Count:
                     case UnitTypes.RPM:
                     case UnitTypes.Rate:
                     case UnitTypes.Size:
@@ -101,6 +103,7 @@ namespace LagoVista.GCode.Sender.Application.Controls
 
         public enum UnitTypes
         {
+            Count,
             Size,
             RPM,
             Rate,
@@ -117,6 +120,7 @@ namespace LagoVista.GCode.Sender.Application.Controls
                 TextAlignment = System.Windows.TextAlignment.Right;
                 switch (value)
                 {
+                    case UnitTypes.Count:
                     case UnitTypes.Rate:
                     case UnitTypes.RPM:
                     case UnitTypes.Seconds:

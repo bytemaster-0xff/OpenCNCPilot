@@ -56,6 +56,7 @@
             </MenuItem>
             <MenuItem Header="Pick and Place" >
                 <MenuItem Header="Edit Package Library" x:Name="EditPackageLibrary" Click="EditPackageLibrary_Click" />
+                <MenuItem Header="Edit Feeder Library" x:Name="EditFeederLibrary" Click="EditFeederLibrary_Click" />
             </MenuItem>
             <MenuItem Header="Height Map" >
                 <MenuItem Header="New Generated HeightMap" x:Name="NewGeneratedHeigtMap" Click="NewGeneratedHeigtMap_Click" />

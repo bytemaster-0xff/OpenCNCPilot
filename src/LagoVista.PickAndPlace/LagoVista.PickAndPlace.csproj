@@ -56,9 +56,10 @@
     <Compile Include="Models\PnPJob.cs" />
     <Compile Include="PnPManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repos\FeederLibrary.cs" />
     <Compile Include="Repos\PackageLibrary.cs" />
     <Compile Include="ViewModels\PackageLibraryViewModel.cs" />
-    <Compile Include="ViewModels\PartTrayViewModel.cs" />
+    <Compile Include="ViewModels\FeederDefinitionsViewModel.cs" />
     <Compile Include="ViewModels\PartViewModel.cs" />
     <Compile Include="ViewModels\PnPControlViewModel.cs" />
   </ItemGroup>

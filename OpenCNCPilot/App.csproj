@@ -203,6 +203,9 @@
     <Compile Include="ViewModels\MachineVisionViewModel.Properties.cs">
       <DependentUpon>MachineVisionViewModel.cs</DependentUpon>
     </Compile>
+    <Compile Include="Views\FeederLibraryWindow.xaml.cs">
+      <DependentUpon>FeederLibraryWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\PackageLibraryWindow.xaml.cs">
       <DependentUpon>PackageLibraryWindow.xaml</DependentUpon>
     </Compile>
@@ -324,6 +327,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="SettingsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\FeederLibraryWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
