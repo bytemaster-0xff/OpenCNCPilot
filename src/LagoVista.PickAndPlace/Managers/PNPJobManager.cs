@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LagoVista.PickAndPlace.Managers
 {
-    class PNPJobManager
+    class PnPJobManager
     {
     }
 }

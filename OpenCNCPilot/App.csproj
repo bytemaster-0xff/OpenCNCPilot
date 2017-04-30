@@ -163,6 +163,7 @@
     <Compile Include="Converters\HeightMapProbePoint2PointConverter.cs" />
     <Compile Include="Converters\Lines2Visual3DConverter.cs" />
     <Compile Include="Converters\MessageTypeConverter.cs" />
+    <Compile Include="Converters\NotNullEnabledConverter.cs" />
     <Compile Include="Converters\PointConverter.cs" />
     <Compile Include="EditGCode.xaml.cs">
       <DependentUpon>EditGCode.xaml</DependentUpon>
@@ -201,6 +202,9 @@
     <Compile Include="ViewModels\MachineVisionViewModel.cs" />
     <Compile Include="ViewModels\MachineVisionViewModel.Properties.cs">
       <DependentUpon>MachineVisionViewModel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\PackageLibraryWindow.xaml.cs">
+      <DependentUpon>PackageLibraryWindow.xaml</DependentUpon>
     </Compile>
     <Page Include="About.xaml">
       <SubType>Designer</SubType>
@@ -323,6 +327,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\PackageLibraryWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -409,6 +417,10 @@
     <ProjectReference Include="..\src\LagoVista.EaglePCB\LagoVista.EaglePCB.csproj">
       <Project>{b60c5358-d6ae-469a-8beb-78ce5c434952}</Project>
       <Name>LagoVista.EaglePCB</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\src\LagoVista.PickAndPlace\LagoVista.PickAndPlace.csproj">
+      <Project>{1462be00-44d1-4677-b342-4150d0dd47d3}</Project>
+      <Name>LagoVista.PickAndPlace</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

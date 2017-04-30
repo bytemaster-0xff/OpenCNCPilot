@@ -9,5 +9,6 @@ namespace LagoVista.PickAndPlace.ViewModels
 {
     public class PartTrayViewModel : ViewModelBase
     {
+        
     }
 }

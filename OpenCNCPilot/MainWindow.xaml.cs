@@ -357,10 +357,12 @@ namespace LagoVista.GCode.Sender.Application
                 ViewModel.Machine.PCBManager.Project = vm.Project;
             }
         }
+        
 
-        private void PCB2GCode_Click_1(object sender, RoutedEventArgs e)
+        private void EditPackageLibrary_Click(object sender, RoutedEventArgs e)
         {
-
+            var librWindow = new Views.PackageLibraryWindow();
+            librWindow.ShowDialog();
         }
     }
 }

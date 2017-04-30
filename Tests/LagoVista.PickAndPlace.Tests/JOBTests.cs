@@ -11,7 +11,7 @@ namespace LagoVista.PickAndPlace.Tests
         [TestMethod]
         public async void CreateBOMTests()
         {
-            var job = new PNPJob();
+            var job = new PnPJob();
             job.EagleBRDFilePath = "./KegeratorController.brd";
 
             await job.OpenAsync();

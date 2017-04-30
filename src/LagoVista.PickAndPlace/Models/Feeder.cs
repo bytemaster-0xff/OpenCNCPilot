@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LagoVista.PickAndPlace.Repos
+namespace LagoVista.PickAndPlace.Models
 {
-    class PartsLibrary
+    public class Feeder
     {
     }
 }
