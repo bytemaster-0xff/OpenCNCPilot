@@ -362,12 +362,14 @@ namespace LagoVista.GCode.Sender.Application
         private void EditPackageLibrary_Click(object sender, RoutedEventArgs e)
         {
             var librWindow = new Views.PackageLibraryWindow();
+            librWindow.Owner = this;
             librWindow.ShowDialog();
         }
 
         private void EditFeederLibrary_Click(object sender, RoutedEventArgs e)
         {
             var lbrWindow = new Views.FeederLibraryWindow();
+            lbrWindow.Owner = this;
             lbrWindow.ShowDialog();
         }
     }

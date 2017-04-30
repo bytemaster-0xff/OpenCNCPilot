@@ -112,6 +112,5 @@ namespace LagoVista.GCodeSupport.Tests.Managers
 
             _machine.Verify(mac => mac.SendCommand($"G0 X{secondFiducialX.ToDim()} Y{secondFiducialY.ToDim()}"),Moq.Times.Once);
         }
-
     }
 }

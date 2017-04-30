@@ -70,6 +70,7 @@
     </Compile>
     <Compile Include="Machine\SimulatedMachine.cs" />
     <Compile Include="Managers\BoardAlignmentManager.cs" />
+    <Compile Include="Managers\BoardAlignmentPositionManager.cs" />
     <Compile Include="Managers\GCodeFileManager.Actions.cs">
       <DependentUpon>GCodeFileManager.cs</DependentUpon>
     </Compile>
@@ -91,6 +92,7 @@
       <DependentUpon>HeightMapManager.cs</DependentUpon>
     </Compile>
     <Compile Include="Managers\GCodeFileManager.cs" />
+    <Compile Include="Interfaces\IBoardAlignmentPositionManager.cs" />
     <Compile Include="Managers\MachineVisionManager.Actions.cs" />
     <Compile Include="Managers\MachineVisionManager.Properties.cs" />
     <Compile Include="Managers\MachineVisionManager.cs" />
