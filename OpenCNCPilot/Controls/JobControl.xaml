@@ -222,6 +222,11 @@
                         <Image Source="/imgs/BottomLight.png" />
                     </ToggleButton.Content>
                 </ToggleButton>
+                <ToggleButton IsChecked="{Binding VacuumOn, Mode=TwoWay}">
+                    <ToggleButton.Content>
+                        <Image Source="/imgs/Vacuum.png" />
+                    </ToggleButton.Content>
+                </ToggleButton>                
             </StackPanel>
         </Grid>
     </Grid>

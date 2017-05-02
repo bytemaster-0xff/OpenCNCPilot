@@ -30,5 +30,17 @@ namespace LagoVista.GCode.Sender.ViewModels
                 RaisePropertyChanged();
             }
         }
+
+        public bool _vacuumOn = false;
+        public bool VacuumOn
+        {
+            get { return _vacuumOn; }
+            set
+            {
+                Machine.SendCommand(value ? "M62 P1" : "M62 P0");
+                _vacuumOn = value;
+                RaisePropertyChanged();
+            }
+        }
     }
 }
