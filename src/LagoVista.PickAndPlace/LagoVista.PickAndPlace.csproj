@@ -34,17 +34,17 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .NET Framework is automatically included -->
-    <ProjectReference Include="..\..\LagoVista.Core.GCode\GCode Core.csproj">
+    <ProjectReference Include="..\LagoVista.Core.GCode\GCode Core.csproj">
       <Project>{26a18c19-479e-495b-a8f2-1baa591d7df8}</Project>
       <Name>GCode Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\OpenCNCPilot.Core\GCode Sender.csproj">
-      <Project>{a5441c94-a9f8-4577-b2e6-7f50fb7c76f7}</Project>
-      <Name>GCode Sender</Name>
     </ProjectReference>
     <ProjectReference Include="..\LagoVista.EaglePCB\LagoVista.EaglePCB.csproj">
       <Project>{b60c5358-d6ae-469a-8beb-78ce5c434952}</Project>
       <Name>LagoVista.EaglePCB</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LagoVista.GCode.Sender\GCode Sender.csproj">
+      <Project>{a5441c94-a9f8-4577-b2e6-7f50fb7c76f7}</Project>
+      <Name>GCode Sender</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -60,11 +60,11 @@
     <Compile Include="ViewModels\PnPControlViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="LagoVista.Core, Version=0.8.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\LagoVista.Core.0.8.146-alpha01178\lib\netstandard1.2\LagoVista.Core.dll</HintPath>
+    <Reference Include="LagoVista.Core, Version=0.8.0.0, Culture=neutral, PublicKeyToken=2698135e9954a85d, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\LagoVista.Core.0.8.155-alpha01280\lib\netstandard1.2\LagoVista.Core.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Newtonsoft.Json.10.0.1\lib\portable-net45+win8+wpa81+wp8\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\..\packages\Newtonsoft.Json.10.0.2\lib\portable-net45+win8+wpa81+wp8\Newtonsoft.Json.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

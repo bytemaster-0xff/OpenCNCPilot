@@ -1,0 +1,273 @@
+﻿<Window x:Class="LagoVista.GCode.Sender.Application.SettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        WindowStartupLocation="CenterOwner"
+        WindowStyle="ToolWindow"
+        Title="SettingsWindow" Height="450" Width="500">
+    <Window.Resources>
+        <Style TargetType="TextBox">
+            <Setter Property="Margin" Value="4" />
+            <Setter Property="Grid.Column" Value="1" />
+            <Setter Property="TextAlignment" Value="Right" />
+        </Style>
+        <Style TargetType="ComboBox">
+            <Setter Property="Margin" Value="4" />
+            <Setter Property="Grid.Column" Value="1" />
+        </Style>
+        <Style TargetType="CheckBox">
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Margin" Value="4" />
+            <Setter Property="Grid.Column" Value="1" />
+        </Style>
+        <Style TargetType="Label">
+            <Setter Property="Margin" Value="4" />
+            <Setter Property="Grid.Column" Value="0" />
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
+        <TabControl x:Name="Tabs">
+            <TabItem Header="Machine">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="140" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="80" />
+                    </Grid.ColumnDefinitions>
+                    <Label Grid.Row="0" Grid.Column="0" Content="Name" />
+                    <TextBox Text="{Binding Settings.MachineName, Mode=TwoWay}" Grid.Column="1" x:Name="MachineName" />
+
+                    <Label Grid.Row="1" Content="Machine Type" />
+                    <ComboBox Grid.Row="1" 
+                          IsEnabled="{Binding CanChangeMachineConfig}"
+                          SelectedValue="{Binding Path=MachineType, Mode=TwoWay}"
+                          ItemsSource="{Binding Path=MachineTypes}"  />
+
+                    <Label Grid.Row="2" Content="Origin" />
+                    <ComboBox Grid.Row="2" 
+                          IsEnabled="{Binding CanChangeMachineConfig}"
+                          SelectedValue="{Binding Path=MachineOrigin, Mode=TwoWay}"
+                          ItemsSource="{Binding Path=MachineOrigins}"  />
+
+                    <Label Grid.Row="3" Content="Work Area Width" />
+                    <TextBox  Text="{Binding Settings.WorkAreaWidth}" Grid.Row="3" />
+                    <Label Content="mm" Grid.Row="3" Grid.Column="2" />
+
+                    <Label Grid.Row="4" Content="Work Area Height" />
+                    <TextBox Text="{Binding Settings.WorkAreaHeight}"  Grid.Row="4" />
+                    <Label Content="mm" Grid.Row="4" Grid.Column="2" />
+
+                    <Label Grid.Row="5" Content="GCode Jog Command" />
+                    <ComboBox Grid.Row="5"  
+                          IsEnabled="{Binding CanChangeMachineConfig}"
+                          SelectedValue="{Binding Path=GCodeJogCommand, Mode=TwoWay}"
+                          ItemsSource="{Binding Path=GCodeJogCommands}"  />
+
+                    <Label Grid.Row="6" Content="Msg Output Level" />
+                    <ComboBox Grid.Row="6"  
+                          SelectedValue="{Binding Path=MessgeOutputLevel, Mode=TwoWay}"
+                          ItemsSource="{Binding Path=MessageOutputLevels}"  />
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="Connection">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="20" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="160" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="80" />
+                    </Grid.ColumnDefinitions>
+                    <Label Grid.Row="0" Content="Connection Type" HorizontalAlignment="Left"  VerticalAlignment="Top"/>
+                    <ComboBox Grid.Row="0" Grid.Column="1" 
+                          IsEnabled="{Binding CanChangeMachineConfig}"
+                          SelectedValue="{Binding Path=ConnectionType, Mode=TwoWay}"
+                          ItemsSource="{Binding Path=ConnectionTypes}"  />
+
+                    <TextBox IsEnabled="{Binding CanSetIPAddress}" Grid.Row="1"  Text="{Binding Settings.IPAddress, Mode=TwoWay}" />
+                    <Label Content="IPAddress" Grid.Row="1" />
+
+                    <ComboBox Grid.Row="2" Grid.Column="1" 
+                          SelectedValuePath="Id"
+                          IsEnabled="{Binding CanSelectSerialPort}"
+                          DisplayMemberPath="Name"
+                          SelectedValue="{Binding Path=SelectedPortId, Mode=TwoWay}"
+                          ItemsSource="{Binding Path=SerialPorts}"  />
+
+                    <Label Grid.Row="2" Content="Serial Port" HorizontalAlignment="Left"  VerticalAlignment="Top"/>
+
+                    <TextBox Grid.Row="3"  Text="{Binding Settings.CurrentSerialPort.BaudRate, Mode=TwoWay}" />
+                    <Label  IsEnabled="{Binding CanChangeMachineConfig}"
+                        Content="BaudRate" Grid.Row="3" />
+                    <Label Content="bps" Grid.Row="3" Grid.Column="2" />
+
+                    <TextBox  Text="{Binding Settings.ControllerBufferSize, Mode=TwoWay}" Grid.Row="5"/>
+                    <Label Content="Controller Buffer" Grid.Row="5"  />
+                    <Label Content="bytes" Grid.Row="4" Grid.Column="5" />
+
+                    <Label Content="Idle Status Poll Interval" Grid.Row="6" />
+                    <TextBox Text="{Binding Settings.StatusPollIntervalIdle}" Grid.Row="6"/>
+                    <Label Content="ms" Grid.Row="6" Grid.Column="2" />
+
+                    <TextBox  Text="{Binding Settings.StatusPollIntervalRunning}" Grid.Row="7"/>
+                    <Label Content="Active Status Poll Interval" Grid.Row="7"  />
+                    <Label Content="ms" Grid.Row="7" Grid.Column="2" />
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="ToolChange">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="140" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto" />
+                    </Grid.RowDefinitions>
+
+                    <Label Content="Pause on Tool Change" />
+                    <CheckBox Grid.Row="1" Grid.Column="1" IsChecked="{Binding Settings.PauseOnToolChange, Mode=TwoWay}"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Vision">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="140" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto" />
+                    </Grid.RowDefinitions>
+
+                    <Label Content="Camera" />
+                    <ComboBox ItemsSource="{Binding Cameras}" 
+                          DisplayMemberPath="Name"
+                          SelectedValuePath="Id"
+                          SelectedValue="{Binding PositioningCameraId, Mode=TwoWay}"/>
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="Viewport">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="140" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="80" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                    </Grid.RowDefinitions>
+                    <Label Content="Preview arc seg. length" />
+                    <TextBox Grid.Column="1" Text="{Binding Settings.ViewportArcSplit, Mode=TwoWay}"/>
+                    <Label Content="mm" Grid.Column="2" />
+                    <Label Content="Preview Toolpath" Grid.Row="1" />
+                    <CheckBox Grid.Row="1" Grid.Column="1" IsChecked="{Binding Settings.EnableCodePreview, Mode=TwoWay}"/>
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="Probing">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="140" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="80" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                    </Grid.RowDefinitions>
+                    <Label  Content="Plunge Feedrate" />
+                    <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding Settings.ProbeFeed, FallbackValue=10, Mode=TwoWay}"/>
+                    <Label Content="mm/min" Grid.Column="2" />
+
+                    <Label Content="Abort on Fail"  Grid.Row="1" />
+                    <CheckBox VerticalAlignment="Center" Margin="4" Grid.Column="1"  Grid.Row="1" IsChecked="{Binding Settings.AbortOnProbeFail, Mode=TwoWay}"/>
+
+                    <Label Content="Timeout" Grid.Row="2" />
+                    <TextBox Grid.Row="2" Grid.Column="1" TextAlignment="Right" Text="{Binding Settings.ProbeTimeoutSeconds, FallbackValue=30, Mode=TwoWay}"/>
+                    <Label Content="seconds" Grid.Row="2" Grid.Column="2" />
+
+                    <Label Content="Safe Height" Grid.Row="3" />
+                    <TextBox Grid.Row="3" TextAlignment="Right" Text="{Binding Settings.ProbeSafeHeight, FallbackValue=10, Mode=TwoWay}"/>
+                    <Label Content="mm" Grid.Row="3" Grid.Column="2" />
+
+                    <Label Grid.Row="4" Content="Minimum Height" />
+                    <TextBox TextAlignment="Right" Grid.Row="4" Grid.Column="1" Text="{Binding Settings.ProbeMinimumHeight, FallbackValue=5, Mode=TwoWay}" 
+                         ToolTip="This height will be added to the height of the last probe point to prevent crashes on highly tilted surfaces"/>
+                    <Label Content="mm" Grid.Row="4" Grid.Column="2" />
+
+                    <Label Grid.Row="5" Content="Max Depth" />
+                    <TextBox Grid.Row="5" Grid.Column="1" TextAlignment="Right" Text="{Binding Settings.ProbeMaxDepth, FallbackValue=1.2, Mode=TwoWay}"/>
+                    <Label Content="mm" Grid.Row="5" Grid.Column="2" />
+
+                    <Label Grid.Row="6" Content="Jog Feed Rate" />
+                    <TextBox Grid.Row="6" Grid.Column="1" TextAlignment="Right" ToolTip="Feed Rate For Movement Between Probe Positions" Text="{Binding Settings.ProbeHeightMovementFeed, FallbackValue=1000, Mode=TwoWay}"/>
+                    <Label Content="mm/min" Grid.Row="6" Grid.Column="2" />
+
+                    <Label Grid.Row="7" Content="Probe Offset" />
+                    <TextBox Grid.Row="7" Grid.Column="1" TextAlignment="Right" ToolTip="Offset of Material Used for Probing" Text="{Binding Settings.ProbeOffset, FallbackValue=1.25, Mode=TwoWay}"/>
+                    <Label Content="mm" Grid.Row="7" Grid.Column="2" />
+                </Grid>
+            </TabItem>
+            <TabItem Header="PCB">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="140" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="80" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                    </Grid.RowDefinitions>
+                    <Label Content="EAGLE CAD Location" />
+                    <TextBox Grid.Column="1" />
+                    <Button Grid.Column="2" Content="..." Width="40" />
+                </Grid>
+            </TabItem>
+        </TabControl>
+        <StackPanel Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Right">
+            <Button x:Name="Save" Content="Save" Margin="4" Width="100" Height="40"  Click="Save_Click" />
+            <Button x:Name="Cancel" Content="Cancel" Margin="4" Width="100" Height="40" Click="Cancel_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>

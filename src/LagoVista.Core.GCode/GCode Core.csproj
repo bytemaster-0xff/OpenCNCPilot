@@ -5,11 +5,11 @@
     <MinimumVisualStudioVersion>10.0</MinimumVisualStudioVersion>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{B60C5358-D6AE-469A-8BEB-78CE5C434952}</ProjectGuid>
+    <ProjectGuid>{26A18C19-479E-495B-A8F2-1BAA591D7DF8}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>LagoVista.EaglePCB</RootNamespace>
-    <AssemblyName>LagoVista.EaglePCB</AssemblyName>
+    <RootNamespace>LagoVista.Core.GCode</RootNamespace>
+    <AssemblyName>LagoVista.Core.GCode</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -34,34 +34,35 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Extensions\ToDim.cs" />
-    <Compile Include="Extensions\XElementExtensions.cs" />
-    <Compile Include="Managers\EagleParser.cs" />
-    <Compile Include="Managers\GCodeEngine.cs" />
-    <Compile Include="Models\Circle.cs" />
-    <Compile Include="Models\Component.cs" />
-    <Compile Include="Models\ConsolidatedDrillBit.cs" />
-    <Compile Include="Models\ContactRef.cs" />
-    <Compile Include="Models\Drill.cs" />
-    <Compile Include="Models\DrillBit.cs" />
-    <Compile Include="Models\DrillRackInfo.cs" />
-    <Compile Include="Models\PCBProject.cs" />
-    <Compile Include="Models\Fiducial.cs" />
-    <Compile Include="Models\Hole.cs" />
-    <Compile Include="Models\Layer.cs" />
-    <Compile Include="Models\Package.cs" />
-    <Compile Include="Models\Pad.cs" />
-    <Compile Include="Models\PCB.cs" />
-    <Compile Include="Models\Plain.cs" />
-    <Compile Include="Models\Project.cs" />
-    <Compile Include="Models\Rect.cs" />
-    <Compile Include="Models\Signal.cs" />
-    <Compile Include="Models\SMD.cs" />
-    <Compile Include="Models\Text.cs" />
-    <Compile Include="Models\Trace.cs" />
-    <Compile Include="Models\Via.cs" />
-    <Compile Include="Models\Wire.cs" />
+    <Compile Include="Commands\GCodeCommand.cs" />
+    <Compile Include="Commands\GCodeArc.cs" />
+    <Compile Include="Commands\GCodeConstants.cs" />
+    <Compile Include="Commands\GCodeDrill.cs" />
+    <Compile Include="Commands\GCodeDwell.cs" />
+    <Compile Include="Commands\GCodeLine.cs" />
+    <Compile Include="Commands\GCodeProbe.cs" />
+    <Compile Include="Commands\MCode.cs" />
+    <Compile Include="Commands\GCodeMotion.cs" />
+    <Compile Include="Commands\OtherCode.cs" />
+    <Compile Include="Commands\ToolChangeCommand.cs" />
+    <Compile Include="Constants.cs" />
+    <Compile Include="Extensions\MathHelpers.cs" />
+    <Compile Include="Extensions\Rotation.cs" />
+    <Compile Include="GCodeFile.cs" />
+    <Compile Include="GCodeFile.Factory.cs">
+      <DependentUpon>GCodeFile.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GCodeFile.GCodeProducer.cs">
+      <DependentUpon>GCodeFile.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Parser\GCodeParser.cs" />
+    <Compile Include="Parser\GCodeParser.Helpers.cs" />
+    <Compile Include="Parser\GCodeParser.Motion.cs" />
+    <Compile Include="Parser\GCodeParser.Position.cs" />
+    <Compile Include="Parser\ParseException.cs" />
+    <Compile Include="Parser\ParserState.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Word.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="LagoVista.Core, Version=0.8.0.0, Culture=neutral, PublicKeyToken=2698135e9954a85d, processorArchitecture=MSIL">
@@ -73,12 +74,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\LagoVista.Core.GCode\GCode Core.csproj">
-      <Project>{26a18c19-479e-495b-a8f2-1baa591d7df8}</Project>
-      <Name>GCode Core</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

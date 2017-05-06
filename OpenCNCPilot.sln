@@ -1,45 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26403.3
+VisualStudioVersion = 15.0.26403.7
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "App", "OpenCNCPilot\App.csproj", "{BA3CA6C1-34A3-4582-9EE3-64DA5F144C3D}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GCode Sender", "OpenCNCPilot.Core\GCode Sender.csproj", "{A5441C94-A9F8-4577-B2E6-7F50FB7C76F7}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GCode Tests", "LagoVista.GCodeSupport.Tests\GCode Tests.csproj", "{FBBF8FC8-4E82-4E5E-833D-2CEC6F130B18}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GCode Core", "LagoVista.Core.GCode\GCode Core.csproj", "{26A18C19-479E-495B-A8F2-1BAA591D7DF8}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LagoVista.EaglePCB", "src\LagoVista.EaglePCB\LagoVista.EaglePCB.csproj", "{B60C5358-D6AE-469A-8BEB-78CE5C434952}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LagoVista.EaglePCB.Tests", "Tests\LagoVista.EaglePCB.Tests\LagoVista.EaglePCB.Tests.csproj", "{8AF32689-4D56-4DE7-85B1-324FC7AC9723}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PCB2Gode Source", "PCB2Gode Source", "{0C9B53AC-C592-4AE1-A067-BE58C17BBBED}"
-	ProjectSection(SolutionItems) = preProject
-		PCB2GCODE\drill_sizes.h = PCB2GCODE\drill_sizes.h
-		PCB2GCODE\filecopy.h = PCB2GCODE\filecopy.h
-		PCB2GCODE\filename_subs.h = PCB2GCODE\filename_subs.h
-		PCB2GCODE\library.h = PCB2GCODE\library.h
-		PCB2GCODE\library.ulp = PCB2GCODE\library.ulp
-		PCB2GCODE\math.h = PCB2GCODE\math.h
-		PCB2GCODE\math.ulp = PCB2GCODE\math.ulp
-		PCB2GCODE\nonvolatile.h = PCB2GCODE\nonvolatile.h
-		PCB2GCODE\pcb-file-utils.h = PCB2GCODE\pcb-file-utils.h
-		PCB2GCODE\pcb-gcode-menu.scr = PCB2GCODE\pcb-gcode-menu.scr
-		PCB2GCODE\pcb-gcode-prg.scr = PCB2GCODE\pcb-gcode-prg.scr
-		PCB2GCODE\pcb-gcode-setup.ulp = PCB2GCODE\pcb-gcode-setup.ulp
-		PCB2GCODE\pcb-gcode-stack.h = PCB2GCODE\pcb-gcode-stack.h
-		PCB2GCODE\pcb-gcode.h = PCB2GCODE\pcb-gcode.h
-		PCB2GCODE\pcb-gcode.ulp = PCB2GCODE\pcb-gcode.ulp
-		PCB2GCODE\stack.h = PCB2GCODE\stack.h
-		PCB2GCODE\stack.ulp = PCB2GCODE\stack.ulp
-		PCB2GCODE\string.h = PCB2GCODE\string.h
-		PCB2GCODE\string.ulp = PCB2GCODE\string.ulp
-		PCB2GCODE\test_nonvolatile.h = PCB2GCODE\test_nonvolatile.h
-		PCB2GCODE\test_nonvolatile.ulp = PCB2GCODE\test_nonvolatile.ulp
-		PCB2GCODE\viewer.linux.sh = PCB2GCODE\viewer.linux.sh
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A09AE1D6-16A1-4AA6-A77E-6F0845806D39}"
 	ProjectSection(SolutionItems) = preProject
@@ -52,20 +16,38 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LagoVista.PickAndPlace", "src\LagoVista.PickAndPlace\LagoVista.PickAndPlace.csproj", "{1462BE00-44D1-4677-B342-4150D0DD47D3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LagoVista.EaglePCB.Tests", "Tests\LagoVista.EaglePCB.Tests\LagoVista.EaglePCB.Tests.csproj", "{8AF32689-4D56-4DE7-85B1-324FC7AC9723}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{4CF30046-5039-4AE8-8AFF-4DA11EE4AC9C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{1789C36D-CC0C-4C5D-B2C6-3B71D914B7B5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GCode Tests", "Tests\LagoVista.GCodeSupport.Tests\GCode Tests.csproj", "{FBBF8FC8-4E82-4E5E-833D-2CEC6F130B18}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GCode Core", "src\LagoVista.Core.GCode\GCode Core.csproj", "{26A18C19-479E-495B-A8F2-1BAA591D7DF8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GCode Sender", "src\LagoVista.GCode.Sender\GCode Sender.csproj", "{A5441C94-A9F8-4577-B2E6-7F50FB7C76F7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "App", "src\LagoVista.GCode.Sender.Application\App.csproj", "{BA3CA6C1-34A3-4582-9EE3-64DA5F144C3D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{BA3CA6C1-34A3-4582-9EE3-64DA5F144C3D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BA3CA6C1-34A3-4582-9EE3-64DA5F144C3D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BA3CA6C1-34A3-4582-9EE3-64DA5F144C3D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BA3CA6C1-34A3-4582-9EE3-64DA5F144C3D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A5441C94-A9F8-4577-B2E6-7F50FB7C76F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A5441C94-A9F8-4577-B2E6-7F50FB7C76F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A5441C94-A9F8-4577-B2E6-7F50FB7C76F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A5441C94-A9F8-4577-B2E6-7F50FB7C76F7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B60C5358-D6AE-469A-8BEB-78CE5C434952}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B60C5358-D6AE-469A-8BEB-78CE5C434952}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B60C5358-D6AE-469A-8BEB-78CE5C434952}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B60C5358-D6AE-469A-8BEB-78CE5C434952}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1462BE00-44D1-4677-B342-4150D0DD47D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1462BE00-44D1-4677-B342-4150D0DD47D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1462BE00-44D1-4677-B342-4150D0DD47D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1462BE00-44D1-4677-B342-4150D0DD47D3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8AF32689-4D56-4DE7-85B1-324FC7AC9723}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8AF32689-4D56-4DE7-85B1-324FC7AC9723}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8AF32689-4D56-4DE7-85B1-324FC7AC9723}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8AF32689-4D56-4DE7-85B1-324FC7AC9723}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FBBF8FC8-4E82-4E5E-833D-2CEC6F130B18}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{FBBF8FC8-4E82-4E5E-833D-2CEC6F130B18}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FBBF8FC8-4E82-4E5E-833D-2CEC6F130B18}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -74,20 +56,25 @@ Global
 		{26A18C19-479E-495B-A8F2-1BAA591D7DF8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{26A18C19-479E-495B-A8F2-1BAA591D7DF8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{26A18C19-479E-495B-A8F2-1BAA591D7DF8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B60C5358-D6AE-469A-8BEB-78CE5C434952}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B60C5358-D6AE-469A-8BEB-78CE5C434952}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B60C5358-D6AE-469A-8BEB-78CE5C434952}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B60C5358-D6AE-469A-8BEB-78CE5C434952}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8AF32689-4D56-4DE7-85B1-324FC7AC9723}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8AF32689-4D56-4DE7-85B1-324FC7AC9723}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8AF32689-4D56-4DE7-85B1-324FC7AC9723}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8AF32689-4D56-4DE7-85B1-324FC7AC9723}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1462BE00-44D1-4677-B342-4150D0DD47D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1462BE00-44D1-4677-B342-4150D0DD47D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1462BE00-44D1-4677-B342-4150D0DD47D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1462BE00-44D1-4677-B342-4150D0DD47D3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A5441C94-A9F8-4577-B2E6-7F50FB7C76F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A5441C94-A9F8-4577-B2E6-7F50FB7C76F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A5441C94-A9F8-4577-B2E6-7F50FB7C76F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A5441C94-A9F8-4577-B2E6-7F50FB7C76F7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BA3CA6C1-34A3-4582-9EE3-64DA5F144C3D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BA3CA6C1-34A3-4582-9EE3-64DA5F144C3D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BA3CA6C1-34A3-4582-9EE3-64DA5F144C3D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BA3CA6C1-34A3-4582-9EE3-64DA5F144C3D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{B60C5358-D6AE-469A-8BEB-78CE5C434952} = {1789C36D-CC0C-4C5D-B2C6-3B71D914B7B5}
+		{1462BE00-44D1-4677-B342-4150D0DD47D3} = {1789C36D-CC0C-4C5D-B2C6-3B71D914B7B5}
+		{8AF32689-4D56-4DE7-85B1-324FC7AC9723} = {4CF30046-5039-4AE8-8AFF-4DA11EE4AC9C}
+		{FBBF8FC8-4E82-4E5E-833D-2CEC6F130B18} = {4CF30046-5039-4AE8-8AFF-4DA11EE4AC9C}
+		{26A18C19-479E-495B-A8F2-1BAA591D7DF8} = {1789C36D-CC0C-4C5D-B2C6-3B71D914B7B5}
+		{A5441C94-A9F8-4577-B2E6-7F50FB7C76F7} = {1789C36D-CC0C-4C5D-B2C6-3B71D914B7B5}
+		{BA3CA6C1-34A3-4582-9EE3-64DA5F144C3D} = {1789C36D-CC0C-4C5D-B2C6-3B71D914B7B5}
 	EndGlobalSection
 EndGlobal
