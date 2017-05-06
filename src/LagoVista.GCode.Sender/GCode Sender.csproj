@@ -35,6 +35,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Interfaces\IBoardAlignmentManager.cs" />
+    <Compile Include="Interfaces\IBoardAlignmentPositionManager.cs" />
     <Compile Include="Interfaces\IPCBManager.cs" />
     <Compile Include="Interfaces\IGCodeFileManager.cs" />
     <Compile Include="Interfaces\IMachine.cs" />
@@ -71,6 +72,7 @@
     </Compile>
     <Compile Include="Machine\SimulatedMachine.cs" />
     <Compile Include="Managers\BoardAlignmentManager.cs" />
+    <Compile Include="Managers\BoardAlignmentPositionManager.cs" />
     <Compile Include="Managers\GCodeFileManager.Actions.cs">
       <DependentUpon>GCodeFileManager.cs</DependentUpon>
     </Compile>

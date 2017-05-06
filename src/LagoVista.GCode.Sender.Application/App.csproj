@@ -162,6 +162,7 @@
     <Compile Include="Converters\HeightMapProbePoint2PointConverter.cs" />
     <Compile Include="Converters\Lines2Visual3DConverter.cs" />
     <Compile Include="Converters\MessageTypeConverter.cs" />
+    <Compile Include="Converters\NotNullEnabledConverter.cs" />
     <Compile Include="Converters\PointConverter.cs" />
     <Compile Include="EditGCode.xaml.cs">
       <DependentUpon>EditGCode.xaml</DependentUpon>
@@ -201,6 +202,12 @@
     <Compile Include="ViewModels\MachineVisionViewModel.cs" />
     <Compile Include="ViewModels\MachineVisionViewModel.Properties.cs">
       <DependentUpon>MachineVisionViewModel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\FeederLibraryWindow.xaml.cs">
+      <DependentUpon>FeederLibraryWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\PackageLibraryWindow.xaml.cs">
+      <DependentUpon>PackageLibraryWindow.xaml</DependentUpon>
     </Compile>
     <Page Include="About.xaml">
       <SubType>Designer</SubType>
@@ -322,6 +329,14 @@
     <Page Include="SettingsWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\FeederLibraryWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\PackageLibraryWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <ItemGroup>

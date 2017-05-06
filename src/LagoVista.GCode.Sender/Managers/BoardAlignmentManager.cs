@@ -98,15 +98,10 @@ namespace LagoVista.GCode.Sender.Managers
         ILogger _logger;
         IPCBManager _boardManager;
         IPointStabilizationFilter _pointStabilizationFilter;
-
-        /* Actual measured when the machine finds the first fiducial */
-        Point2D<double> _machineLocationFirstFiducial;
+        IBoardAlignmentPositionManager _positionManager;
 
         Point2D<double> _targetLocation;
-        Point2D<double> _expectedMachineLocationSecondFiducial;
 
-        /* Actual measured when the machine finds the second fiducial */
-        Point2D<double> _machineLocationSecondFiducial;
 
         Timer _timer;
 
@@ -124,6 +119,8 @@ namespace LagoVista.GCode.Sender.Managers
             _boardManager = boardManager;
             _machine.PropertyChanged += _machine_PropertyChanged;
             _pointStabilizationFilter = pointStabilizationFilter;
+
+            _positionManager = new BoardAlignmentPositionManager(boardManager);
 
             _timer = new Timer(Timer_Tick, null, Timeout.Infinite, Timeout.Infinite);
         }
@@ -238,26 +235,18 @@ namespace LagoVista.GCode.Sender.Managers
 
         public void CalculateOffsets()
         {
-            var actualTheta = Math.Atan2(_machineLocationSecondFiducial.Y - _machineLocationFirstFiducial.Y, _machineLocationSecondFiducial.X - _machineLocationFirstFiducial.X);
-            var expectedTheta = Math.Atan2(_expectedMachineLocationSecondFiducial.Y - _machineLocationFirstFiducial.Y, _machineLocationSecondFiducial.X - _machineLocationFirstFiducial.X);
-            var deltaTheta =  expectedTheta - actualTheta;
-
-            var initialX = _machineLocationFirstFiducial.X - _boardManager.FirstFiducial.X;
-            var initialY = _machineLocationFirstFiducial.Y - _boardManager.FirstFiducial.Y;
-
-            Debug.WriteLine($"{initialX.ToDim()}x{initialY.ToDim()} - {actualTheta.ToDegrees().ToDim()} - {expectedTheta.ToDegrees().ToDim()}");
-
-            var initialPoint = new Point2D<double>(initialX, initialY);
-            var rotatedPoint = initialPoint;
-
-            _boardManager.SetMeasuredOffset(rotatedPoint, deltaTheta);
+            _boardManager.SetMeasuredOffset(_positionManager.OffsetPoint, _positionManager.RotationOffset);
 
             _machine.PCBManager.Tool1Navigation = true;
-            _machine.GotoPoint(rotatedPoint);
+
+            /* Move to the new origin */
+            _machine.GotoPoint(_positionManager.OffsetPoint);
+
+            /* Set the new XY zero of the machine to the current location, note the move must be completed first */
             _machine.SendCommand("G10 L20 P0 X0 Y0");
 
-            _machine.AddStatusMessage(StatusMessageTypes.Info, $"Board Angle: {Math.Round(deltaTheta.ToDegrees(), 3)}deg");
-            _machine.AddStatusMessage(StatusMessageTypes.Info, $"Board Offset: {rotatedPoint.X.ToDim()}x{rotatedPoint.Y.ToDim()}");
+            _machine.AddStatusMessage(StatusMessageTypes.Info, $"Board Angle: {Math.Round(_positionManager.RotationOffset.ToDegrees(), 3)}deg");
+            _machine.AddStatusMessage(StatusMessageTypes.Info, $"Board Offset: {_positionManager.OffsetPoint.X.ToDim()}x{_positionManager.OffsetPoint.Y.ToDim()}");
         }
 
         public void CircleLocated(Point2D<double> cameraOffsetPixels)
@@ -278,15 +267,8 @@ namespace LagoVista.GCode.Sender.Managers
                         Math.Abs(stabilizedPoint.Y) < EPSILON_FIDUCIAL_PIXELS)
                     {
                         _pointStabilizationFilter.Reset();
-                        _machineLocationFirstFiducial = _machinePosition;
-                        _targetLocation = new Point2D<double>()
-                        {
-                            X = _machinePosition.X + (_boardManager.SecondFiducial.X - _boardManager.FirstFiducial.X),
-                            Y = _machinePosition.Y + (_boardManager.SecondFiducial.Y - _boardManager.FirstFiducial.Y),
-                        };
-
-                        _expectedMachineLocationSecondFiducial = _targetLocation;
-
+                        _positionManager.FirstLocated = _machinePosition;
+                       
                         _machine.AddStatusMessage(StatusMessageTypes.Info, "Board Alignment - Centered First Fiducial ");
                         _machine.AddStatusMessage(StatusMessageTypes.Info, "Board Alignment - Jogging to Expected Second Fiducial");
 
@@ -315,7 +297,7 @@ namespace LagoVista.GCode.Sender.Managers
                         _machine.AddStatusMessage(StatusMessageTypes.Info, "Board Alignment - Centered Second Fiducial ");
                         _machine.AddStatusMessage(StatusMessageTypes.Info, "Board Alignment - Completed ");
 
-                        _machineLocationSecondFiducial = _machinePosition;
+                        _positionManager.SecondLocated = _machinePosition;
                         State = BoardAlignmentManagerStates.BoardAlignmentDetermined;
                         _lastEvent = DateTime.Now;
 
@@ -338,18 +320,7 @@ namespace LagoVista.GCode.Sender.Managers
                 case BoardAlignmentManagerStates.CenteringSecondFiducial: break;
             }
         }
-
-        public Point2D<double> FirstFiducialMachineLocation
-        {
-            get { return _machineLocationFirstFiducial; }
-            set { Set(ref _machineLocationFirstFiducial, value); }
-        }
-
-        public Point2D<double> SecondFiducialMachineLocation
-        {
-            get { return _machineLocationSecondFiducial; }
-            set { Set(ref _machineLocationSecondFiducial, value); }
-        }
+        
 
         public BoardAlignmentManagerStates State
         {

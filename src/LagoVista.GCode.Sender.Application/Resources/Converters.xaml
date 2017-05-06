@@ -4,6 +4,7 @@
     <cvtrs:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
     <cvtrs:ColorEnabledConverter x:Key="ColorEnabledConverter" />
     <cvtrs:PointConverter x:Key="PointConverter" />
+    <cvtrs:NotNullEnabledConverter x:Key="NotNullEnabledConverter" />
     <cvtrs:ToolTopPointConverter x:Key="ToolTopPointConverter" />
     <cvtrs:Lines2Visual3DConverter x:Key="Lines2Visual3DConverter" />
     <cvtrs:HeightMap2MeshConverter x:Key="HeightMap2MeshConverter" />

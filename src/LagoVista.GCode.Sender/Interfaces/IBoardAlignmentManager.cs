@@ -34,5 +34,7 @@ namespace LagoVista.GCode.Sender.Interfaces
         void AlignBoard();
 
         BoardAlignmentManagerStates State { get; set; }
+
+        void CalculateOffsets();
     }
 }
