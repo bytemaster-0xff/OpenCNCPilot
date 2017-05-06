@@ -10,7 +10,7 @@ using System.Diagnostics;
 
 namespace LagoVista.Core.GCode.Parser
 {
-    public partial class GCodeParser
+    public partial class GCodeParser : IGCodeParser
     {
         public bool Diagnostics { get; set; } = true;
 

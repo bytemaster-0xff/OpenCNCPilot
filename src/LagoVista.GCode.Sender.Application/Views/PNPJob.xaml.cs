@@ -1,5 +1,4 @@
-﻿using LagoVista.PickAndPlace.ViewModels;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,15 +15,13 @@ using System.Windows.Shapes;
 namespace LagoVista.GCode.Sender.Application.Views
 {
     /// <summary>
-    /// Interaction logic for FeederLibraryWindow.xaml
+    /// Interaction logic for PNPJob.xaml
     /// </summary>
-    public partial class FeederLibraryWindow : Window
+    public partial class PNPJob : Window
     {
-        public FeederLibraryWindow()
+        public PNPJob()
         {
             InitializeComponent();
-
-            DataContext = new FeederDefinitionsViewModel();
         }
     }
 }

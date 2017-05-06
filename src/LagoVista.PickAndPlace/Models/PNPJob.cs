@@ -17,6 +17,11 @@ namespace LagoVista.PickAndPlace.Models
         [JsonIgnore]
         public PCB Board { get { return _board; } }
 
+        public PnPJob()
+        {
+            Feeders = new List<Feeder>();
+            Parts = new List<Part>();
+        }
 
         public string PackagesPath { get; set; }
 
@@ -29,7 +34,9 @@ namespace LagoVista.PickAndPlace.Models
             set { Set(ref _eagleBRDFilePath, value); }
         }
 
+        public List<Part> Parts { get; set; }
 
+        public List<Feeder> Feeders { get; set; }
 
         public  Task OpenAsync()
         {

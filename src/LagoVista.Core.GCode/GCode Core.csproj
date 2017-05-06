@@ -59,6 +59,7 @@
     <Compile Include="Parser\GCodeParser.Helpers.cs" />
     <Compile Include="Parser\GCodeParser.Motion.cs" />
     <Compile Include="Parser\GCodeParser.Position.cs" />
+    <Compile Include="Parser\IGCodeParser.cs" />
     <Compile Include="Parser\ParseException.cs" />
     <Compile Include="Parser\ParserState.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

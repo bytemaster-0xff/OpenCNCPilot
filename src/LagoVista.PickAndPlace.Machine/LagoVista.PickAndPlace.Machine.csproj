@@ -97,15 +97,21 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="Channel\Connection.cs" />
+    <Compile Include="Channel\IConnection.cs" />
+    <Compile Include="Channel\IServer.cs" />
     <Compile Include="Channel\Server.cs" />
     <Compile Include="Drivers\A4988.cs" />
     <Compile Include="Drivers\EndStop.cs" />
-    <Compile Include="Drivers\StepperDriver.cs" />
+    <Compile Include="Drivers\IA4988.cs" />
+    <Compile Include="Drivers\MotorPower.cs" />
     <Compile Include="Extensions\ArrayHelpers.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\Axis.cs" />
+    <Compile Include="Services\IAxis.cs" />
+    <Compile Include="Services\Machine.cs" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
@@ -133,7 +139,12 @@
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\LagoVista.Core.GCode\GCode Core.csproj">
+      <Project>{26a18c19-479e-495b-a8f2-1baa591d7df8}</Project>
+      <Name>GCode Core</Name>
+    </ProjectReference>
+  </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>

@@ -21,7 +21,7 @@ namespace LagoVista.PickAndPlace.ViewModels
         public FeederDefinitionsViewModel()
         {
             _feederLibrary = new FeederLibrary();
-            FeederDefintions = new ObservableCollection<FeederDefinition>();
+            FeederDefintions = new ObservableCollection<Feeder>();
 
             AddFeederCommand = new RelayCommand(AddPackage, () => CurrentFeeder == null);
             SaveFeederCommand = new RelayCommand(SavePackage, () => CurrentFeeder != null);
@@ -36,8 +36,8 @@ namespace LagoVista.PickAndPlace.ViewModels
 
         private string _fileName;
 
-        ObservableCollection<FeederDefinition> _feederDefintions;
-        public ObservableCollection<FeederDefinition> FeederDefintions
+        ObservableCollection<Feeder> _feederDefintions;
+        public ObservableCollection<Feeder> FeederDefintions
         {
             get { return _feederDefintions; }
             set
@@ -48,7 +48,7 @@ namespace LagoVista.PickAndPlace.ViewModels
 
         public void AddPackage()
         {
-            CurrentFeeder = new FeederDefinition();
+            CurrentFeeder = new Feeder();
             _isEditing = false;
             AddFeederCommand.RaiseCanExecuteChanged();
             SaveFeederCommand.RaiseCanExecuteChanged();
@@ -116,8 +116,8 @@ namespace LagoVista.PickAndPlace.ViewModels
             SaveLibraryCommand.RaiseCanExecuteChanged();
         }
 
-        FeederDefinition _currentPackage;
-        public FeederDefinition CurrentFeeder
+        Feeder _currentPackage;
+        public Feeder CurrentFeeder
         {
             get { return _currentPackage; }
             set

@@ -41,31 +41,27 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DeviceManagement, Version=0.1.0.0, Culture=neutral, PublicKeyToken=fd6496bcaffe247a, processorArchitecture=MSIL">
-      <HintPath>..\packages\DeviceManagementPackage.0.1.0\lib\net40\DeviceManagement.dll</HintPath>
-    </Reference>
     <Reference Include="DirectShowLib-2005">
-      <HintPath>..\Lib\DirectShowLib-2005.dll</HintPath>
+      <HintPath>..\..\Lib\DirectShowLib-2005.dll</HintPath>
     </Reference>
     <Reference Include="Emgu.CV.UI, Version=3.1.0.2504, Culture=neutral, PublicKeyToken=7281126722ab4438, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Lib\Emgu.CV.UI.dll</HintPath>
+      <HintPath>..\..\Lib\Emgu.CV.UI.dll</HintPath>
     </Reference>
     <Reference Include="Emgu.CV.World, Version=3.1.0.2504, Culture=neutral, PublicKeyToken=7281126722ab4438, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Lib\Emgu.CV.World.dll</HintPath>
+      <HintPath>..\..\Lib\Emgu.CV.World.dll</HintPath>
     </Reference>
     <Reference Include="FontAwesome.WPF, Version=4.7.0.37774, Culture=neutral, PublicKeyToken=0758b07a11a4f466, processorArchitecture=MSIL">
-      <HintPath>..\packages\FontAwesome.WPF.4.7.0.9\lib\net40\FontAwesome.WPF.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\..\packages\FontAwesome.WPF.4.7.0.9\lib\net40\FontAwesome.WPF.dll</HintPath>
     </Reference>
     <Reference Include="HelixToolkit, Version=2015.1.715.0, Culture=neutral, PublicKeyToken=52aa3500039caf0d, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Lib\HelixToolkit.dll</HintPath>
+      <HintPath>..\..\Lib\HelixToolkit.dll</HintPath>
     </Reference>
     <Reference Include="HelixToolkit.Wpf, Version=2015.1.715.0, Culture=neutral, PublicKeyToken=52aa3500039caf0d, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Lib\HelixToolkit.Wpf.dll</HintPath>
+      <HintPath>..\..\Lib\HelixToolkit.Wpf.dll</HintPath>
     </Reference>
     <Reference Include="LagoVista.Core, Version=0.8.0.0, Culture=neutral, PublicKeyToken=2698135e9954a85d, processorArchitecture=MSIL">
       <HintPath>..\..\packages\LagoVista.Core.0.8.155-alpha01280\lib\netstandard1.2\LagoVista.Core.dll</HintPath>
@@ -74,7 +70,7 @@
       <HintPath>..\..\packages\LagoVista.Core.WPF.0.8.156-alpha00386\lib\451\LagoVista.Core.WPF.dll</HintPath>
     </Reference>
     <Reference Include="Markdown.Xaml">
-      <HintPath>..\Lib\Markdown.Xaml.dll</HintPath>
+      <HintPath>..\..\Lib\Markdown.Xaml.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Newtonsoft.Json.10.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -209,6 +205,9 @@
     <Compile Include="Views\PackageLibraryWindow.xaml.cs">
       <DependentUpon>PackageLibraryWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\PNPJob.xaml.cs">
+      <DependentUpon>PNPJob.xaml</DependentUpon>
+    </Compile>
     <Page Include="About.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -335,6 +334,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\PackageLibraryWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\PNPJob.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

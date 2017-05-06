@@ -1,4 +1,5 @@
-﻿using Microsoft.IoT.Lightning.Providers;
+﻿using LagoVista.Core.Models;
+using Microsoft.IoT.Lightning.Providers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,57 +9,105 @@ using Windows.Devices.Gpio;
 
 namespace LagoViata.PNP.Drivers
 {
-    public enum Direction
-    {
-        Forward,
-        Backwards
-    }
-
-    public class A4988
+    
+    public class A4988 : ModelBase, IA4988
     {
         private int _stepPinNumber;
         private int _dirPinNumber;
         
         GpioPin _stepPin;
         GpioPin _dirPin;
-        
+
+        /// <summary>
+        /// Last micro seconds when update was ran or most recent one if not busy.
+        /// </summary>
+        long _lastMicroSeconds;
+
+        /// <summary>
+        /// When the update loop should run again if we are busy.
+        /// </summary>
+        long _nextMicroSeconds;
+
+        /// <summary>
+        /// Calculated microseconds for pausing.
+        /// </summary>
+        long _pauseMicroSeconds;
+
+        private int _stepsRemaining;
+        private int _stepsRequested;
+        private GpioPinValue _previousValue = GpioPinValue.Low;
 
         public A4988(int stepPin, int dirPin)
         {
             _stepPinNumber = stepPin;
             _dirPinNumber = dirPin;
-
         }
 
-        public async Task Init()
+        public void Init(GpioController gpioController)
         {
-            if (LightningProvider.IsLightningEnabled)
-            {
-                var gpioController = (await GpioController.GetControllersAsync(LightningGpioProvider.GetGpioProvider()))[0];
-
-                _stepPin = gpioController.OpenPin(_stepPinNumber);
-                _dirPin = gpioController.OpenPin(_dirPinNumber);
-            }        
+            _stepPin = gpioController.OpenPin(_stepPinNumber);
+            _dirPin = gpioController.OpenPin(_dirPinNumber);
+        }
+        
+        public double PercentComplete
+        {
+            get; private set;
         }
 
-        public async Task Step(int steps, Direction direction )
+        private bool _isBusy = false;
+        
+        public bool IsBusy
         {
-            await Task.Run(() =>
+            get { return _isBusy; }
+            set { Set(ref _isBusy, value); }
+        }
+
+        public void Start(int steps, double feedRate, Direction direction)
+        {
+            _stepsRemaining = steps;
+            _stepsRequested = steps;
+            _dirPin.Write(direction == Direction.Backwards ? GpioPinValue.Low : GpioPinValue.High);
+            IsBusy = true;
+
+            _pauseMicroSeconds = 2000;
+            _nextMicroSeconds = _lastMicroSeconds;
+        }
+
+        public void Kill()
+        {
+            IsBusy = false;
+            _stepsRemaining = 0;
+        }
+
+        public void Update(long uSeconds)
+        {
+            if (!IsBusy)
             {
-                _dirPin.Write(direction == Direction.Backwards ? GpioPinValue.Low : GpioPinValue.High);
-
-                var sw = new System.Diagnostics.Stopwatch();
-
-                for (var idx = 0; idx < steps; ++idx)
+                //Just grab the value so we can use it the next time we want to move.
+                _lastMicroSeconds = uSeconds;
+            }
+            else
+            {
+                if (uSeconds > _nextMicroSeconds)
                 {
-                    _stepPin.Write(GpioPinValue.High);
-                    sw.Start(); while ((sw.Elapsed).TotalMilliseconds < 10) { }
-                    sw.Reset();
-                    _stepPin.Write(GpioPinValue.Low);
-                    sw.Start(); while ((sw.Elapsed).TotalMilliseconds < 10) { }
-                    sw.Reset();
+                    if (_previousValue == GpioPinValue.Low)
+                    {
+                        _stepPin.Write(GpioPinValue.High);
+                    }
+                    else
+                    {
+                        _stepPin.Write(GpioPinValue.Low);
+                        _stepsRemaining--;
+                    }
+
+                    if (_stepsRemaining == 0)
+                    {
+                        IsBusy = false;
+                    }
+
+                    _nextMicroSeconds = uSeconds + _pauseMicroSeconds;
                 }
-            });
+            }
         }
     }
 }

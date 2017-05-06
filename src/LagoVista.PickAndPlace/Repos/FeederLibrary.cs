@@ -10,12 +10,12 @@ namespace LagoVista.PickAndPlace.Repos
 {
     class FeederLibrary
     {
-        public Task<ObservableCollection<FeederDefinition>> GetFeederDefinitions(string path)
+        public Task<ObservableCollection<Feeder>> GetFeederDefinitions(string path)
         {
-            return Core.PlatformSupport.Services.Storage.GetAsync<ObservableCollection<FeederDefinition>>(path);
+            return Core.PlatformSupport.Services.Storage.GetAsync<ObservableCollection<Feeder>>(path);
         }
 
-        public Task SaveFeederDefinitions(ObservableCollection<FeederDefinition> feederDefinitions, string path)
+        public Task SaveFeederDefinitions(ObservableCollection<Feeder> feederDefinitions, string path)
         {
             return Core.PlatformSupport.Services.Storage.StoreAsync(feederDefinitions, path);
         }

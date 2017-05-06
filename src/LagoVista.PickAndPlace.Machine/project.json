@@ -1,7 +1,8 @@
 ﻿{
   "dependencies": {
+    "LagoVista.Core": "0.8.155-alpha01280",
     "Microsoft.IoT.Lightning": "1.1.0",
-    "Microsoft.NETCore.UniversalWindowsPlatform": "5.2.3"
+    "Microsoft.NETCore.UniversalWindowsPlatform": "5.3.3"
   },
   "frameworks": {
     "uap10.0": {}

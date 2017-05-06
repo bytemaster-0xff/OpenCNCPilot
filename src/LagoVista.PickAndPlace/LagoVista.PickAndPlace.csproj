@@ -54,6 +54,7 @@
     <Compile Include="Models\Feeder.cs" />
     <Compile Include="Models\FeederDefinition.cs" />
     <Compile Include="Models\PnPJob.cs" />
+    <Compile Include="Models\Row.cs" />
     <Compile Include="PnPManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repos\FeederLibrary.cs" />
