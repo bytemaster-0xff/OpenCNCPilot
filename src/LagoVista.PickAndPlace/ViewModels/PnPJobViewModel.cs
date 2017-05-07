@@ -2,6 +2,7 @@
 using LagoVista.Core.ViewModels;
 using LagoVista.EaglePCB.Models;
 using LagoVista.PickAndPlace.Models;
+using LagoVista.PickAndPlace.Repos;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -19,8 +20,7 @@ namespace LagoVista.PickAndPlace.ViewModels
         private PCB _board;
         private BOM _billOfMaterials;
 
-        private ObservableCollection<Models.Package> _packages;
-        private ObservableCollection<Models.Feeder> _availableFeeders;
+        private FeederLibrary _feederLibrary;
 
         public PnPJobViewModel(PCB pcb, Models.PnPJob job)
         {
@@ -28,7 +28,12 @@ namespace LagoVista.PickAndPlace.ViewModels
             _billOfMaterials = new BOM(pcb);
             _job = job;
 
-            Feeders = new ObservableCollection<Feeder>();
+            _feederLibrary = new FeederLibrary();
+
+            FeederTypes = new ObservableCollection<Feeder>();
+
+            AddFeederTypeFileCommand = new RelayCommand(AddFeederTypeFile);
+
 
             foreach (var entry in _billOfMaterials.SMDEntries)
             {
@@ -47,17 +52,19 @@ namespace LagoVista.PickAndPlace.ViewModels
                 }
             }
         }
+        
 
-        public void Init()
+        ObservableCollection<Feeder> _feederTypes;
+        public ObservableCollection<Feeder> FeederTypes
         {
-
+            get { return Job.Feeders; }
+            set { Set(ref _feeders, value); }
         }
 
         ObservableCollection<Feeder> _feeders;
         public ObservableCollection<Feeder> Feeders
         {
-            get { return _feeders; }
-            set { Set(ref _feeders, value); }
+            get { return Job.Feeders; }
         }
 
         Feeder _selectedFeeder;
@@ -77,7 +84,7 @@ namespace LagoVista.PickAndPlace.ViewModels
             get { return _billOfMaterials; }
         }
 
-        public List<Part> Parts
+        public ObservableCollection<Part> Parts
         {
             get { return Job.Parts; }
         }
@@ -134,8 +141,26 @@ namespace LagoVista.PickAndPlace.ViewModels
 
         }
 
+        public async void AddFeederTypeFile()
+        {
+            var fileName = await Popups.ShowOpenFileAsync("Feeder Libraries (*.fdrs) | *.fdrs");
+            if (!String.IsNullOrEmpty(fileName))
+            {
+                var feeders = await _feederLibrary.GetFeederDefinitions(fileName);
+                foreach(var feeder in feeders)
+                {
+                    if(!FeederTypes.Where(fdr=>fdr.Id == feeder.Id).Any())
+                    {
+                        FeederTypes.Add(feeder);
+                    }
+                }
+            }
+        }
+
         public RelayCommand OpenJobCommand { get; private set; }
 
         public RelayCommand SaveJobCommand { get; private set; }    
+
+        public RelayCommand AddFeederTypeFileCommand { get; private set; }
     }
 }

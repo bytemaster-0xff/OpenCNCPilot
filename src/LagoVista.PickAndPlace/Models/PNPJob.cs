@@ -4,6 +4,7 @@ using LagoVista.EaglePCB.Models;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,8 +20,8 @@ namespace LagoVista.PickAndPlace.Models
 
         public PnPJob()
         {
-            Feeders = new List<Feeder>();
-            Parts = new List<Part>();
+            Feeders = new ObservableCollection<Feeder>();
+            Parts = new ObservableCollection<Part>();
         }
 
         public string PackagesPath { get; set; }
@@ -34,9 +35,9 @@ namespace LagoVista.PickAndPlace.Models
             set { Set(ref _eagleBRDFilePath, value); }
         }
 
-        public List<Part> Parts { get; set; }
+        public ObservableCollection<Part> Parts { get; set; }
 
-        public List<Feeder> Feeders { get; set; }
+        public ObservableCollection<Feeder> Feeders { get; set; }
 
         public  Task OpenAsync()
         {

@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:LagoVista.GCode.Sender.Application.Views"
         WindowStartupLocation="CenterOwner"
         mc:Ignorable="d"
-        Title="Pick and Place Job" Height="500" Width="600">
+        Title="Pick and Place Job" Height="800" Width="1200">
     <Grid>
         <TabControl>
             <TabItem Header="Parts">
@@ -65,20 +65,26 @@
             <TabItem Header="Feeders">
                 <Grid>
                     <Grid.ColumnDefinitions >
-                        <ColumnDefinition Width="40*" />
-                        <ColumnDefinition Width="60*" />
+                        <ColumnDefinition Width="50*" />
+                        <ColumnDefinition Width="30" />
+                        <ColumnDefinition Width="50*" />
                     </Grid.ColumnDefinitions>
-                    <ListView>
+                    <ListView ItemsSource="{Binding FeederTypes}">
                         <ListView.ItemTemplate>
                             <DataTemplate>
                                 <Grid>
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="80" />
-                                        <ColumnDefinition Width="80" />
+                                        <ColumnDefinition Width="50*" />
+                                        <ColumnDefinition Width="10" />
+                                        <ColumnDefinition Width="50*" />
                                     </Grid.ColumnDefinitions>
+                                        
                                 </Grid>
                             </DataTemplate>
                         </ListView.ItemTemplate>
+                    </ListView>
+                    <ListView ItemsSource="{Binding FeederTypes}" Grid.Column="2">
+
                     </ListView>
                 </Grid>
             </TabItem>
