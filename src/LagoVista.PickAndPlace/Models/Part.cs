@@ -9,6 +9,7 @@ namespace LagoVista.PickAndPlace.Models
 {
     public class Part : ModelBase
     {
+        public int Count { get; set; }
         public Package Package { get; set; }
 
         public String PackageName { get; set; }

@@ -17,9 +17,9 @@ namespace LagoVista.GCode.Sender.Application.Views
     /// <summary>
     /// Interaction logic for PNPJob.xaml
     /// </summary>
-    public partial class PNPJob : Window
+    public partial class PNPJobWindow : Window
     {
-        public PNPJob()
+        public PNPJobWindow()
         {
             InitializeComponent();
         }

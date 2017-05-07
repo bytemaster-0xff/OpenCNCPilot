@@ -38,6 +38,8 @@
     <Compile Include="Extensions\XElementExtensions.cs" />
     <Compile Include="Managers\EagleParser.cs" />
     <Compile Include="Managers\GCodeEngine.cs" />
+    <Compile Include="Models\BOM.cs" />
+    <Compile Include="Models\BOMEntry.cs" />
     <Compile Include="Models\Circle.cs" />
     <Compile Include="Models\Component.cs" />
     <Compile Include="Models\ConsolidatedDrillBit.cs" />

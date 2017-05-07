@@ -1,0 +1,87 @@
+﻿<Window x:Class="LagoVista.GCode.Sender.Application.Views.PNPJobWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:LagoVista.GCode.Sender.Application.Views"
+        WindowStartupLocation="CenterOwner"
+        mc:Ignorable="d"
+        Title="Pick and Place Job" Height="500" Width="600">
+    <Grid>
+        <TabControl>
+            <TabItem Header="Parts">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <ToolBar>
+                        <Button Content="+" />
+                    </ToolBar>
+                    <ListView Grid.Row="0" ItemsSource="{Binding Parts}" HorizontalContentAlignment="Stretch" SelectedItem="{Binding SelectedPart, Mode=TwoWay}">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="40" />
+                                        <ColumnDefinition Width="100" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="80" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBlock Text="{Binding Count}" Grid.Column="0" />
+                                    <TextBlock Text="{Binding PackageName}" Grid.Column="1" />
+                                    <TextBlock Text="{Binding LibraryName}" Grid.Column="2" />
+                                    <TextBlock Text="{Binding Value}" Grid.Column="3" />
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                    <Grid  Grid.Row="1">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="80" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Label Content="Package" />
+                        <Label Content="Library" Grid.Row="1" />
+                        <Label Content="Value" Grid.Row="2" />
+                        <Label Content="Feeder" Grid.Row="3" />
+                        <Label Content="Row" Grid.Row="4" />
+                        <TextBlock Text="{Binding SelectedPart.PackageName}" Grid.Column="1" />
+                        <TextBlock Text="{Binding SelectedPart.LibraryName}" Grid.Row="1" Grid.Column="1" />
+                        <TextBlock Text="{Binding SelectedPart.Value}" Grid.Row="2" Grid.Column="1" />
+                        <ComboBox ItemsSource="{Binding Feeders}" SelectedItem="{Binding SelectedFeeder}" Grid.Row="3" Grid.Column="1" />
+                        <ComboBox ItemsSource="{Binding SelectedFeeder.Rows}" DisplayMemberPath="Binding Name" SelectedValuePath="Row" Grid.Row="4" Grid.Column="1" SelectedItem="{Binding SelectedPart.Row}" />
+                    </Grid>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Feeders">
+                <Grid>
+                    <Grid.ColumnDefinitions >
+                        <ColumnDefinition Width="40*" />
+                        <ColumnDefinition Width="60*" />
+                    </Grid.ColumnDefinitions>
+                    <ListView>
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="80" />
+                                        <ColumnDefinition Width="80" />
+                                    </Grid.ColumnDefinitions>
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </Grid>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Window>

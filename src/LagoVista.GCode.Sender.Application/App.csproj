@@ -205,8 +205,8 @@
     <Compile Include="Views\PackageLibraryWindow.xaml.cs">
       <DependentUpon>PackageLibraryWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\PNPJob.xaml.cs">
-      <DependentUpon>PNPJob.xaml</DependentUpon>
+    <Compile Include="Views\PNPJobWindow.xaml.cs">
+      <DependentUpon>PNPJobWindow.xaml</DependentUpon>
     </Compile>
     <Page Include="About.xaml">
       <SubType>Designer</SubType>
@@ -337,7 +337,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\PNPJob.xaml">
+    <Page Include="Views\PNPJobWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

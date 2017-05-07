@@ -22,13 +22,15 @@ namespace LagoVista.PickAndPlace.ViewModels
         private ObservableCollection<Models.Package> _packages;
         private ObservableCollection<Models.Feeder> _availableFeeders;
 
-        public PnPJobViewModel(PCB pcb, Models.PnPJob job, Models.Package packages)
+        public PnPJobViewModel(PCB pcb, Models.PnPJob job)
         {
             _board = pcb;
             _billOfMaterials = new BOM(pcb);
             _job = job;
 
-            foreach (var entry in _billOfMaterials.Entries)
+            Feeders = new ObservableCollection<Feeder>();
+
+            foreach (var entry in _billOfMaterials.SMDEntries)
             {
                 if (!Parts.Where(prt => prt.PackageName == entry.Package.Name &&
                                         prt.LibraryName == entry.Package.LibraryName &&
@@ -36,9 +38,11 @@ namespace LagoVista.PickAndPlace.ViewModels
                 {
                     Parts.Add(new Part()
                     {
+                        Count = entry.Components.Count,
                         LibraryName = entry.Package.LibraryName,
                         PackageName = entry.Package.Name,
                         Value = entry.Value
+
                     });
                 }
             }
@@ -47,6 +51,20 @@ namespace LagoVista.PickAndPlace.ViewModels
         public void Init()
         {
 
+        }
+
+        ObservableCollection<Feeder> _feeders;
+        public ObservableCollection<Feeder> Feeders
+        {
+            get { return _feeders; }
+            set { Set(ref _feeders, value); }
+        }
+
+        Feeder _selectedFeeder;
+        public Feeder SelectedFeeder
+        {
+            get { return _selectedFeeder; }
+            set { Set(ref _selectedFeeder, value); }
         }
 
         public PCB Board
@@ -64,6 +82,16 @@ namespace LagoVista.PickAndPlace.ViewModels
             get { return Job.Parts; }
         }
 
+
+        private Part _selectedPart;
+        public Part SelectedPart
+        {
+            get { return _selectedPart; }
+            set
+            {
+                Set(ref _selectedPart, value);
+            }
+        }
 
         private Models.PnPJob _job;
         public Models.PnPJob Job

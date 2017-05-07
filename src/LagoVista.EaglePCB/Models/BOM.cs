@@ -35,11 +35,11 @@ namespace LagoVista.EaglePCB.Models
                 }
 
                 entry.Components.Add(component);
-          
             }
         }
 
         public List<BOMEntry> Entries { get; private set; }
+        public List<BOMEntry> SMDEntries { get { return Entries.Where(prt => prt.Package.IsSMD).ToList(); } }
 
     }
 }

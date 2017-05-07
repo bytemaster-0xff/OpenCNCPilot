@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace LagoVista.PickAndPlace.Repos
 {
-    class FeederLibrary
+    public class FeederLibrary
     {
         public Task<ObservableCollection<Feeder>> GetFeederDefinitions(string path)
         {

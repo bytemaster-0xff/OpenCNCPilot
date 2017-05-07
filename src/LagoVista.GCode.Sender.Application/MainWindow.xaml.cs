@@ -12,6 +12,9 @@ using System.Windows.Controls;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
+using LagoVista.PickAndPlace.Models;
+using LagoVista.PickAndPlace.ViewModels;
+using LagoVista.PickAndPlace.Repos;
 
 namespace LagoVista.GCode.Sender.Application
 {
@@ -371,6 +374,35 @@ namespace LagoVista.GCode.Sender.Application
             var lbrWindow = new Views.FeederLibraryWindow();
             lbrWindow.Owner = this;
             lbrWindow.ShowDialog();
+        }
+
+        private void OpenPnPJob_Click(object sender, RoutedEventArgs e)
+        {
+           
+        }
+
+        private void NewPnPJob_Click(object sender, RoutedEventArgs e)
+        {
+            if (ViewModel.Machine.PCBManager.HasProject)
+            {
+                if (ViewModel.Machine.PCBManager.HasBoard)
+                {
+                    var job = new PnPJob();
+                    var pnpViewModel = new PnPJobViewModel(ViewModel.Machine.PCBManager.Board, job);
+                    var jobWindow = new Views.PNPJobWindow();
+                    jobWindow.DataContext = pnpViewModel;
+                    jobWindow.Owner = this;
+                    jobWindow.ShowDialog();
+                }
+                else
+                {
+                    MessageBox.Show("Please make sure your PCB Project includes a PCB.");
+                }
+            }
+            else
+            {
+                MessageBox.Show("Please open or create a PCB Project First.");
+            }
         }
     }
 }
