@@ -17,7 +17,7 @@ namespace LagoViata.PNP
             this.InitializeComponent();
             this.Suspending += OnSuspending;
             _theApp = this;
-            _server = new Server();
+            _server = new Server(9001);
         }
 
         public static App TheApp { get { return _theApp; } }
@@ -54,6 +54,12 @@ namespace LagoViata.PNP
                 await _server.StartListeningAsync();
             }
         }
+
+        public Server Server
+        {
+            get { return _server; }
+        }
+       
 
         void OnNavigationFailed(object sender, NavigationFailedEventArgs e)
         {

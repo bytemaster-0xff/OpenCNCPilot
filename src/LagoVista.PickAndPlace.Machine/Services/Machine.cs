@@ -1,4 +1,5 @@
 ﻿using LagoViata.PNP.Channel;
+using LagoViata.PNP.Drivers;
 using LagoVista.Core.GCode.Commands;
 using LagoVista.Core.GCode.Parser;
 using Microsoft.IoT.Lightning.Providers;
@@ -8,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.ApplicationModel.AppService;
 using Windows.Devices.Gpio;
 
 // May want to consider rebuilding and repackaging 
@@ -22,6 +24,8 @@ namespace LagoViata.PNP.Services
         readonly Axis _placeAxis;
         readonly Axis _solderAxis;
         readonly Axis _cAxis;
+
+        readonly MotorPower _motorPower;
 
         readonly IGCodeParser _parser;
 
@@ -52,6 +56,8 @@ namespace LagoViata.PNP.Services
             _axes.Add(_cAxis);
             _axes.Add(_placeAxis);
             _axes.Add(_solderAxis);
+
+            _motorPower = new MotorPower(26);
         }
 
         private void _connection_LineReceivedEvent(object sender, string cmd)
@@ -104,7 +110,15 @@ namespace LagoViata.PNP.Services
             if (LightningProvider.IsLightningEnabled)
             {
                 var gpioController = (await GpioController.GetControllersAsync(LightningGpioProvider.GetGpioProvider()))[0];
+                foreach(var axis in _axes)
+                {
+                    axis.Init(gpioController);
+                }
+
+                _motorPower.Init(gpioController);
             }
+
+            _motorPower.Enable();
         }
 
         GCodeCommand _curent;
@@ -116,42 +130,36 @@ namespace LagoViata.PNP.Services
 
         private void UpdateLoop()
         {
+            
             long totalMicroSeconds = 0;
             long lastMilliseconds = 0;
             var sw = new System.Diagnostics.Stopwatch();
-
-
-            /* Setup a 5ms Loop to check if any axis needs updating */
-            Task.Run(() =>
-            {
-                sw.Start(); while ((sw.ElapsedMilliseconds - lastMilliseconds) < 5) { }
-                lastMilliseconds = sw.ElapsedMilliseconds;
-                totalMicroSeconds += sw.ElapsedTicks / TimeSpan.TicksPerMillisecond;
-
-                foreach (var axis in _axes)
-                {
-                    axis.Update(totalMicroSeconds);
-                }
-            });
+            var pauseSW = new System.Diagnostics.Stopwatch();
+            sw.Start();
         }
 
         public void StartWorkLoop()
         {
+            UpdateLoop();
+
             Task.Run(() =>
             {
-                bool isBusy = _axes.Where(axis => axis.IsBusy == true).Any();
-
-                if(isBusy || _curent != null)
+                while (true)
                 {
-                    _curent = null;
-                }
+                    bool isBusy = _axes.Where(axis => axis.IsBusy == true).Any();
 
-                if (!isBusy)
-                {
-                    GCodeCommand cmd;
-                    if (_commandBuffer.TryDequeue(out cmd))
+                    if (isBusy || _curent != null)
                     {
-                        HandleCommand(cmd);
+                        _curent = null;
+                    }
+
+                    if (!isBusy)
+                    {
+                        GCodeCommand cmd;
+                        if (_commandBuffer.TryDequeue(out cmd))
+                        {
+                            HandleCommand(cmd);
+                        }
                     }
                 }
             });

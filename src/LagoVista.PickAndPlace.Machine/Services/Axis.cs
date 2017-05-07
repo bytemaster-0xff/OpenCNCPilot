@@ -10,6 +10,7 @@ namespace LagoViata.PNP.Services
         EndStop _minEndStop;
         EndStop _maxEndStop;
         bool _isHoming = false;
+        Direction _currentDirection;
 
         private bool _isBusy;
         public bool IsBusy
@@ -72,12 +73,12 @@ namespace LagoViata.PNP.Services
 
         public void Home()
         {
-
+            
         }
 
         public void Move(double newLocation, double feedRate)
         {
-
+            _stepper.Start(System.Convert.ToInt32(300 * newLocation), 1000, feedRate > 0 ? Direction.Forward : Direction.Backwards);
         }
 
         public void Update(long uSeconds)

@@ -2,6 +2,7 @@
 using Microsoft.IoT.Lightning.Providers;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -46,7 +47,9 @@ namespace LagoViata.PNP.Drivers
         public void Init(GpioController gpioController)
         {
             _stepPin = gpioController.OpenPin(_stepPinNumber);
+            _stepPin.SetDriveMode(GpioPinDriveMode.Output);
             _dirPin = gpioController.OpenPin(_dirPinNumber);
+            _stepPin.SetDriveMode(GpioPinDriveMode.Output);
         }
         
         public double PercentComplete
@@ -69,8 +72,10 @@ namespace LagoViata.PNP.Drivers
             _dirPin.Write(direction == Direction.Backwards ? GpioPinValue.Low : GpioPinValue.High);
             IsBusy = true;
 
-            _pauseMicroSeconds = 2000;
+            _pauseMicroSeconds = 200;
             _nextMicroSeconds = _lastMicroSeconds;
+
+            Debug.WriteLine($"Running {steps}");
         }
 
         public void Kill()
@@ -93,15 +98,18 @@ namespace LagoViata.PNP.Drivers
                     if (_previousValue == GpioPinValue.Low)
                     {
                         _stepPin.Write(GpioPinValue.High);
+                        _previousValue = GpioPinValue.High;
                     }
                     else
                     {
                         _stepPin.Write(GpioPinValue.Low);
                         _stepsRemaining--;
+                        _previousValue = GpioPinValue.Low;
                     }
 
                     if (_stepsRemaining == 0)
                     {
+                        Debug.WriteLine($"Finsihed!");
                         IsBusy = false;
                     }
 

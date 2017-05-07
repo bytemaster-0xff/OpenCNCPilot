@@ -1,8 +1,12 @@
-﻿using System;
+﻿using LagoViata.PNP.Services;
+using LagoVista.Core.GCode.Parser;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Windows.ApplicationModel.AppService;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -22,34 +26,59 @@ namespace LagoViata.PNP
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        Drivers.StepperDriver _stepperDriver;
+        Machine _machine;
+
+        AppServiceConnection _appServiceConnection;
 
         public MainPage()
         {
             this.InitializeComponent();
 
-            _stepperDriver = new Drivers.StepperDriver();
-
             this.Loaded += MainPage_Loaded;
+
+            _machine = new Machine(new GCodeParser(new Utils.Logger()), App.TheApp.Server.Connection);
         }
 
         private async void MainPage_Loaded(object sender, RoutedEventArgs e)
         {
-            await _stepperDriver.InitAsync();
+            await _machine.InitAsync();
+            //_machine.StartWorkLoop();
+
+            var listing = await AppServiceCatalog.FindAppServiceProvidersAsync("LagoVistaGCodeAppService");
+            var packageName = listing[0].PackageFamilyName;
+
+
+            _appServiceConnection = new AppServiceConnection();
+            _appServiceConnection.AppServiceName = "LagoVistaGCodeAppService";
+            _appServiceConnection.PackageFamilyName = packageName;
+
+            Debug.WriteLine("Got Here => " + packageName);
+
+            var status = await _appServiceConnection.OpenAsync();
+            if (status == AppServiceConnectionStatus.Success)
+            {
+                _appServiceConnection.RequestReceived += _appServiceConnection_RequestReceived;
+            }
+        }
+
+        private void _appServiceConnection_RequestReceived(AppServiceConnection sender, AppServiceRequestReceivedEventArgs args)
+        {
+            var msg = args.Request.Message["STATUS"];
+            Debug.WriteLine(msg);
         }
 
         private async void Forard_Click(object sender, RoutedEventArgs e)
         {
-            _stepperDriver.Enable();
-            await _stepperDriver.YAxis.Step(80, Drivers.Direction.Forward);
-            //_stepperDriver.Disable();
+            var msg = new ValueSet();
+            msg.Add("AXIS", Convert.ToInt32(3));
+            msg.Add("MULTIPLIER", Convert.ToInt32(2));
+            msg.Add("STEPS", Convert.ToInt64(300));
+            var sendstatus = await _appServiceConnection.SendMessageAsync(msg);
         }
 
-        private async  void Backwards_Click(object sender, RoutedEventArgs e)
+        private void Backwards_Click(object sender, RoutedEventArgs e)
         {
-            _stepperDriver.Enable();
-            await _stepperDriver.YAxis.Step(80, Drivers.Direction.Backwards);
-            //_stepperDriver.Disable();
+            
         }
     }
 }

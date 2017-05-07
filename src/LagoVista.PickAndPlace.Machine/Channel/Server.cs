@@ -26,7 +26,7 @@ namespace LagoViata.PNP.Channel
 
         private void WatchDogCallback(object state)
         {
-            if(_connection.IsOpen && _connection.Las)
+            
         }
        
         private void _listener_ConnectionReceived(Windows.Networking.Sockets.StreamSocketListener sender, Windows.Networking.Sockets.StreamSocketListenerConnectionReceivedEventArgs args)
