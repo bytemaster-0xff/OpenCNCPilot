@@ -1,5 +1,6 @@
 ﻿using LagoViata.PNP.Drivers;
 using LagoVista.Core.Models;
+using System;
 using Windows.Devices.Gpio;
 
 namespace LagoViata.PNP.Services
@@ -10,7 +11,8 @@ namespace LagoViata.PNP.Services
         EndStop _minEndStop;
         EndStop _maxEndStop;
         bool _isHoming = false;
-        Direction _currentDirection;
+        AppService _appService;
+        double _destination;
 
         private bool _isBusy;
         public bool IsBusy
@@ -24,9 +26,10 @@ namespace LagoViata.PNP.Services
             _stepper = new A4988(stepPin, dirPin);
         }
 
-        public void Init(GpioController gpioController)
+        public void Init(GpioController gpioController, AppService appService)
         {
-            _stepper.Init(gpioController);
+            _appService = appService;
+            _stepper.Init(gpioController, appService);
 
             if(_minEndStop != null)
             {
@@ -51,6 +54,12 @@ namespace LagoViata.PNP.Services
 
         public bool HasMaxEndStop { get { return _maxEndStop != null; } }
         public bool HasMinEndStop { get { return _maxEndStop != null; } }
+
+        public void  Completed()
+        {
+            IsBusy = false;
+            _currentLocation = _destination;
+        }
     
         
         public bool MaxEndStopTrigger { get { return HasMaxEndStop ? _maxEndStop.Triggered : false; } }
@@ -78,7 +87,14 @@ namespace LagoViata.PNP.Services
 
         public void Move(double newLocation, double feedRate)
         {
-            _stepper.Start(System.Convert.ToInt32(300 * newLocation), 1000, feedRate > 0 ? Direction.Forward : Direction.Backwards);
+            IsBusy = true;
+            _destination = newLocation;
+
+            var deltaLocation = newLocation - CurrentLocation;
+            var direction = (deltaLocation > 0) ? Direction.Forward : Direction.Backwards;
+            var steps = Convert.ToInt32(Math.Abs(deltaLocation) * 300);
+
+            _stepper.Start(steps, 1000, direction);
         }
 
         public void Update(long uSeconds)

@@ -3,32 +3,34 @@
 
 #include "Axis.h"
 
-// Use GPIO pin 5
-const unsigned int LED_PIN = GPIO5;
+extern void AxisCompleted(int axisNumber);
 
 extern bool m_bKill;
 
-extern Axis PasteAxis;
-extern Axis PlaceAxis;
-extern Axis CAxis;
-extern Axis YAxis;
-extern Axis XAxis;
+extern Axis^ PasteAxis;
+extern Axis^ PlaceAxis;
+extern Axis^ CAxis;
+extern Axis^ YAxis;
+extern Axis^ XAxis;
 
 void setup()
 {
-    // put your setup code here, to run once:
-
-    pinMode(LED_PIN, OUTPUT);
+	AxisCompleted(99);
+	XAxis->Init();
+	YAxis->Init();
+	CAxis->Init();
+	PasteAxis->Init();
+	PlaceAxis->Init();
 }
 
 void loop(){
 	//TODO May want to experiment with checking elapsed micros rather than delay...
-	delayMicroseconds(25);
+	delayMicroseconds(50);
 	if (!m_bKill) {
-		XAxis.Update();
-		YAxis.Update();
-		CAxis.Update();
-		PasteAxis.Update();
-		PlaceAxis.Update();
+		XAxis->Update();
+		YAxis->Update();
+		CAxis->Update();
+		PasteAxis->Update();
+		PlaceAxis->Update();
 	}
 }

@@ -6,11 +6,13 @@ using Microsoft.IoT.Lightning.Providers;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.AppService;
 using Windows.Devices.Gpio;
+using Windows.Foundation.Collections;
 
 // May want to consider rebuilding and repackaging 
 // https://github.com/ms-iot/lightning
@@ -35,6 +37,9 @@ namespace LagoViata.PNP.Services
         readonly List<Axis> _axes;
         readonly ConcurrentQueue<GCodeCommand> _commandBuffer;
 
+        AppServiceConnection _appServiceConnection;
+        AppService _appService;
+
         public Machine(IGCodeParser parser, IConnection connection)
         {
             _connection = connection;
@@ -44,11 +49,10 @@ namespace LagoViata.PNP.Services
             _axes = new List<Axis>();
             _commandBuffer = new ConcurrentQueue<GCodeCommand>();
 
-            _yAxis = new Axis(21, 20);
-            _xAxis = new Axis(19, 13);
-
-            _cAxis = new Axis(6, 5);
-            _placeAxis = new Axis(22, 27);
+            _xAxis = new Axis(19, 0);
+            _yAxis = new Axis(21, 1);
+            _cAxis = new Axis(6, 2);
+            _placeAxis = new Axis(22, 3);
             _solderAxis = new Axis(17, 4);
 
             _axes.Add(_xAxis);
@@ -96,23 +100,53 @@ namespace LagoViata.PNP.Services
             }
         }
 
-        public void HandleGCodeLine(String gcode)
+        public async void HandleGCodeLine(String gcode)
         {
+
             var cmd = _parser.ParseLine(gcode, 0);
             if(cmd != null)
             {
                 _commandBuffer.Enqueue(cmd);
+
             }
         }
 
         public async Task InitAsync()
         {
+            var listing = await AppServiceCatalog.FindAppServiceProvidersAsync("com.softwarelogistics.gcodemachine");
+            if (listing != null && listing.Any())
+            {
+                var packageName = listing[0].PackageFamilyName;
+                Debug.WriteLine("Found Package - Opening: " + packageName);
+
+                _appServiceConnection = new AppServiceConnection();
+                _appServiceConnection.PackageFamilyName = packageName;
+                _appServiceConnection.AppServiceName = "com.softwarelogistics.gcodemachine";
+
+                var status = await _appServiceConnection.OpenAsync();
+                if (status == AppServiceConnectionStatus.Success)
+                {
+                    Debug.WriteLine("Success Opening");
+                    _appServiceConnection.RequestReceived += _appServiceConnection_RequestReceived;
+                }
+                else
+                {
+                    Debug.WriteLine("Failed Opening " + status.ToString());
+                }
+
+                _appService = new AppService(_appServiceConnection);
+            }
+            else
+            {
+                Debug.Write("Could not connect to background service.");
+            }
+
             if (LightningProvider.IsLightningEnabled)
             {
                 var gpioController = (await GpioController.GetControllersAsync(LightningGpioProvider.GetGpioProvider()))[0];
-                foreach(var axis in _axes)
+                foreach (var axis in _axes)
                 {
-                    axis.Init(gpioController);
+                    axis.Init(gpioController, _appService);
                 }
 
                 _motorPower.Init(gpioController);
@@ -121,27 +155,44 @@ namespace LagoViata.PNP.Services
             _motorPower.Enable();
         }
 
+
+        private void _appServiceConnection_RequestReceived(AppServiceConnection sender, AppServiceRequestReceivedEventArgs args)
+        {
+            if (args.Request.Message.ContainsKey("STATUS"))
+            {
+                var msg = args.Request.Message["STATUS"];
+                Debug.WriteLine("STATUS: " + msg);
+            }
+
+            if (args.Request.Message.ContainsKey("DONE"))
+            {
+                var axis = Convert.ToInt32(args.Request.Message["DONE"]);
+                switch(axis)
+                {
+                    case 0: XAxis.Completed(); break;
+                    case 1: YAxis.Completed(); break;
+                    case 2: CAxis.Completed(); break;
+                    case 3: PlaceAxis.Completed(); break;
+                    case 4: SolderAxis.Completed(); break;
+                }
+            }
+        }
+
         GCodeCommand _curent;
 
         public void HandleCommand(GCodeCommand cmd)
         {
             _curent = cmd;
+            var movement = cmd as GCodeLine;
+            if(movement != null)
+            {
+                CAxis.Move(movement.End.Y, Convert.ToDouble(movement.Feed));
+            }
         }
-
-        private void UpdateLoop()
-        {
-            
-            long totalMicroSeconds = 0;
-            long lastMilliseconds = 0;
-            var sw = new System.Diagnostics.Stopwatch();
-            var pauseSW = new System.Diagnostics.Stopwatch();
-            sw.Start();
-        }
+        
 
         public void StartWorkLoop()
         {
-            UpdateLoop();
-
             Task.Run(() =>
             {
                 while (true)

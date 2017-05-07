@@ -15,7 +15,7 @@
   <mp:PhoneIdentity PhoneProductId="fb818208-6def-4bf8-93a7-8d2cddc4ae51" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
-    <DisplayName>GCode Sender</DisplayName>
+    <DisplayName>GCodeSender</DisplayName>
     <PublisherDisplayName>kevinw</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
@@ -29,7 +29,7 @@
   </Resources>
 
   <Applications>
-    <Application Id="App">
+    <Application Id="GCodeSenderApp">
       <uap:VisualElements
         DisplayName="LagoVista.GCode.Machine.AppService"
         Square150x150Logo="Assets\Square150x150Logo.png"
@@ -42,7 +42,7 @@
       </uap:VisualElements>
       <Extensions>
         <uap:Extension Category="windows.appService" EntryPoint="LagoVistaGCodeMachineAppService.StartupTask" >
-          <uap:AppService Name="LagoVistaGCodeAppService"/>
+          <uap:AppService Name="com.softwarelogistics.gcodemachine"/>
         </uap:Extension>
       </Extensions>
     </Application>

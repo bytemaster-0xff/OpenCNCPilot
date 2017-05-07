@@ -44,41 +44,40 @@ namespace LagoViata.PNP
             await _machine.InitAsync();
             //_machine.StartWorkLoop();
 
-            var listing = await AppServiceCatalog.FindAppServiceProvidersAsync("LagoVistaGCodeAppService");
-            var packageName = listing[0].PackageFamilyName;
-
-
-            _appServiceConnection = new AppServiceConnection();
-            _appServiceConnection.AppServiceName = "LagoVistaGCodeAppService";
-            _appServiceConnection.PackageFamilyName = packageName;
-
-            Debug.WriteLine("Got Here => " + packageName);
-
-            var status = await _appServiceConnection.OpenAsync();
-            if (status == AppServiceConnectionStatus.Success)
-            {
-                _appServiceConnection.RequestReceived += _appServiceConnection_RequestReceived;
-            }
+           
         }
 
         private void _appServiceConnection_RequestReceived(AppServiceConnection sender, AppServiceRequestReceivedEventArgs args)
         {
-            var msg = args.Request.Message["STATUS"];
-            Debug.WriteLine(msg);
+            if(args.Request.Message.ContainsKey("STATUS"))
+            {
+                var msg = args.Request.Message["STATUS"];
+                Debug.WriteLine("STATUS: " + msg);
+            }
+
+            if (args.Request.Message.ContainsKey("DONE"))
+            {
+                var msg = args.Request.Message["DONE"];
+                Debug.WriteLine("Axis Done: " + msg);
+            }
         }
 
         private async void Forard_Click(object sender, RoutedEventArgs e)
         {
             var msg = new ValueSet();
-            msg.Add("AXIS", Convert.ToInt32(3));
-            msg.Add("MULTIPLIER", Convert.ToInt32(2));
-            msg.Add("STEPS", Convert.ToInt64(300));
-            var sendstatus = await _appServiceConnection.SendMessageAsync(msg);
+            msg.Add("AXIS", Convert.ToInt32(4));
+            msg.Add("MULTIPLIER", Convert.ToInt32(1));
+            msg.Add("STEPS", Convert.ToInt32(20 * 300));
+             await _appServiceConnection.SendMessageAsync(msg);
         }
 
-        private void Backwards_Click(object sender, RoutedEventArgs e)
+        private async void Backwards_Click(object sender, RoutedEventArgs e)
         {
-            
+            var msg = new ValueSet();
+            msg.Add("AXIS", Convert.ToInt32(3));
+            msg.Add("MULTIPLIER", Convert.ToInt32(1));
+            msg.Add("STEPS", Convert.ToInt32(20 * 300));
+            await _appServiceConnection.SendMessageAsync(msg);
         }
     }
 }

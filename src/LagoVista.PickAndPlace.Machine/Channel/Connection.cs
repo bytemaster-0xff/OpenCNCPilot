@@ -100,7 +100,7 @@ namespace LagoViata.PNP.Channel
                                 _holdingBufferIndex = 0;
                                 _lastMessageDateStamp = DateTime.Now;
                             }
-                            if (idx == '\n')
+                            if (ch == '\n')
                             {
                                 _lastMessageDateStamp = DateTime.Now;
                                 var cmd = new String(_holdingBuffer, 0, _holdingBufferIndex);

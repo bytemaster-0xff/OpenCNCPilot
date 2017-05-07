@@ -13,9 +13,11 @@ namespace LagoViata.PNP.Drivers
     
     public class A4988 : ModelBase, IA4988
     {
-        private int _stepPinNumber;
+        private int _axis;
         private int _dirPinNumber;
-        
+
+        AppService _appService;
+
         GpioPin _stepPin;
         GpioPin _dirPin;
 
@@ -38,18 +40,16 @@ namespace LagoViata.PNP.Drivers
         private int _stepsRequested;
         private GpioPinValue _previousValue = GpioPinValue.Low;
 
-        public A4988(int stepPin, int dirPin)
+        public A4988(int axis, int dirPin)
         {
-            _stepPinNumber = stepPin;
+            _axis = axis;
             _dirPinNumber = dirPin;
         }
 
-        public void Init(GpioController gpioController)
+        public void Init(GpioController gpioController, AppService appService)
         {
-            _stepPin = gpioController.OpenPin(_stepPinNumber);
-            _stepPin.SetDriveMode(GpioPinDriveMode.Output);
+            _appService = appService;
             _dirPin = gpioController.OpenPin(_dirPinNumber);
-            _stepPin.SetDriveMode(GpioPinDriveMode.Output);
         }
         
         public double PercentComplete
@@ -86,6 +86,8 @@ namespace LagoViata.PNP.Drivers
 
         public void Update(long uSeconds)
         {
+
+            return;
             if (!IsBusy)
             {
                 //Just grab the value so we can use it the next time we want to move.
