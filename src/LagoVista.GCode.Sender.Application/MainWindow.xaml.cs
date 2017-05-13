@@ -376,19 +376,34 @@ namespace LagoVista.GCode.Sender.Application
             lbrWindow.ShowDialog();
         }
 
-        private void OpenPnPJob_Click(object sender, RoutedEventArgs e)
+        private async void OpenPnPJob_Click(object sender, RoutedEventArgs e)
         {
-           
+            var file = await Core.PlatformSupport.Services.Popups.ShowOpenFileAsync(Constants.PickAndPlaceProject);
+            if (!String.IsNullOrEmpty(file))
+            {
+                var job = await Core.PlatformSupport.Services.Storage.GetAsync<PnPJob>(file);
+                await job.OpenAsync();
+                var pnpViewModel = new PnPJobViewModel(job);
+                pnpViewModel.FileName = file;
+                await pnpViewModel.InitAsync();
+                var jobWindow = new Views.PNPJobWindow();
+                jobWindow.DataContext = pnpViewModel;
+                jobWindow.Owner = this;
+                jobWindow.ShowDialog();
+            }
         }
 
-        private void NewPnPJob_Click(object sender, RoutedEventArgs e)
+        private async void NewPnPJob_Click(object sender, RoutedEventArgs e)
         {
             if (ViewModel.Machine.PCBManager.HasProject)
             {
                 if (ViewModel.Machine.PCBManager.HasBoard)
                 {
                     var job = new PnPJob();
-                    var pnpViewModel = new PnPJobViewModel(ViewModel.Machine.PCBManager.Board, job);
+                    job.Board = ViewModel.Machine.PCBManager.Board;
+                    job.EagleBRDFilePath = ViewModel.Machine.PCBManager.Project.EagleBRDFilePath;
+                    var pnpViewModel = new PnPJobViewModel(job);
+                    await pnpViewModel.InitAsync();
                     var jobWindow = new Views.PNPJobWindow();
                     jobWindow.DataContext = pnpViewModel;
                     jobWindow.Owner = this;

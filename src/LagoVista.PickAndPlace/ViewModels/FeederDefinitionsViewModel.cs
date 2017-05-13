@@ -24,17 +24,15 @@ namespace LagoVista.PickAndPlace.ViewModels
             FeederDefintions = new ObservableCollection<Feeder>();
 
             AddFeederCommand = new RelayCommand(AddPackage, () => CurrentFeeder == null);
-            SaveFeederCommand = new RelayCommand(SavePackage, () => CurrentFeeder != null);
+            SaveFeederCommand = new RelayCommand(SaveFeeder, () => CurrentFeeder != null);
             CancelFeederCommand = new RelayCommand(CancelPackage, () => CurrentFeeder != null);
-
             SaveLibraryCommand = new RelayCommand(SaveLibrary, () => _isDirty == true);
-            OpenLibraryCommand = new RelayCommand(OpenLibrary);
-            DeletePackageCommand = new RelayCommand(DeletePackage, () => (CurrentFeeder != null && _isEditing == true));
+
+            DeleteFeederCommand = new RelayCommand(DeleteFeeder, () => (CurrentFeeder != null && _isEditing == true));
 
             CurrentFeeder = null;
         }
 
-        private string _fileName;
 
         ObservableCollection<Feeder> _feederDefintions;
         public ObservableCollection<Feeder> FeederDefintions
@@ -46,46 +44,36 @@ namespace LagoVista.PickAndPlace.ViewModels
             }
         }
 
+        public override async Task InitAsync()
+        {
+            FeederDefintions = await _feederLibrary.GetFeedersAsync();
+            await base.InitAsync();
+        }
+
         public void AddPackage()
         {
             CurrentFeeder = new Feeder();
             _isEditing = false;
             AddFeederCommand.RaiseCanExecuteChanged();
             SaveFeederCommand.RaiseCanExecuteChanged();
-            DeletePackageCommand.RaiseCanExecuteChanged();
+            DeleteFeederCommand.RaiseCanExecuteChanged();
             CancelFeederCommand.RaiseCanExecuteChanged();
         }
-
-        public async void OpenLibrary()
-        {
-            if (CurrentFeeder != null || _isDirty)
-            {
-                if (await Popups.ConfirmAsync("Lose Changes?", "You have unsaved work, opening a new file will cause you to lose changes.\r\n\r\nContinue?"))
-                {
-                    return;
-                }
-            }
-
-            var fileName = await Popups.ShowOpenFileAsync("Feeder Libraries (*.fdrs) | *.fdrs");
-            if (!String.IsNullOrEmpty(fileName))
-            {
-                FeederDefintions = await _feederLibrary.GetFeederDefinitions(fileName);
-            }
-        }
+        
 
         public void CancelPackage()
         {
             CurrentFeeder = null;
         }
 
-        public void DeletePackage()
+        public void DeleteFeeder()
         {
             _isDirty = true;
             FeederDefintions.Remove(CurrentFeeder);
             CurrentFeeder = null;
         }
 
-        public void SavePackage()
+        public void SaveFeeder()
         {
             if (!_isEditing)
             {
@@ -101,16 +89,7 @@ namespace LagoVista.PickAndPlace.ViewModels
 
         public async void SaveLibrary()
         {
-            if (String.IsNullOrEmpty(_fileName))
-            {
-                _fileName = await Popups.ShowSaveFileAsync("Feeder Libraries (*.fdrs) | *.fdrs");
-                if (String.IsNullOrEmpty(_fileName))
-                {
-                    return;
-                }
-            }
-
-            await _feederLibrary.SaveFeederDefinitions(FeederDefintions, _fileName);
+            await _feederLibrary.SaveFeederDefinitions(FeederDefintions);
 
             _isDirty = false;
             SaveLibraryCommand.RaiseCanExecuteChanged();
@@ -126,7 +105,7 @@ namespace LagoVista.PickAndPlace.ViewModels
                 Set(ref _currentPackage, value);
                 AddFeederCommand.RaiseCanExecuteChanged();
                 SaveFeederCommand.RaiseCanExecuteChanged();
-                DeletePackageCommand.RaiseCanExecuteChanged();
+                DeleteFeederCommand.RaiseCanExecuteChanged();
                 CancelFeederCommand.RaiseCanExecuteChanged();
             }
         }
@@ -136,7 +115,7 @@ namespace LagoVista.PickAndPlace.ViewModels
         public RelayCommand SaveLibraryCommand { get; private set; }
 
         public RelayCommand SaveFeederCommand { get; private set; }
-        public RelayCommand DeletePackageCommand { get; private set; }
+        public RelayCommand DeleteFeederCommand { get; private set; }
         public RelayCommand CancelFeederCommand { get; private set; }
     }
 }

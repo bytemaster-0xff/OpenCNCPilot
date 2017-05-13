@@ -1,4 +1,5 @@
-﻿using LagoVista.PickAndPlace.Models;
+﻿using LagoVista.Core.PlatformSupport;
+using LagoVista.PickAndPlace.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -10,14 +11,29 @@ namespace LagoVista.PickAndPlace.Repos
 {
     public class FeederLibrary
     {
-        public Task<ObservableCollection<Feeder>> GetFeederDefinitions(string path)
+        public async Task<ObservableCollection<Feeder>> GetFeedersAsync()
         {
-            return Core.PlatformSupport.Services.Storage.GetAsync<ObservableCollection<Feeder>>(path);
+            try
+            {
+                var feeders = await Services.Storage.GetAsync<ObservableCollection<Feeder>>("Feeders.dat");
+
+                if (feeders == null)
+                {
+                    return new ObservableCollection<Feeder>();
+                }
+
+
+                return feeders;
+            }
+            catch (Exception)
+            {
+                return new ObservableCollection<Feeder>();
+            }
         }
 
-        public Task SaveFeederDefinitions(ObservableCollection<Feeder> feederDefinitions, string path)
+        public Task SaveFeederDefinitions(ObservableCollection<Feeder> feederDefinitions)
         {
-            return Core.PlatformSupport.Services.Storage.StoreAsync(feederDefinitions, path);
+            return Core.PlatformSupport.Services.Storage.StoreAsync(feederDefinitions, "feeders.dat");
         }
     }
 }

@@ -110,6 +110,7 @@ namespace LagoVista.GCode.Sender
         public const double PixelToleranceEpsilon = 1.5;
         public const int PixelStabilizationToleranceCount = 10;
 
+        public static string PickAndPlaceProject = "Pick and Place|*.pnp|All Files|*.*";
         public static string PCBProject = "PCB Project|*.pcbproj|All Files|*.*";
         public static string FileFilterPCB = "Eagle|*.brd|All Files|*.*";
         public static string FileFilterGCode = "GCode|*.g;*.tap;*.nc;*.ngc|All Files|*.*";

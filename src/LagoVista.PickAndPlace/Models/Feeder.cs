@@ -18,15 +18,13 @@ namespace LagoVista.PickAndPlace.Models
         public Feeder()
         {
             Id = Guid.NewGuid().ToId();
-            Rows = new List<Row>();
         }
 
         public string Name { get; set; }
 
         public double Width { get; set; }
-        public double Height{ get; set; }
-
-        public int RowCount { get { return Rows.Count; } }
+        public double Length{ get; set; }
+        public double PartHeight { get; set; }
 
         public double TapeWidth { get; set; }
 
@@ -34,14 +32,8 @@ namespace LagoVista.PickAndPlace.Models
 
         public double FirstRowOffset { get; set; }
 
-        public int ArucoId { get; set; }
-
-        //   http://docs.opencv.org/trunk/db/da9/tutorial_aruco_board_detection.html
-        //http://terpconnect.umd.edu/~jwelsh12/enes100/markergen.html
-
-
         public bool IsStatic { get; set; }
 
-        public List<Row> Rows { get; set; }
+        public int NumberRows { get; set; }
     }
 }

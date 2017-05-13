@@ -1,6 +1,7 @@
 ﻿using LagoVista.Core.Commanding;
 using LagoVista.Core.ViewModels;
 using LagoVista.EaglePCB.Models;
+using LagoVista.GCode.Sender;
 using LagoVista.PickAndPlace.Models;
 using LagoVista.PickAndPlace.Repos;
 using System;
@@ -15,25 +16,19 @@ namespace LagoVista.PickAndPlace.ViewModels
     public class PnPJobViewModel : ViewModelBase
     {
         private bool _isEditing;
-        private bool _isDirty;
-
-        private PCB _board;
+        private bool _isDirty = false;
         private BOM _billOfMaterials;
 
         private FeederLibrary _feederLibrary;
 
-        public PnPJobViewModel(PCB pcb, Models.PnPJob job)
+        public PnPJobViewModel(Models.PnPJob job)
         {
-            _board = pcb;
-            _billOfMaterials = new BOM(pcb);
+            _billOfMaterials = new BOM(job.Board);
             _job = job;
 
+            AddFeederCommand = new RelayCommand(AddFeeder, () => CanAddFeeder());
+            SaveJobCommand = new RelayCommand(SaveJob, () => CanSaveJob());
             _feederLibrary = new FeederLibrary();
-
-            FeederTypes = new ObservableCollection<Feeder>();
-
-            AddFeederTypeFileCommand = new RelayCommand(AddFeederTypeFile);
-
 
             foreach (var entry in _billOfMaterials.SMDEntries)
             {
@@ -52,17 +47,40 @@ namespace LagoVista.PickAndPlace.ViewModels
                 }
             }
         }
-        
+
+        public override async Task InitAsync()
+        {
+            FeederTypes = await _feederLibrary.GetFeedersAsync();
+        }
+
+        public bool CanAddFeeder()
+        {
+            return SelectedFeeder != null;
+        }
+
+        public bool CanSaveJob()
+        {
+            return _isDirty;
+        }
+
+        public void AddFeeder()
+        {
+            var feederInstance = new FeederInstance();
+            feederInstance.SetFeder(SelectedFeeder);
+            JobFeeders.Add(feederInstance);
+            SelectedFeederInstance = feederInstance;
+            SelectedFeeder = null;
+        }
+
 
         ObservableCollection<Feeder> _feederTypes;
         public ObservableCollection<Feeder> FeederTypes
         {
-            get { return Job.Feeders; }
-            set { Set(ref _feeders, value); }
+            get { return _feederTypes; }
+            set { Set(ref _feederTypes, value); }
         }
 
-        ObservableCollection<Feeder> _feeders;
-        public ObservableCollection<Feeder> Feeders
+        public ObservableCollection<FeederInstance> JobFeeders
         {
             get { return Job.Feeders; }
         }
@@ -71,12 +89,84 @@ namespace LagoVista.PickAndPlace.ViewModels
         public Feeder SelectedFeeder
         {
             get { return _selectedFeeder; }
-            set { Set(ref _selectedFeeder, value); }
+            set
+            {
+                Set(ref _selectedFeeder, value);
+                AddFeederCommand.RaiseCanExecuteChanged();
+            }
+        }
+
+        FeederInstance _selectedFeederInstance;
+        public FeederInstance SelectedFeederInstance
+        {
+            get { return _selectedFeederInstance; }
+            set { Set(ref _selectedFeederInstance, value); }
+        }
+
+        public FeederInstance SelectedPartFeeder
+        {
+            get
+            {
+                if(SelectedPart != null)
+                {
+                    return JobFeeders.Where(fdr => fdr.Feeder.Id == SelectedPart.FeederId).FirstOrDefault();  
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            set
+            {
+                if (SelectedPart != null && value != null)
+                {
+                    SelectedPart.FeederId = value.Feeder.Id;
+                    _isDirty = true;
+                    SaveJobCommand.RaiseCanExecuteChanged();
+                }
+
+                RaisePropertyChanged();
+            }
+        }
+
+        public Row SelectedPartRow
+        {
+            get
+            {
+                if (SelectedPart == null || !SelectedPart.RowNumber.HasValue)
+                {
+                    return null;
+                }
+                else
+                {
+                    var feeder = Job.Feeders.Where(fdr => fdr.Feeder.Id == SelectedPart.FeederId).FirstOrDefault();
+                    if (SelectedPart.RowNumber.Value < feeder.Rows.Count)
+                    {
+                        return feeder.Rows[SelectedPart.RowNumber.Value - 1];
+                    }
+                    else
+                    {
+                        return null;
+                    }
+
+                }
+            }
+            set
+            {
+                if (SelectedPart != null && value != null)
+                {
+                    SelectedPart.RowNumber = value.RowNumber;
+                    value.Part = SelectedPart;
+                    _isDirty = true;
+                    SaveJobCommand.RaiseCanExecuteChanged();
+                }
+                RaisePropertyChanged();
+            }
         }
 
         public PCB Board
         {
-            get { return _board; }
+            get { return Job.Board; }
         }
 
         public BOM BillOfMaterials
@@ -97,6 +187,8 @@ namespace LagoVista.PickAndPlace.ViewModels
             set
             {
                 Set(ref _selectedPart, value);
+                RaisePropertyChanged(nameof(SelectedPartFeeder));
+                RaisePropertyChanged(nameof(SelectedPartRow));
             }
         }
 
@@ -109,6 +201,12 @@ namespace LagoVista.PickAndPlace.ViewModels
                 Set(ref _job, value);
                 RaisePropertyChanged(nameof(HasJob));
             }
+        }
+
+        public string FileName
+        {
+            get;
+            set;
         }
 
         public bool HasJob { get { return Job != null; } }
@@ -125,42 +223,26 @@ namespace LagoVista.PickAndPlace.ViewModels
             set { Set(ref _isEditing, value); }
         }
 
-        public void SaveJob()
+        public async void SaveJob()
         {
-            if (!_isEditing)
+            if (String.IsNullOrEmpty(FileName))
             {
-
-            }
-
-            _isDirty = true;
-
-        }
-
-        public void OpenJob()
-        {
-
-        }
-
-        public async void AddFeederTypeFile()
-        {
-            var fileName = await Popups.ShowOpenFileAsync("Feeder Libraries (*.fdrs) | *.fdrs");
-            if (!String.IsNullOrEmpty(fileName))
-            {
-                var feeders = await _feederLibrary.GetFeederDefinitions(fileName);
-                foreach(var feeder in feeders)
+                FileName = await Popups.ShowSaveFileAsync(Constants.PickAndPlaceProject);
+                if (String.IsNullOrEmpty(FileName))
                 {
-                    if(!FeederTypes.Where(fdr=>fdr.Id == feeder.Id).Any())
-                    {
-                        FeederTypes.Add(feeder);
-                    }
+                    return;
                 }
             }
+
+            await Storage.StoreAsync(Job, FileName);
+
+            _isDirty = false;
+            SaveJobCommand.RaiseCanExecuteChanged();
         }
 
-        public RelayCommand OpenJobCommand { get; private set; }
 
-        public RelayCommand SaveJobCommand { get; private set; }    
+        public RelayCommand AddFeederCommand { get; private set; }
 
-        public RelayCommand AddFeederTypeFileCommand { get; private set; }
+        public RelayCommand SaveJobCommand { get; private set; }
     }
 }

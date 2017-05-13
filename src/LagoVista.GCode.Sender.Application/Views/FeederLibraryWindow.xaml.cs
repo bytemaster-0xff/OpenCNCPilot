@@ -23,8 +23,13 @@ namespace LagoVista.GCode.Sender.Application.Views
         public FeederLibraryWindow()
         {
             InitializeComponent();
-
+            this.Loaded += FeederLibraryWindow_Loaded;
             DataContext = new FeederDefinitionsViewModel();
+        }
+
+        private async void FeederLibraryWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            await (DataContext as FeederDefinitionsViewModel).InitAsync();
         }
     }
 }

@@ -11,5 +11,21 @@ namespace LagoVista.PickAndPlace.Models
         public int RowNumber { get; set; }
 
         public Part Part { get; set; }
+
+        public string Display
+        {
+            get
+            {
+                if (Part != null)
+                {
+                    return $"{RowNumber}. {Part.Display}";
+                }
+                else
+                {
+                    return $"{RowNumber}.";
+                }
+            }
+        }
+
     }
 }

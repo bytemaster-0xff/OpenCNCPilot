@@ -49,10 +49,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Managers\PnPJobManager.cs" />
+    <Compile Include="Models\FeederInstance.cs" />
     <Compile Include="Models\Package.cs" />
     <Compile Include="Models\Part.cs" />
     <Compile Include="Models\Feeder.cs" />
-    <Compile Include="Models\FeederDefinition.cs" />
     <Compile Include="Models\PnPJob.cs" />
     <Compile Include="Models\Row.cs" />
     <Compile Include="PnPManager.cs" />

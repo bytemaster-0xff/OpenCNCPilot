@@ -22,6 +22,15 @@ namespace LagoVista.PickAndPlace.Models
 
         public String FeederId { get; set; }
 
-        public Row Row { get; set; }
+        public int? RowNumber { get; set; }
+
+        public string Display
+        {
+            get
+            {
+                return $"{PackageName} - {Value}";
+            }
+
+        }
     }
 }
