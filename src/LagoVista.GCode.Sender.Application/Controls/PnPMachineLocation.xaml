@@ -55,9 +55,9 @@
 
             <TextBlock Text="{Binding Machine.MachinePosition.X, StringFormat=0.000, FallbackValue=33.285}" Style="{StaticResource Position}" Grid.Row="1" Grid.Column="1" />
             <TextBlock Text="{Binding Machine.MachinePosition.Y, StringFormat=0.000, FallbackValue=12.731}" Style="{StaticResource Position}" Grid.Row="2" Grid.Column="1" />
-            <TextBlock Text="{Binding Machine.MachinePosition.Z, StringFormat=0.000, FallbackValue=8.423}" Style="{StaticResource Position}" Grid.Row="3" Grid.Column="1" />
-            <TextBlock Text="{Binding Machine.MachinePosition.Z, StringFormat=0.000, FallbackValue=8.423}" Style="{StaticResource Position}" Grid.Row="4" Grid.Column="1" />
-            <TextBlock Text="{Binding Machine.MachinePosition.Z, StringFormat=0, FallbackValue=90}" Style="{StaticResource Position}" Grid.Row="5" Grid.Column="1" />
+            <TextBlock Text="{Binding Machine.Tool0, StringFormat=0.000, FallbackValue=8.423}" Style="{StaticResource Position}" Grid.Row="3" Grid.Column="1" />
+            <TextBlock Text="{Binding Machine.Tool1, StringFormat=0.000, FallbackValue=8.423}" Style="{StaticResource Position}" Grid.Row="4" Grid.Column="1" />
+            <TextBlock Text="{Binding Machine.Tool2, StringFormat=0, FallbackValue=90}" Style="{StaticResource Position}" Grid.Row="5" Grid.Column="1" />
 
             <TextBlock Text="{Binding Machine.NormalizedPosition.X, StringFormat=0.000, FallbackValue=42.533}" Style="{StaticResource Position}" Grid.Row="1" Grid.Column="2" />
             <TextBlock Text="{Binding Machine.NormalizedPosition.Y, StringFormat=0.000, FallbackValue=18.287}" Style="{StaticResource Position}" Grid.Row="2" Grid.Column="2" />
@@ -77,9 +77,9 @@
             <Button Content="P" Grid.Column="4" Grid.Row="3" Command="{Binding HomeCommand}" CommandParameter="{x:Static sndr:HomeAxis.T0}" />
             <Button Content="S" Grid.Column="4" Grid.Row="4" Command="{Binding HomeCommand}" CommandParameter="{x:Static sndr:HomeAxis.T1}" />
             <Button Content="C" Grid.Column="4" Grid.Row="5" Command="{Binding HomeCommand}" CommandParameter="{x:Static sndr:HomeAxis.T2}" />
-            <Button Content="All" Grid.Column="4" Grid.Row="6" Command="{Binding HomeCommand}" CommandParameter="{x:Static sndr:ResetAxis.All}" />
+            <Button Content="All" Grid.Column="4" Grid.Row="6" Command="{Binding HomeCommand}" CommandParameter="{x:Static sndr:HomeAxis.All}" />
 
-            <Grid Grid.Row="7" Grid.ColumnSpan="5" Visibility="{Binding IsPnPMachine, Converter={StaticResource BoolToVisibilityConverter}}">
+            <Grid Grid.Row="7" Grid.ColumnSpan="5" >
                 <Grid.Resources>
                     <Style TargetType="TextBlock" x:Key="EndStopStatus">
                         <Setter Property="FontSize" Value="12" />

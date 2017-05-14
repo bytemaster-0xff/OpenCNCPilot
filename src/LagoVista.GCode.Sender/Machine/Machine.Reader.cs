@@ -97,7 +97,7 @@ namespace LagoVista.GCode.Sender
                 }
                 else if (fullMessageLine.StartsWith("<"))
                 {
-                    if(Settings.MachineType == FirmwareTypes.LagoVista)
+                    if(Settings.MachineType == FirmwareTypes.LagoVista || Settings.MachineType == FirmwareTypes.LagoVista_PnP)
                     {
                         if (ParseLagoVistaLine(fullMessageLine))
                         {

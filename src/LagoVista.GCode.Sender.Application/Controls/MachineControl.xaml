@@ -7,9 +7,10 @@
              Background="Gray"
              d:DesignHeight="800" d:DesignWidth="300">
     <StackPanel>
-        <Controls:MachineLocation />
-        <Controls:PnPMachineLocation />
+        <Controls:MachineLocation Visibility="{Binding Machine.IsPnPMachine, Converter={StaticResource BoolToInverseVisibilityConverter}}"/>
+        <Controls:PnPMachineLocation Visibility="{Binding Machine.IsPnPMachine, Converter={StaticResource BoolToVisibilityConverter}}"/>
         <Controls:JogControls />
-        <Controls:JogButtons />
+        <Controls:JogButtons Visibility="{Binding Machine.IsPnPMachine, Converter={StaticResource BoolToInverseVisibilityConverter}}"/>
+        <Controls:PnPButtons Visibility="{Binding Machine.IsPnPMachine, Converter={StaticResource BoolToVisibilityConverter}}"/>
     </StackPanel>
 </UserControl>

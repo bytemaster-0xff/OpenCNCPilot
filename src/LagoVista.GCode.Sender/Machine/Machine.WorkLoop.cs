@@ -85,7 +85,8 @@ namespace LagoVista.GCode.Sender
                 if ((Now - _lastPollTime).TotalMilliseconds > Settings.StatusPollIntervalIdle)
                 {
                     if (Settings.MachineType == FirmwareTypes.GRBL1_1 ||
-                        Settings.MachineType == FirmwareTypes.LagoVista)
+                        Settings.MachineType == FirmwareTypes.LagoVista ||
+                        Settings.MachineType == FirmwareTypes.LagoVista_PnP)
                     {
                         Enqueue("?", true);
                     }

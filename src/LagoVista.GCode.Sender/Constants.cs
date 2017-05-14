@@ -81,7 +81,8 @@ namespace LagoVista.GCode.Sender
         GRBL1_1,
         Marlin,
         Marlin_Laser,
-        LagoVista
+        LagoVista,
+        LagoVista_PnP
     }
 
     public enum OperatingMode

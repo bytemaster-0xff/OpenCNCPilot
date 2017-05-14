@@ -70,12 +70,12 @@
                     <fa:ImageAwesome Icon="ArrowCircleDown" />
                 </Button.Content>
             </Button>
-            <Button Style="{StaticResource JogArrow}" Grid.Row="1" Grid.Column="7" Command="{Binding JogCommand}" CommandParameter="{x:Static sndr:JogDirections.T0Minus}">
+            <Button Style="{StaticResource JogArrow}" Grid.Row="1" Grid.Column="7" Command="{Binding JogCommand}" CommandParameter="{x:Static sndr:JogDirections.T1Minus}">
                 <Button.Content>
                     <fa:ImageAwesome Icon="ArrowCircleUp" />
                 </Button.Content>
             </Button>
-            <Button Style="{StaticResource JogArrow}"  Grid.Row="3" Grid.Column="7" Command="{Binding JogCommand}" CommandParameter="{x:Static sndr:JogDirections.T0Plus}">
+            <Button Style="{StaticResource JogArrow}"  Grid.Row="3" Grid.Column="7" Command="{Binding JogCommand}" CommandParameter="{x:Static sndr:JogDirections.T1Plus}">
                 <Button.Content>
                     <fa:ImageAwesome Icon="ArrowCircleDown" />
                 </Button.Content>

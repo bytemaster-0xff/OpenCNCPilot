@@ -43,6 +43,11 @@ namespace LagoVista.GCode.Sender
             }
         }
 
+        public bool IsPnPMachine
+        {
+            get { return Settings.MachineType == FirmwareTypes.LagoVista_PnP; }
+        }
+
         IPCBManager _pcbManager;
         public IPCBManager PCBManager
         {
@@ -84,7 +89,7 @@ namespace LagoVista.GCode.Sender
 
         public double Tool2Normalized
         {
-            get { return _tool2Offset; }
+            get { return _tool2 - _tool2Offset; }
         }
 
         private double _tool0;
@@ -264,6 +269,7 @@ namespace LagoVista.GCode.Sender
                 _settings = value;
                 _machineRepo.CurrentMachineId = value.Id;
                 RaisePropertyChanged();
+                RaisePropertyChanged(nameof(IsPnPMachine));
             }
         }
     }

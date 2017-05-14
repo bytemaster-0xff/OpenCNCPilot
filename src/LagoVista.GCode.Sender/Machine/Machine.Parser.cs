@@ -13,7 +13,7 @@ namespace LagoVista.GCode.Sender
 
         private static Regex CurrentPositionRegEx = new Regex(@"X:(?'MX'-?[0-9\.]*)\s?Y:(?'MY'-?[0-9\.]*)\s?Z:(?'MZ'-?[0-9\.]*)\s?E:(?'E'-?[0-9\.]*)\s?Count\s?X:(?'WX'.-?[0-9\.]*)\s?Y:(?'WY'.-?[0-9\.]*)\s?Z:(?'WZ'.-?[0-9\.]*)");
 
-        private static Regex LagoVistaStatusRegEx = new Regex(@"<(?'State'Idle|Alarm|Run|Hold|Home|Check|Door)(:[0-9])?(?:.MPos:(?'MX'-?[0-9\.]*),(?'MY'-?[0-9\.]*),(?'MZP'-?[0-9\.]*),(?'MZS'-?[0-9\.]*),(?'MC'-?[0-9\.]*))?(?:,WPos:(?'WX'-?[0-9\.]*),(?'WY'-?[0-9\.]*),(?'WZP'-?[0-9\.]*),(?'WZS'-?[0-9\.]*),(?'WC'-?[0-9\.]*))?(?:,T:(?'T'-?[0-9])),?(?:,P:(?'P'-?[0-9]))>");
+        private static Regex LagoVistaStatusRegEx = new Regex(@"<(?'State'Idle|Alarm|Run|Hold|Home|Check|Door)(:[0-9])?(?:.MPos:(?'MX'-?[0-9\.]*),(?'MY'-?[0-9\.]*),(?'MT0'-?[0-9\.]*),(?'MT1'-?[0-9\.]*),(?'MT2'-?[0-9\.]*))?(?:,WPos:(?'WX'-?[0-9\.]*),(?'WY'-?[0-9\.]*),(?'WT0'-?[0-9\.]*),(?'WT1'-?[0-9\.]*),(?'WT2'-?[0-9\.]*))?(?:,T:(?'T'-?[0-9])),?(?:,P:(?'P'-?[0-9]))>");
 
         private static Regex LagoVistaErrorRegEx = new Regex(@"<(?'State'Alarm|Message|EndStop)?:(?'Msg'[\w]*)>");
 
