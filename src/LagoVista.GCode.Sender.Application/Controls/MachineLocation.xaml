@@ -15,10 +15,10 @@
                     <Setter Property="Foreground" Value="LightGreen" />
                 </Style>
                 <Style TargetType="TextBlock" x:Key="Position">
-                    <Setter Property="FontSize" Value="22" />
+                    <Setter Property="FontSize" Value="18" />
                     <Setter Property="Foreground" Value="LightGreen" />
                     <Setter Property="TextAlignment" Value="Right" />
-                    <Setter Property="FontFamily" Value="Consolas" />
+                    <Setter Property="FontFamily" Value="DSEG14 Classic" />
                 </Style>
                 <Style TargetType="Button">
                     <Setter Property="Margin" Value="4" />

@@ -9,7 +9,13 @@ namespace LagoVista.GCode.Sender
         XPlus,
         XMinus,
         ZPlus,
-        ZMinus
+        ZMinus,
+        T0Plus,
+        T0Minus,
+        T1Plus,
+        T1Minus,
+        T2Plus,
+        T2Minus,
     }
 
     public enum MachineOrigin
@@ -43,8 +49,23 @@ namespace LagoVista.GCode.Sender
         X,
         Y,
         Z,
+        T0,
+        T1,
+        T2,
         All
     }
+
+    public enum HomeAxis
+    {
+        X,
+        Y,
+        Z,
+        T0,
+        T1,
+        T2,
+        All
+    }
+
 
     public enum StepModes
     {

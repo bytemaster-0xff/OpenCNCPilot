@@ -35,7 +35,7 @@ namespace LagoVista.GCode.Sender.ViewModels
                     Machine.SendCommand($"{Machine.Settings.JogGCodeCommand} X{(current.X + XYStepSize).ToDim()} F{Machine.Settings.JogFeedRate}");
                     break;
                 case JogDirections.YPlus:
-                    Machine.SendCommand( $"{Machine.Settings.JogGCodeCommand} Y{(current.Y + XYStepSize).ToDim()} F{Machine.Settings.JogFeedRate}");
+                    Machine.SendCommand($"{Machine.Settings.JogGCodeCommand} Y{(current.Y + XYStepSize).ToDim()} F{Machine.Settings.JogFeedRate}");
                     break;
                 case JogDirections.ZPlus:
                     Machine.SendCommand($"{Machine.Settings.JogGCodeCommand} Z{(current.Z + ZStepSize).ToDim()} F{Machine.Settings.JogFeedRate}");
@@ -52,9 +52,29 @@ namespace LagoVista.GCode.Sender.ViewModels
             }
         }
 
+        public void Home(HomeAxis axis)
+        {
+            switch (axis)
+            {
+                case Sender.HomeAxis.All:
+                    Machine.SendCommand("G10 L20 P0 X0 Y0 Z0");
+                    break;
+                case Sender.HomeAxis.X:
+                    Machine.SendCommand("G10 L20 P0 X0");
+                    break;
+                case Sender.HomeAxis.Y:
+                    Machine.SendCommand("G10 L20 P0 Y0");
+                    break;
+                case Sender.HomeAxis.Z:
+                    Machine.SendCommand("G10 L20 P0 Z0");
+                    break;
+
+            }
+        }
+
         public void ResetAxis(ResetAxis axis)
         {
-            switch(axis)
+            switch (axis)
             {
                 case Sender.ResetAxis.All:
                     Machine.SendCommand("G10 L20 P0 X0 Y0 Z0");

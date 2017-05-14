@@ -92,20 +92,39 @@ namespace LagoVista.GCode.Sender
                 }
 
 
-                Group mx = lgvStatusMatch.Groups["MX"], my = lgvStatusMatch.Groups["MY"], mzp = lgvStatusMatch.Groups["MZP"], mzs = lgvStatusMatch.Groups["MZS"], mc = lgvStatusMatch.Groups["MC"], t = lgvStatusMatch.Groups["T"], p = lgvStatusMatch.Groups["P"];
-                Group wx = lgvStatusMatch.Groups["WX"], wy = lgvStatusMatch.Groups["WY"], wzp = lgvStatusMatch.Groups["WZP"], wzs = lgvStatusMatch.Groups["WZS"], wc = lgvStatusMatch.Groups["WC"]; ;
+                Group mx = lgvStatusMatch.Groups["MX"],
+                    my = lgvStatusMatch.Groups["MY"],
+                    mt0 = lgvStatusMatch.Groups["MT0"],
+                    mt1 = lgvStatusMatch.Groups["MT1"],
+                    mt2 = lgvStatusMatch.Groups["MT2"];
+                Group wx = lgvStatusMatch.Groups["WX"],
+                    wy = lgvStatusMatch.Groups["WY"],
+                    wt0 = lgvStatusMatch.Groups["WT0"],
+                    wt1 = lgvStatusMatch.Groups["WT1"],
+                    wt2 = lgvStatusMatch.Groups["WT2"];
+
+                Group t = lgvStatusMatch.Groups["T"],
+                    p = lgvStatusMatch.Groups["P"];
+
 
                 var tool = int.Parse(t.Value);
 
-                var newMachinePosition = new Vector3(double.Parse(mx.Value, Constants.DecimalParseFormat), double.Parse(my.Value, Constants.DecimalParseFormat), double.Parse(tool == 0 ? mzp.Value : mzs.Value, Constants.DecimalParseFormat));
+                var newMachinePosition = new Vector3(double.Parse(mx.Value, Constants.DecimalParseFormat), double.Parse(my.Value, Constants.DecimalParseFormat), 0);
 
                 if (MachinePosition != newMachinePosition)
                 {
                     MachinePosition = newMachinePosition;
                 }
 
+                Tool0 = double.Parse(mt0.Value, Constants.DecimalParseFormat);
+                Tool1 = double.Parse(mt1.Value, Constants.DecimalParseFormat);
+                Tool2 = double.Parse(mt2.Value, Constants.DecimalParseFormat);
 
-                var newWorkPosition = new Vector3(double.Parse(wx.Value, Constants.DecimalParseFormat), double.Parse(wy.Value, Constants.DecimalParseFormat), double.Parse(tool == 0 ? wzp.Value : wzs.Value, Constants.DecimalParseFormat));
+                Tool0Offset = double.Parse(wt0.Value, Constants.DecimalParseFormat);
+                Tool1Offset = double.Parse(wt1.Value, Constants.DecimalParseFormat);
+                Tool2Offset = double.Parse(wt2.Value, Constants.DecimalParseFormat);
+
+                var newWorkPosition = new Vector3(double.Parse(wx.Value, Constants.DecimalParseFormat), double.Parse(wy.Value, Constants.DecimalParseFormat), double.Parse(tool == 0 ? wt0.Value : wt1.Value, Constants.DecimalParseFormat));
 
                 if (WorkPositionOffset != newWorkPosition)
                 {
@@ -117,7 +136,7 @@ namespace LagoVista.GCode.Sender
             else if (lgvErrorMatch.Success)
             {
                 Group state = lgvStatusMatch.Groups["State"], msg = lgvStatusMatch.Groups["Msg"];
-                if(state.Success)
+                if (state.Success)
                 {
                     Status = state.Value;
                     Mode = OperatingMode.Alarm;
@@ -125,7 +144,7 @@ namespace LagoVista.GCode.Sender
                     return true;
                 }
 
-                
+
             }
             else if (endStopMessage.Success)
             {

@@ -3,6 +3,7 @@ using LagoVista.GCode.Sender.Application.Services;
 using LagoVista.GCode.Sender.Interfaces;
 using Newtonsoft.Json;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace LagoVista.GCode.Sender.Application
@@ -17,6 +18,8 @@ namespace LagoVista.GCode.Sender.Application
         public App()
         {
             _app = this;
+
+            var fonts = System.Windows.Media.Fonts.SystemFontFamilies;
 
             LagoVista.Core.IOC.SLWIOC.Register<ISocketClient, SocketClient>();
 

@@ -124,6 +124,9 @@
     <Compile Include="Controls\JobControl.xaml.cs">
       <DependentUpon>JobControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\PnPMachineLocation.xaml.cs">
+      <DependentUpon>PnPMachineLocation.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\PnPButtons.xaml.cs">
       <DependentUpon>PnPButtons.xaml</DependentUpon>
     </Compile>
@@ -235,6 +238,10 @@
     <Page Include="Controls\JobControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\PnPMachineLocation.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Controls\PnPButtons.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -358,6 +365,7 @@
     <None Include="App.config">
       <DependentUpon>App.xaml</DependentUpon>
     </None>
+    <Resource Include="Fonts\DSEG14Classic-Regular.ttf" />
     <None Include="Help\PCBProject.md" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -412,6 +420,7 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Resources\DSEG14Classic-Regular.ttf" />
     <None Include="Resources\GrblErrors.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

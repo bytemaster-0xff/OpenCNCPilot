@@ -12,6 +12,7 @@ namespace LagoVista.GCode.Sender.ViewModels
             SoftResetCommand = new RelayCommand(SoftReset, CanSoftReset);
             ClearAlarmCommand = new RelayCommand(ClearAlarm, CanClearAlarm);
             FeedHoldCommand = new RelayCommand(FeedHold, CanFeedHold);
+            HomeCommand = new RelayCommand((param) => Home((HomeAxis)param), CanHome);
             CycleStartCommand = new RelayCommand(CycleStart, CanCycleStart);
 
             Machine.PropertyChanged += Machine_PropertyChanged;
@@ -42,6 +43,11 @@ namespace LagoVista.GCode.Sender.ViewModels
                 XYStepSizeSlider = originalXYStepSize;
                 ZStepSizeSlider = originalZStepSize;
             }
+        }
+
+        public bool CanHome(object param)
+        {
+            return Machine.Connected && Machine.Mode == OperatingMode.Manual;
         }
 
         public bool CanResetAxis(object param)
@@ -75,6 +81,7 @@ namespace LagoVista.GCode.Sender.ViewModels
         }
 
         public RelayCommand JogCommand { get; private set; }
+        public RelayCommand HomeCommand { get; private set; }
         public RelayCommand ResetCommand { get; private set; }
         public RelayCommand SoftResetCommand { get; private set; }
         public RelayCommand ClearAlarmCommand { get; private set; }

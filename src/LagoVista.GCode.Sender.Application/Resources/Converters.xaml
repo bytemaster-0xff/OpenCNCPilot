@@ -2,6 +2,7 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:cvtrs="clr-namespace:LagoVista.GCode.Sender.Application.Converters">
     <cvtrs:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+    <cvtrs:BoolToInverseVisibilityConverter x:Key="BoolToInverseVisibilityConverter" />
     <cvtrs:ColorEnabledConverter x:Key="ColorEnabledConverter" />
     <cvtrs:PointConverter x:Key="PointConverter" />
     <cvtrs:NotNullEnabledConverter x:Key="NotNullEnabledConverter" />

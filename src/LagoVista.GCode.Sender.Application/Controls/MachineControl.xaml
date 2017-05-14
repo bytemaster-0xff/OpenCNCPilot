@@ -8,6 +8,7 @@
              d:DesignHeight="800" d:DesignWidth="300">
     <StackPanel>
         <Controls:MachineLocation />
+        <Controls:PnPMachineLocation />
         <Controls:JogControls />
         <Controls:JogButtons />
     </StackPanel>
