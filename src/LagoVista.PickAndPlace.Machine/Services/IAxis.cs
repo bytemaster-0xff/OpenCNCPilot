@@ -16,6 +16,6 @@ namespace LagoViata.PNP.Services
         void Home();
         bool MinEndStopTrigger { get; }
         bool MaxEndStopTrigger { get; }
-        void Update(long uSeconds);
+        void Update(long ticks);
     }
 }

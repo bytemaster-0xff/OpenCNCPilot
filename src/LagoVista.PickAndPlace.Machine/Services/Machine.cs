@@ -27,6 +27,21 @@ namespace LagoViata.PNP.Services
         readonly Axis _solderAxis;
         readonly Axis _cAxis;
 
+        Accessory _topLight;
+        Accessory _bottomLight;
+        Accessory _vacuum;
+
+        enum Tools
+        {
+            PlaceHead = 0,
+            PasteHead = 1,
+            CAxis = 2
+        }
+
+        String _state = "Idle";
+
+        Tools _currentTool;
+
         readonly MotorPower _motorPower;
 
         readonly IGCodeParser _parser;
@@ -49,11 +64,15 @@ namespace LagoViata.PNP.Services
             _axes = new List<Axis>();
             _commandBuffer = new ConcurrentQueue<GCodeCommand>();
 
-            _xAxis = new Axis(19, 0);
-            _yAxis = new Axis(21, 1);
-            _cAxis = new Axis(6, 2);
-            _placeAxis = new Axis(22, 3);
-            _solderAxis = new Axis(17, 4);
+            _xAxis = new Axis(0, 20, 7, 8);
+            _yAxis = new Axis(1, 13, 16, 12);
+            _cAxis = new Axis(2, 5);
+            _placeAxis = new Axis(3, 27, 25);
+            _solderAxis = new Axis(4, 4, 24);
+
+            _vacuum = new Accessory(10);
+            _bottomLight = new Accessory(11);
+            _topLight = new Accessory(9);
 
             _axes.Add(_xAxis);
             _axes.Add(_yAxis);
@@ -74,9 +93,15 @@ namespace LagoViata.PNP.Services
 
         }
 
-        public void SendStatus()
+        public async void SendStatus()
         {
-
+            var bldr = new StringBuilder();
+            bldr.Append($"<{_state},");
+            bldr.Append($"MPos:{XAxis.CurrentLocation:0.0000},{YAxis.CurrentLocation:0.0000},{_placeAxis.CurrentLocation:0.0000},{_solderAxis.CurrentLocation:0.0000},{_cAxis.CurrentLocation:0.0000},");
+            bldr.Append($"WPos:{XAxis.WorkOffset:0.0000},{YAxis.WorkOffset:0.0000},{_placeAxis.WorkOffset:0.0000},{_solderAxis.WorkOffset:0.0000},{_cAxis.WorkOffset:0.0000},");
+            bldr.Append($"T:{(int)_currentTool},");
+            bldr.Append($"P:{(int)0}>\n");
+            await _connection.WriteAsync(bldr.ToString());
         }
 
         public void SoftReset()
@@ -100,14 +125,27 @@ namespace LagoViata.PNP.Services
             }
         }
 
-        public async void HandleGCodeLine(String gcode)
+        public void HandleGCodeLine(String gcode)
         {
-
-            var cmd = _parser.ParseLine(gcode, 0);
-            if(cmd != null)
+            if (gcode == "T0")
             {
-                _commandBuffer.Enqueue(cmd);
-
+                _currentTool = Tools.PlaceHead;
+            }
+            else if (gcode == "T1")
+            {
+                _currentTool = Tools.PasteHead;
+            }
+            else if (gcode == "T2")
+            {
+                _currentTool = Tools.CAxis;
+            }
+            else
+            {
+                var cmd = _parser.ParseLine(gcode, 0);
+                if (cmd != null)
+                {
+                    _commandBuffer.Enqueue(cmd);
+                }
             }
         }
 
@@ -149,10 +187,19 @@ namespace LagoViata.PNP.Services
                     axis.Init(gpioController, _appService);
                 }
 
+                _topLight.Init(gpioController);
+                _bottomLight.Init(gpioController);
+                _vacuum.Init(gpioController);
+
                 _motorPower.Init(gpioController);
+                _motorPower.Enable();
+            }
+            else
+            {
+                Debug.WriteLine("Ligtning IS NOT Enabled, please enable through Device Portal");
             }
 
-            _motorPower.Enable();
+            StartWorkLoop();
         }
 
 
@@ -167,7 +214,8 @@ namespace LagoViata.PNP.Services
             if (args.Request.Message.ContainsKey("DONE"))
             {
                 var axis = Convert.ToInt32(args.Request.Message["DONE"]);
-                switch(axis)
+                Debug.WriteLine($"FINISHED {axis}");
+                switch (axis)
                 {
                     case 0: XAxis.Completed(); break;
                     case 1: YAxis.Completed(); break;
@@ -186,7 +234,25 @@ namespace LagoViata.PNP.Services
             var movement = cmd as GCodeLine;
             if(movement != null)
             {
-                CAxis.Move(movement.End.Y, Convert.ToDouble(movement.Feed));
+                XAxis.Move(movement.End.X, Convert.ToDouble(movement.Feed));
+                YAxis.Move(movement.End.Y, Convert.ToDouble(movement.Feed));
+                switch(_currentTool)
+                {
+                    case Tools.CAxis: CAxis.Move(movement.End.Z, Convert.ToDouble(movement.Feed)); break;
+                    case Tools.PasteHead: SolderAxis.Move(movement.End.Z, Convert.ToDouble(movement.Feed)); break;
+                    case Tools.PlaceHead: PlaceAxis.Move(movement.End.Z, Convert.ToDouble(movement.Feed)); break;
+                }              
+            }
+
+            var machine = cmd as MCode;
+            if (machine != null)
+            {
+                switch (machine.Code)
+                {
+                    case 60: if (machine.Power == 0) _topLight.Off(); else _topLight.On(); break;
+                    case 61: if (machine.Power == 0) _bottomLight.Off(); else _bottomLight.On(); break;
+                    case 62: if (machine.Power == 0) _vacuum.Off(); else _vacuum.On(); break;
+                }
             }
         }
         
@@ -198,9 +264,14 @@ namespace LagoViata.PNP.Services
                 while (true)
                 {
                     bool isBusy = _axes.Where(axis => axis.IsBusy == true).Any();
-
-                    if (isBusy || _curent != null)
+                    foreach(var axis in _axes)
                     {
+                        axis.Update(DateTime.Now.Ticks);
+                    }
+
+                    if (!isBusy && _curent != null)
+                    {
+                        _connection.WriteAsync("ok");
                         _curent = null;
                     }
 

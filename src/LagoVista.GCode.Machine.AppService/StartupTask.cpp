@@ -8,11 +8,13 @@ void setup();
 void loop();
 
 bool m_bKill = false;
-Axis ^PasteAxis = ref new Axis(4, GPIO17);
-Axis ^PlaceAxis = ref new Axis(3, GPIO22);
-Axis ^CAxis = ref new Axis(2, GPIO6);;
+
+Axis ^XAxis = ref new Axis(0, GPIO21);
 Axis ^YAxis = ref new Axis(1, GPIO19);;
-Axis ^XAxis = ref new Axis(0, GPIO26);
+Axis ^CAxis = ref new Axis(2, GPIO6);;
+Axis ^PlaceAxis = ref new Axis(3, GPIO22);
+Axis ^PasteAxis = ref new Axis(4, GPIO17);
+
 
 AppServiceConnection ^m_appServiceConnection;
 

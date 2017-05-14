@@ -18,7 +18,6 @@ namespace LagoViata.PNP.Drivers
 
         AppService _appService;
 
-        GpioPin _stepPin;
         GpioPin _dirPin;
 
         /// <summary>
@@ -69,7 +68,7 @@ namespace LagoViata.PNP.Drivers
         {
             _stepsRemaining = steps;
             _stepsRequested = steps;
-            _dirPin.Write(direction == Direction.Backwards ? GpioPinValue.Low : GpioPinValue.High);
+            
             IsBusy = true;
 
             _pauseMicroSeconds = 200;
@@ -82,42 +81,6 @@ namespace LagoViata.PNP.Drivers
         {
             IsBusy = false;
             _stepsRemaining = 0;
-        }
-
-        public void Update(long uSeconds)
-        {
-
-            return;
-            if (!IsBusy)
-            {
-                //Just grab the value so we can use it the next time we want to move.
-                _lastMicroSeconds = uSeconds;
-            }
-            else
-            {
-                if (uSeconds > _nextMicroSeconds)
-                {
-                    if (_previousValue == GpioPinValue.Low)
-                    {
-                        _stepPin.Write(GpioPinValue.High);
-                        _previousValue = GpioPinValue.High;
-                    }
-                    else
-                    {
-                        _stepPin.Write(GpioPinValue.Low);
-                        _stepsRemaining--;
-                        _previousValue = GpioPinValue.Low;
-                    }
-
-                    if (_stepsRemaining == 0)
-                    {
-                        Debug.WriteLine($"Finsihed!");
-                        IsBusy = false;
-                    }
-
-                    _nextMicroSeconds = uSeconds + _pauseMicroSeconds;
-                }
-            }
         }
     }
 }

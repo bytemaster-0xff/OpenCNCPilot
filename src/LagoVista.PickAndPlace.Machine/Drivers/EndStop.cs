@@ -1,4 +1,5 @@
 ﻿using LagoVista.Core.Models;
+using System.Diagnostics;
 using Windows.Devices.Gpio;
 
 namespace LagoViata.PNP.Drivers
@@ -7,6 +8,8 @@ namespace LagoViata.PNP.Drivers
     {
         GpioPin _endStopPin;
         public int _pinNumber;
+        bool _lastTriggered;
+
         public EndStop(int pinNumber)
         {
             _pinNumber = pinNumber;
@@ -15,6 +18,7 @@ namespace LagoViata.PNP.Drivers
         public void Init(GpioController gpioController)
         {
             _endStopPin = gpioController.OpenPin(_pinNumber);
+            _endStopPin.SetDriveMode(GpioPinDriveMode.InputPullUp);
         }
 
         private bool _triggered = false;
@@ -23,10 +27,16 @@ namespace LagoViata.PNP.Drivers
             get { return _triggered; }
             set { Set(ref _triggered, value); }
         }
-
-        public void Update(long uSeconds)
+        
+        public void Update()
         {
-            Triggered = _endStopPin.Read() == GpioPinValue.Low;
+            var isTriggered = _endStopPin.Read() == GpioPinValue.Low;
+            if(Triggered != isTriggered)
+            {
+                Debug.WriteLine($"TRIGGERED STATE CHANGED: {_pinNumber} {isTriggered}");
+                Triggered = isTriggered;
+            }
+
         }
     }
 }

@@ -1,18 +1,21 @@
 ﻿using LagoViata.PNP.Drivers;
 using LagoVista.Core.Models;
 using System;
+using System.Diagnostics;
 using Windows.Devices.Gpio;
 
 namespace LagoViata.PNP.Services
 {
     public class Axis : ModelBase, IAxis
     {
-        A4988 _stepper;
         EndStop _minEndStop;
         EndStop _maxEndStop;
         bool _isHoming = false;
         AppService _appService;
         double _destination;
+        int _dirPinNumber;
+        GpioPin _dirPin;
+        int _axisNumber;
 
         private bool _isBusy;
         public bool IsBusy
@@ -21,17 +24,29 @@ namespace LagoViata.PNP.Services
             set { Set(ref _isBusy, value); }
         }
 
-        public Axis(int stepPin, int dirPin)
+        public Axis(int axisNumber, int dirPin)
         {
-            _stepper = new A4988(stepPin, dirPin);
+            _axisNumber = axisNumber;
+            _dirPinNumber = dirPin;
+        }
+
+
+        public Axis(int axisNumber, int dirPin, int minEndStopPin) : this(axisNumber, dirPin)
+        {
+            _minEndStop = new EndStop(minEndStopPin);
+        }
+
+        public Axis(int axisNumber, int dirPin, int minEndStopPin, int maxEndstopPin) : this(axisNumber, dirPin, minEndStopPin)
+        {
+            _maxEndStop = new EndStop(maxEndstopPin);
         }
 
         public void Init(GpioController gpioController, AppService appService)
         {
             _appService = appService;
-            _stepper.Init(gpioController, appService);
+            _dirPin = gpioController.OpenPin(_dirPinNumber);
 
-            if(_minEndStop != null)
+            if (_minEndStop != null)
             {
                 _minEndStop.Init(gpioController);
             }
@@ -42,18 +57,9 @@ namespace LagoViata.PNP.Services
             }
         }
         
-        public Axis(int stepPin, int dirPin, int minEndStopPin) : this(stepPin, dirPin)
-        {
-            _minEndStop = new EndStop(minEndStopPin);
-        }
-
-        public Axis(int stepPin, int dirPin, int minEndStopPin, int maxEndstopPin) : this(stepPin, dirPin, minEndStopPin)
-        {
-            _maxEndStop = new EndStop(maxEndstopPin);
-        }
 
         public bool HasMaxEndStop { get { return _maxEndStop != null; } }
-        public bool HasMinEndStop { get { return _maxEndStop != null; } }
+        public bool HasMinEndStop { get { return _minEndStop != null; } }
 
         public void  Completed()
         {
@@ -85,28 +91,35 @@ namespace LagoViata.PNP.Services
             
         }
 
-        public void Move(double newLocation, double feedRate)
+        public async void Move(double newLocation, double feedRate)
         {
-            IsBusy = true;
-            _destination = newLocation;
+            if (newLocation != CurrentLocation)
+            {
+                IsBusy = true;
+                _destination = newLocation;
 
-            var deltaLocation = newLocation - CurrentLocation;
-            var direction = (deltaLocation > 0) ? Direction.Forward : Direction.Backwards;
-            var steps = Convert.ToInt32(Math.Abs(deltaLocation) * 300);
+                var deltaLocation = newLocation - CurrentLocation;
+                var direction = (deltaLocation > 0) ? Direction.Forward : Direction.Backwards;
+                var steps = Convert.ToInt32(Math.Abs(deltaLocation) * 300);
 
-            _stepper.Start(steps, 1000, direction);
+                Debug.WriteLine($"Sending {steps} on axis {_axisNumber}");
+                _dirPin.Write(direction == Direction.Backwards ? GpioPinValue.Low : GpioPinValue.High);
+
+                await _appService.StartStep(_axisNumber, steps, 2);
+
+             
+            }
         }
 
-        public void Update(long uSeconds)
+        public void Update(long ticks)
         {
-            _stepper.Update(uSeconds);
-            if (HasMaxEndStop) _maxEndStop.Update(uSeconds);
-            if (HasMinEndStop) _minEndStop.Update(uSeconds);
+            if (HasMaxEndStop) _maxEndStop.Update();
+            if (HasMinEndStop) _minEndStop.Update();
         }
 
         public void Kill()
         {
-            _stepper.Kill();
+            IsBusy = false;
         }
     }
 }

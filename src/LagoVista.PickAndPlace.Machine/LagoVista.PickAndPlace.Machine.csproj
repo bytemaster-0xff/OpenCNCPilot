@@ -101,6 +101,7 @@
     <Compile Include="Channel\IServer.cs" />
     <Compile Include="Channel\Server.cs" />
     <Compile Include="Drivers\A4988.cs" />
+    <Compile Include="Drivers\Accessory.cs" />
     <Compile Include="Drivers\AppService.cs" />
     <Compile Include="Drivers\EndStop.cs" />
     <Compile Include="Drivers\IA4988.cs" />

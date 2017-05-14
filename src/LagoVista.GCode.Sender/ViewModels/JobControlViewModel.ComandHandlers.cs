@@ -135,10 +135,17 @@ namespace LagoVista.GCode.Sender.ViewModels
                 }
                 else
                 {
-                    var client = SLWIOC.Create<ISocketClient>();
+                    try
+                    {
+                        var client = SLWIOC.Create<ISocketClient>();
 
-                    await client.ConnectAsync(Machine.Settings.IPAddress, 9001);
-                    await Machine.ConnectAsync(client);
+                        await client.ConnectAsync(Machine.Settings.IPAddress, 9001);
+                        await Machine.ConnectAsync(client);
+                    }
+                    catch(Exception ex)
+                    {
+                        
+                    }
                 }
             }
         }

@@ -14,10 +14,8 @@ namespace LagoViata.PNP.Drivers
 
     public interface IA4988
     {
-        void Update(long uSeconds);
         bool IsBusy { get; }
         void Start(int steps, double feedRate, Direction direction);
         void Kill();
-        double PercentComplete { get; }
     }
 }

@@ -84,7 +84,7 @@ namespace LagoVista.Core.GCode.Parser
                         return motionLine;
                     }
                 }
-                else if (cleanedLine.StartsWith("T") || cleanedLine.StartsWith("M06") || cleanedLine.StartsWith("M6"))
+                else if (cleanedLine.StartsWith("T") || cleanedLine.StartsWith("M06") || cleanedLine.StartsWith("M6 "))
                 {
                     var machineLine = ParseToolChangeCommand(cleanedLine.ToUpper(), lineIndex);
                     if (machineLine != null)
@@ -194,11 +194,26 @@ namespace LagoVista.Core.GCode.Parser
                 return null;
             }
 
-            return new MCode()
+            var mCode = new MCode()
             {
                 OriginalLine = line,
                 LineNumber = lineNumber
             };
+
+            if (words.First().Command == 'M')
+            {
+                mCode.Code = Convert.ToInt32(words.First().Parameter);
+                words.RemoveAt(0);
+            }
+
+            var powerCommand = words.Where(wrd => wrd.Command == 'P').FirstOrDefault();
+            if (powerCommand != null)
+            {
+                words.Remove(powerCommand);
+                mCode.Power = powerCommand.Parameter;
+            }
+
+            return mCode;
         }
 
         public ToolChangeCommand ParseToolChangeCommand(string line, int lineNumber)

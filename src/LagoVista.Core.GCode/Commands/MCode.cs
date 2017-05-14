@@ -31,6 +31,8 @@ namespace LagoVista.Core.GCode.Commands
                 case "M06": DrillSize = (String.IsNullOrEmpty(comment)) ? -1 : double.Parse(comment);  break;
             }
         }
+
+        public double Power { get; set; }
      
         public double DrillSize { get; private set; }
 

@@ -1,5 +1,6 @@
 ﻿using LagoViata.PNP.Channel;
 using System;
+using System.Diagnostics;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.UI.Xaml;
@@ -18,6 +19,13 @@ namespace LagoViata.PNP
             this.Suspending += OnSuspending;
             _theApp = this;
             _server = new Server(9001);
+            this.UnhandledException += App_UnhandledException;
+        }
+
+        private void App_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            Debug.WriteLine(e.Message);
+            Debug.WriteLine(e.Exception.StackTrace);
         }
 
         public static App TheApp { get { return _theApp; } }
