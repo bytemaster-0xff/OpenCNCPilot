@@ -1,31 +1,19 @@
-﻿using LagoVista.GCode.Sender.ViewModels;
-using System;
-using System.Windows;
-using Emgu.CV;
-using System.Windows.Input;
-using System.Threading.Tasks;
-using System.Threading;
-using System.Windows.Media.Imaging;
+﻿using LagoVista.GCode.Sender.Application.ViewModels;
 using LagoVista.GCode.Sender.Interfaces;
-using LagoVista.GCode.Sender.Application.ViewModels;
+using System.Windows;
 
-namespace LagoVista.GCode.Sender.Application
+namespace LagoVista.GCode.Sender.Application.Views
 {
-    /// <summary>
-    /// Interaction logic for MachineVision.xaml
-    /// </summary>
-    public partial class MachineVision : Window
+    public partial class MVFeederLocatorView : Window
     {
-        MachineVisionViewModel _viewModel;
-
-        public MachineVision(IMachine machine)
+        public MVFeederLocatorView(IMachine machine)
         {
             InitializeComponent();
 
             var designTime = System.ComponentModel.DesignerProperties.GetIsInDesignMode(new DependencyObject());
             if (!designTime)
             {
-                ViewModel = new MachineVisionViewModel(machine);
+                ViewModel = new FeederLocatorViewModel(machine);
 
                 this.Closing += MachineVision_Closing;
                 this.Loaded += MachineVision_Loaded;
@@ -41,15 +29,15 @@ namespace LagoVista.GCode.Sender.Application
         {
             await ViewModel.InitAsync();
         }
-      
-        public MachineVisionViewModel ViewModel
+
+        public FeederLocatorViewModel ViewModel
         {
-            get { return _viewModel; }
+            get { return DataContext as FeederLocatorViewModel; }
             set
             {
-                _viewModel = value;
                 DataContext = this;
             }
         }
     }
 }
+

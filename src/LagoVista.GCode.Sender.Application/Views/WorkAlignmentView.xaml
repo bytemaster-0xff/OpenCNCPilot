@@ -1,11 +1,12 @@
 ﻿<Window xmlns:Controls="clr-namespace:LagoVista.GCode.Sender.Application.Controls"
-        x:Class="LagoVista.GCode.Sender.Application.MachineVision"
+        x:Class="LagoVista.GCode.Sender.Application.Views.WorkAlignmentView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:LagoVista.GCode.Sender.Application.Views"
         mc:Ignorable="d"
-        Title="MachineVision" Height="720" Width="1200">
+        Title="Work Alignment View" Height="720" Width="1200">
     <Grid >
         <Grid.RowDefinitions>
             <RowDefinition Height="48"/>

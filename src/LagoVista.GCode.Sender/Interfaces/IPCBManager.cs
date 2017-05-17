@@ -53,5 +53,9 @@ namespace LagoVista.GCode.Sender.Interfaces
         bool Tool1Navigation { get; set; }
 
         bool Tool2Navigation { get; set; }
+
+        bool IsSetFiducialMode { get; set; }
+
+        bool IsNavigationMode { get; set; }
     }
 }

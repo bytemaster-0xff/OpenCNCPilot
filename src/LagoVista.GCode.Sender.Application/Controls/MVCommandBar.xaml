@@ -1,0 +1,52 @@
+﻿<UserControl x:Class="LagoVista.GCode.Sender.Application.Controls.MVCommandBar"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:fa="http://schemas.fontawesome.io/icons/"
+             xmlns:local="clr-namespace:LagoVista.GCode.Sender.Application.Controls"
+             mc:Ignorable="d" 
+             d:DesignHeight="50" d:DesignWidth="500">
+    <ToolBar>
+        <Button  Command="{Binding StopCaptureCommand}"  Margin="2" Style="{StaticResource VideoControlButton}"   >
+            <Button.Content>
+                <fa:ImageAwesome Foreground="White" Icon="Stop"  />
+            </Button.Content>
+        </Button>
+        <Button  Command="{Binding StartCaptureCommand}" Margin="2"  Style="{StaticResource VideoControlButton}" >
+            <Button.Content>
+                <fa:ImageAwesome Foreground="White" Icon="Play" />
+            </Button.Content>
+        </Button>
+        <ToggleButton   IsChecked="{Binding Path=Machine.PCBManager.CameraNavigation, Mode=TwoWay}">
+            <ToggleButton.Content>
+                <fa:ImageAwesome Icon="Camera"  ToolTip="Camera Navigation" />
+            </ToggleButton.Content>
+        </ToggleButton>
+        <ToggleButton   IsChecked="{Binding Path=Machine.PCBManager.Tool1Navigation, Mode=TwoWay}">
+            <ToggleButton.Content>
+                <fa:ImageAwesome Icon="Wrench"   ToolTip="Tool Navigation" />
+            </ToggleButton.Content>
+        </ToggleButton>
+        <ToggleButton IsChecked="{Binding Path=Machine.PCBManager.IsSetFiducialMode, Mode=TwoWay}" >
+            <ToggleButton.Content>
+                <fa:ImageAwesome Icon="Circle"   ToolTip="Fuducial Selection Mode" />
+            </ToggleButton.Content>
+        </ToggleButton>
+        <ToggleButton  IsChecked="{Binding Path=Machine.PCBManager.IsNavigationMode, Mode=TwoWay}" >
+            <ToggleButton.Content>
+                <fa:ImageAwesome Icon="Arrows"   ToolTip="Navigation Mode" />
+            </ToggleButton.Content>
+        </ToggleButton>
+        <ToggleButton IsChecked="{Binding Path=Mirrored, ElementName=PCBView}" >
+            <ToggleButton.Content>
+                <fa:ImageAwesome Icon="RotateLeft"   ToolTip="Mirror Board" />
+            </ToggleButton.Content>
+        </ToggleButton>
+        <Button  Click="Settings_Click" x:Name="Settings" Margin="2" HorizontalAlignment="Right"  Style="{StaticResource VideoControlButton}" >
+            <Button.Content>
+                <fa:ImageAwesome Foreground="White" Icon="Gear" />
+            </Button.Content>
+        </Button>
+    </ToolBar>
+</UserControl>

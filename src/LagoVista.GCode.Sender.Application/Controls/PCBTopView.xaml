@@ -11,8 +11,6 @@
             <StackPanel>
                 <TextBlock Width="60"></TextBlock>
             </StackPanel>
-
-
         </StackPanel>
     </Canvas>
 </UserControl>

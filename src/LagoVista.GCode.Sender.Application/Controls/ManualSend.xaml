@@ -1,0 +1,18 @@
+﻿<UserControl x:Class="LagoVista.GCode.Sender.Application.Controls.ManualSend"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:fa="http://schemas.fontawesome.io/icons/"
+             xmlns:local="clr-namespace:LagoVista.GCode.Sender.Application.Controls"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <Grid DataContext="{Binding ManualSendVM}" >
+        <TextBox  PreviewKeyDown="TextBoxManual_PreviewKeyDown" TextChanged="TextBoxManual_TextChanged" x:Name="TextBoxManual" FontSize="18" Text="{Binding ManualCommandText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, FallbackValue=G1 X100}" AcceptsReturn="True" Margin="0,0,24,0" Height="28" />
+        <Button Grid.Row="3" Grid.Column="1" Height="28" Width="24" HorizontalAlignment="Right" Command="{Binding ManualSendCommand}">
+            <Button.Content>
+                <fa:ImageAwesome Icon="Play" VerticalAlignment="Center" HorizontalAlignment="Center" />
+            </Button.Content>
+        </Button>
+    </Grid>
+</UserControl>

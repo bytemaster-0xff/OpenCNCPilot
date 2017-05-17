@@ -1,23 +1,20 @@
-﻿using LagoVista.Core.ViewModels;
-using LagoVista.GCode.Sender.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media.Imaging;
 
 namespace LagoVista.GCode.Sender.Application.ViewModels
 {
-    public partial class MachineVisionViewModel 
+    public abstract partial class MachineVisionViewModelBase
     {
         public bool ShowPolygons { get; set; } = false;
         public bool ShowRectangles { get; set; } = false;
         public bool ShowCircles { get; set; } = true;
         public bool ShowLines { get; set; } = false;
         public bool ShowCrossHairs { get; set; } = true;
-
         public bool ShowHarrisCorners { get; set; } = false;
-
         public bool ShowOriginalImage { get; set; } = true;
 
         public string PolygonHelp { get { return "http://docs.opencv.org/2.4/doc/tutorials/imgproc/shapedescriptors/bounding_rects_circles/bounding_rects_circles.html?highlight=approxpolydp"; } }
@@ -56,13 +53,18 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
         public string GaussianSigmaXHelp { get { return "Gaussian kernel standard deviation in X direction."; } }
         public string GaussianSigmaYHelp { get { return "Gaussian kernel standard deviation in Y direction; if sigmaY is zero, it is set to be equal to sigmaX, if both sigmas are zeros, they are computed from ksize.width and ksize.height , respectively (see getGaussianKernel() for details); to fully control the result regardless of possible future modifications of all this semantics, it is recommended to specify all of ksize, sigmaX, and sigmaY"; } }
 
-
-
-        private VisionProfile _profile;
-        public VisionProfile Profile
+        private bool _loadingMask;
+        public bool LoadingMask
         {
-            get { return _profile; }
-            set { Set(ref _profile, value); }
+            get { return _loadingMask; }
+            set { Set(ref _loadingMask, value); }
+        }
+
+        private BitmapSource _capturedImage;
+        public BitmapSource CapturedImage
+        {
+            get { return _capturedImage; }
+            set { Set(ref _capturedImage, value); }
         }
     }
 }

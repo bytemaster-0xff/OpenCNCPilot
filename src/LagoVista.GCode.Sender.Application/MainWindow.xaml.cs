@@ -226,33 +226,6 @@ namespace LagoVista.GCode.Sender.Application
             Close();
         }
 
-        #region GCOde Manual Send Text Box
-        private void TextBoxManual_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
-        {
-            if (e.Key == System.Windows.Input.Key.Up)
-            {
-                ViewModel.ManualSendVM.ShowPrevious();
-            }
-            else if (e.Key == System.Windows.Input.Key.Down)
-            {
-                ViewModel.ManualSendVM.ShowNext();
-            }
-            else if (e.Key == System.Windows.Input.Key.Return)
-            {
-                e.Handled = true;
-                ViewModel.ManualSendVM.ManualSend();
-            }
-        }
-
-        private void TextBoxManual_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
-        {
-            if (TextBoxManual.CaretIndex == 0)
-            {
-                TextBoxManual.CaretIndex = TextBoxManual.Text.Length;
-            }
-        }
-        #endregion
-
         private async void EditMachineMenu_Click(object sender, RoutedEventArgs e)
         {
             //Clone in case we cancel.

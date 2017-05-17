@@ -1,0 +1,46 @@
+﻿<UserControl x:Class="LagoVista.GCode.Sender.Application.Controls.XYJog"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:fa="http://schemas.fontawesome.io/icons/"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+          xmlns:sndr="clr-namespace:LagoVista.GCode.Sender;assembly=LagoVista.GCode.Sender"
+          
+             xmlns:local="clr-namespace:LagoVista.GCode.Sender.Application.Controls"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <Grid>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Button Style="{StaticResource JogArrow}"  Grid.Row="0" Grid.Column="1"  Command="{Binding JogCommand}" CommandParameter="{x:Static sndr:JogDirections.YPlus}">
+                <Button.Content>
+                    <fa:ImageAwesome  Icon="ArrowCircleUp" />
+                </Button.Content>
+            </Button>
+            <Button Style="{StaticResource JogArrow}"  Grid.Row="1" Grid.Column="0"   Command="{Binding JogCommand}" CommandParameter="{x:Static sndr:JogDirections.XMinus}">
+                <Button.Content>
+                    <fa:ImageAwesome Icon="ArrowCircleLeft" />
+                </Button.Content>
+            </Button>
+            <Button Style="{StaticResource JogArrow}"  Grid.Row="1" Grid.Column="2"  Command="{Binding JogCommand}" CommandParameter="{x:Static sndr:JogDirections.XPlus}">
+                <Button.Content>
+                    <fa:ImageAwesome Icon="ArrowCircleRight" />
+                </Button.Content>
+            </Button>
+            <Button Style="{StaticResource JogArrow}" Grid.Row="2" Grid.Column="1"  Command="{Binding JogCommand}" CommandParameter="{x:Static sndr:JogDirections.YMinus}">
+                <Button.Content>
+                    <fa:ImageAwesome Icon="ArrowCircleDown" />
+                </Button.Content>
+            </Button>
+        </Grid>
+    </Grid>
+</UserControl>

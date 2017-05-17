@@ -124,6 +124,24 @@
     <Compile Include="Controls\JobControl.xaml.cs">
       <DependentUpon>JobControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\LoadingMask.xaml.cs">
+      <DependentUpon>LoadingMask.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ManualSend.xaml.cs">
+      <DependentUpon>ManualSend.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\MVAquiredPoints.xaml.cs">
+      <DependentUpon>MVAquiredPoints.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\MVCommandBar.xaml.cs">
+      <DependentUpon>MVCommandBar.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\MVViewOptions.xaml.cs">
+      <DependentUpon>MVViewOptions.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\MVNavigation.xaml.cs">
+      <DependentUpon>MVNavigation.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\PnPMachineLocation.xaml.cs">
       <DependentUpon>PnPMachineLocation.xaml</DependentUpon>
     </Compile>
@@ -154,6 +172,9 @@
     </Compile>
     <Compile Include="Controls\ScrollListBox.cs" />
     <Compile Include="Controls\ShapeDetection.cs" />
+    <Compile Include="Controls\XYJog.xaml.cs">
+      <DependentUpon>XYJog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="Converters\ColorConverters.cs" />
     <Compile Include="Converters\GCodeSendStatusTypeConverters.cs" />
@@ -198,18 +219,31 @@
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Util\BitmapSourceConverter.cs" />
+    <Compile Include="ViewModels\CalibrationViewModel.cs" />
+    <Compile Include="ViewModels\FeederLocatorViewModel.cs" />
     <Compile Include="ViewModels\MachineVisionViewModel.cs" />
-    <Compile Include="ViewModels\MachineVisionViewModel.Properties.cs">
-      <DependentUpon>MachineVisionViewModel.cs</DependentUpon>
-    </Compile>
+    <Compile Include="ViewModels\MachineVisionViewModelBase.Capture.cs" />
+    <Compile Include="ViewModels\MachineVisionViewModelBase.Commanding.cs" />
+    <Compile Include="ViewModels\MachineVisionViewModelBase.cs" />
+    <Compile Include="ViewModels\MachineVisionViewModelBase.Properties.cs" />
+    <Compile Include="ViewModels\WorkAlignmentViewModel.cs" />
     <Compile Include="Views\FeederLibraryWindow.xaml.cs">
       <DependentUpon>FeederLibraryWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\MVCalibrationView.xaml.cs">
+      <DependentUpon>MVCalibrationView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\MVFeederLocatorView.xaml.cs">
+      <DependentUpon>MVFeederLocatorView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\PackageLibraryWindow.xaml.cs">
       <DependentUpon>PackageLibraryWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\PNPJobWindow.xaml.cs">
       <DependentUpon>PNPJobWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\WorkAlignmentView.xaml.cs">
+      <DependentUpon>WorkAlignmentView.xaml</DependentUpon>
     </Compile>
     <Page Include="About.xaml">
       <SubType>Designer</SubType>
@@ -236,6 +270,30 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\JobControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\LoadingMask.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\ManualSend.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\MVAquiredPoints.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\MVCommandBar.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\MVViewOptions.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\MVNavigation.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -272,6 +330,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\PCBTopView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\XYJog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -340,6 +402,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Views\MVCalibrationView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\MVFeederLocatorView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\PackageLibraryWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -347,6 +417,10 @@
     <Page Include="Views\PNPJobWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\WorkAlignmentView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>

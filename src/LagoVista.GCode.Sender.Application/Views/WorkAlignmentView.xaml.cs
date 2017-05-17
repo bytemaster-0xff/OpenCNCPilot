@@ -1,31 +1,22 @@
-﻿using LagoVista.GCode.Sender.ViewModels;
-using System;
-using System.Windows;
-using Emgu.CV;
-using System.Windows.Input;
-using System.Threading.Tasks;
-using System.Threading;
-using System.Windows.Media.Imaging;
+﻿using LagoVista.GCode.Sender.Application.ViewModels;
 using LagoVista.GCode.Sender.Interfaces;
-using LagoVista.GCode.Sender.Application.ViewModels;
+using System.Windows;
 
-namespace LagoVista.GCode.Sender.Application
+namespace LagoVista.GCode.Sender.Application.Views
 {
     /// <summary>
-    /// Interaction logic for MachineVision.xaml
+    /// Interaction logic for WorkAlignmentView.xaml
     /// </summary>
-    public partial class MachineVision : Window
+    public partial class WorkAlignmentView : Window
     {
-        MachineVisionViewModel _viewModel;
-
-        public MachineVision(IMachine machine)
+        public WorkAlignmentView(IMachine machine)
         {
             InitializeComponent();
 
             var designTime = System.ComponentModel.DesignerProperties.GetIsInDesignMode(new DependencyObject());
             if (!designTime)
             {
-                ViewModel = new MachineVisionViewModel(machine);
+                ViewModel = new WorkAlignmentViewModel(machine);
 
                 this.Closing += MachineVision_Closing;
                 this.Loaded += MachineVision_Loaded;
@@ -41,13 +32,12 @@ namespace LagoVista.GCode.Sender.Application
         {
             await ViewModel.InitAsync();
         }
-      
-        public MachineVisionViewModel ViewModel
+
+        public WorkAlignmentViewModel ViewModel
         {
-            get { return _viewModel; }
+            get { return DataContext as WorkAlignmentViewModel; }
             set
             {
-                _viewModel = value;
                 DataContext = this;
             }
         }

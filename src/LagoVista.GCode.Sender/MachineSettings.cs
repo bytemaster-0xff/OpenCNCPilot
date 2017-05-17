@@ -140,6 +140,13 @@ namespace LagoVista.GCode.Sender
             set { Set(ref _positioningCamera, value); }
         }
 
+        Camera _partInspectionCamera;
+        public Camera PartInspectionCamera
+        {
+            get { return _partInspectionCamera; }
+            set { Set(ref _partInspectionCamera, value); }
+        }
+
         public FirmwareTypes MachineType { get; set; }
 
         private string _settingsName;
