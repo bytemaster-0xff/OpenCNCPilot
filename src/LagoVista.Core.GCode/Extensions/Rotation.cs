@@ -13,13 +13,13 @@ namespace LagoVista
         {
             var radians = (Math.PI / 180) * (angle);
 
-            var cos = Math.Cos(radians);
-            var sin = Math.Sin(radians);
+            double x1 = point.X - origin.X;
+            double y1 = point.Y - origin.Y;
 
-            var rotX = (cos * (point.X - origin.X)) - (sin * (point.Y - origin.Y));
-            var rotY = (cos * (point.Y - origin.Y)) + (sin * (point.X - origin.X));
-
-            return new Point2D<double>(rotX, rotY);
+            double x2 = x1 * Math.Cos(radians) - y1 * Math.Sin(radians);
+            double y2 = x1 * Math.Sin(radians) + y1 * Math.Cos(radians);
+            
+            return new Point2D<double>(x2 + origin.X, y2 + origin.Y);
         }
 
         public static Point2D<double> Rotate(this Point2D<double> point, double angle)

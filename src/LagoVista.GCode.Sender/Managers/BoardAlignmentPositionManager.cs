@@ -10,6 +10,13 @@ using System.Threading.Tasks;
 
 namespace LagoVista.GCode.Sender.Managers
 {
+    /* 
+     * This class is responsible for taking in two fiducials for exactpositions on a PCB
+     * it then takes the absolute position of where those fiducials are located based on MV
+     * With that information it will calculate where the origin of the board is and the angle it's offset
+     * based on that information we can pass it an XY location with respect to board origin and it will
+     * calculate the corrected absoute position.
+     */
     public class BoardAlignmentPositionManager : ModelBase, IBoardAlignmentPositionManager
     {
         IPCBManager _boardManager;
@@ -27,8 +34,10 @@ namespace LagoVista.GCode.Sender.Managers
 
             var deltaX = FirstLocated.X - _boardManager.FirstFiducial.X;
             var deltaY = FirstLocated.Y - _boardManager.FirstFiducial.Y;
-
+            /* Based on the board being perfectly level find where teh origin is based on absolute position */
             var initial = new Point2D<double>(deltaX, deltaY);
+
+            /* Apply rotation offset based on actual board rotation */
             OffsetPoint = initial.Rotate(FirstLocated, RotationOffset.ToDegrees());
 
             BoardOriginPoint = new Point2D<double>()
@@ -69,7 +78,7 @@ namespace LagoVista.GCode.Sender.Managers
         }
 
         /// <summary>
-        /// Offset from Position of First Location
+        /// Calculated absolute position of board based on absolute measured positions.
         /// </summary>
         private Point2D<double> _offsetPoint;
         public Point2D<double> OffsetPoint

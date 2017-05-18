@@ -78,7 +78,7 @@ namespace LagoVista.GCode.Sender.Managers
 
 
         /* 
-         * Once we move to the second fiducial, we want to see a whole wihtin 10 pixels of the 
+         * Once we move to the second fiducial, we want to see a hole wihtin 10 pixels of the 
          * the center.
          */
         private const double EPSILON_MACHINE_PIXELS = 10;

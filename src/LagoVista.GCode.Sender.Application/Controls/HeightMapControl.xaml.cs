@@ -40,13 +40,7 @@ namespace LagoVista.GCode.Sender.Application.Controls
             var x = ViewModel.Machine.Settings.WorkAreaWidth / 2;
             Camera.Position = new Point3D(x, Camera.Position.Y, Camera.Position.Z);
         }
-
-        private Point Rotate(double centerX, double centerY, double x, double y, double angle)
-        {
-
-            return new Point();
-        }
-
+       
         private void RenderBoard(LagoVista.EaglePCB.Models.PCB board, LagoVista.EaglePCB.Models.PCBProject project, bool resetZoomAndView = true)
         {
             var linePoints = new Point3DCollection();
