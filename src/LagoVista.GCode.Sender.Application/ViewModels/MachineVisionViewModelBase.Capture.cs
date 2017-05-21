@@ -12,98 +12,160 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
 {
     public abstract partial class MachineVisionViewModelBase
     {
-        System.Threading.Timer _timer;
-        bool _timerStopped = true;
-        VideoCapture _videoCapture;
+        VideoCapture _topCameraCapture;
+        VideoCapture _bottomCameraCapture;
+
         Object _videoCaptureLocker = new object();
 
-
-        private async Task InitCapture(int cameraIndex)
+        private VideoCapture InitCapture(int cameraIndex)
         {
-            await Task.Run(() =>
+            try
             {
-                try
-                {
-                    _videoCapture = new VideoCapture(cameraIndex);
-
-                }
-                catch (Exception ex)
-                {
-                    Core.PlatformSupport.Services.Logger.LogException("ImageSensor_InitCapture", ex);
-                }
-            });
+                return new VideoCapture(cameraIndex);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Could not open camera: " + ex.Message);
+                return null;
+            }
         }
 
         private bool _running;
 
-        private double _lastContrast = -9999;
-        private double _lastBrightness = -9999;
-        private double _lastExposure = -9999;
+        private double _lastTopBrightness = -9999;
+        private double _lastBottomBrightness = -9999;
 
 
-        private void StartImageRecognization()
+        private double _lastTopFocus = -9999;
+        private double _lastBottomFocus = -9999;
+
+        private double _lastTopExposure = -9999;
+        private double _lastBottomExposure = -9999;
+
+        private double _lastTopContrast = -9999;
+        private double _lastBottomContrast = -9999;
+
+        private async void StartImageRecognization()
         {
-            Task.Run(async () =>
+            _running = true;
+
+            while (_running)
             {
-                while (_running)
+                if (_topCameraCapture != null)
                 {
+                    _topCameraCapture.SetCaptureProperty(Emgu.CV.CvEnum.CapProp.AutoExposure, 0);
 
-                    await Dispatcher.CurrentDispatcher.BeginInvoke(new Action(() =>
+                    if (_lastTopBrightness != _topCameraProfile.Brightness)
                     {
-                        lock (_videoCaptureLocker)
+                        _topCameraCapture.SetCaptureProperty(Emgu.CV.CvEnum.CapProp.Brightness, _topCameraProfile.Brightness);
+                        _lastTopBrightness = _topCameraProfile.Brightness;
+                    }
+
+                    if (_lastTopFocus != _topCameraProfile.Focus)
+                    {
+                        _topCameraCapture.SetCaptureProperty(Emgu.CV.CvEnum.CapProp.Focus, _topCameraProfile.Focus);
+                        _lastTopFocus = _topCameraProfile.Focus;
+                    }
+
+                    if (_lastTopContrast != _topCameraProfile.Contrast)
+                    {
+                        _topCameraCapture.SetCaptureProperty(Emgu.CV.CvEnum.CapProp.Contrast, _topCameraProfile.Contrast);
+                        _lastTopContrast = _topCameraProfile.Contrast;
+                    }
+
+                    if (_lastTopExposure != _topCameraProfile.Exposure)
+                    {
+                        _topCameraCapture.SetCaptureProperty(Emgu.CV.CvEnum.CapProp.Exposure, _topCameraProfile.Exposure);
+                        _lastTopExposure = _topCameraProfile.Exposure;
+                    }
+
+                    HasFrame = true;
+
+                    if (LoadingMask)
+                    {
+                        LoadingMask = false;
+                    }
+
+                    using (var originalFrame = _topCameraCapture.QueryFrame())
+                    using (var results = PerformShapeDetection(originalFrame))
+                    {
+                        if (ShowTopCamera)
                         {
-                            if (_videoCapture != null)
-                            {
-                                _videoCapture.SetCaptureProperty(Emgu.CV.CvEnum.CapProp.AutoExposure, 0);
-
-                                if (_lastBrightness != Profile.Brightness)
-                                {
-                                    _videoCapture.SetCaptureProperty(Emgu.CV.CvEnum.CapProp.Brightness, Profile.Brightness);
-                                    _lastBrightness = Profile.Brightness;
-                                }
-
-                                if (_lastContrast != Profile.Contrast)
-                                {
-                                    _videoCapture.SetCaptureProperty(Emgu.CV.CvEnum.CapProp.Contrast, Profile.Contrast);
-                                    _lastContrast = Profile.Contrast;
-                                }
-
-                                if (_lastExposure != Profile.Exposure)
-                                {
-                                    _videoCapture.SetCaptureProperty(Emgu.CV.CvEnum.CapProp.Exposure, Profile.Exposure);
-                                    _lastExposure = Profile.Exposure;
-                                }
-
-                                using (var originalFrame = _videoCapture.QueryFrame())
-                                {
-                                    using (var results = PerformShapeDetection(originalFrame))
-                                    {
-
-                                        if (LoadingMask)
-                                        {
-                                            LoadingMask = false;
-                                        }
-
-                                        CapturedImage = Emgu.CV.WPF.BitmapSourceConvert.ToBitmapSource(results);
-                                    }
-                                }
-                            }
+                            PrimaryCapturedImage = Emgu.CV.WPF.BitmapSourceConvert.ToBitmapSource(results);
                         }
-                    }));
-
-                    await Task.Delay(100);
+                        else if (PictureInPicture)
+                        {
+                            SecondaryCapturedImage = Emgu.CV.WPF.BitmapSourceConvert.ToBitmapSource(results);
+                        }
+                    }
                 }
-            });
+
+                if (_bottomCameraCapture != null)
+                {
+                    _bottomCameraCapture.SetCaptureProperty(Emgu.CV.CvEnum.CapProp.AutoExposure, 0);
+
+                    if (_lastBottomBrightness != _bottomCameraProfile.Brightness)
+                    {
+                        _bottomCameraCapture.SetCaptureProperty(Emgu.CV.CvEnum.CapProp.Brightness, _bottomCameraProfile.Brightness);
+                        _lastBottomBrightness = _bottomCameraProfile.Brightness;
+                    }
+
+                    if (_lastBottomFocus != _bottomCameraProfile.Focus)
+                    {
+                        _bottomCameraCapture.SetCaptureProperty(Emgu.CV.CvEnum.CapProp.Focus, _bottomCameraProfile.Focus);
+                        _lastBottomFocus = _bottomCameraProfile.Focus;
+                    }
+
+                    if (_lastBottomContrast != _bottomCameraProfile.Contrast)
+                    {
+                        _bottomCameraCapture.SetCaptureProperty(Emgu.CV.CvEnum.CapProp.Contrast, _bottomCameraProfile.Contrast);
+                        _lastBottomContrast = _bottomCameraProfile.Contrast;
+                    }
+
+                    if (_lastBottomExposure != _bottomCameraProfile.Exposure)
+                    {
+                        _bottomCameraCapture.SetCaptureProperty(Emgu.CV.CvEnum.CapProp.Exposure, _bottomCameraProfile.Exposure);
+                        _lastBottomExposure = _bottomCameraProfile.Exposure;
+                    }
+
+                    using (var originalFrame = _bottomCameraCapture.QueryFrame())
+                    using (var results = PerformShapeDetection(originalFrame))
+                    {
+                        if (ShowBottomCamera)
+                        {
+                            PrimaryCapturedImage = Emgu.CV.WPF.BitmapSourceConvert.ToBitmapSource(results);
+                        }
+                        else if (PictureInPicture)
+                        {
+                            SecondaryCapturedImage = Emgu.CV.WPF.BitmapSourceConvert.ToBitmapSource(results);
+                        }
+                    }
+                    HasFrame = true;
+
+                    if (LoadingMask)
+                    {
+                        LoadingMask = false;
+                    }
+
+                    if (!ShowTopCamera && !ShowBottomCamera)
+                    {
+                        PrimaryCapturedImage = new BitmapImage(new Uri("/Imgs/TestPattern.jpg", UriKind.Relative));
+                        SecondaryCapturedImage = new BitmapImage(new Uri("/Imgs/TestPattern.jpg", UriKind.Relative));
+                    }
+                }
+
+                await Task.Delay(100);
+            }
+
+
+            HasFrame = false;
         }
 
-        public async void StartCapture()
+        public void StartCapture()
         {
-            lock (_videoCaptureLocker)
+            if (_topCameraCapture != null)
             {
-                if (_videoCapture != null)
-                {
-                    return;
-                }
+                return;
             }
 
             if (Machine.Settings.PositioningCamera == null)
@@ -116,10 +178,25 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             try
             {
                 LoadingMask = true;
-                await InitCapture(Machine.Settings.PositioningCamera.CameraIndex);
-                _running = true;
-                StartImageRecognization();
+                if (Machine.Settings.PositioningCamera != null)
+                {
+                    _topCameraCapture = InitCapture(Machine.Settings.PositioningCamera.CameraIndex);
+                }
+                else
+                {
+                    _topCameraCapture = null;
+                }
 
+                if (Machine.Settings.PartInspectionCamera != null)
+                {
+                    _bottomCameraCapture = InitCapture(Machine.Settings.PartInspectionCamera.CameraIndex);
+                }
+                else
+                {
+                    _bottomCameraCapture = null;
+                }
+
+                StartImageRecognization();
             }
             catch (Exception ex)
             {
@@ -136,11 +213,11 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
 
                 lock (_videoCaptureLocker)
                 {
-                    if (_videoCapture != null)
+                    if (_topCameraCapture != null)
                     {
-                        _videoCapture.Stop();
-                        _videoCapture.Dispose();
-                        _videoCapture = null;
+                        _topCameraCapture.Stop();
+                        _topCameraCapture.Dispose();
+                        _topCameraCapture = null;
                     }
                 }
 
@@ -149,7 +226,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                 src.UriSource = new Uri("pack://application:,,/Imgs/TestPattern.jpg");
                 src.CacheOption = BitmapCacheOption.OnLoad;
                 src.EndInit();
-                CapturedImage = src;
+                PrimaryCapturedImage = src;
             }
             catch (Exception ex)
             {

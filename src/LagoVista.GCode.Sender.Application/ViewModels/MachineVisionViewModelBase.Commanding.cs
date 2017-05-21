@@ -19,7 +19,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             return true;
         }
 
-        public RelayCommand PlayCommand { get; private set; }
-        public RelayCommand StopCommand { get; private set; }
+        public RelayCommand StartCaptureCommand { get; private set; }
+        public RelayCommand StopCaptureCommand { get; private set; }
     }
 }

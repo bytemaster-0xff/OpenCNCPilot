@@ -51,6 +51,11 @@
                         <Label Content="{Binding Profile.Exposure, FallbackValue=3}"  Style="{StaticResource Value}" />
                     </StackPanel>
                     <Slider Value="{Binding Path=Profile.Exposure, Mode=TwoWay}" ToolTip="{Binding GaussianKSizeHelp}" Minimum="-50" Maximum="50"/>
+                    <StackPanel Orientation="Horizontal">
+                        <Label Content="Focus" Style="{StaticResource Caption}" />
+                        <Label Content="{Binding Profile.Focus, FallbackValue=3}"  Style="{StaticResource Value}" />
+                    </StackPanel>                    
+                    <Slider Value="{Binding Path=Profile.Focus, Mode=TwoWay}" ToolTip="{Binding GaussianKSizeHelp}" Minimum="0" Maximum="50"/>
                 </StackPanel>
             </TabItem>
 

@@ -81,13 +81,36 @@ namespace LagoVista.GCode.Sender.ViewModels
         {
             get
             {
-                return Settings.PositioningCamera != null ? Settings.PositioningCamera.Id : "";
+                return Settings.PositioningCamera != null ? Settings.PositioningCamera.Id : "-1";
             }
             set
             {
-                if (value != null)
+                if (value != null && value != "-1")
                 {
                     Settings.PositioningCamera = Cameras.Where(cmr => cmr.Id == value).FirstOrDefault();
+                }
+                else
+                {
+                    Settings.PositioningCamera = null;
+                }
+            }
+        }
+
+        public String InspectionCameraId
+        {
+            get
+            {
+                return Settings.PartInspectionCamera != null ? Settings.PartInspectionCamera.Id : "-1";
+            }
+            set
+            {
+                if (value != null && value != "-1")
+                {
+                    Settings.PartInspectionCamera = Cameras.Where(cmr => cmr.Id == value).FirstOrDefault();
+                }
+                else
+                {
+                    Settings.PartInspectionCamera = null;
                 }
             }
         }

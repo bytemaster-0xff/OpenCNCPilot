@@ -62,6 +62,13 @@
                 <MenuItem Header="Edit Package Library" x:Name="EditPackageLibrary" Click="EditPackageLibrary_Click" />
                 <MenuItem Header="Edit Feeder Library" x:Name="EditFeederLibrary" Click="EditFeederLibrary_Click" />
             </MenuItem>
+            <MenuItem Header="View" >
+                <MenuItem Header="Home" Tag="HomingView" Click="ViewMenu_Show" />
+                <MenuItem Header="Work Alignment" Tag="WorkAlignment" Click="ViewMenu_Show" />
+                <MenuItem Header="Tool Alignment" Tag="ToolAlignment" Click="ViewMenu_Show" />
+                <MenuItem Header="FeederAlignmentt"  Tag="FeederAlignment"  Click="ViewMenu_Show" />
+                <MenuItem Header="Calibration" Tag="Calibration" Click="ViewMenu_Show" />
+            </MenuItem>
             <MenuItem Header="Height Map" >
                 <MenuItem Header="New Generated HeightMap" x:Name="NewGeneratedHeigtMap" Click="NewGeneratedHeigtMap_Click" />
                 <MenuItem Header="Open HeightMap"  Command="{Binding OpenHeightMapCommand}" />

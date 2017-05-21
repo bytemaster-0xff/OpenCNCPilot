@@ -4,12 +4,11 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:LagoVista.GCode.Sender.Application.Controls"
+             Visibility="{Binding LoadingMask, Converter={StaticResource BoolToVisibilityConverter}, FallbackValue=false}"
              mc:Ignorable="d" 
              Background="Transparent"
              d:DesignHeight="300" d:DesignWidth="300">
-
-
-    <Grid Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}, FallbackValue=False}" >
+    <Grid>
         <Rectangle Fill="Black" Opacity="0.5"/>
         <TextBlock Text="Please wait..."  FontSize="42" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,20"/>
     </Grid>

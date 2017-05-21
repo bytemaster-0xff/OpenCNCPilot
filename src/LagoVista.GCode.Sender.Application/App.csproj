@@ -221,14 +221,19 @@
     <Compile Include="Util\BitmapSourceConverter.cs" />
     <Compile Include="ViewModels\CalibrationViewModel.cs" />
     <Compile Include="ViewModels\FeederLocatorViewModel.cs" />
+    <Compile Include="ViewModels\MVHomingViewModel.cs" />
     <Compile Include="ViewModels\MachineVisionViewModel.cs" />
     <Compile Include="ViewModels\MachineVisionViewModelBase.Capture.cs" />
     <Compile Include="ViewModels\MachineVisionViewModelBase.Commanding.cs" />
     <Compile Include="ViewModels\MachineVisionViewModelBase.cs" />
     <Compile Include="ViewModels\MachineVisionViewModelBase.Properties.cs" />
+    <Compile Include="ViewModels\ToolAlignmentViewModel.cs" />
     <Compile Include="ViewModels\WorkAlignmentViewModel.cs" />
     <Compile Include="Views\FeederLibraryWindow.xaml.cs">
       <DependentUpon>FeederLibraryWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\HomingView.xaml.cs">
+      <DependentUpon>HomingView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\MVCalibrationView.xaml.cs">
       <DependentUpon>MVCalibrationView.xaml</DependentUpon>
@@ -241,6 +246,9 @@
     </Compile>
     <Compile Include="Views\PNPJobWindow.xaml.cs">
       <DependentUpon>PNPJobWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ToolAlignment.xaml.cs">
+      <DependentUpon>ToolAlignment.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\WorkAlignmentView.xaml.cs">
       <DependentUpon>WorkAlignmentView.xaml</DependentUpon>
@@ -402,6 +410,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Views\HomingView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\MVCalibrationView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -417,6 +429,10 @@
     <Page Include="Views\PNPJobWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\ToolAlignment.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\WorkAlignmentView.xaml">
       <SubType>Designer</SubType>

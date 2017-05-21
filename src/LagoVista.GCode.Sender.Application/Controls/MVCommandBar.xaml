@@ -6,18 +6,46 @@
              xmlns:fa="http://schemas.fontawesome.io/icons/"
              xmlns:local="clr-namespace:LagoVista.GCode.Sender.Application.Controls"
              mc:Ignorable="d" 
-             d:DesignHeight="50" d:DesignWidth="500">
+             d:DesignHeight="50" d:DesignWidth="800">
     <ToolBar>
-        <Button  Command="{Binding StopCaptureCommand}"  Margin="2" Style="{StaticResource VideoControlButton}"   >
+        <Button   Width="36" Height="36"  Command="{Binding StopCaptureCommand}"  Margin="2" Style="{StaticResource VideoControlButton}"   >
             <Button.Content>
-                <fa:ImageAwesome Foreground="White" Icon="Stop"  />
+                <fa:ImageAwesome Icon="Stop"  />
             </Button.Content>
         </Button>
-        <Button  Command="{Binding StartCaptureCommand}" Margin="2"  Style="{StaticResource VideoControlButton}" >
+
+        <Button   Width="48" Height="36"  Command="{Binding StartCaptureCommand}" Margin="2"  Style="{StaticResource VideoControlButton}"  >
             <Button.Content>
-                <fa:ImageAwesome Foreground="White" Icon="Play" />
+                <fa:ImageAwesome Icon="Play"  />
             </Button.Content>
         </Button>
+
+
+        <ToggleButton IsChecked="{Binding ShowTopCamera, Mode=TwoWay}" Width="48" Height="48"   >
+            <ToggleButton.Content>
+                <fa:ImageAwesome Icon="VideoCamera"   ToolTip="Image Settings" />
+            </ToggleButton.Content>
+            <ToggleButton.RenderTransform>
+                <RotateTransform Angle="90" CenterX="24" CenterY="24"></RotateTransform>
+            </ToggleButton.RenderTransform>
+        </ToggleButton>
+
+        <ToggleButton IsChecked="{Binding ShowBottomCamera, Mode=TwoWay}" Width="48" Height="48"  >
+            <ToggleButton.Content>
+                <fa:ImageAwesome Icon="VideoCamera"   ToolTip="Image Settings" />
+            </ToggleButton.Content>
+            <ToggleButton.RenderTransform>
+                <RotateTransform Angle="270" CenterX="24" CenterY="24"></RotateTransform>
+            </ToggleButton.RenderTransform>            
+        </ToggleButton>
+
+
+        <ToggleButton IsChecked="{Binding PictureInPicture, Mode=TwoWay}"  >
+            <ToggleButton.Content>
+                <fa:ImageAwesome Icon="ObjectGroup"   ToolTip="Image Settings" />
+            </ToggleButton.Content>
+        </ToggleButton>
+
         <ToggleButton   IsChecked="{Binding Path=Machine.PCBManager.CameraNavigation, Mode=TwoWay}">
             <ToggleButton.Content>
                 <fa:ImageAwesome Icon="Camera"  ToolTip="Camera Navigation" />
@@ -43,9 +71,14 @@
                 <fa:ImageAwesome Icon="RotateLeft"   ToolTip="Mirror Board" />
             </ToggleButton.Content>
         </ToggleButton>
-        <Button  Click="Settings_Click" x:Name="Settings" Margin="2" HorizontalAlignment="Right"  Style="{StaticResource VideoControlButton}" >
+        <ToggleButton IsChecked="{Binding AreToolSettingsVisible, Mode=TwoWay}"  >
+            <ToggleButton.Content>
+                <fa:ImageAwesome Icon="Sliders"   ToolTip="Image Settings" />
+            </ToggleButton.Content>
+        </ToggleButton>        
+        <Button Width="36" Height="36"  Click="Settings_Click" x:Name="Settings" Margin="2" HorizontalAlignment="Right"  Style="{StaticResource VideoControlButton}" >
             <Button.Content>
-                <fa:ImageAwesome Foreground="White" Icon="Gear" />
+                <fa:ImageAwesome  Icon="Gear" />
             </Button.Content>
         </Button>
     </ToolBar>

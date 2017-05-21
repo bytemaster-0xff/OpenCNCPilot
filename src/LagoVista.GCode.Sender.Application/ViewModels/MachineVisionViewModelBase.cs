@@ -24,21 +24,37 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
 
         public MachineVisionViewModelBase(IMachine machine) : base(machine)
         {
+            MachineControls = new Sender.ViewModels.MachineControlViewModel(this.Machine);
             Profile = new Models.VisionProfile();
             SaveProfileCommand = new RelayCommand(SaveProfile);
-        }
 
+            StartCaptureCommand = new RelayCommand(StartCapture, CanPlay);
+            StopCaptureCommand = new RelayCommand(StopCapture, CanStop);
+        }
 
         public override async Task InitAsync()
         {
-            var profile = await Storage.GetAsync<Models.VisionProfile>("Vision.json");
-            if (profile != null)
+            _topCameraProfile = await Storage.GetAsync<Models.VisionProfile>("TopCameraVision.json");
+            _bottomCameraProfile = await Storage.GetAsync<Models.VisionProfile>("BottomCameraVision.json");
+
+            if (_topCameraProfile == null)
             {
-                Profile = profile;
+                _topCameraProfile = new VisionProfile();
             }
-            else
+
+            if (_bottomCameraProfile == null)
             {
-                Profile = new Models.VisionProfile();
+                _bottomCameraProfile = new VisionProfile();
+            }
+
+            if(ShowTopCamera)
+            {
+                Profile = _topCameraProfile;
+            }
+
+            if(ShowBottomCamera)
+            {
+                Profile = _bottomCameraProfile;
             }
         }
 
@@ -49,9 +65,15 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             set { Set(ref _profile, value); }
         }
 
+
+        private VisionProfile _topCameraProfile;
+        private VisionProfile _bottomCameraProfile;
+
+
         public async void SaveProfile()
         {
-            await Storage.StoreAsync(Profile, "Vision.json");
+            await Storage.StoreAsync(_topCameraProfile, "TopCameraVision.json");
+            await Storage.StoreAsync(_bottomCameraProfile, "BottomCameraVision.json");
         }
 
         public RelayCommand SaveProfileCommand { get; private set; }

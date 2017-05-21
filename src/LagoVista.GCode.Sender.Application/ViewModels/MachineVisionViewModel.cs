@@ -16,7 +16,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
         {
             CaptureCameraCommand = new RelayCommand(CaptureCameraLocation);
             CaptureDrillLocationCommand = new RelayCommand(CaptureDrillLocation);
-            AlignBoardCommand = new RelayCommand(AlignBoard, CanAlignBoard);
+            AlignBoardCommand = new RelayCommand(AlignBoard, CanAlignBoard);            
         }
 
         public override async Task InitAsync()
@@ -25,7 +25,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             if (Machine.PCBManager.HasBoard)
             {
                 PartsList = Machine.PCBManager.Board.Components.OrderBy(cmp => cmp.Name).ToList();
-            }
+            }            
 
             Machine.PropertyChanged += Machine_PropertyChanged;
             Machine.PCBManager.PropertyChanged += PCBManager_PropertyChanged;

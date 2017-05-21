@@ -8,6 +8,7 @@ private:
 	unsigned int m_pin;
 	int m_multiplierCountDown;
 	int m_axis;
+	bool m_state;
 
 public:
 	Axis(int axis, unsigned int pin);

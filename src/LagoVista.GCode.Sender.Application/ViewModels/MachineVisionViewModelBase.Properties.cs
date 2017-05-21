@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LagoVista.GCode.Sender.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -60,11 +61,90 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             set { Set(ref _loadingMask, value); }
         }
 
-        private BitmapSource _capturedImage;
-        public BitmapSource CapturedImage
+        private BitmapSource _primaryCapturedImage = new BitmapImage(new Uri("/Imgs/TestPattern.jpg", UriKind.Relative));
+        public BitmapSource PrimaryCapturedImage
         {
-            get { return _capturedImage; }
-            set { Set(ref _capturedImage, value); }
+            get { return _primaryCapturedImage; }
+            set { Set(ref _primaryCapturedImage, value); }
+        }
+
+        private BitmapSource _secondaryCapturedImage = new BitmapImage(new Uri("/Imgs/TestPattern.jpg", UriKind.Relative));
+        public BitmapSource SecondaryCapturedImage
+        {
+            get { return _secondaryCapturedImage; }
+            set { Set(ref _secondaryCapturedImage, value); }
+        }
+
+        public MachineControlViewModel MachineControls { get; private set; }
+
+        private bool _areToolSettingsVisible;
+        public bool AreToolSettingsVisible
+        {
+            get { return _areToolSettingsVisible; }
+            set { Set(ref _areToolSettingsVisible, value); }
+        }
+
+        private bool _hasFrame = false;
+        public bool HasFrame
+        {
+            get { return _hasFrame; }
+            set
+            {
+                if (value && !_hasFrame)
+                {
+                    CaptureStarted();
+                }
+
+                if (!value && _hasFrame)
+                {
+                    CaptureEnded();
+                }
+
+                Set(ref _hasFrame, value);
+            }
+        }
+
+        protected virtual void CaptureStarted() { }
+
+        protected virtual void CaptureEnded() { }
+
+        bool _showTopCamera = true;
+        public bool ShowTopCamera
+        {
+            get { return _showTopCamera; }
+            set
+            {
+                if (value)
+                {
+                    Profile = _topCameraProfile;
+                    ShowBottomCamera = false;
+                }
+
+                Set(ref _showTopCamera, value);
+            }
+        }
+
+        bool _showBottomCamera = false;
+        public bool ShowBottomCamera
+        {
+            get { return _showBottomCamera; }
+            set
+            {
+                if (value)
+                {
+                    Profile = _bottomCameraProfile;
+                    ShowTopCamera = false;
+                }
+
+                Set(ref _showBottomCamera, value);
+            }
+        }
+
+        bool _pictureInPicture = false;
+        public bool PictureInPicture
+        {
+            get { return _pictureInPicture; }
+            set { Set(ref _pictureInPicture, value); }
         }
     }
 }

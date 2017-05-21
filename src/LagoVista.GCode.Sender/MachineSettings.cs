@@ -1,4 +1,5 @@
 ﻿using LagoVista.Core.Models;
+using LagoVista.Core.Models.Drawing;
 using LagoVista.Core.PlatformSupport;
 using LagoVista.GCode.Sender.Models;
 using System;
@@ -145,6 +146,13 @@ namespace LagoVista.GCode.Sender
         {
             get { return _partInspectionCamera; }
             set { Set(ref _partInspectionCamera, value); }
+        }
+
+        Point2D<double> _homeFiducialOffset;
+        public Point2D<double> HomeFiducialOffset
+        {
+            get { return _homeFiducialOffset; }
+            set { Set(ref _homeFiducialOffset, value); }
         }
 
         public FirmwareTypes MachineType { get; set; }

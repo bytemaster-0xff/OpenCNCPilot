@@ -46,42 +46,43 @@
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="140" />
-                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="85*" />
+                        <ColumnDefinition Width="181*"/>
                         <ColumnDefinition Width="80" />
                     </Grid.ColumnDefinitions>
                     <Label Grid.Row="0" Grid.Column="0" Content="Name" />
-                    <TextBox Text="{Binding Settings.MachineName, Mode=TwoWay}" Grid.Column="1" x:Name="MachineName" />
+                    <TextBox Text="{Binding Settings.MachineName, Mode=TwoWay}" Grid.Column="1" x:Name="MachineName" Grid.ColumnSpan="2" />
 
                     <Label Grid.Row="1" Content="Machine Type" />
                     <ComboBox Grid.Row="1" 
                           IsEnabled="{Binding CanChangeMachineConfig}"
                           SelectedValue="{Binding Path=MachineType, Mode=TwoWay}"
-                          ItemsSource="{Binding Path=MachineTypes}"  />
+                          ItemsSource="{Binding Path=MachineTypes}" Grid.ColumnSpan="2"  />
 
                     <Label Grid.Row="2" Content="Origin" />
                     <ComboBox Grid.Row="2" 
                           IsEnabled="{Binding CanChangeMachineConfig}"
                           SelectedValue="{Binding Path=MachineOrigin, Mode=TwoWay}"
-                          ItemsSource="{Binding Path=MachineOrigins}"  />
+                          ItemsSource="{Binding Path=MachineOrigins}" Grid.ColumnSpan="2"  />
 
                     <Label Grid.Row="3" Content="Work Area Width" />
-                    <TextBox  Text="{Binding Settings.WorkAreaWidth}" Grid.Row="3" />
-                    <Label Content="mm" Grid.Row="3" Grid.Column="2" />
+                    <TextBox  Text="{Binding Settings.WorkAreaWidth}" Grid.Row="3" Grid.ColumnSpan="2" />
+                    <Label Content="mm" Grid.Row="3" Grid.Column="3" />
 
                     <Label Grid.Row="4" Content="Work Area Height" />
-                    <TextBox Text="{Binding Settings.WorkAreaHeight}"  Grid.Row="4" />
-                    <Label Content="mm" Grid.Row="4" Grid.Column="2" />
+                    <TextBox Text="{Binding Settings.WorkAreaHeight}"  Grid.Row="4" Grid.ColumnSpan="2" />
+                    <Label Content="mm" Grid.Row="4" Grid.Column="3" />
 
                     <Label Grid.Row="5" Content="GCode Jog Command" />
                     <ComboBox Grid.Row="5"  
                           IsEnabled="{Binding CanChangeMachineConfig}"
                           SelectedValue="{Binding Path=GCodeJogCommand, Mode=TwoWay}"
-                          ItemsSource="{Binding Path=GCodeJogCommands}"  />
+                          ItemsSource="{Binding Path=GCodeJogCommands}" Grid.ColumnSpan="2"  />
 
                     <Label Grid.Row="6" Content="Msg Output Level" />
                     <ComboBox Grid.Row="6"  
                           SelectedValue="{Binding Path=MessgeOutputLevel, Mode=TwoWay}"
-                          ItemsSource="{Binding Path=MessageOutputLevels}"  />
+                          ItemsSource="{Binding Path=MessageOutputLevels}" Grid.ColumnSpan="2"  />
                 </Grid>
             </TabItem>
 
@@ -158,18 +159,25 @@
             <TabItem Header="Vision">
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="140" />
+                        <ColumnDefinition Width="180" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
                     </Grid.RowDefinitions>
 
-                    <Label Content="Camera" />
+                    <Label Content="Top/Positioning Camera" />
                     <ComboBox ItemsSource="{Binding Cameras}" 
                           DisplayMemberPath="Name"
                           SelectedValuePath="Id"
                           SelectedValue="{Binding PositioningCameraId, Mode=TwoWay}"/>
+                    <Label Content="Bottom/Inspection Camera" Grid.Row="1" />
+                    <ComboBox ItemsSource="{Binding Cameras}" 
+                              Grid.Row="1"
+                          DisplayMemberPath="Name"
+                          SelectedValuePath="Id"
+                          SelectedValue="{Binding InspectionCameraId, Mode=TwoWay}"/>
                 </Grid>
             </TabItem>
 

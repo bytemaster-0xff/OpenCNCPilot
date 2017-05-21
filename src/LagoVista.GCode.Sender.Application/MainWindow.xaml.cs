@@ -392,5 +392,18 @@ namespace LagoVista.GCode.Sender.Application
                 MessageBox.Show("Please open or create a PCB Project First.");
             }
         }
+
+        private void ViewMenu_Show(object sender, RoutedEventArgs e)
+        {
+            var menu = sender as MenuItem;
+            switch(menu.Tag.ToString())
+            {
+                case "WorkAlignment": new Views.WorkAlignmentView(ViewModel.Machine).Show();  break;
+                case "ToolAlignment": new Views.ToolAlignment(ViewModel.Machine).Show(); break;
+                case "FeederAlignment": new Views.MVFeederLocatorView(ViewModel.Machine).Show();  break;
+                case "HomingView": new Views.HomingView(ViewModel.Machine).Show(); break;
+                case "Calibration": new Views.MVCalibrationView(ViewModel.Machine).Show(); break;
+            }
+        }
     }
 }

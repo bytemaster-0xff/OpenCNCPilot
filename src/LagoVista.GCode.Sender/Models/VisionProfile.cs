@@ -39,6 +39,14 @@ namespace LagoVista.GCode.Sender.Models
             set { _targetImageRadius = value; RaisePropertyChanged(); }
         }
 
+        private double _focus = 50;
+        public double Focus
+        {
+            get { return _focus; }
+            set { _focus = Math.Round(value, 1); RaisePropertyChanged(); }
+        }
+
+
         private double _exposure = 50;
         public double Exposure
         {

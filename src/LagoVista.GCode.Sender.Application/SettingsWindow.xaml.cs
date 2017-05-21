@@ -25,6 +25,14 @@ namespace LagoVista.GCode.Sender.Application
             DataContext = new SettingsViewModel(machine, _settings);
             var cameras = DsDevice.GetDevicesOfCat(FilterCategory.VideoInputDevice);
             var idx = 0;
+
+            ViewModel.Cameras.Add(new Models.Camera()
+            {
+                Id = "-1",
+                Name = "none",
+                CameraIndex = idx++
+            });
+
             foreach (var camera in cameras)
             {
                 ViewModel.Cameras.Add(new Models.Camera()
