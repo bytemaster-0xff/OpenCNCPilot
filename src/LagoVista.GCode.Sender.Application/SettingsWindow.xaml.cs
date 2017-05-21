@@ -30,7 +30,7 @@ namespace LagoVista.GCode.Sender.Application
             {
                 Id = "-1",
                 Name = "none",
-                CameraIndex = idx++
+                CameraIndex = -1
             });
 
             foreach (var camera in cameras)

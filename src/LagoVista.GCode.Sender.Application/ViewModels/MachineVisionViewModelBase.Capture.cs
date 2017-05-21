@@ -163,12 +163,12 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
 
         public void StartCapture()
         {
-            if (_topCameraCapture != null)
+            if (_topCameraCapture != null || _bottomCameraCapture != null)
             {
                 return;
             }
 
-            if (Machine.Settings.PositioningCamera == null)
+            if (Machine.Settings.PositioningCamera == null && Machine.Settings.PartInspectionCamera == null)
             {
                 MessageBox.Show("Please Select a Camera");
                 new SettingsWindow(Machine, Machine.Settings, 2).ShowDialog();
@@ -178,25 +178,34 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             try
             {
                 LoadingMask = true;
-                if (Machine.Settings.PositioningCamera != null)
+
+                var positionCameraIndex = Machine.Settings.PositioningCamera == null ? null : (int?)Machine.Settings.PositioningCamera.CameraIndex;
+                var inspectionCameraIndex = Machine.Settings.PartInspectionCamera == null ? null : (int?)Machine.Settings.PartInspectionCamera.CameraIndex;
+
+                if(positionCameraIndex.HasValue && inspectionCameraIndex.HasValue)
+                {
+                    if(positionCameraIndex.Value < inspectionCameraIndex.Value)
+                    {
+                        _topCameraCapture = InitCapture(Machine.Settings.PositioningCamera.CameraIndex);
+                        _bottomCameraCapture = InitCapture(Machine.Settings.PartInspectionCamera.CameraIndex);
+                    }
+                    else
+                    {
+                        _bottomCameraCapture = InitCapture(Machine.Settings.PartInspectionCamera.CameraIndex);
+                        _topCameraCapture = InitCapture(Machine.Settings.PositioningCamera.CameraIndex);                        
+                    }
+                    StartImageRecognization();
+                }
+                else if(positionCameraIndex.HasValue)
                 {
                     _topCameraCapture = InitCapture(Machine.Settings.PositioningCamera.CameraIndex);
+                    StartImageRecognization();
                 }
-                else
-                {
-                    _topCameraCapture = null;
-                }
-
-                if (Machine.Settings.PartInspectionCamera != null)
+                else if (inspectionCameraIndex.HasValue)
                 {
                     _bottomCameraCapture = InitCapture(Machine.Settings.PartInspectionCamera.CameraIndex);
+                    StartImageRecognization();
                 }
-                else
-                {
-                    _bottomCameraCapture = null;
-                }
-
-                StartImageRecognization();
             }
             catch (Exception ex)
             {
@@ -219,14 +228,17 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                         _topCameraCapture.Dispose();
                         _topCameraCapture = null;
                     }
+
+                    if(_bottomCameraCapture != null)
+                    {
+                        _bottomCameraCapture.Stop();
+                        _bottomCameraCapture.Dispose();
+                        _bottomCameraCapture = null;
+                    }
                 }
 
-                var src = new BitmapImage();
-                src.BeginInit();
-                src.UriSource = new Uri("pack://application:,,/Imgs/TestPattern.jpg");
-                src.CacheOption = BitmapCacheOption.OnLoad;
-                src.EndInit();
-                PrimaryCapturedImage = src;
+                PrimaryCapturedImage = new BitmapImage(new Uri("pack://application:,,/Imgs/TestPattern.jpg"));
+                SecondaryCapturedImage = new BitmapImage(new Uri("pack://application:,,/Imgs/TestPattern.jpg"));
             }
             catch (Exception ex)
             {

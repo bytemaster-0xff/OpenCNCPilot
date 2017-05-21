@@ -1,10 +1,6 @@
 ﻿using LagoVista.Core.Commanding;
 using LagoVista.Core.Models.Drawing;
 using LagoVista.GCode.Sender.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace LagoVista.GCode.Sender.Application.ViewModels
@@ -16,11 +12,17 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             EndStopHomingCycleCommand = new RelayCommand(EndStopHomingCycle, () => HasFrame);
             BeginMVHomingCycleCommand = new RelayCommand(BeginMVHomingCycle, () => HasFrame);
             SetXYZeroCommand = new RelayCommand(SetXYZero, () => HasFrame);
+            if (Machine.Settings.HomeFiducialOffset == null)
+            {
+                Machine.Settings.HomeFiducialOffset = new Point2D<double>(5, 5);
+            }
         }
 
         protected override void CaptureStarted()
         {
-            base.CaptureStarted();
+            EndStopHomingCycleCommand.RaiseCanExecuteChanged();
+            BeginMVHomingCycleCommand.RaiseCanExecuteChanged();
+            SetXYZeroCommand.RaiseCanExecuteChanged();
         }
 
         protected override void CaptureEnded()
@@ -37,13 +39,13 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
 
         public void BeginMVHomingCycle()
         {
-            
+            Machine.GotoPoint(Machine.Settings.HomeFiducialOffset);
         }
 
         public void SetXYZero()
         {
-
-        }        
+            Machine.SendCommand("G92 X Y");
+        }
 
         public void MVHomingCycle()
         {

@@ -46,7 +46,7 @@
             </StackPanel>
         </Grid>
 
-        <Controls:ImageAdjustments Grid.Column="1" Grid.Row="1" Visibility="{Binding AreToolSettingsVisible, Converter={StaticResource BoolToVisibilityConverter}}" />
+        <Controls:ImageAdjustments Grid.Column="1" Grid.RowSpan="2" Visibility="{Binding AreToolSettingsVisible, Converter={StaticResource BoolToVisibilityConverter}}" />
 
         <Controls:LoadingMask Grid.ColumnSpan="2" Grid.Row="1"   />
         <Controls:XYJog DataContext="{Binding MachineControls}" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Bottom" />

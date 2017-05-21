@@ -90,17 +90,18 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             get { return _hasFrame; }
             set
             {
-                if (value && !_hasFrame)
+                var oldHasFrame = _hasFrame;
+                Set(ref _hasFrame, value);
+
+                if (value && !oldHasFrame)
                 {
                     CaptureStarted();
                 }
 
-                if (!value && _hasFrame)
+                if (!value && oldHasFrame)
                 {
                     CaptureEnded();
                 }
-
-                Set(ref _hasFrame, value);
             }
         }
 
