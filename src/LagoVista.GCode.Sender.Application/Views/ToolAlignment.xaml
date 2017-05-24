@@ -27,7 +27,7 @@
         <Controls:MVAquiredPoints HorizontalAlignment="Right" VerticalAlignment="Bottom" Grid.Row="1"/>
 
         <Controls:ImageAdjustments Grid.Column="1" Grid.RowSpan="2" Visibility="{Binding AreToolSettingsVisible, Converter={StaticResource BoolToVisibilityConverter}}" />
-        
+
         <Grid Grid.Column="1" Grid.RowSpan="2" Background="White">
             <StackPanel Margin="10">
                 <TextBlock Text="Calibrate Machine Locations" FontWeight="Bold"  FontSize="18"/>
@@ -50,13 +50,55 @@
                 <TextBlock Text="Center Place Head over Bottom Facing Camera" TextWrapping="Wrap" Margin="0,0,0,5"  />
                 <Button Command="{Binding SetToolTwoLocationCommand}" Content="Perform End Stop Homing" Margin="0,0,0,15" />
 
-                <TextBlock Text="{Binding TopCameraLocation}" />
-                <TextBlock Text="{Binding BottomCameraLocation}" />
-                <TextBlock Text="{Binding Tool1Location}" />
-                <TextBlock Text="{Binding Tool1Offset}" />
-                <TextBlock Text="{Binding Tool2Location}" />
-                <TextBlock Text="{Binding Tool2Offset}" />
-
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="120" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="Top Camera" />
+                    <TextBlock Text="{Binding TopCameraLocation, Converter={StaticResource Point2TextConverter}}" Grid.Column="1" TextAlignment="Right" />
+                </Grid>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="120" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="Bottom Camera" />
+                    <TextBlock Text="{Binding BottomCameraLocation, Converter={StaticResource Point2TextConverter}}" Grid.Column="1" TextAlignment="Right" />
+                </Grid>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="120" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="Tool 1 Location" />
+                    <TextBlock Text="{Binding Tool1Location, Converter={StaticResource Point2TextConverter}}" Grid.Column="1" TextAlignment="Right" />
+                </Grid>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="120" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="Tool 1 Offset" />
+                    <TextBlock Text="{Binding Tool1Offset, Converter={StaticResource Point2TextConverter}}" Grid.Column="1" TextAlignment="Right" />
+                </Grid>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="120" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="Tool 2 Location" />
+                    <TextBlock Text="{Binding Tool2Location, Converter={StaticResource Point2TextConverter}}" Grid.Column="1" TextAlignment="Right" />
+                </Grid>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="120" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="Tool 2 Offset" />
+                    <TextBlock Text="{Binding Tool2Offset, Converter={StaticResource Point2TextConverter}}" Grid.Column="1" TextAlignment="Right" />
+                </Grid>
+                <Button Command="{Binding SaveCalibrationCommand}" Content="Save" />
             </StackPanel>
         </Grid>
 

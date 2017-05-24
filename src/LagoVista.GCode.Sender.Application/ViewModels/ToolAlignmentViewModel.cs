@@ -140,8 +140,8 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
 
         public Point2D<double> BottomCameraLocation
         {
-            get { return _topCameraLocation; }
-            set { Set(ref _topCameraLocation, value); }
+            get { return _bottomCameraLocation; }
+            set { Set(ref _bottomCameraLocation, value); }
         }
 
         public Point2D<double> Tool1Location

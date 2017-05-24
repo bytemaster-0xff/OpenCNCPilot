@@ -82,7 +82,7 @@ namespace LagoVista.GCodeSupport.Tests
             var parser = new GCodeParser(new FakeLogger());
             var cmd = parser.ParseLine("G0 X10.4253", 0) as GCodeMotion;
             Assert.AreEqual(10.4253, cmd.End.X);
-            Assert.AreEqual("G0 X10.4253", cmd.Line);
+            Assert.AreEqual("G0 X10.4253 Y0 Z0", cmd.Line);
         }
 
         [TestMethod]
@@ -91,7 +91,7 @@ namespace LagoVista.GCodeSupport.Tests
             var parser = new GCodeParser(new FakeLogger());
             var cmd = parser.ParseLine("G0 X10.4", 0) as GCodeMotion;
             Assert.AreEqual(10.4, cmd.End.X);
-            Assert.AreEqual("G0 X10.4", cmd.Line);
+            Assert.AreEqual("G0 X10.4 Y0 Z0", cmd.Line);
         }
 
         [TestMethod]
@@ -100,7 +100,7 @@ namespace LagoVista.GCodeSupport.Tests
             var parser = new GCodeParser(new FakeLogger());
             var cmd = parser.ParseLine("G0 X10.00", 0) as GCodeMotion;
             Assert.AreEqual(10, cmd.End.X);
-            Assert.AreEqual("G0 X10", cmd.Line);
+            Assert.AreEqual("G0 X10 Y0 Z0", cmd.Line);
         }
    
         [TestMethod]
@@ -110,7 +110,7 @@ namespace LagoVista.GCodeSupport.Tests
             var cmd = parser.ParseLine("G0 X10 Y10", 0) as GCodeMotion;
             Assert.AreEqual(10, cmd.End.X);
             Assert.AreEqual(10, cmd.End.Y);
-            Assert.AreEqual("G0 X10 Y10", cmd.Line);
+            Assert.AreEqual("G0 X10 Y10 Z0", cmd.Line);
         }
 
         [TestMethod]
@@ -119,7 +119,7 @@ namespace LagoVista.GCodeSupport.Tests
             var parser = new GCodeParser(new FakeLogger());
             parser.State.Position = new Core.Models.Drawing.Vector3(5, 5, 0);
             var cmd = parser.ParseLine("G0X10", 0) as GCodeMotion;
-            Assert.AreEqual("G0 X10", cmd.Line);
+            Assert.AreEqual("G0 X10 Z0", cmd.Line);
         }
 
         [TestMethod]
@@ -129,7 +129,7 @@ namespace LagoVista.GCodeSupport.Tests
             var cmd = parser.ParseLine("G0 X10 F300", 0) as GCodeMotion;
             Assert.AreEqual(10, cmd.End.X);
             Assert.AreEqual(300, cmd.Feed.Value);
-            Assert.AreEqual("G0 X10 F300", cmd.Line);
+            Assert.AreEqual("G0 X10 Y0 Z0 F300", cmd.Line);
         }
 
         [TestMethod]
@@ -140,7 +140,7 @@ namespace LagoVista.GCodeSupport.Tests
             var cmd = parser.ParseLine("G0 X10 F300", 0) as GCodeMotion;
             Assert.AreEqual(10, cmd.End.X);
             Assert.AreEqual(300, cmd.Feed.Value);
-            Assert.AreEqual("G0 X10", cmd.Line);
+            Assert.AreEqual("G0 X10 Y0 Z0", cmd.Line);
         }
 
         [TestMethod]
@@ -151,7 +151,7 @@ namespace LagoVista.GCodeSupport.Tests
             var cmd = parser.ParseLine("G0 X10 F250", 0) as GCodeMotion;
             Assert.AreEqual(10, cmd.End.X);
             Assert.AreEqual(250, cmd.Feed.Value);
-            Assert.AreEqual("G0 X10 F250", cmd.Line);
+            Assert.AreEqual("G0 X10 Y0 Z0 F250", cmd.Line);
         }
 
         [TestMethod]
@@ -161,7 +161,7 @@ namespace LagoVista.GCodeSupport.Tests
             var cmd = parser.ParseLine("G0 X10 S30", 0) as GCodeMotion;
             Assert.AreEqual(10, cmd.End.X);
             Assert.AreEqual(30, cmd.SpindleRPM.Value);
-            Assert.AreEqual("G0 X10 S30", cmd.Line);
+            Assert.AreEqual("G0 X10 Y0 Z0 S30", cmd.Line);
         }
 
         [TestMethod]
@@ -172,7 +172,7 @@ namespace LagoVista.GCodeSupport.Tests
             var cmd = parser.ParseLine("G0 X10 S30", 0) as GCodeMotion;
             Assert.AreEqual(10, cmd.End.X);
             Assert.AreEqual(30, cmd.SpindleRPM.Value);
-            Assert.AreEqual("G0 X10", cmd.Line);
+            Assert.AreEqual("G0 X10 Y0 Z0", cmd.Line);
         }
 
         [TestMethod]
@@ -183,7 +183,7 @@ namespace LagoVista.GCodeSupport.Tests
             var cmd = parser.ParseLine("G0 X10 S25", 0) as GCodeMotion;
             Assert.AreEqual(10, cmd.End.X);
             Assert.AreEqual(25, cmd.SpindleRPM.Value);
-            Assert.AreEqual("G0 X10 S25", cmd.Line);
+            Assert.AreEqual("G0 X10 Y0 Z0 S25", cmd.Line);
         }
 
         [TestMethod]

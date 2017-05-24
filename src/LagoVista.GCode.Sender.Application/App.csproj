@@ -183,6 +183,7 @@
     <Compile Include="Converters\Lines2Visual3DConverter.cs" />
     <Compile Include="Converters\MessageTypeConverter.cs" />
     <Compile Include="Converters\NotNullEnabledConverter.cs" />
+    <Compile Include="Converters\Point2TextConverter.cs" />
     <Compile Include="Converters\PointConverter.cs" />
     <Compile Include="EditGCode.xaml.cs">
       <DependentUpon>EditGCode.xaml</DependentUpon>

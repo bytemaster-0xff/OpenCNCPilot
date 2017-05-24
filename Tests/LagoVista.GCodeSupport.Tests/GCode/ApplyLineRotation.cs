@@ -20,7 +20,7 @@ namespace LagoVista.GCodeSupport.Tests.GCode
             var cmd = parser.ParseLine("G1 X30 Y0", 0) as GCodeLine;
             cmd.Rotate(0);
             Assert.AreEqual(30, cmd.End.X);
-            Assert.AreEqual("G1 X30", cmd.Line);
+            Assert.AreEqual("G1 X30 Y0 Z0", cmd.Line);
         }
 
         [TestMethod]
@@ -31,7 +31,7 @@ namespace LagoVista.GCodeSupport.Tests.GCode
             cmd.Rotate(90);
             Console.WriteLine(cmd.Line);
             Assert.AreEqual(30, cmd.End.Y);
-            Assert.AreEqual("G1 Y30", cmd.Line);
+            Assert.AreEqual("G1 X0 Y30 Z0", cmd.Line);
         }
 
     }
