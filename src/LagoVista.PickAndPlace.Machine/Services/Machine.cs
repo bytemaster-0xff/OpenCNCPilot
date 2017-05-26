@@ -88,9 +88,15 @@ namespace LagoViata.PNP.Services
             HandleGCodeLine(cmd);
         }
 
-        public void Kill()
+        public async void Kill()
         {
-
+            Debug.WriteLine("Sending Kill Command!");
+            _motorPower.Disable();
+            await _appService.Kill();
+            foreach (var axes in _axes)
+            {
+                axes.Kill();
+            }
         }
 
         public async void SendStatus()
@@ -192,7 +198,7 @@ namespace LagoViata.PNP.Services
                 _vacuum.Init(gpioController);
 
                 _motorPower.Init(gpioController);
-                _motorPower.Enable();
+                _motorPower.Disable();
             }
             else
             {
@@ -234,6 +240,7 @@ namespace LagoViata.PNP.Services
             var movement = cmd as GCodeLine;
             if(movement != null)
             {
+                _motorPower.Enable();
                 XAxis.Move(movement.End.X, Convert.ToDouble(movement.Feed));
                 YAxis.Move(movement.End.Y, Convert.ToDouble(movement.Feed));
                 switch(_currentTool)

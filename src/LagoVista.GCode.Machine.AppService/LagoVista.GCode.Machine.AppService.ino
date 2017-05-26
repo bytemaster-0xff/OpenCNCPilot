@@ -27,7 +27,7 @@ void setup()
 
 void loop(){
 	//TODO May want to experiment with checking elapsed micros rather than delay...
-	delayMicroseconds(25);
+	delayMicroseconds(100);
 	if (!m_bKill) {
 		XAxis->Update();
 		YAxis->Update();

@@ -26,19 +26,6 @@ void Axis::Clear() {
 }
 
 void Axis::Update() {
-	if (this->m_state)
-	{
-		digitalWrite(this->m_pin, HIGH);
-	}
-	else
-	{
-		digitalWrite(this->m_pin, LOW);
-	}
-
-	this->m_state = !this->m_state;
-
-	return;
-
 	if (this->m_StepsRemaining > 0)
 	{
 		if (m_multiplierCountDown > 1) {
@@ -50,11 +37,9 @@ void Axis::Update() {
 
 		if (m_lastToggleLow) {
 			digitalWrite(this->m_pin, HIGH);
-			//digitalWrite(22, HIGH);
 		}
 		else {
 			digitalWrite(this->m_pin, LOW);
-			//digitalWrite(22, LOW);
 			this->m_StepsRemaining--;
 		}
 

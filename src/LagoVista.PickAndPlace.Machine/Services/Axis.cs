@@ -106,8 +106,6 @@ namespace LagoViata.PNP.Services
                 _dirPin.Write(direction == Direction.Backwards ? GpioPinValue.Low : GpioPinValue.High);
 
                 await _appService.StartStep(_axisNumber, steps, 2);
-
-             
             }
         }
 
