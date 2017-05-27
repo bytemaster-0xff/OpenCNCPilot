@@ -499,6 +499,8 @@
     <Resource Include="Imgs\BottomLight.png" />
     <Resource Include="Imgs\TopLight.png" />
     <Resource Include="Imgs\Vacuum.png" />
+    <Resource Include="Imgs\ExhaustSolenoid.png" />
+    <Resource Include="Imgs\SuctionSolenoid.png" />
     <Content Include="KegeratorController.brd">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

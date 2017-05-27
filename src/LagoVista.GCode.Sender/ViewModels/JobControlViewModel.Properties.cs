@@ -42,5 +42,31 @@ namespace LagoVista.GCode.Sender.ViewModels
                 RaisePropertyChanged();
             }
         }
+
+
+        public bool _exhaustSolendoidOn = false;
+        public bool ExhaustSolendoidOn
+        {
+            get { return _exhaustSolendoidOn; }
+            set
+            {
+                Machine.SendCommand(value ? "M64 P1" : "M64 P0");
+                _exhaustSolendoidOn = value;
+                RaisePropertyChanged();
+            }
+        }
+
+
+        public bool _suctionSolenoidOn = false;
+        public bool SuctionSolenoidOn
+        {
+            get { return _suctionSolenoidOn; }
+            set
+            {
+                Machine.SendCommand(value ? "M63 P1" : "M63 P0");
+                _suctionSolenoidOn = value;
+                RaisePropertyChanged();
+            }
+        }
     }
 }

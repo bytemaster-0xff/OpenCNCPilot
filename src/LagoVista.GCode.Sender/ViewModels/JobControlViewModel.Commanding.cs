@@ -257,5 +257,9 @@ namespace LagoVista.GCode.Sender.ViewModels
         public RelayCommand LaserOffCommand { get; private set; }
         public RelayCommand SpindleOnCommand { get; private set; }
         public RelayCommand SpindleOffCommand { get; private set; }
+
+        public RelayCommand ExhaustSolenoidCommand { get; private set; }
+
+        public RelayCommand SuctionSolenoidCommand { get; private set;}
     }
 }

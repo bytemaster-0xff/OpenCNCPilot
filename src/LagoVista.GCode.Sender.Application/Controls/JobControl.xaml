@@ -222,7 +222,17 @@
                         <Image Source="/imgs/BottomLight.png" />
                     </ToggleButton.Content>
                 </ToggleButton>
-                <ToggleButton IsChecked="{Binding VacuumOn, Mode=TwoWay}">
+                <ToggleButton IsChecked="{Binding SuctionSolenoidOn, Mode=TwoWay}" ToolTip="Suction Solenoid">
+                    <ToggleButton.Content>
+                        <Image Source="/imgs/SuctionSolenoid.png" />
+                    </ToggleButton.Content>
+                </ToggleButton>
+                <ToggleButton IsChecked="{Binding ExhaustSolendoidOn, Mode=TwoWay}" ToolTip="Exhaust Solenoid">
+                    <ToggleButton.Content>
+                        <Image Source="/imgs/ExhaustSolenoid.png" />
+                    </ToggleButton.Content>
+                </ToggleButton>
+                <ToggleButton IsChecked="{Binding VacuumOn, Mode=TwoWay}" ToolTip="Vacuum Pump">
                     <ToggleButton.Content>
                         <Image Source="/imgs/Vacuum.png" />
                     </ToggleButton.Content>

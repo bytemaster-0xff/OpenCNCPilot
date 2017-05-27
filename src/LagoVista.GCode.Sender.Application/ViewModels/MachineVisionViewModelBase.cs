@@ -220,12 +220,17 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                            (avg.Y >= ((img.Height / 2) - 1)) && avg.Y <= ((img.Height / 2) + 1))
                         {
                             Circle(destImage, (int)avg.X, (int)avg.Y, 3, System.Drawing.Color.Red);
+
                         }
+
+                        Circle(destImage, (int)avg.X, (int)avg.Y, (int)_circleRadiusMedianFilter.Filtered.X, System.Drawing.Color.Red);
+
+
 
                         CircleCenter = new Point2D<double>(Math.Round(avg.X, 2), Math.Round(avg.Y, 2));
 
                         var offset = new Point2D<double>(centerX - avg.X, centerY - avg.Y);
-                        CircleLocated(offset, _circleMedianFilter.Filtered.X);
+                        CircleLocated(offset, _circleRadiusMedianFilter.Filtered.X);
                     }
                     else
                     {
