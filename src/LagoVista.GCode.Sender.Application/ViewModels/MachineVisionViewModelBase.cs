@@ -10,6 +10,8 @@ using LagoVista.GCode.Sender.Util;
 using LagoVista.GCode.Sender.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,6 +23,10 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
         FloatMedianFilter _cornerMedianFilter = new FloatMedianFilter(12, 3);
         FloatMedianFilter _circleMedianFilter = new FloatMedianFilter(12, 3);
         FloatMedianFilter _circleRadiusMedianFilter = new FloatMedianFilter(12, 3);
+
+        private VisionProfile _topCameraProfile;
+        private VisionProfile _bottomCameraProfile;
+
 
         public MachineVisionViewModelBase(IMachine machine) : base(machine)
         {
@@ -58,16 +64,6 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             }
         }
 
-        private VisionProfile _profile;
-        public VisionProfile Profile
-        {
-            get { return _profile; }
-            set { Set(ref _profile, value); }
-        }
-
-
-        private VisionProfile _topCameraProfile;
-        private VisionProfile _bottomCameraProfile;
 
 
         public async void SaveProfile()
@@ -104,25 +100,6 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                 new Bgr(color).MCvScalar, thickness, Emgu.CV.CvEnum.LineType.AntiAlias);
         }
 
-        private Point2D<double> _circleCenter;
-        public Point2D<double> CircleCenter
-        {
-            get { return _circleCenter; }
-            set
-            {
-                if (value == null)
-                {
-                    Set(ref _circleCenter, null);
-                }
-                else if (_circleCenter == null || (_circleCenter.X != value.X ||
-                    _circleCenter.Y != value.Y))
-                {
-                    Set(ref _circleCenter, value);
-                }
-            }
-        }
-
-
         private Point2D<double> _foundCorner;
         public Point2D<double> FoundCorner
         {
@@ -130,23 +107,250 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             set { Set(ref _foundCorner, value); }
         }
 
-        public abstract void CornerLocated(Point2D<double> point);
-        public abstract void CircleLocated(Point2D<double> point, double diameter);
+        public virtual void RectLocated(RotatedRect rect, Point2D<double> stdDeviation) { }
+        public virtual void RectCentered(RotatedRect rect, Point2D<double> stdDeviation) { }
 
-        private void DrawCrossHairs(IInputOutputArray destImage, int centerX, int centerY, int width, int height)
+
+        public virtual void CornerLocated(Point2D<double> point, Point2D<double> stdDeviation) { }
+        public virtual void CornerCentered(Point2D<double> point, Point2D<double> stdDeviation) { }
+
+
+        public virtual void CircleLocated(Point2D<double> point, double diameter, Point2D<double> stdDeviation) { }
+        public virtual void CircleCentered(Point2D<double> point, double diameter, Point2D<double> stdDeviation) { }
+
+        #region Show Cross Hairs
+        private void DrawCrossHairs(IInputOutputArray destImage, Size size)
         {
-            Circle(destImage, centerX, centerY, Profile.TargetImageRadius, System.Drawing.Color.Yellow);
+            var center = new Point2D<int>()
+            {
+                X = size.Width / 2,
+                Y = size.Height / 2
+            };
 
-            Line(destImage, 0, centerY, centerX - Profile.TargetImageRadius, centerY, System.Drawing.Color.Yellow);
-            Line(destImage, centerX + Profile.TargetImageRadius, centerY, width, centerY, System.Drawing.Color.Yellow);
+            Circle(destImage, center.X, center.Y, Profile.TargetImageRadius, System.Drawing.Color.Yellow);
 
-            Line(destImage, centerX, 0, centerX, centerY - Profile.TargetImageRadius, System.Drawing.Color.Yellow);
-            Line(destImage, centerX, centerY + Profile.TargetImageRadius, centerX, height, System.Drawing.Color.Yellow);
+            Line(destImage, 0, center.Y, center.X - Profile.TargetImageRadius, center.Y, System.Drawing.Color.Yellow);
+            Line(destImage, center.X + Profile.TargetImageRadius, center.Y, size.Width, center.Y, System.Drawing.Color.Yellow);
 
-            Line(destImage, centerX - Profile.TargetImageRadius, centerY, centerX + Profile.TargetImageRadius, centerY, System.Drawing.Color.FromArgb(0x7f, 0xFF, 0xFF, 0XFF));
-            Line(destImage, centerX, centerY - Profile.TargetImageRadius, centerX, centerY + Profile.TargetImageRadius, System.Drawing.Color.FromArgb(0x7f, 0xFF, 0xFF, 0XFF));
+            Line(destImage, center.X, 0, center.X, center.Y - Profile.TargetImageRadius, System.Drawing.Color.Yellow);
+            Line(destImage, center.X, center.Y + Profile.TargetImageRadius, center.X, size.Height, System.Drawing.Color.Yellow);
 
+            Line(destImage, center.X - Profile.TargetImageRadius, center.Y, center.X + Profile.TargetImageRadius, center.Y, System.Drawing.Color.FromArgb(0x7f, 0xFF, 0xFF, 0XFF));
+            Line(destImage, center.X, center.Y - Profile.TargetImageRadius, center.X, center.Y + Profile.TargetImageRadius, System.Drawing.Color.FromArgb(0x7f, 0xFF, 0xFF, 0XFF));
         }
+        #endregion
+
+        #region Find Circles
+        private void FindCircles(IInputOutputArray input, IInputOutputArray output, Size size)
+        {
+            var center = new Point2D<int>()
+            {
+                X = size.Width / 2,
+                Y = size.Height / 2
+            };
+
+            var circles = CvInvoke.HoughCircles(input, HoughType.Gradient, Profile.HoughCirclesDP, Profile.HoughCirclesMinDistance, Profile.HoughCirclesParam1, Profile.HoughCirclesParam2, Profile.HoughCirclesMinRadius, Profile.HoughCirclesMaxRadius);
+
+            var foundCircle = false;
+            /* Above will return ALL maching circles, we only want the first one that is in the target image radius in the middle of the screen */
+            foreach (var circle in circles)
+            {
+                if (circle.Center.X > ((size.Width / 2) - Profile.TargetImageRadius) && circle.Center.X < ((size.Width / 2) + Profile.TargetImageRadius) &&
+                   circle.Center.Y > ((size.Height / 2) - Profile.TargetImageRadius) && circle.Center.Y < ((size.Height / 2) + Profile.TargetImageRadius))
+                {
+                    _circleMedianFilter.Add(circle.Center.X, circle.Center.Y);
+                    _circleRadiusMedianFilter.Add(circle.Radius, 0);
+                    foundCircle = true;
+                    break;
+                }
+            }
+
+            if (!foundCircle)
+            {
+                _circleMedianFilter.Add(null);
+                _circleRadiusMedianFilter.Add(null);
+            }
+
+            var avg = _circleMedianFilter.Filtered;
+            if (avg != null)
+            {
+                CircleCenter = new Point2D<double>(Math.Round(avg.X, 2), Math.Round(avg.Y, 2));
+                StandardDeviation = _circleMedianFilter.StandardDeviation;
+
+                var offset = new Point2D<double>(center.X - avg.X, center.Y - avg.Y);
+
+                /* If within one pixel of center, state we have a match */
+                if ((avg.X >= ((size.Width / 2) - 1)) && avg.X <= ((size.Width / 2) + 1) &&
+                   (avg.Y >= ((size.Height / 2) - 1)) && avg.Y <= ((size.Height / 2) + 1))
+                {
+                    Line(output, 0, (int)avg.Y, size.Width, (int)avg.Y, System.Drawing.Color.Green);
+                    Line(output, (int)avg.X, 0, (int)avg.X, size.Height, System.Drawing.Color.Green);
+                    Circle(output, (int)avg.X, (int)avg.Y, (int)_circleRadiusMedianFilter.Filtered.X, System.Drawing.Color.Green);
+                    CircleCentered(offset, _circleRadiusMedianFilter.Filtered.X, _circleRadiusMedianFilter.StandardDeviation);
+                }
+                else
+                {
+                    Line(output, 0, (int)avg.Y, size.Width, (int)avg.Y, System.Drawing.Color.Red);
+                    Line(output, (int)avg.X, 0, (int)avg.X, size.Height, System.Drawing.Color.Red);
+                    Circle(output, (int)avg.X, (int)avg.Y, (int)_circleRadiusMedianFilter.Filtered.X, System.Drawing.Color.Red);
+                    CircleLocated(offset, _circleRadiusMedianFilter.Filtered.X, _circleRadiusMedianFilter.StandardDeviation);
+                }                
+            }
+            else
+            {
+                CircleCenter = null;
+            }
+        }
+        #endregion
+
+        #region Find Corners
+        private void FindCorners(IImage blurredGray, IInputOutputArray output, Size size)
+        {
+            var center = new Point2D<int>()
+            {
+                X = size.Width / 2,
+                Y = size.Height / 2
+            };
+
+            using (var cornerDest = new Image<Gray, float>(blurredGray.Size))
+            using (var matNormalized = new Image<Gray, float>(blurredGray.Size))
+            using (var matScaled = new Image<Gray, float>(blurredGray.Size))
+            {
+                cornerDest.SetZero();
+
+                int max = -1;
+                int x = -1, y = -1;
+
+                CvInvoke.CornerHarris(blurredGray, cornerDest, Profile.HarrisCornerBlockSize, Profile.HarrisCornerAperture, Profile.HarrisCornerK, BorderType.Default);
+
+                CvInvoke.Normalize(cornerDest, matNormalized, 0, 255, NormType.MinMax, DepthType.Cv32F);
+                CvInvoke.ConvertScaleAbs(matNormalized, matScaled, 10, 5);
+                var minX = (size.Width / 2) - Profile.TargetImageRadius;
+                var maxX = (size.Width / 2) + Profile.TargetImageRadius;
+                var minY = (size.Height / 2) - Profile.TargetImageRadius;
+                var maxY = (size.Height / 2) + Profile.TargetImageRadius;
+
+                /* Go through all the returned points and find the one with the highest intensity.  This will be our corner */
+                for (int j = minX; j < maxX; j++)
+                {
+                    for (int i = minY; i < maxY; i++)
+                    {
+                        var value = (int)matNormalized.Data[i, j, 0];
+                        if (value > max)
+                        {
+                            x = j;
+                            y = i;
+                            max = value;
+                        }
+                    }
+                }
+
+                if (x > 0 && y > 0)
+                {
+                    _cornerMedianFilter.Add(new Point2D<float>(x, y));
+
+                }
+
+                var avg = _cornerMedianFilter.Filtered;
+                if (avg != null)
+                {
+                    Circle(output, (int)avg.X, (int)avg.Y, 5, System.Drawing.Color.Blue);
+                    Line(output, 0, (int)avg.Y, size.Width, (int)avg.Y, System.Drawing.Color.Blue);
+                    Line(output, (int)avg.X, 0, (int)avg.X, size.Height, System.Drawing.Color.Blue);
+
+                    var offset = new Point2D<double>(center.X - avg.X, center.Y - avg.Y);
+                    CornerLocated(offset, _cornerMedianFilter.StandardDeviation);
+                }
+            }
+        }
+        #endregion
+
+        #region Find Rotated Rectangles
+        private void FindRectangles(IImage input, IInputOutputArray output, Size size)
+        {
+            UMat edges = new UMat();
+
+
+            if (ShowLines)
+            {
+                var lines = CvInvoke.HoughLinesP(edges, Profile.HoughLinesRHO, Profile.HoughLinesTheta * (Math.PI / 180), Profile.HoughLinesThreshold, Profile.HoughLinesMinLineLength, Profile.HoughLinesMaxLineGap);
+                foreach (var line in lines)
+                {
+                    Line(output, line.P1.X, line.P1.Y, line.P2.X, line.P2.Y, System.Drawing.Color.Beige);
+                }
+            }
+
+            if (Profile.UseCannyEdgeDetection)
+            {
+                CvInvoke.Canny(input, edges, Profile.CannyLowThreshold, Profile.CannyHighThreshold, Profile.CannyApetureSize, Profile.CannyGradient);
+            }
+            else
+            {
+                CvInvoke.Threshold(input, edges, Profile.ThresholdEdgeDetection, 255, ThresholdType.Binary);
+            }
+
+            using (var contours = new VectorOfVectorOfPoint())
+            {
+                CvInvoke.FindContours(edges, contours, null, RetrType.List, ChainApproxMethod.ChainApproxSimple);
+                int count = contours.Size;
+                for (int i = 0; i < count; i++)
+                {
+                    using (var contour = contours[i])
+                    using (var approxContour = new VectorOfPoint())
+                    {
+                        CvInvoke.ApproxPolyDP(contour, approxContour, CvInvoke.ArcLength(contour, true) * Profile.PolygonEpsilonFactor, Profile.ContourFindOnlyClosed);
+                        if (CvInvoke.ContourArea(approxContour, false) > Profile.ContourMinArea) //only consider contours with area greater than 250
+                        {
+                            var pts = approxContour.ToArray();
+
+                            if (approxContour.Size == 4) //The contour has 4 vertices.
+                            {
+                                bool isRectangle = true;
+                                var rectEdges = PointCollection.PolyLine(pts, true);
+
+                                if (!Profile.FindIrregularPolygons)
+                                {
+                                    for (var j = 0; j < rectEdges.Length; j++)
+                                    {
+                                        var angle = Math.Abs(rectEdges[(j + 1) % rectEdges.Length].GetExteriorAngleDegree(rectEdges[j]));
+                                        if (angle < 80 || angle > 100)
+                                        {
+                                            isRectangle = false;
+                                            break;
+                                        }
+                                    }
+                                }
+
+                                if (isRectangle)
+                                {
+                                    var rect = CvInvoke.MinAreaRect(approxContour);
+
+                                    var point1 = new System.Drawing.Point(Convert.ToInt32(rect.Center.X - (rect.Size.Width / 2)), Convert.ToInt32(rect.Center.Y - (rect.Size.Height / 2)));
+                                    var point2 = new System.Drawing.Point(Convert.ToInt32(rect.Center.X - (rect.Size.Width / 2)), Convert.ToInt32(rect.Center.Y + (rect.Size.Height / 2)));
+                                    var point3 = new System.Drawing.Point(Convert.ToInt32(rect.Center.X + (rect.Size.Width / 2)), Convert.ToInt32(rect.Center.Y + (rect.Size.Height / 2)));
+                                    var point4 = new System.Drawing.Point(Convert.ToInt32(rect.Center.X + (rect.Size.Width / 2)), Convert.ToInt32(rect.Center.Y - (rect.Size.Height / 2)));
+
+                                    CvInvoke.Line(output, point1, point2, new Bgr(System.Drawing.Color.White).MCvScalar);
+                                    CvInvoke.Line(output, point2, point3, new Bgr(System.Drawing.Color.White).MCvScalar);
+                                    CvInvoke.Line(output, point3, point4, new Bgr(System.Drawing.Color.White).MCvScalar);
+                                    CvInvoke.Line(output, point4, point1, new Bgr(System.Drawing.Color.White).MCvScalar);
+                                }
+                            }
+                            else
+                            {
+                                var rectEdges = PointCollection.PolyLine(pts, true);
+                                for (var idx = 0; idx < rectEdges.Length - 1; ++idx)
+                                {
+                                    CvInvoke.Line(output, rectEdges[idx].P1, rectEdges[idx].P2, new Bgr(System.Drawing.Color.White).MCvScalar);
+                                }
+
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        #endregion
 
         public IImage PerformShapeDetection(Mat img)
         {
@@ -154,234 +358,28 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             {
                 return null;
             }
-
-            var width = img.Size.Width;
-            var height = img.Size.Height;
-
-            var centerX = img.Size.Width / 2;
-            var centerY = img.Size.Height / 2;
-
+            
             using (var gray = new Image<Gray, byte>(img.Bitmap))
             using (var blurredGray = new Image<Gray, float>(gray.Size))
             {
-                var whiteColor = new Bgr(System.Drawing.Color.White).MCvScalar;
+                var output = ShowOriginalImage ? img : (IInputOutputArray)gray;
 
-                CvInvoke.GaussianBlur(gray, blurredGray, new System.Drawing.Size(5, 5), Profile.GaussianSigmaX);
-
-
-                UMat pyrDown = new UMat();
-                //CvInvoke.PyrDown(gray, pyrDown);
-                //CvInvoke.PyrUp(pyrDown, gray);
-
-                var destImage = ShowOriginalImage ? img : (IInputOutputArray)gray;
-
-                UMat edges = new UMat();
-
-                if (Profile.UseCannyEdgeDetection)
+                var input =(IImage)gray;
+                if (UseBlurredImage)
                 {
-                    CvInvoke.Canny(blurredGray, edges, Profile.CannyLowThreshold, Profile.CannyHighThreshold, Profile.CannyApetureSize, Profile.CannyGradient);
-                }
-                else
-                {
-                    CvInvoke.Threshold(blurredGray, edges, Profile.ThresholdEdgeDetection, 255, ThresholdType.Binary);
+                    CvInvoke.GaussianBlur(gray, blurredGray, new System.Drawing.Size(5, 5), Profile.GaussianSigmaX);
+                    input = blurredGray;
                 }
 
-                if (ShowCircles)
-                {
-                    var circles = CvInvoke.HoughCircles(gray, HoughType.Gradient, Profile.HoughCirclesDP, Profile.HoughCirclesMinDistance, Profile.HoughCirclesParam1, Profile.HoughCirclesParam2, Profile.HoughCirclesMinRadius, Profile.HoughCirclesMaxRadius);
+                if (ShowCrossHairs) DrawCrossHairs(output, img.Size);
+                if (ShowCircles) FindCircles(input, output, img.Size);
+                if (ShowHarrisCorners) FindCorners(input, output, img.Size);
+                if (ShowRectangles) FindRectangles(input, output, img.Size);
 
-                    var foundCircle = false;
-                    /* Above will return ALL maching circles, we only want the first one that is in the target image radius in the middle of the screen */
-                    foreach (var circle in circles)
-                    {
-                        if (circle.Center.X > ((img.Size.Width / 2) - Profile.TargetImageRadius) && circle.Center.X < ((img.Size.Width / 2) + Profile.TargetImageRadius) &&
-                           circle.Center.Y > ((img.Size.Height / 2) - Profile.TargetImageRadius) && circle.Center.Y < ((img.Size.Height / 2) + Profile.TargetImageRadius))
-                        {
-                            _circleMedianFilter.Add(circle.Center.X, circle.Center.Y);
-                            _circleRadiusMedianFilter.Add(circle.Radius, 0);
-                            foundCircle = true;
-                            break;
-                        }
-                    }
+                if (ShowOriginalImage) return img;
+                else if (UseBlurredImage) return blurredGray.Clone();
 
-                    if (!foundCircle)
-                    {
-                        _circleMedianFilter.Add(null);
-                        _circleRadiusMedianFilter.Add(null);
-                    }
-
-                    var avg = _circleMedianFilter.Filtered;
-                    if (avg != null)
-                    {
-                        Line(destImage, 0, (int)avg.Y, img.Width, (int)avg.Y, System.Drawing.Color.Red);
-                        Line(destImage, (int)avg.X, 0, (int)avg.X, img.Size.Height, System.Drawing.Color.Red);
-
-                        if ((avg.X >= ((img.Width / 2) - 1)) && avg.X <= ((img.Width / 2) + 1) &&
-                           (avg.Y >= ((img.Height / 2) - 1)) && avg.Y <= ((img.Height / 2) + 1))
-                        {
-                            Circle(destImage, (int)avg.X, (int)avg.Y, 3, System.Drawing.Color.Red);
-
-                        }
-
-                        Circle(destImage, (int)avg.X, (int)avg.Y, (int)_circleRadiusMedianFilter.Filtered.X, System.Drawing.Color.Red);
-
-
-
-                        CircleCenter = new Point2D<double>(Math.Round(avg.X, 2), Math.Round(avg.Y, 2));
-
-                        var offset = new Point2D<double>(centerX - avg.X, centerY - avg.Y);
-                        CircleLocated(offset, _circleRadiusMedianFilter.Filtered.X);
-                    }
-                    else
-                    {
-                        CircleCenter = null;
-                    }
-                }
-
-                if (ShowCrossHairs)
-                {
-                    DrawCrossHairs(destImage, centerX, centerY, width, height);
-                }
-
-
-                if (ShowLines)
-                {
-                    var lines = CvInvoke.HoughLinesP(edges, Profile.HoughLinesRHO, Profile.HoughLinesTheta * (Math.PI / 180), Profile.HoughLinesThreshold, Profile.HoughLinesMinLineLength, Profile.HoughLinesMaxLineGap);
-                    foreach (var line in lines)
-                    {
-                        Line(destImage, line.P1.X, line.P1.Y, line.P2.X, line.P2.Y, System.Drawing.Color.Beige);
-                    }
-                }
-
-                if (ShowHarrisCorners)
-                {
-                    using (var cornerDest = new Image<Gray, float>(blurredGray.Size))
-                    using (var matNormalized = new Image<Gray, float>(blurredGray.Size))
-                    using (var matScaled = new Image<Gray, float>(blurredGray.Size))
-                    {
-                        cornerDest.SetZero();
-
-                        int max = -1;
-                        int x = -1, y = -1;
-
-                        CvInvoke.CornerHarris(blurredGray, cornerDest, Profile.HarrisCornerBlockSize, Profile.HarrisCornerAperture, Profile.HarrisCornerK, BorderType.Default);
-
-                        CvInvoke.Normalize(cornerDest, matNormalized, 0, 255, NormType.MinMax, DepthType.Cv32F);
-                        CvInvoke.ConvertScaleAbs(matNormalized, matScaled, 10, 5);
-                        var minX = (img.Size.Width / 2) - Profile.TargetImageRadius;
-                        var maxX = (img.Size.Width / 2) + Profile.TargetImageRadius;
-                        var minY = (img.Size.Height / 2) - Profile.TargetImageRadius;
-                        var maxY = (img.Size.Height / 2) + Profile.TargetImageRadius;
-
-                        /* Go through all the returned points and find the one with the highest intensity.  This will be our corner */
-                        for (int j = minX; j < maxX; j++)
-                        {
-                            for (int i = minY; i < maxY; i++)
-                            {
-                                var value = (int)matNormalized.Data[i, j, 0];
-                                if (value > max)
-                                {
-                                    x = j;
-                                    y = i;
-                                    max = value;
-                                }
-                            }
-                        }
-
-                        if (x > 0 && y > 0)
-                        {
-                            _cornerMedianFilter.Add(new Point2D<float>(x, y));
-
-                        }
-
-                        var avg = _cornerMedianFilter.Filtered;
-                        if (avg != null)
-                        {
-                            Circle(destImage, (int)avg.X, (int)avg.Y, 5, System.Drawing.Color.Blue);
-                            Line(destImage, 0, (int)avg.Y, img.Width, (int)avg.Y, System.Drawing.Color.Blue);
-                            Line(destImage, (int)avg.X, 0, (int)avg.X, img.Height, System.Drawing.Color.Blue);
-
-                            var offset = new Point2D<double>(centerX - avg.X, centerY - avg.Y);
-                            CornerLocated(offset);
-                        }
-                    }
-                }
-
-                #region Calculate Polygons/Contours
-                var triangleList = new List<Triangle2DF>();
-                var boxList = new List<RotatedRect>(); //a box is a rotated rectangle
-
-                if (ShowRectangles)
-                {
-                    using (var contours = new VectorOfVectorOfPoint())
-                    {
-                        CvInvoke.FindContours(edges, contours, null, RetrType.List, ChainApproxMethod.ChainApproxSimple);
-                        int count = contours.Size;
-                        for (int i = 0; i < count; i++)
-                        {
-                            using (var contour = contours[i])
-                            using (var approxContour = new VectorOfPoint())
-                            {
-                                CvInvoke.ApproxPolyDP(contour, approxContour, CvInvoke.ArcLength(contour, true) * Profile.PolygonEpsilonFactor, Profile.ContourFindOnlyClosed);
-                                if (CvInvoke.ContourArea(approxContour, false) > Profile.ContourMinArea) //only consider contours with area greater than 250
-                                {
-                                    var pts = approxContour.ToArray();
-
-                                    if (approxContour.Size == 4) //The contour has 4 vertices.
-                                    {
-                                        bool isRectangle = true;
-                                        var rectEdges = PointCollection.PolyLine(pts, true);
-
-                                        if (!Profile.FindIrregularPolygons)
-                                        {
-                                            for (var j = 0; j < rectEdges.Length; j++)
-                                            {
-                                                var angle = Math.Abs(rectEdges[(j + 1) % rectEdges.Length].GetExteriorAngleDegree(rectEdges[j]));
-                                                if (angle < 80 || angle > 100)
-                                                {
-                                                    isRectangle = false;
-                                                    break;
-                                                }
-                                            }
-                                        }
-
-                                        if (isRectangle)
-                                        {
-                                            var rect = CvInvoke.MinAreaRect(approxContour);
-
-                                            var point1 = new System.Drawing.Point(Convert.ToInt32(rect.Center.X - (rect.Size.Width / 2)), Convert.ToInt32(rect.Center.Y - (rect.Size.Height / 2)));
-                                            var point2 = new System.Drawing.Point(Convert.ToInt32(rect.Center.X - (rect.Size.Width / 2)), Convert.ToInt32(rect.Center.Y + (rect.Size.Height / 2)));
-                                            var point3 = new System.Drawing.Point(Convert.ToInt32(rect.Center.X + (rect.Size.Width / 2)), Convert.ToInt32(rect.Center.Y + (rect.Size.Height / 2)));
-                                            var point4 = new System.Drawing.Point(Convert.ToInt32(rect.Center.X + (rect.Size.Width / 2)), Convert.ToInt32(rect.Center.Y - (rect.Size.Height / 2)));
-
-                                            CvInvoke.Line(destImage, point1, point2, new Bgr(System.Drawing.Color.White).MCvScalar);
-                                            CvInvoke.Line(destImage, point2, point3, new Bgr(System.Drawing.Color.White).MCvScalar);
-                                            CvInvoke.Line(destImage, point3, point4, new Bgr(System.Drawing.Color.White).MCvScalar);
-                                            CvInvoke.Line(destImage, point4, point1, new Bgr(System.Drawing.Color.White).MCvScalar);
-                                        }
-                                    }
-                                    else
-                                    {
-                                        var rectEdges = PointCollection.PolyLine(pts, true);
-                                        for (var idx = 0; idx < rectEdges.Length - 1; ++idx)
-                                        {
-                                            CvInvoke.Line(destImage, rectEdges[idx].P1, rectEdges[idx].P2, new Bgr(System.Drawing.Color.White).MCvScalar);
-                                        }
-
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                #endregion
-
-                if (ShowOriginalImage)
-                {
-                    return img;
-                }
-                else
-                    return (gray.Clone());
+                return gray.Clone();
             }
         }
     }

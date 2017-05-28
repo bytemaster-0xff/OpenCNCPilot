@@ -44,12 +44,12 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             Machine.BoardAlignmentManager.AlignBoard();
         }
 
-        public override void CircleLocated(Point2D<double> point, double diameter)
+        public override void CircleLocated(Point2D<double> point, double diameter, Point2D<double> stdDev)
         {
             Machine.BoardAlignmentManager.CircleLocated(point);
         }
 
-        public override void CornerLocated(Point2D<double> point)
+        public override void CornerLocated(Point2D<double> point, Point2D<double> stdDev)
         {
             Machine.BoardAlignmentManager.CornerLocated(point);
         }

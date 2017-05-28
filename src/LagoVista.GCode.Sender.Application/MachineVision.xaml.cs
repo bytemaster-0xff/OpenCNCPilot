@@ -16,7 +16,7 @@ namespace LagoVista.GCode.Sender.Application
     /// </summary>
     public partial class MachineVision : Window
     {
-        MachineVisionViewModel _viewModel;
+        //MachineVisionViewModel _viewModel;
 
         public MachineVision(IMachine machine)
         {
@@ -25,7 +25,7 @@ namespace LagoVista.GCode.Sender.Application
             var designTime = System.ComponentModel.DesignerProperties.GetIsInDesignMode(new DependencyObject());
             if (!designTime)
             {
-                ViewModel = new MachineVisionViewModel(machine);
+          //      ViewModel = new MachineVisionViewModel(machine);
 
                 this.Closing += MachineVision_Closing;
                 this.Loaded += MachineVision_Loaded;
@@ -34,14 +34,15 @@ namespace LagoVista.GCode.Sender.Application
 
         private void MachineVision_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            ViewModel.StopCapture();
+            //ViewModel.StopCapture();
         }
 
-        private async void MachineVision_Loaded(object sender, RoutedEventArgs e)
+        private void MachineVision_Loaded(object sender, RoutedEventArgs e)
         {
-            await ViewModel.InitAsync();
+            //await ViewModel.InitAsync();
         }
       
+        /*
         public MachineVisionViewModel ViewModel
         {
             get { return _viewModel; }
@@ -50,6 +51,6 @@ namespace LagoVista.GCode.Sender.Application
                 _viewModel = value;
                 DataContext = this;
             }
-        }
+        }*/
     }
 }

@@ -142,7 +142,7 @@ namespace LagoVista.GCode.Sender.ViewModels
                         await client.ConnectAsync(Machine.Settings.IPAddress, 9001);
                         await Machine.ConnectAsync(client);
                     }
-                    catch(Exception ex)
+                    catch(Exception)
                     {
                         
                     }

@@ -45,6 +45,9 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
         private double _lastTopContrast = -9999;
         private double _lastBottomContrast = -9999;
 
+        public virtual bool UseTopCamera { get; } = true;
+        public virtual bool UseBottomCamera { get; } = false;
+
         private async void StartImageRecognization()
         {
             _running = true;
@@ -86,16 +89,19 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                         LoadingMask = false;
                     }
 
-                    using (var originalFrame = _topCameraCapture.QueryFrame())
-                    using (var results = PerformShapeDetection(originalFrame))
+                    if (UseTopCamera)
                     {
-                        if (ShowTopCamera)
+                        using (var originalFrame = _topCameraCapture.QueryFrame())
+                        using (var results = PerformShapeDetection(originalFrame))
                         {
-                            PrimaryCapturedImage = Emgu.CV.WPF.BitmapSourceConvert.ToBitmapSource(results);
-                        }
-                        else if (PictureInPicture)
-                        {
-                            SecondaryCapturedImage = Emgu.CV.WPF.BitmapSourceConvert.ToBitmapSource(results);
+                            if (ShowTopCamera)
+                            {
+                                PrimaryCapturedImage = Emgu.CV.WPF.BitmapSourceConvert.ToBitmapSource(results);
+                            }
+                            else if (PictureInPicture)
+                            {
+                                SecondaryCapturedImage = Emgu.CV.WPF.BitmapSourceConvert.ToBitmapSource(results);
+                            }
                         }
                     }
                 }
@@ -128,18 +134,22 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                         _lastBottomExposure = _bottomCameraProfile.Exposure;
                     }
 
-                    using (var originalFrame = _bottomCameraCapture.QueryFrame())
-                    using (var results = PerformShapeDetection(originalFrame))
+                    if (UseBottomCamera)
                     {
-                        if (ShowBottomCamera)
+                        using (var originalFrame = _bottomCameraCapture.QueryFrame())
+                        using (var results = PerformShapeDetection(originalFrame))
                         {
-                            PrimaryCapturedImage = Emgu.CV.WPF.BitmapSourceConvert.ToBitmapSource(results);
-                        }
-                        else if (PictureInPicture)
-                        {
-                            SecondaryCapturedImage = Emgu.CV.WPF.BitmapSourceConvert.ToBitmapSource(results);
+                            if (ShowBottomCamera)
+                            {
+                                PrimaryCapturedImage = Emgu.CV.WPF.BitmapSourceConvert.ToBitmapSource(results);
+                            }
+                            else if (PictureInPicture)
+                            {
+                                SecondaryCapturedImage = Emgu.CV.WPF.BitmapSourceConvert.ToBitmapSource(results);
+                            }
                         }
                     }
+
                     HasFrame = true;
 
                     if (LoadingMask)

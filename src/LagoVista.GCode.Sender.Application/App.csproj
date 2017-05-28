@@ -223,7 +223,6 @@
     <Compile Include="ViewModels\CalibrationViewModel.cs" />
     <Compile Include="ViewModels\FeederLocatorViewModel.cs" />
     <Compile Include="ViewModels\MVHomingViewModel.cs" />
-    <Compile Include="ViewModels\MachineVisionViewModel.cs" />
     <Compile Include="ViewModels\MachineVisionViewModelBase.Capture.cs" />
     <Compile Include="ViewModels\MachineVisionViewModelBase.Commanding.cs" />
     <Compile Include="ViewModels\MachineVisionViewModelBase.cs" />

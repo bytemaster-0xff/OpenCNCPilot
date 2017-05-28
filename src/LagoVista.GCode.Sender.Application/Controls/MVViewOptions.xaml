@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:LagoVista.GCode.Sender.Application.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-    <Grid  Width="150" Height="180">
+    <Grid  Width="150" Height="200">
         <Grid.Resources>
             <Style TargetType="Label">
                 <Setter Property="Foreground" Value="White" />
@@ -26,6 +26,7 @@
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
@@ -34,14 +35,20 @@
         <Grid Opacity="0.5" Background="Black" Grid.RowSpan="999" Grid.ColumnSpan="999"></Grid>
         <Label Content="Color Image"  Grid.Row="0" />
         <CheckBox IsChecked="{Binding ShowOriginalImage, Mode=TwoWay}" Grid.Row="0" Grid.Column="1" />
-        <Label Content="Circles"  Grid.Row="1" />
-        <CheckBox IsChecked="{Binding ShowCircles, Mode=TwoWay}" Grid.Row="1" Grid.Column="1" />
-        <Label Content="Lines"  Grid.Row="2" />
-        <CheckBox IsChecked="{Binding ShowLines, Mode=TwoWay}" Grid.Row="2" Grid.Column="1" />
-        <Label Content="Corners"  Grid.Row="3" />
-        <CheckBox IsChecked="{Binding ShowHarrisCorners, Mode=TwoWay}" Grid.Row="3" Grid.Column="1" />
-        <Label Content="Polygons"  Grid.Row="4" />
-        <CheckBox IsChecked="{Binding ShowPolygons, Mode=TwoWay}" Grid.Row="4" Grid.Column="1" />
-    </Grid>
 
+        <Label Content="Use Blurred"  Grid.Row="1" />
+        <CheckBox IsChecked="{Binding UseBlurredImage, Mode=TwoWay}" Grid.Row="1" Grid.Column="1" />
+
+        <Label Content="Circles"  Grid.Row="2" />
+        <CheckBox IsChecked="{Binding ShowCircles, Mode=TwoWay}" Grid.Row="2" Grid.Column="1" />
+
+        <Label Content="Lines"  Grid.Row="3" />
+        <CheckBox IsChecked="{Binding ShowLines, Mode=TwoWay}" Grid.Row="3" Grid.Column="1" />
+
+        <Label Content="Corners"  Grid.Row="4" />
+        <CheckBox IsChecked="{Binding ShowHarrisCorners, Mode=TwoWay}" Grid.Row="4" Grid.Column="1" />
+
+        <Label Content="Polygons"  Grid.Row="5" />
+        <CheckBox IsChecked="{Binding ShowRectangles, Mode=TwoWay}" Grid.Row="5" Grid.Column="1" />
+    </Grid>
 </UserControl>

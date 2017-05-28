@@ -6,17 +6,20 @@
              xmlns:local="clr-namespace:LagoVista.GCode.Sender.Application.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-    <Grid  Width="150" Height="30" Grid.Row="1">
+    <Grid  Width="300" Height="30" Grid.Row="1">
         <Grid.Resources>
 
         </Grid.Resources>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="50*" />
             <ColumnDefinition Width="50*" />
+            <ColumnDefinition Width="50*" />
+            <ColumnDefinition Width="50*" />
         </Grid.ColumnDefinitions>
-        <Grid Opacity="0.5" Background="Black" Grid.ColumnSpan="2"/>
+        <Grid Opacity="0.5" Background="Black" Grid.ColumnSpan="4"/>
         <TextBlock Text="{Binding CircleCenter.X}" Foreground="White" TextAlignment="Right" />
         <TextBlock Text="{Binding CircleCenter.Y}" Foreground="White" TextAlignment="Right" Grid.Column="1" />
+        <TextBlock Text="{Binding StandardDeviation.X}" Foreground="White" TextAlignment="Right" Grid.Column="2" />
+        <TextBlock Text="{Binding StandardDeviation.Y}" Foreground="White" TextAlignment="Right" Grid.Column="3" />
     </Grid>
-
 </UserControl>

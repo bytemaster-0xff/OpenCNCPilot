@@ -34,21 +34,23 @@
                 <TextBlock Text="Before Beginning, Make Sure you have set the Home Position over the Homing Fiducual via Machine Vision" Margin="0,0,0,5" TextWrapping="Wrap" />
 
 
-                <TextBlock Text="Step 1 - Find Bottom Facing Camera Location" Margin="0,0,0,5" />
-                <TextBlock Text="Center Place Head over Bottom Facing Camera" TextWrapping="Wrap" Margin="0,0,0,5"  />
-                <Button Command="{Binding SetBottomCameraLocationCommand}" Content="Perform End Stop Homing" Margin="0,0,0,15" />
 
                 <TextBlock Text="Step 1 - Find Bottom Facing Camera Location" Margin="0,0,0,5" />
-                <TextBlock Text="Center Place Head over Bottom Facing Camera" TextWrapping="Wrap" Margin="0,0,0,5"  />
-                <Button Command="{Binding SetTopCameraLocationCommand}" Content="Perform End Stop Homing" Margin="0,0,0,15" />
+                <TextBlock Text="Center the Top Camera over a known location such as a via on a PCB, or drill a hole.  Then press Set Top Camera Location." TextWrapping="Wrap" Margin="0,0,0,5"  />
+                <Button Command="{Binding SetTopCameraLocationCommand}" Content="Set Top Camera Position" Margin="0,0,0,15" />
 
-                <TextBlock Text="Step 1 - Find Bottom Facing Camera Location" Margin="0,0,0,5" />
-                <TextBlock Text="Center Place Head over Bottom Facing Camera" TextWrapping="Wrap" Margin="0,0,0,5"  />
-                <Button Command="{Binding SetToolOneLocationCommand}" Content="Perform End Stop Homing" Margin="0,0,0,15" />
+                <TextBlock Text="Step 2 - Tool 1 Location" Margin="0,0,0,5" />
+                <TextBlock Text="Center Tool 1 over the location found in step one and press Set Tool One Location" TextWrapping="Wrap" Margin="0,0,0,5"  />
+                <Button Command="{Binding SetToolOneLocationCommand}" Content="Set Tool One Location" Margin="0,0,0,15" />
 
-                <TextBlock Text="Step 2 - Find Bottom Facing Camera Location" Margin="0,0,0,5" />
+                <TextBlock Text="Step 3 - Tool 2 Location" Margin="0,0,0,5" />
                 <TextBlock Text="Center Place Head over Bottom Facing Camera" TextWrapping="Wrap" Margin="0,0,0,5"  />
-                <Button Command="{Binding SetToolTwoLocationCommand}" Content="Perform End Stop Homing" Margin="0,0,0,15" />
+                <Button Command="{Binding SetToolTwoLocationCommand}" Content="Set Tool Two Location" Margin="0,0,0,15" />
+
+                <TextBlock Text="Step 4 - Bottom Camera" Margin="0,0,0,5" />
+                <TextBlock Text="Move Tool 1 over the center of the bottom facing camera and rotate the C Axis." TextWrapping="Wrap" Margin="0,0,0,5"  />
+                <Button Command="{Binding SetBottomCameraLocationCommand}" Content="Set Top Camera Position" Margin="0,0,0,15" />
+
 
                 <Grid>
                     <Grid.ColumnDefinitions>

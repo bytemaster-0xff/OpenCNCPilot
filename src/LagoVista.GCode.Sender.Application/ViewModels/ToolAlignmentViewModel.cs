@@ -76,7 +76,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
 
         public void SetBottomCameraLocation()
         {
-            BottomCameraLocation = new Point2D<double>(Machine.MachinePosition.X, Machine.MachinePosition.Y);
+            BottomCameraLocation = new Point2D<double>(Machine.MachinePosition.X - Tool1Offset.Y, Machine.MachinePosition.Y - Tool1Offset.Y);
         }
 
         public void SetTool1Location()
@@ -106,24 +106,29 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             }
         }
 
-        public void SaveCalibration()
+        public async void SaveCalibration()
         {
             Machine.Settings.PositioningCamera.Tool1Offset = Tool1Offset;
             Machine.Settings.PositioningCamera.Tool2Offset = Tool2Offset;
             Machine.Settings.PartInspectionCamera.AbsolutePosition = BottomCameraLocation;
+            await Machine.MachineRepo.SaveAsync();
         }
 
         public override async Task InitAsync()
         {
+            Tool1Offset = Machine.Settings.PositioningCamera.Tool1Offset;
+            Tool2Offset = Machine.Settings.PositioningCamera.Tool2Offset;
+            BottomCameraLocation = Machine.Settings.PartInspectionCamera.AbsolutePosition;
+
             await base.InitAsync();
         }
 
-        public override void CircleLocated(Point2D<double> point, double diameter)
+        public override void CircleLocated(Point2D<double> point, double diameter, Point2D<double> stdDev)
         {
             Machine.BoardAlignmentManager.CircleLocated(point);
         }
 
-        public override void CornerLocated(Point2D<double> point)
+        public override void CornerLocated(Point2D<double> point, Point2D<double> stdDev)
         {
             Machine.BoardAlignmentManager.CornerLocated(point);
         }

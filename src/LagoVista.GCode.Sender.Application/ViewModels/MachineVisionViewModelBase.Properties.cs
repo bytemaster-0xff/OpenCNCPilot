@@ -1,4 +1,6 @@
-﻿using LagoVista.GCode.Sender.ViewModels;
+﻿using LagoVista.Core.Models.Drawing;
+using LagoVista.GCode.Sender.Models;
+using LagoVista.GCode.Sender.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +19,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
         public bool ShowCrossHairs { get; set; } = true;
         public bool ShowHarrisCorners { get; set; } = false;
         public bool ShowOriginalImage { get; set; } = true;
+        public bool UseBlurredImage { get; set; } = true;
 
         public string PolygonHelp { get { return "http://docs.opencv.org/2.4/doc/tutorials/imgproc/shapedescriptors/bounding_rects_circles/bounding_rects_circles.html?highlight=approxpolydp"; } }
         public string PolygonEpsilonHelp { get { return "Parameter specifying the approximation accuracy. This is the maximum distance between the original curve and its approximation"; } }
@@ -105,6 +108,15 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             }
         }
 
+
+        private VisionProfile _profile;
+        public VisionProfile Profile
+        {
+            get { return _profile; }
+            set { Set(ref _profile, value); }
+        }
+
+
         protected virtual void CaptureStarted() { }
 
         protected virtual void CaptureEnded() { }
@@ -147,5 +159,42 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             get { return _pictureInPicture; }
             set { Set(ref _pictureInPicture, value); }
         }
+
+
+        private Point2D<double> _circleCenter;
+        public Point2D<double> CircleCenter
+        {
+            get { return _circleCenter; }
+            set
+            {
+                if (value == null)
+                {
+                    Set(ref _circleCenter, null);
+                }
+                else if (_circleCenter == null || (_circleCenter.X != value.X ||
+                    _circleCenter.Y != value.Y))
+                {
+                    Set(ref _circleCenter, value);
+                }
+            }
+        }
+
+        private Point2D<double> _standardDeviation;
+        public Point2D<double> StandardDeviation
+        {
+            get { return _standardDeviation; }
+            set
+            {
+                if (value == null)
+                {
+                    Set(ref _standardDeviation, null);
+                }
+                else if (_standardDeviation == null || (_standardDeviation.X != value.X || _standardDeviation.Y != value.Y))
+                {
+                    Set(ref _standardDeviation, value);
+                }
+            }
+        }
+
     }
 }
