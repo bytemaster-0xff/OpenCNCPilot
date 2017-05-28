@@ -45,8 +45,8 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
         private double _lastTopContrast = -9999;
         private double _lastBottomContrast = -9999;
 
-        public virtual bool UseTopCamera { get; } = true;
-        public virtual bool UseBottomCamera { get; } = false;
+        public virtual bool UseTopCamera { get; set; } = true;
+        public virtual bool UseBottomCamera { get; set; } = false;
 
         private async void StartImageRecognization()
         {

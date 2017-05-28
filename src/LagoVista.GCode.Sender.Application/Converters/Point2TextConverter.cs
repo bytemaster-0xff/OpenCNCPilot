@@ -15,12 +15,12 @@ namespace LagoVista.GCode.Sender.Application.Converters
         {
             if(value == null)
             {
-                return "X:-, Y:-;";
+                return "-";
             }
 
             var pt = value as Point2D<double>;
 
-            return $"X:{pt.X}, Y:{pt.Y};";
+            return $"({Math.Round(pt.X,4)} - {Math.Round(pt.Y,4)})";
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

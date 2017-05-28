@@ -17,9 +17,9 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             SetToolTwoLocationCommand = new RelayCommand(SetTool2Location, () => HasFrame);
 
             SetTopCameraLocationCommand = new RelayCommand(SetTopCameraLocation, () => HasFrame);
-            SetBottomCameraLocationCommand = new RelayCommand(SetBottomCameraLocation, () => HasFrame);
+            SetBottomCameraLocationCommand = new RelayCommand(SetBottomCameraLocation, () => HasFrame && Tool1Offset != null);
 
-            SaveCalibrationCommand = new RelayCommand(SaveCalibration);
+            SaveCalibrationCommand = new RelayCommand(SaveCalibration, () => IsDirty);
         }
 
         Point2D<double> _tool1Offset;
@@ -29,9 +29,16 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
         Point2D<double> _topCameraLocation;
         Point2D<double> _bottomCameraLocation;
 
-        public void SetPlaceHeadLocation()
-        {
 
+        private bool _isDirty = false;
+        public bool IsDirty
+        {
+            get { return _isDirty; }
+            set
+            {
+                Set(ref _isDirty, value);
+                SaveCalibrationCommand.RaiseCanExecuteChanged();
+            }
         }
 
         protected override void CaptureStarted()
@@ -72,11 +79,14 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                 };
             }
 
+            IsDirty = true;
+
         }
 
         public void SetBottomCameraLocation()
         {
-            BottomCameraLocation = new Point2D<double>(Machine.MachinePosition.X - Tool1Offset.Y, Machine.MachinePosition.Y - Tool1Offset.Y);
+            BottomCameraLocation = new Point2D<double>(Machine.MachinePosition.X + Tool1Offset.Y, Machine.MachinePosition.Y - Tool1Offset.Y);
+            IsDirty = true;
         }
 
         public void SetTool1Location()
@@ -86,9 +96,12 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             {
                 Tool1Offset = new Point2D<double>()
                 {
-                    X = Tool1Location.X - TopCameraLocation.X,
-                    Y = Tool1Location.Y - TopCameraLocation.Y,
+                    X = TopCameraLocation.X - Tool1Location.X,
+                    Y = TopCameraLocation.Y - Tool1Location.Y,
                 };
+
+                SetBottomCameraLocationCommand.RaiseCanExecuteChanged();
+                IsDirty = true;
             }
         }
 
@@ -96,13 +109,15 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
         public void SetTool2Location()
         {
             Tool2Location = new Point2D<double>(Machine.MachinePosition.X, Machine.MachinePosition.Y);
-            if(TopCameraLocation != null)
+            if (TopCameraLocation != null)
             {
                 Tool2Offset = new Point2D<double>()
                 {
-                    X = Tool2Location.X - TopCameraLocation.X,
-                    Y = Tool2Location.Y - TopCameraLocation.Y,
+                    X = TopCameraLocation.X- Tool2Location.X,
+                    Y = TopCameraLocation.Y- Tool2Location.Y,
                 };
+
+                IsDirty = true;
             }
         }
 

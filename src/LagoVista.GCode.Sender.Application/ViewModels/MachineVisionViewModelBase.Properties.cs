@@ -134,6 +134,8 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                 }
 
                 Set(ref _showTopCamera, value);
+                UseTopCamera = true;
+                UseBottomCamera = false;
             }
         }
 
@@ -150,6 +152,8 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                 }
 
                 Set(ref _showBottomCamera, value);
+                UseBottomCamera = true;
+                UseTopCamera = false;
             }
         }
 

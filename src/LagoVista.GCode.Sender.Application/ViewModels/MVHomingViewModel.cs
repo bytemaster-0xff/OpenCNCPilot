@@ -84,12 +84,11 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             {
                 if (stdDeviation.X < 0.5 && stdDeviation.Y < 0.5)
                 {
-
                     stabilizedPointCount++;
-                    if (stabilizedPointCount > 5)
+                    if (stabilizedPointCount > 10)
                     {
                         var newLocationX = Math.Round(Machine.MachinePosition.X - (offset.X / 20), 4);
-                        var newLocationY = Math.Round(Machine.MachinePosition.Y - (offset.Y / 20), 4);
+                        var newLocationY = Math.Round(Machine.MachinePosition.Y + (offset.Y / 20), 4);
                         Machine.GotoPoint(new Point2D<double>() { X = newLocationX, Y = newLocationY }, true);
                         stabilizedPointCount = 0;
                         XZeroOffset = newLocationX;
