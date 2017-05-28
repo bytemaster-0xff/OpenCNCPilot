@@ -81,8 +81,8 @@
                     <Label Content="(mm)" Grid.Row="3" Grid.Column="2" />
                     
                     <Label Content="Number Rows" Grid.Row="4" />
-                    <ctls:MaskingTextBox Text="{Binding NumberRows, Mode=TwoWay}"  UnitType="Count"  Grid.Row="3" Grid.Column="1"  />
-                    <Label Content="(mm)" Grid.Row="3" Grid.Column="2" />
+                    <ctls:MaskingTextBox Text="{Binding NumberRows, Mode=TwoWay}"  UnitType="Count"  Grid.Row="4" Grid.Column="1"  />
+                    <Label Content="(mm)" Grid.Row="4" Grid.Column="2" />
                     
                     <Label Content="First Row Offset" Grid.Row="5" />
                     <ctls:MaskingTextBox Text="{Binding FirstRowOffset, Mode=TwoWay}"  UnitType="Size" Grid.Row="5" Grid.Column="1"  />

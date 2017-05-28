@@ -106,14 +106,18 @@
                                         <ColumnDefinition Width="60" />
                                         <ColumnDefinition Width="60" />
                                     </Grid.ColumnDefinitions>
-                                    <Label Content="{Binding Feeder.Name}" />
+                                    <Label Content="{Binding Name}" />
                                     <Label Content="{Binding Feeder.Length}" Grid.Column="1" />
                                     <Label Content="{Binding Feeder.Width}" Grid.Column="2" />
                                 </Grid>
                             </DataTemplate>
                         </ListView.ItemTemplate>
                     </ListView>
-                    <ListView ItemsSource="{Binding SelectedFeederInstance.Rows}" Grid.Column="2" Grid.Row="1" >
+                    <StackPanel Grid.Column="2" Grid.Row="1">
+                        <TextBlock Text="Name" />
+                        <TextBox Text="{Binding SelectedFeederInstance.Name, Mode=TwoWay}" />
+                    </StackPanel>
+                    <ListView ItemsSource="{Binding SelectedFeederInstance.Rows}" Grid.Column="2" Grid.Row="1"  Margin="0,50,0,0">
                         <ListView.ItemTemplate>
                             <DataTemplate>
                                 <Grid>

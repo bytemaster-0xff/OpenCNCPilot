@@ -25,6 +25,7 @@ namespace LagoVista.PickAndPlace.ViewModels
         {
             _billOfMaterials = new BOM(job.Board);
             _job = job;
+            _isDirty = true;
 
             AddFeederCommand = new RelayCommand(AddFeeder, () => CanAddFeeder());
             SaveJobCommand = new RelayCommand(SaveJob, () => CanSaveJob());
@@ -68,6 +69,7 @@ namespace LagoVista.PickAndPlace.ViewModels
             var feederInstance = new FeederInstance();
             feederInstance.SetFeder(SelectedFeeder);
             JobFeeders.Add(feederInstance);
+            feederInstance.Name = $"Feeder - {JobFeeders.Count}";
             SelectedFeederInstance = feederInstance;
             SelectedFeeder = null;
         }
@@ -198,6 +200,8 @@ namespace LagoVista.PickAndPlace.ViewModels
             get { return _job; }
             set
             {
+                _isDirty = false;
+                SaveJobCommand.RaiseCanExecuteChanged();
                 Set(ref _job, value);
                 RaisePropertyChanged(nameof(HasJob));
             }
