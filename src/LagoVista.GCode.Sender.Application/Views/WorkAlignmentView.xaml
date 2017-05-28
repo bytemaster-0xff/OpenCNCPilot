@@ -23,8 +23,8 @@
 
         <Image x:Name="WebCamImage" Source="{Binding PrimaryCapturedImage}" Stretch="Uniform" Grid.Row="1" Grid.RowSpan="2" />
 
-        <TextBlock Text="{Binding Machine.BoardAlignmentManager.Status, FallbackValue=Idle}" FontSize="48" Margin="0,300,0,0" Grid.Row="1" Grid.RowSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="Black" />
-        <TextBlock Text="{Binding Machine.BoardAlignmentManager.Status, FallbackValue=Idle}" FontSize="48" Margin="02,303,0,0" Grid.Row="1" Grid.RowSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" />
+        <TextBlock Text="{Binding Status, FallbackValue=Idle}" FontSize="48" Margin="0,300,0,0" Grid.Row="1" Grid.RowSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="Black" />
+        <TextBlock Text="{Binding Status, FallbackValue=Idle}" FontSize="48" Margin="02,303,0,0" Grid.Row="1" Grid.RowSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" />
 
         <Controls:MVNavigation Grid.Row="1"/>
         <Controls:MVViewOptions HorizontalAlignment="Right" VerticalAlignment="Top" Grid.Row="1" />

@@ -7,6 +7,20 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
 {
     public class WorkAlignmentViewModel : MachineVisionViewModelBase
     {
+        enum BoardAlignmentState
+        {
+            Idle,
+            FindingFiducialOne,
+            MovingToSecondFiducial,
+            FindingFiducialTwo
+        }
+
+        Point2D<double> _fiducialOneLocation;
+        Point2D<double> _fiducialTwoLocation;
+
+
+        BoardAlignmentState _boardAlignmentState = BoardAlignmentState.Idle;
+
         public WorkAlignmentViewModel(IMachine machine) : base(machine)
         {
             AlignBoardCommand = new RelayCommand(AlignBoard, CanAlignBoard);
@@ -41,12 +55,44 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
 
         public void AlignBoard()
         {
-            Machine.BoardAlignmentManager.AlignBoard();
+            _boardAlignmentState = BoardAlignmentState.FindingFiducialOne;
+            Status = "Centering First Fiducial";
+        }        
+
+        public override void CircleLocated(Point2D<double> offset, double diameter, Point2D<double> stdDev)
+        {
+            switch(_boardAlignmentState)
+            {
+                case BoardAlignmentState.FindingFiducialOne:
+                case BoardAlignmentState.FindingFiducialTwo:
+                    JogToLocation(offset);
+                    break;
+                case BoardAlignmentState.MovingToSecondFiducial:
+                    Status = "Searching for Second Fiducial";
+                    _boardAlignmentState = BoardAlignmentState.FindingFiducialTwo;
+                    break;
+
+            }            
         }
 
-        public override void CircleLocated(Point2D<double> point, double diameter, Point2D<double> stdDev)
+        public override void CircleCentered(Point2D<double> point, double diameter)
         {
-            Machine.BoardAlignmentManager.CircleLocated(point);
+            switch(_boardAlignmentState)
+            {
+                case BoardAlignmentState.FindingFiducialOne:
+                    Status = "Moving to Second Fiducial";
+                    _fiducialOneLocation = new Point2D<double>(Machine.NormalizedPosition.X, Machine.NormalizedPosition.Y);
+                    _boardAlignmentState = BoardAlignmentState.MovingToSecondFiducial;
+                    var fiducialX = Machine.NormalizedPosition.X + (Machine.PCBManager.SecondFiducial.X - Machine.PCBManager.FirstFiducial.X);
+                    var fiducialY = Machine.NormalizedPosition.Y + (Machine.PCBManager.SecondFiducial.Y - Machine.PCBManager.FirstFiducial.Y);
+                    Machine.GotoPoint(new Point2D<double>(fiducialX, fiducialY));
+                    break;
+                case BoardAlignmentState.FindingFiducialTwo:
+                    _fiducialTwoLocation = new Point2D<double>(Machine.NormalizedPosition.X, Machine.NormalizedPosition.Y);
+                    _boardAlignmentState = BoardAlignmentState.Idle;
+                    Status = "Found Second Fiducial";
+                    break;
+            }
         }
 
         public override void CornerLocated(Point2D<double> point, Point2D<double> stdDev)
@@ -57,5 +103,12 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
         public RelayCommand AlignBoardCommand { get; private set; }
 
         public RelayCommand EnabledFiducialPickerCommand { get; private set; }
+
+        private string _status = "Idle";
+        public string Status
+        {
+            get { return _status; }
+            set { Set(ref _status, value); }
+        }
     }
 }

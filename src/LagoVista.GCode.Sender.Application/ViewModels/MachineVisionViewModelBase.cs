@@ -18,7 +18,7 @@ using System.Threading.Tasks;
 
 namespace LagoVista.GCode.Sender.Application.ViewModels
 {
-    public abstract partial  class MachineVisionViewModelBase : GCodeAppViewModelBase
+    public abstract partial class MachineVisionViewModelBase : GCodeAppViewModelBase
     {
         FloatMedianFilter _cornerMedianFilter = new FloatMedianFilter(12, 3);
         FloatMedianFilter _circleMedianFilter = new FloatMedianFilter(12, 3);
@@ -53,12 +53,12 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                 _bottomCameraProfile = new VisionProfile();
             }
 
-            if(ShowTopCamera)
+            if (ShowTopCamera)
             {
                 Profile = _topCameraProfile;
             }
 
-            if(ShowBottomCamera)
+            if (ShowBottomCamera)
             {
                 Profile = _bottomCameraProfile;
             }
@@ -116,7 +116,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
 
 
         public virtual void CircleLocated(Point2D<double> point, double diameter, Point2D<double> stdDeviation) { }
-        public virtual void CircleCentered(Point2D<double> point, double diameter, Point2D<double> stdDeviation) { }
+        public virtual void CircleCentered(Point2D<double> point, double diameter) { }
 
         #region Show Cross Hairs
         private void DrawCrossHairs(IInputOutputArray destImage, Size size)
@@ -139,6 +139,29 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             Line(destImage, center.X, center.Y - Profile.TargetImageRadius, center.X, center.Y + Profile.TargetImageRadius, System.Drawing.Color.FromArgb(0x7f, 0xFF, 0xFF, 0XFF));
         }
         #endregion
+
+
+        protected void JogToLocation(Point2D<double> offset)
+        {
+            if (StandardDeviation.X < 0.5 && StandardDeviation.Y < 0.5)
+            {
+                stabilizedPointCount++;                
+                if (stabilizedPointCount > 10)
+                {
+                    var newLocationX = Math.Round(Machine.MachinePosition.X - (offset.X / 20), 4);
+                    var newLocationY = Math.Round(Machine.MachinePosition.Y + (offset.Y / 20), 4);
+                    Machine.GotoPoint(new Point2D<double>() { X = newLocationX, Y = newLocationY }, true);
+                    stabilizedPointCount = 0;
+                }
+            }
+            else
+            {
+                stabilizedPointCount = 0;
+            }
+        }
+
+
+        int stabilizedPointCount = 0;
 
         #region Find Circles
         private void FindCircles(IInputOutputArray input, IInputOutputArray output, Size size)
@@ -186,7 +209,14 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                     Line(output, 0, (int)avg.Y, size.Width, (int)avg.Y, System.Drawing.Color.Green);
                     Line(output, (int)avg.X, 0, (int)avg.X, size.Height, System.Drawing.Color.Green);
                     Circle(output, (int)avg.X, (int)avg.Y, (int)_circleRadiusMedianFilter.Filtered.X, System.Drawing.Color.Green);
-                    CircleCentered(offset, _circleRadiusMedianFilter.Filtered.X, _circleRadiusMedianFilter.StandardDeviation);
+                    if (StandardDeviation.X < 0.5 && StandardDeviation.Y < 0.5)
+                    {
+                        stabilizedPointCount++;
+                        if (stabilizedPointCount > 10)
+                        {
+                            CircleCentered(offset, _circleRadiusMedianFilter.Filtered.X);
+                        }
+                    }
                 }
                 else
                 {
@@ -194,7 +224,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                     Line(output, (int)avg.X, 0, (int)avg.X, size.Height, System.Drawing.Color.Red);
                     Circle(output, (int)avg.X, (int)avg.Y, (int)_circleRadiusMedianFilter.Filtered.X, System.Drawing.Color.Red);
                     CircleLocated(offset, _circleRadiusMedianFilter.Filtered.X, _circleRadiusMedianFilter.StandardDeviation);
-                }                
+                }
             }
             else
             {
@@ -358,13 +388,13 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             {
                 return null;
             }
-            
+
             using (var gray = new Image<Gray, byte>(img.Bitmap))
             using (var blurredGray = new Image<Gray, float>(gray.Size))
             {
                 var output = ShowOriginalImage ? img : (IInputOutputArray)gray;
 
-                var input =(IImage)gray;
+                var input = (IImage)gray;
                 if (UseBlurredImage)
                 {
                     CvInvoke.GaussianBlur(gray, blurredGray, new System.Drawing.Size(5, 5), Profile.GaussianSigmaX);

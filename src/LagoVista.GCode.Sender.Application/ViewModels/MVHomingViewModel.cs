@@ -72,8 +72,10 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             await base.InitAsync();
         }
 
-        public override void CircleCentered(Point2D<double> point, double diameter, Point2D<double> stdDeviation)
+        public override void CircleCentered(Point2D<double> point, double diameter)
         {
+            XZeroOffset = Machine.MachinePosition.X;
+            YZeroOffset = Machine.MachinePosition.Y;
         }
 
         int stabilizedPointCount = 0;
@@ -94,7 +96,6 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                         XZeroOffset = newLocationX;
                         YZeroOffset = newLocationY;
                     }
-
                 }
                 else
                 {
@@ -102,7 +103,6 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                     YZeroOffset = null;
                     stabilizedPointCount = 0;
                 }
-
             }
         }
 
