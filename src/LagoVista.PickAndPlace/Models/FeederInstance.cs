@@ -26,6 +26,18 @@ namespace LagoVista.PickAndPlace.Models
             set;
         }
 
+        public Point2D<Double> Location
+        {
+            get;
+            set;
+        }
+
+        public double Angle
+        {
+            get; set;
+        }
+
+
         public void SetFeder(Feeder feeder)
         {
             Feeder = feeder;

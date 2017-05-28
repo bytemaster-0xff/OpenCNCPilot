@@ -28,6 +28,9 @@ namespace LagoVista.PickAndPlace.Models
             Parts = new ObservableCollection<Part>();
         }
 
+        public double SafeHeight { get; set; }
+        public double BoardZ { get; set; }
+
         public string PackagesPath { get; set; }
 
         public bool DispensePaste { get; set; }

@@ -18,6 +18,8 @@ namespace LagoVista.PickAndPlace.Models
 
         public string Value { get; set; }
 
+        public double Height { get; set; }
+
         public string PartNumber { get; set; }
 
         public String FeederId { get; set; }

@@ -24,7 +24,7 @@ namespace LagoVista.PickAndPlace.Models
 
         public double Width { get; set; }
         public double Length{ get; set; }
-        public double PartHeight { get; set; }
+        public double PartZ { get; set; }
 
         public double TapeWidth { get; set; }
 

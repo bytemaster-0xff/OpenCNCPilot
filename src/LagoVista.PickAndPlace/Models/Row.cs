@@ -12,6 +12,12 @@ namespace LagoVista.PickAndPlace.Models
 
         public Part Part { get; set; }
 
+        public double FirstComponentY { get; set; }
+
+        public double CenterX { get; set; }
+
+        public double DeltaY { get; set; }
+
         public string Display
         {
             get

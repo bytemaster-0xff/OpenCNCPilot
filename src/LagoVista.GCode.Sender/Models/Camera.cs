@@ -14,6 +14,7 @@ namespace LagoVista.GCode.Sender.Models
         public int CameraIndex { get; set; }
         public String Name { get; set; }
 
+        public Point2D<double> AbsolutePosition { get; set; }
 
         private Point2D<double> _tool1Offset;
         public Point2D<double> Tool1Offset

@@ -108,7 +108,9 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
 
         public void SaveCalibration()
         {
-
+            Machine.Settings.PositioningCamera.Tool1Offset = Tool1Offset;
+            Machine.Settings.PositioningCamera.Tool2Offset = Tool2Offset;
+            Machine.Settings.PartInspectionCamera.AbsolutePosition = BottomCameraLocation;
         }
 
         public override async Task InitAsync()

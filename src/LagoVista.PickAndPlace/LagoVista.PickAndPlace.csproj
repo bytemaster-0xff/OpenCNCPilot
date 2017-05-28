@@ -48,6 +48,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Managers\Planner.cs" />
     <Compile Include="Managers\PnPJobManager.cs" />
     <Compile Include="Models\FeederInstance.cs" />
     <Compile Include="Models\Package.cs" />
