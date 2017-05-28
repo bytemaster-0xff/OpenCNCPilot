@@ -36,10 +36,7 @@ namespace LagoVista.GCode.Sender.Application.Views
         public WorkAlignmentViewModel ViewModel
         {
             get { return DataContext as WorkAlignmentViewModel; }
-            set
-            {
-                DataContext = this;
-            }
+            set{DataContext = value;}
         }
     }
 }
