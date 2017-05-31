@@ -57,7 +57,9 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
         public async void BeginMVHomingCycle()
         {
             _state = States.MVHoming;
+            Machine.SendCommand("G91");
             Machine.GotoPoint(Machine.Settings.HomeFiducialOffset, true);
+            Machine.SendCommand("G90");
             await Machine.MachineRepo.SaveAsync();
         }
 
@@ -89,9 +91,11 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                     stabilizedPointCount++;
                     if (stabilizedPointCount > 10)
                     {
-                        var newLocationX = Math.Round(Machine.MachinePosition.X - (offset.X / 20), 4);
-                        var newLocationY = Math.Round(Machine.MachinePosition.Y + (offset.Y / 20), 4);
+                        var newLocationX = -Math.Round((offset.X / 20), 4);
+                        var newLocationY = Math.Round((offset.Y / 20), 4);
+                        Machine.SendCommand("G91");
                         Machine.GotoPoint(new Point2D<double>() { X = newLocationX, Y = newLocationY }, true);
+                        Machine.SendCommand("G90");
                         stabilizedPointCount = 0;
                         XZeroOffset = newLocationX;
                         YZeroOffset = newLocationY;

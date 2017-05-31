@@ -140,6 +140,12 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
         }
         #endregion
 
+        protected Point2D<double> RequestedPosition
+        {
+            get;
+            set;
+        }
+
 
         protected void JogToLocation(Point2D<double> offset)
         {
@@ -150,7 +156,9 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                 {
                     var newLocationX = Math.Round(Machine.MachinePosition.X - (offset.X / 20), 4);
                     var newLocationY = Math.Round(Machine.MachinePosition.Y + (offset.Y / 20), 4);
-                    Machine.GotoPoint(new Point2D<double>() { X = newLocationX, Y = newLocationY }, true);
+                    RequestedPosition = new Point2D<double>() { X = newLocationX, Y = newLocationY };
+
+                    Machine.GotoPoint(RequestedPosition, true);
                     stabilizedPointCount = 0;
                 }
             }

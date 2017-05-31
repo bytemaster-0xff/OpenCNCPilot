@@ -1,30 +1,66 @@
 ﻿using LagoVista.Core.Commanding;
 using LagoVista.Core.Models.Drawing;
 using LagoVista.GCode.Sender.Interfaces;
+using LagoVista.GCode.Sender.Managers;
+using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace LagoVista.GCode.Sender.Application.ViewModels
 {
     public class WorkAlignmentViewModel : MachineVisionViewModelBase
     {
+        IBoardAlignmentPositionManager _positionManager;
+
         enum BoardAlignmentState
         {
             Idle,
             FindingFiducialOne,
             MovingToSecondFiducial,
-            FindingFiducialTwo
+            FindingFiducialTwo,
+            MovingToOrigin,
         }
 
-        Point2D<double> _fiducialOneLocation;
-        Point2D<double> _fiducialTwoLocation;
-
+        Timer _timer;
 
         BoardAlignmentState _boardAlignmentState = BoardAlignmentState.Idle;
+
+        DateTime _lastActivity;
 
         public WorkAlignmentViewModel(IMachine machine) : base(machine)
         {
             AlignBoardCommand = new RelayCommand(AlignBoard, CanAlignBoard);
+            CancelBoardAlignmentCommand = new RelayCommand(CancelBoardAlignment, CanCancelBoardAlignment);
             EnabledFiducialPickerCommand = new RelayCommand(() => Machine.PCBManager.IsSetFiducialMode = true);
+
+            _positionManager = new BoardAlignmentPositionManager(Machine.PCBManager);
+            _timer = new Timer(Timer_Tick, null, Timeout.Infinite, Timeout.Infinite);
+        }
+
+        public void Timer_Tick(object state)
+        {
+            switch(_boardAlignmentState)
+            {
+                case BoardAlignmentState.MovingToOrigin:
+                    if(!Machine.Busy)
+                    {
+                        Machine.SendCommand("G10 L20 P0 X0 Y0");
+                        _boardAlignmentState = BoardAlignmentState.Idle;
+                        Status = "Completed";
+                    }
+                    break;
+                case BoardAlignmentState.Idle:
+                    break;
+                default:
+                    if((DateTime.Now - _lastActivity).TotalSeconds > 5)
+                    {
+                        _boardAlignmentState = BoardAlignmentState.Idle;
+                        Status = "Timeout";
+                        _timer.Change(Timeout.Infinite, Timeout.Infinite);
+                    }
+                    break;
+
+            }
         }
 
         public override async Task InitAsync()
@@ -53,45 +89,76 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                    Machine.PCBManager.SecondFiducial != null;
         }
 
+        public bool CanCancelBoardAlignment()
+        {
+            return _boardAlignmentState != BoardAlignmentState.Idle;
+        }
+
+        public void CancelBoardAlignment()
+        {
+            _boardAlignmentState = BoardAlignmentState.Idle;
+            Status = "Idle";
+            _timer.Change(Timeout.Infinite, Timeout.Infinite);
+        }
+
         public void AlignBoard()
         {
+            _lastActivity = DateTime.Now;
+
             _boardAlignmentState = BoardAlignmentState.FindingFiducialOne;
-            Status = "Centering First Fiducial";
-        }        
+            Status = "Centering On First Fiducial";
+
+            _timer.Change(0, 500);
+        }
 
         public override void CircleLocated(Point2D<double> offset, double diameter, Point2D<double> stdDev)
         {
-            switch(_boardAlignmentState)
+            if (!Machine.Busy)
             {
-                case BoardAlignmentState.FindingFiducialOne:
-                case BoardAlignmentState.FindingFiducialTwo:
-                    JogToLocation(offset);
-                    break;
-                case BoardAlignmentState.MovingToSecondFiducial:
-                    Status = "Searching for Second Fiducial";
-                    _boardAlignmentState = BoardAlignmentState.FindingFiducialTwo;
-                    break;
+                _lastActivity = DateTime.Now;
 
-            }            
+                switch (_boardAlignmentState)
+                {
+                    case BoardAlignmentState.FindingFiducialOne:
+                    case BoardAlignmentState.FindingFiducialTwo:
+                        JogToLocation(offset);
+                        break;
+                    case BoardAlignmentState.MovingToSecondFiducial:
+                        Status = "Searching for Second Fiducial";
+                        _boardAlignmentState = BoardAlignmentState.FindingFiducialTwo;
+                        break;
+                }
+            }
         }
-
+       
         public override void CircleCentered(Point2D<double> point, double diameter)
         {
-            switch(_boardAlignmentState)
+            if (!Machine.Busy)
             {
-                case BoardAlignmentState.FindingFiducialOne:
-                    Status = "Moving to Second Fiducial";
-                    _fiducialOneLocation = new Point2D<double>(Machine.NormalizedPosition.X, Machine.NormalizedPosition.Y);
-                    _boardAlignmentState = BoardAlignmentState.MovingToSecondFiducial;
-                    var fiducialX = Machine.NormalizedPosition.X + (Machine.PCBManager.SecondFiducial.X - Machine.PCBManager.FirstFiducial.X);
-                    var fiducialY = Machine.NormalizedPosition.Y + (Machine.PCBManager.SecondFiducial.Y - Machine.PCBManager.FirstFiducial.Y);
-                    Machine.GotoPoint(new Point2D<double>(fiducialX, fiducialY));
-                    break;
-                case BoardAlignmentState.FindingFiducialTwo:
-                    _fiducialTwoLocation = new Point2D<double>(Machine.NormalizedPosition.X, Machine.NormalizedPosition.Y);
-                    _boardAlignmentState = BoardAlignmentState.Idle;
-                    Status = "Found Second Fiducial";
-                    break;
+                switch (_boardAlignmentState)
+                {
+                    case BoardAlignmentState.FindingFiducialOne:
+                        _lastActivity = DateTime.Now;
+                        Status = "Moving to Second Fiducial";
+                        _positionManager.FirstLocated = RequestedPosition;
+                        _boardAlignmentState = BoardAlignmentState.MovingToSecondFiducial;
+
+                        var fiducialX = RequestedPosition.X + (Machine.PCBManager.SecondFiducial.X - Machine.PCBManager.FirstFiducial.X);
+                        var fiducialY = RequestedPosition.Y + (Machine.PCBManager.SecondFiducial.Y - Machine.PCBManager.FirstFiducial.Y);                        
+                        RequestedPosition = new Point2D<double>(fiducialX, fiducialY);                        
+
+                        Machine.GotoPoint(RequestedPosition);
+
+                        break;
+                    case BoardAlignmentState.FindingFiducialTwo:
+                        _lastActivity = DateTime.Now;
+                        _positionManager.SecondLocated = RequestedPosition;
+                        _boardAlignmentState = BoardAlignmentState.MovingToOrigin;
+                        Machine.PCBManager.SetMeasuredOffset(_positionManager.OffsetPoint, _positionManager.RotationOffset);
+                        Machine.GotoPoint(_positionManager.OffsetPoint);
+                        Status = "Returning to Board Origin";
+                        break;
+                }
             }
         }
 
@@ -102,6 +169,8 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
 
         public RelayCommand AlignBoardCommand { get; private set; }
 
+        public RelayCommand CancelBoardAlignmentCommand { get; private set; }
+
         public RelayCommand EnabledFiducialPickerCommand { get; private set; }
 
         private string _status = "Idle";
@@ -109,6 +178,16 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
         {
             get { return _status; }
             set { Set(ref _status, value); }
+        }
+
+        public void Dispose()
+        {
+            if (_timer != null)
+            {
+                _timer.Change(Timeout.Infinite, Timeout.Infinite);
+                _timer.Dispose();
+                _timer = null;
+            }
         }
     }
 }

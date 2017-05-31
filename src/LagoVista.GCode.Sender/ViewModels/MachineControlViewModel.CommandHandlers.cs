@@ -27,7 +27,7 @@ namespace LagoVista.GCode.Sender.ViewModels
 
         public void Jog(JogDirections direction)
         {
-            var current = Machine.Settings.MachineType == FirmwareTypes.GRBL1_1 || Machine.Settings.MachineType == FirmwareTypes.LagoVista ? Machine.MachinePosition - Machine.WorkPositionOffset : Machine.MachinePosition;
+            var current = (Machine.Settings.MachineType == FirmwareTypes.GRBL1_1 || Machine.Settings.MachineType == FirmwareTypes.LagoVista || Machine.Settings.MachineType == FirmwareTypes.LagoVista_PnP) ? Machine.MachinePosition - Machine.WorkPositionOffset : Machine.MachinePosition;
             var currentTool0 = Machine.Settings.MachineType == FirmwareTypes.GRBL1_1 || (Machine.Settings.MachineType == FirmwareTypes.LagoVista || Machine.Settings.MachineType == FirmwareTypes.LagoVista_PnP) ? Machine.Tool0 - Machine.Tool0Offset : Machine.Tool0;
             var currentTool1 = Machine.Settings.MachineType == FirmwareTypes.GRBL1_1 || (Machine.Settings.MachineType == FirmwareTypes.LagoVista || Machine.Settings.MachineType == FirmwareTypes.LagoVista_PnP) ? Machine.Tool1 - Machine.Tool1Offset : Machine.Tool1;
             var currentTool2 = Machine.Settings.MachineType == FirmwareTypes.GRBL1_1 || (Machine.Settings.MachineType == FirmwareTypes.LagoVista || Machine.Settings.MachineType == FirmwareTypes.LagoVista_PnP) ? Machine.Tool2 - Machine.Tool2Offset : Machine.Tool2;

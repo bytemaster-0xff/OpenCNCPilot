@@ -59,6 +59,8 @@ namespace LagoVista.GCode.Sender.Interfaces
         double Tool1Normalized { get; }
         double Tool2Normalized { get; }
 
+        
+
         /// <summary>
         /// Current mode of the machine, such as Connected, Running a Job, etc....
         /// </summary>
@@ -117,6 +119,8 @@ namespace LagoVista.GCode.Sender.Interfaces
 
         MachinesRepo MachineRepo { get; }
 
+
+        bool Busy { get; }
 
         /// <summary>
         /// Is the machine currently connected

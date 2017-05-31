@@ -120,6 +120,10 @@ namespace LagoVista.GCode.Sender
             return true;
         }
 
+        public bool Busy
+        {
+            get { return UnacknowledgedBytesSent > 0; }
+        }
 
         public void GotoPoint(Point2D<double> point, bool rapidMove = true)
         {
