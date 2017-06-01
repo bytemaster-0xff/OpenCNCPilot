@@ -5,6 +5,7 @@ using LagoVista.GCode.Sender.Managers;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using LagoVista.Core;
 
 namespace LagoVista.GCode.Sender.Application.ViewModels
 {
@@ -154,7 +155,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                         _lastActivity = DateTime.Now;
                         _positionManager.SecondLocated = RequestedPosition;
                         _boardAlignmentState = BoardAlignmentState.MovingToOrigin;
-                        Machine.PCBManager.SetMeasuredOffset(_positionManager.OffsetPoint, _positionManager.RotationOffset);
+                        Machine.PCBManager.SetMeasuredOffset(_positionManager.OffsetPoint, _positionManager.RotationOffset.ToDegrees());
                         Machine.GotoPoint(_positionManager.OffsetPoint);
                         Status = "Returning to Board Origin";
                         break;

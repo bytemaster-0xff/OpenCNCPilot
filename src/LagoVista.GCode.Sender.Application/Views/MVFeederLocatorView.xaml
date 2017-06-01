@@ -17,15 +17,26 @@
             <ColumnDefinition Width="300" />
         </Grid.ColumnDefinitions>
         <StackPanel Orientation="Horizontal">
-            <Controls:MVCommandBar  Grid.ColumnSpan="2" HorizontalAlignment="Left" />
+            <Controls:MVCommandBar x:Name="CmdBar" Grid.ColumnSpan="2" HorizontalAlignment="Left" />
         </StackPanel>
+
+        <Image x:Name="WebCamImage" Source="{Binding PrimaryCapturedImage}" Stretch="Uniform" Grid.Row="1" Grid.RowSpan="2" />
         <Controls:MVViewOptions HorizontalAlignment="Right" VerticalAlignment="Top" Grid.Row="1" />
         <Controls:MVAquiredPoints HorizontalAlignment="Right" VerticalAlignment="Bottom" Grid.Row="1"/>
 
-        <Image x:Name="WebCamImage" Stretch="Uniform"  Source="/Imgs/TestPattern.jpg" Grid.Row="1" Grid.RowSpan="2" />
-        <Controls:XYJog Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Bottom" />
-        <Controls:ImageAdjustments Grid.Column="1" Grid.Row="1" Visibility="Collapsed" />
+        
+        <Controls:ImageAdjustments Grid.Column="1" Grid.RowSpan="2" Visibility="{Binding AreToolSettingsVisible, Converter={StaticResource BoolToVisibilityConverter}}" />
+        <Controls:XYJog DataContext="{Binding MachineControls}" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Bottom" />
         <Controls:LoadingMask Grid.ColumnSpan="2" Grid.Row="1"   />
 
+        <Grid Background="White" Grid.Row="1" Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="200" />
+            </Grid.RowDefinitions>
+
+            <ListView ItemsSource="{Binding Job.Feeders}">
+                
+            </ListView>
+        </Grid>
     </Grid>
 </Window>

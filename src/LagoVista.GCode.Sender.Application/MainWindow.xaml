@@ -57,6 +57,10 @@
             <MenuItem Header="Pick and Place" >
                 <MenuItem Header="New PnP Job" x:Name="NewPnPJob" Click="NewPnPJob_Click" />
                 <MenuItem Header="Open PnP Job" x:Name="OpenPnPJob" Click="OpenPnPJob_Click" />
+                <MenuItem Header="Edit PnP Job" x:Name="EditPnPJob" Click="EditPnPJob_Click" IsEnabled="False" />
+                <Separator/>
+                <MenuItem Header="Close PnP Job" x:Name="ClosePnPJob" Click="ClosePnPJob_Click" />
+                <Separator/>
                 <MenuItem  Header="Recent PnP Jobs" x:Name="RecentPNPJobs" />
                 <Separator />
                 <MenuItem Header="Edit Package Library" x:Name="EditPackageLibrary" Click="EditPackageLibrary_Click" />
@@ -66,7 +70,7 @@
                 <MenuItem Header="Home" Tag="HomingView" Click="ViewMenu_Show" />
                 <MenuItem Header="Work Alignment" Tag="WorkAlignment" Click="ViewMenu_Show" />
                 <MenuItem Header="Tool Alignment" Tag="ToolAlignment" Click="ViewMenu_Show" />
-                <MenuItem Header="FeederAlignmentt"  Tag="FeederAlignment"  Click="ViewMenu_Show" />
+                <MenuItem Header="FeederAlignmentt"  Tag="FeederAlignment"  Click="ViewMenu_Show" IsEnabled="False" x:Name="FeederAlignementView" />
                 <MenuItem Header="Calibration" Tag="Calibration" Click="ViewMenu_Show" />
             </MenuItem>
             <MenuItem Header="Height Map" >

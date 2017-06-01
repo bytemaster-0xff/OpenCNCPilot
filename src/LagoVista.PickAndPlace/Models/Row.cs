@@ -18,6 +18,8 @@ namespace LagoVista.PickAndPlace.Models
 
         public double DeltaY { get; set; }
 
+        public int CurrentPartIndex { get; set; }
+
         public string Display
         {
             get

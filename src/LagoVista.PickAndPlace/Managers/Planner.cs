@@ -25,8 +25,9 @@ namespace LagoVista.PickAndPlace.Managers
                     foreach(var part in parts)
                     {
                         bldr.Append($"G00 Z{job.SafeHeight}\n");
-                        bldr.Append($"G01 X{(row.RowNumber * feeder.Feeder.RowWidth + feeder.Feeder.FirstRowOffset + row.CenterX).ToDim()} Y{(row.FirstComponentY * (idx++ * row.DeltaY)).ToDim()}\n");
+                        bldr.Append(feeder.CurrentPartGCode(row.RowNumber));
                         bldr.Append($"T0\n"); /* Set Place tool as current Z axis */
+                        feeder.AdvancePart(row.RowNumber);
                         bldr.Append($"G00 Z{feeder.Feeder.PartZ}\n");
                         bldr.Append($"M63 P1\n"); /* Turn on Suction */
                         bldr.Append($"G04 P1\n"); /* Wait one second to capture part */

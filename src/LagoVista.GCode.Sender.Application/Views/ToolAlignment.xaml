@@ -7,7 +7,7 @@
         xmlns:ctls="clr-namespace:LagoVista.GCode.Sender.Application.Controls"
         xmlns:local="clr-namespace:LagoVista.GCode.Sender.Application.Views"
         mc:Ignorable="d"
-        Title="Tool Alignment View" Height="720" Width="1200">
+        Title="Tool Alignment View" Height="900" Width="1400">
     <Grid >
         <Grid.RowDefinitions>
             <RowDefinition Height="48"/>

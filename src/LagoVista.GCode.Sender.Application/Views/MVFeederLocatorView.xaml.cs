@@ -1,19 +1,20 @@
 ﻿using LagoVista.GCode.Sender.Application.ViewModels;
 using LagoVista.GCode.Sender.Interfaces;
+using LagoVista.PickAndPlace.Models;
 using System.Windows;
 
 namespace LagoVista.GCode.Sender.Application.Views
 {
     public partial class MVFeederLocatorView : Window
     {
-        public MVFeederLocatorView(IMachine machine)
+        public MVFeederLocatorView(IMachine machine, PnPJob job)
         {
             InitializeComponent();
 
             var designTime = System.ComponentModel.DesignerProperties.GetIsInDesignMode(new DependencyObject());
             if (!designTime)
             {
-                ViewModel = new FeederLocatorViewModel(machine);
+                ViewModel = new FeederLocatorViewModel(machine,job);
 
                 this.Closing += MachineVision_Closing;
                 this.Loaded += MachineVision_Loaded;
@@ -35,7 +36,7 @@ namespace LagoVista.GCode.Sender.Application.Views
             get { return DataContext as FeederLocatorViewModel; }
             set
             {
-                DataContext = this;
+                DataContext = value;
             }
         }
     }

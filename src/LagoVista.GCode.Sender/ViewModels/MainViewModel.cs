@@ -54,6 +54,23 @@ namespace LagoVista.GCode.Sender.ViewModels
             await SaveMRUsAsync();
         }
 
+        public async void AddPnPJobFile(string pnpJobFile)
+        {
+            if (pnpJobFile == MRUs.PnPJobs.FirstOrDefault())
+            {
+                return;
+            }
+
+            MRUs.PnPJobs.Insert(0, pnpJobFile);
+            if (MRUs.PnPJobs.Count > 10)
+            {
+                MRUs.PnPJobs.RemoveAt(10);
+            }
+
+            await SaveMRUsAsync();
+
+        }
+
         public async void AddBoardFileMRU(string boardFile)
         {
             if (boardFile == MRUs.BoardFiles.FirstOrDefault())

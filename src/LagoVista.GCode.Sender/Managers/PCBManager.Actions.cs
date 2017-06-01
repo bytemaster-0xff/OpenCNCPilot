@@ -13,7 +13,7 @@ namespace LagoVista.GCode.Sender.Managers
 
         public Point2D<double> GetAdjustedPoint(Point2D<double> point)
         {
-            return point.Rotate(-MeasuredOffsetAngle.ToDegrees());
+            return point.Rotate(-MeasuredOffsetAngle);
         }
 
         public void EnableFiducialPicker()

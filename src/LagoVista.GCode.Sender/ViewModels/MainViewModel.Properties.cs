@@ -44,11 +44,13 @@ namespace LagoVista.GCode.Sender.ViewModels
     {
         public MRUs()
         {
+            PnPJobs = new List<string>();
             GCodeFiles = new List<string>();
             BoardFiles = new List<string>();
             ProjectFiles = new List<string>();
         }
 
+        public List<String> PnPJobs { get; set; }
         public List<String> GCodeFiles { get; set; }
         public List<String> BoardFiles { get; set; }
         public List<String> ProjectFiles { get; set; }

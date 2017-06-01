@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using LagoVista.Core;
 
 namespace LagoVista.GCodeSupport.Tests.Managers
 {
@@ -37,15 +38,28 @@ namespace LagoVista.GCodeSupport.Tests.Managers
         [TestMethod]
         public void FindOffset_PerfectlyLevelBoard()
         {
-            /* If board was perfectly aligned, based on location of first position, calculate where expected location should be */
             _mgr.FirstLocated = new Core.Models.Drawing.Point2D<double>(20, 20);
             _mgr.SecondLocated = _mgr.SecondExpected;
            
             Assert.AreEqual(0, _mgr.RotationOffset);
 
-            Assert.AreEqual(15, _mgr.BoardOriginPoint.Y);
-            Assert.AreEqual(15, _mgr.BoardOriginPoint.X);
+            Assert.AreEqual(15, _mgr.OffsetPoint.Y);
+            Assert.AreEqual(15, _mgr.OffsetPoint.X);
         }
+
+        [TestMethod]
+        public void FindOffset_90Degrees()
+        {
+            _pcbManager.Setup(fid1 => fid1.FirstFiducial).Returns(new Core.Models.Drawing.Point2D<double>(0, 0));
+            _pcbManager.Setup(fid2 => fid2.SecondFiducial).Returns(new Core.Models.Drawing.Point2D<double>(10, 10));
+
+
+            _mgr.FirstLocated = new Core.Models.Drawing.Point2D<double>(0, 00);
+            _mgr.SecondLocated = new Core.Models.Drawing.Point2D<double>(-10,10);
+
+            Assert.AreEqual(-90, _mgr.RotationOffset.ToDegrees());
+        }
+
 
     }
 }
