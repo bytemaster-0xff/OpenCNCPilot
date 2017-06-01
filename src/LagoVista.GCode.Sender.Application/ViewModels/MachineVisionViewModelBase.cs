@@ -151,25 +151,25 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
         {
             if (StandardDeviation.X < 0.5 && StandardDeviation.Y < 0.5)
             {
-                stabilizedPointCount++;                
-                if (stabilizedPointCount > 10)
+                _stabilizedPointCount++;
+                if (_stabilizedPointCount > 10)
                 {
-                    var newLocationX = Math.Round(Machine.MachinePosition.X - (offset.X / 20), 4);
-                    var newLocationY = Math.Round(Machine.MachinePosition.Y + (offset.Y / 20), 4);
+                    var newLocationX = Math.Round(Machine.NormalizedPosition.X - (offset.X / 20), 4);
+                    var newLocationY = Math.Round(Machine.NormalizedPosition.Y + (offset.Y / 20), 4);
                     RequestedPosition = new Point2D<double>() { X = newLocationX, Y = newLocationY };
 
                     Machine.GotoPoint(RequestedPosition, true);
-                    stabilizedPointCount = 0;
+                    _stabilizedPointCount = 0;
                 }
             }
             else
             {
-                stabilizedPointCount = 0;
+                _stabilizedPointCount = 0;
             }
         }
 
 
-        int stabilizedPointCount = 0;
+        int _stabilizedPointCount = 0;
 
         #region Find Circles
         private void FindCircles(IInputOutputArray input, IInputOutputArray output, Size size)
@@ -219,8 +219,8 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                     Circle(output, (int)avg.X, (int)avg.Y, (int)_circleRadiusMedianFilter.Filtered.X, System.Drawing.Color.Green);
                     if (StandardDeviation.X < 0.5 && StandardDeviation.Y < 0.5)
                     {
-                        stabilizedPointCount++;
-                        if (stabilizedPointCount > 10)
+                        _stabilizedPointCount++;
+                        if (_stabilizedPointCount > 10)
                         {
                             CircleCentered(offset, _circleRadiusMedianFilter.Filtered.X);
                         }
@@ -409,10 +409,17 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                     input = blurredGray;
                 }
 
-                if (ShowCrossHairs) DrawCrossHairs(output, img.Size);
-                if (ShowCircles) FindCircles(input, output, img.Size);
-                if (ShowHarrisCorners) FindCorners(input, output, img.Size);
-                if (ShowRectangles) FindRectangles(input, output, img.Size);
+                if (!Machine.Busy)
+                {
+                    if (ShowCrossHairs) DrawCrossHairs(output, img.Size);
+                    if (ShowCircles) FindCircles(input, output, img.Size);
+                    if (ShowHarrisCorners) FindCorners(input, output, img.Size);
+                    if (ShowRectangles) FindRectangles(input, output, img.Size);
+                }
+                else
+                {
+                    _stabilizedPointCount = 0;
+                }
 
                 if (ShowOriginalImage) return img;
                 else if (UseBlurredImage) return blurredGray.Clone();

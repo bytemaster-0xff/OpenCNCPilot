@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using LagoVista.Core;
 
 namespace LagoVista.GCode.Sender.Managers
 {
@@ -12,7 +13,7 @@ namespace LagoVista.GCode.Sender.Managers
 
         public Point2D<double> GetAdjustedPoint(Point2D<double> point)
         {
-            return point.Rotate(MeasuredOffsetAngle);
+            return point.Rotate(-MeasuredOffsetAngle.ToDegrees());
         }
 
         public void EnableFiducialPicker()

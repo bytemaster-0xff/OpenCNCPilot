@@ -43,6 +43,14 @@ namespace LagoVista.GCode.Sender.Util
             Add(new Point2D<float>(x, y));
         }
 
+        public void Reset()
+        {
+            for(var idx = 0; idx < _points.Length; ++idx)
+            {
+                _points[idx] = null; 
+            }
+        }
+
         public Point2D<double> StandardDeviation
         {
             get
