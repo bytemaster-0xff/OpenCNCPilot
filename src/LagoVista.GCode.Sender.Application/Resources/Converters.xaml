@@ -13,4 +13,5 @@
     <cvtrs:MessageTypeForegroundColorConverter x:Key="MessageTypeForegroundColorConverter" />
     <cvtrs:HeightMapProbePoint2PointConverter x:Key="HeightMapProbePoint2PointConverter" />
     <cvtrs:Point2TextConverter x:Key="Point2TextConverter" />
+    <cvtrs:NoTNullToVisibilityConverter x:Key="NoTNullToVisibilityConverter" />
 </ResourceDictionary>

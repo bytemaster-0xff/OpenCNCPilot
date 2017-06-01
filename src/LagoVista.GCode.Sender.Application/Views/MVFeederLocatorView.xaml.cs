@@ -7,14 +7,14 @@ namespace LagoVista.GCode.Sender.Application.Views
 {
     public partial class MVFeederLocatorView : Window
     {
-        public MVFeederLocatorView(IMachine machine, PnPJob job)
+        public MVFeederLocatorView(IMachine machine, PnPJob job, string fileName)
         {
             InitializeComponent();
 
             var designTime = System.ComponentModel.DesignerProperties.GetIsInDesignMode(new DependencyObject());
             if (!designTime)
             {
-                ViewModel = new FeederLocatorViewModel(machine,job);
+                ViewModel = new FeederLocatorViewModel(machine,job, fileName);
 
                 this.Closing += MachineVision_Closing;
                 this.Loaded += MachineVision_Loaded;

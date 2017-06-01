@@ -20,6 +20,8 @@ namespace LagoVista.PickAndPlace.Models
 
         public int CurrentPartIndex { get; set; }
 
+        public int PartCount { get; set; }
+
         public string Display
         {
             get

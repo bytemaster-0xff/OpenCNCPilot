@@ -24,19 +24,79 @@
         <Controls:MVViewOptions HorizontalAlignment="Right" VerticalAlignment="Top" Grid.Row="1" />
         <Controls:MVAquiredPoints HorizontalAlignment="Right" VerticalAlignment="Bottom" Grid.Row="1"/>
 
-        
+
         <Controls:ImageAdjustments Grid.Column="1" Grid.RowSpan="2" Visibility="{Binding AreToolSettingsVisible, Converter={StaticResource BoolToVisibilityConverter}}" />
         <Controls:XYJog DataContext="{Binding MachineControls}" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Bottom" />
         <Controls:LoadingMask Grid.ColumnSpan="2" Grid.Row="1"   />
 
-        <Grid Background="White" Grid.Row="1" Grid.Column="1">
+        <Grid Background="White" Grid.RowSpan="2" Grid.Column="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="200" />
+                <RowDefinition Height="200" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
 
-            <ListView ItemsSource="{Binding Job.Feeders}">
-                
+            <ListView ItemsSource="{Binding Job.Feeders}" SelectedItem="{Binding SelectedFeeder, Mode=TwoWay}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Name}" />
+                    </DataTemplate>
+                </ListView.ItemTemplate>
             </ListView>
+
+            <ListView ItemsSource="{Binding SelectedFeeder.Rows}" SelectedItem="{Binding SelectedRow}" Grid.Row="1" >
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Display}" />
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+            <Grid Visibility="{Binding SelectedRow, Converter={StaticResource NoTNullToVisibilityConverter}}" Grid.Row="2">
+                <Grid Grid.Row="2" DataContext="{Binding SelectedRow}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="129" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="60" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.Resources>
+                        <Style TargetType="TextBox">
+                            <Setter Property="Margin" Value="4" />
+                        </Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Margin" Value="4" />
+                        </Style>
+
+                    </Grid.Resources>
+
+                    <TextBlock Text="{Binding Display, FallbackValue=1. Part3}" Grid.ColumnSpan="3" FontWeight="Bold"  FontSize="22" />
+
+                    <TextBlock Text="First Part Y" Grid.Row="1" />
+                    <TextBlock Text="{Binding FirstComponentY}" Grid.Row="1" Grid.Column="1" />
+
+                    <TextBlock Text="Center X" Grid.Row="2" />
+                    <TextBlock Text="{Binding CenterX}" Grid.Row="2"  Grid.Column="1"/>
+
+                    <TextBlock Text="Delta Y" Grid.Row="3" />
+                    <TextBlock Text="{Binding DeltaY}" Grid.Column="1" Grid.Row="3" />
+
+                    <TextBlock Text="Current Part Index" Grid.Row="4" />
+                    <TextBox Text="{Binding CurrentPartIndex, Mode=TwoWay}" Grid.Row="4"  Grid.Column="1"/>
+
+                    <TextBlock Text="Current Part Index" Grid.Row="5" />
+                    <TextBox Text="{Binding PartCount, Mode=TwoWay}" Grid.Row="5" Grid.Column="1" />
+                </Grid>
+            </Grid>
+            <Button Content="Save" Command="{Binding SaveCommand}" Grid.Row="3" Width="120" HorizontalAlignment="Right"  Margin="10"/>
         </Grid>
     </Grid>
 </Window>

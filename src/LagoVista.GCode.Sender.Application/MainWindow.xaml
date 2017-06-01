@@ -59,12 +59,13 @@
                 <MenuItem Header="Open PnP Job" x:Name="OpenPnPJob" Click="OpenPnPJob_Click" />
                 <MenuItem Header="Edit PnP Job" x:Name="EditPnPJob" Click="EditPnPJob_Click" IsEnabled="False" />
                 <Separator/>
-                <MenuItem Header="Close PnP Job" x:Name="ClosePnPJob" Click="ClosePnPJob_Click" />
+                <MenuItem Header="Edit Feeder Library" x:Name="EditFeederLibrary" Click="EditFeederLibrary_Click" />
                 <Separator/>
                 <MenuItem  Header="Recent PnP Jobs" x:Name="RecentPNPJobs" />
                 <Separator />
+                <MenuItem Header="Close PnP Job" x:Name="ClosePnPJob" Click="ClosePnPJob_Click" IsEnabled="False" />
+                <Separator/>
                 <MenuItem Header="Edit Package Library" x:Name="EditPackageLibrary" Click="EditPackageLibrary_Click" />
-                <MenuItem Header="Edit Feeder Library" x:Name="EditFeederLibrary" Click="EditFeederLibrary_Click" />
             </MenuItem>
             <MenuItem Header="View" >
                 <MenuItem Header="Home" Tag="HomingView" Click="ViewMenu_Show" />
