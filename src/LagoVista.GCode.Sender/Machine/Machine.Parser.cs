@@ -13,7 +13,8 @@ namespace LagoVista.GCode.Sender
 
         private static Regex CurrentPositionRegEx = new Regex(@"X:(?'MX'-?[0-9\.]*)\s?Y:(?'MY'-?[0-9\.]*)\s?Z:(?'MZ'-?[0-9\.]*)\s?E:(?'E'-?[0-9\.]*)\s?Count\s?X:(?'WX'.-?[0-9\.]*)\s?Y:(?'WY'.-?[0-9\.]*)\s?Z:(?'WZ'.-?[0-9\.]*)");
 
-        private static Regex LagoVistaStatusRegEx = new Regex(@"<(?'State'Idle|Alarm|Run|Hold|Home|Check|Door)(:[0-9])?(?:.MPos:(?'MX'-?[0-9\.]*),(?'MY'-?[0-9\.]*),(?'MT0'-?[0-9\.]*),(?'MT1'-?[0-9\.]*),(?'MT2'-?[0-9\.]*))?(?:,WPos:(?'WX'-?[0-9\.]*),(?'WY'-?[0-9\.]*),(?'WT0'-?[0-9\.]*),(?'WT1'-?[0-9\.]*),(?'WT2'-?[0-9\.]*))?(?:,T:(?'T'-?[0-9])),?(?:,P:(?'P'-?[0-9]))>");
+        private static Regex LagoVistaStatusRegEx1 = new Regex(@"<(?'State'Idle|Alarm|Run|Hold|Home|Check|Door)(:[0-9])?(?:.MPos:(?'MX'-?[0-9\.]*),(?'MY'-?[0-9\.]*),(?'MT0'-?[0-9\.]*),(?'MT1'-?[0-9\.]*),(?'MT2'-?[0-9\.]*))?(?:,T:(?'T'-?[0-9])),?(?:,P:(?'P'-?[0-9]))>");
+        private static Regex LagoVistaStatusRegEx2 = new Regex(@"<?(?:WPos:(?'WX'-?[0-9\.]*),(?'WY'-?[0-9\.]*),(?'WT0'-?[0-9\.]*),(?'WT1'-?[0-9\.]*),(?'WT2'-?[0-9\.]*))>");
 
         private static Regex LagoVistaErrorRegEx = new Regex(@"<(?'State'Alarm|Message|EndStop)?:(?'Msg'[\w]*)>");
 
@@ -75,39 +76,37 @@ namespace LagoVista.GCode.Sender
             return true;
         }
 
+        int currentTool;
+
         public bool ParseLagoVistaLine(String line)
         {
-            var lgvStatusMatch = LagoVistaStatusRegEx.Match(line);
+            var lgvStatusMatch1 = LagoVistaStatusRegEx1.Match(line);
+            var lgvStatusMatch2 = LagoVistaStatusRegEx2.Match(line);
             var lgvErrorMatch = LagoVistaErrorRegEx.Match(line);
             var endStopMessage = LagoVistaEndStopMsgRegEx.Match(line);
 
 
-            if (lgvStatusMatch.Success)
+            if (lgvStatusMatch1.Success)
             {
-                Group status = lgvStatusMatch.Groups["State"];
+                Group status = lgvStatusMatch1.Groups["State"];
 
                 if (status.Success)
                 {
                     Status = status.Value;
                 }
 
+                Group mx = lgvStatusMatch1.Groups["MX"],
+                    my = lgvStatusMatch1.Groups["MY"],
+                    mt0 = lgvStatusMatch1.Groups["MT0"],
+                    mt1 = lgvStatusMatch1.Groups["MT1"],
+                    mt2 = lgvStatusMatch1.Groups["MT2"];
+             
 
-                Group mx = lgvStatusMatch.Groups["MX"],
-                    my = lgvStatusMatch.Groups["MY"],
-                    mt0 = lgvStatusMatch.Groups["MT0"],
-                    mt1 = lgvStatusMatch.Groups["MT1"],
-                    mt2 = lgvStatusMatch.Groups["MT2"];
-                Group wx = lgvStatusMatch.Groups["WX"],
-                    wy = lgvStatusMatch.Groups["WY"],
-                    wt0 = lgvStatusMatch.Groups["WT0"],
-                    wt1 = lgvStatusMatch.Groups["WT1"],
-                    wt2 = lgvStatusMatch.Groups["WT2"];
-
-                Group t = lgvStatusMatch.Groups["T"],
-                    p = lgvStatusMatch.Groups["P"];
+                Group t = lgvStatusMatch1.Groups["T"],
+                    p = lgvStatusMatch1.Groups["P"];
 
 
-                var tool = int.Parse(t.Value);
+                currentTool = int.Parse(t.Value);
 
                 var newMachinePosition = new Vector3(double.Parse(mx.Value, Constants.DecimalParseFormat), double.Parse(my.Value, Constants.DecimalParseFormat), 0);
 
@@ -118,24 +117,33 @@ namespace LagoVista.GCode.Sender
 
                 Tool0 = double.Parse(mt0.Value, Constants.DecimalParseFormat);
                 Tool1 = double.Parse(mt1.Value, Constants.DecimalParseFormat);
-                Tool2 = double.Parse(mt2.Value, Constants.DecimalParseFormat);
+                Tool2 = double.Parse(mt2.Value, Constants.DecimalParseFormat);           
+
+                return true;
+            }
+            else if (lgvStatusMatch2.Success)
+            {
+                Group wx = lgvStatusMatch2.Groups["WX"],
+                 wy = lgvStatusMatch2.Groups["WY"],
+                 wt0 = lgvStatusMatch2.Groups["WT0"],
+                 wt1 = lgvStatusMatch2.Groups["WT1"],
+                 wt2 = lgvStatusMatch2.Groups["WT2"];
 
                 Tool0Offset = double.Parse(wt0.Value, Constants.DecimalParseFormat);
                 Tool1Offset = double.Parse(wt1.Value, Constants.DecimalParseFormat);
                 Tool2Offset = double.Parse(wt2.Value, Constants.DecimalParseFormat);
 
-                var newWorkPosition = new Vector3(double.Parse(wx.Value, Constants.DecimalParseFormat), double.Parse(wy.Value, Constants.DecimalParseFormat), double.Parse(tool == 0 ? wt0.Value : wt1.Value, Constants.DecimalParseFormat));
+                var newWorkPosition = new Vector3(double.Parse(wx.Value, Constants.DecimalParseFormat), double.Parse(wy.Value, Constants.DecimalParseFormat), double.Parse(currentTool == 0 ? wt0.Value : wt1.Value, Constants.DecimalParseFormat));
 
                 if (WorkPositionOffset != newWorkPosition)
                 {
                     WorkPositionOffset = newWorkPosition;
                 }
-
                 return true;
             }
             else if (lgvErrorMatch.Success)
             {
-                Group state = lgvStatusMatch.Groups["State"], msg = lgvStatusMatch.Groups["Msg"];
+                Group state = lgvStatusMatch1.Groups["State"], msg = lgvStatusMatch1.Groups["Msg"];
                 if (state.Success)
                 {
                     Status = state.Value;
@@ -143,7 +151,6 @@ namespace LagoVista.GCode.Sender
                     AddStatusMessage(StatusMessageTypes.Warning, "Returned: " + Status, MessageVerbosityLevels.Normal);
                     return true;
                 }
-
 
             }
             else if (endStopMessage.Success)

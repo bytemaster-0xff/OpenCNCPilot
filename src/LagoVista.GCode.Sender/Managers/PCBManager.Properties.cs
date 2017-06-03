@@ -211,7 +211,7 @@ namespace LagoVista.GCode.Sender.Managers
             }
         }
 
-        private bool _tool2Navigation = true;
+        private bool _tool2Navigation = false;
         public bool Tool2Navigation
         {
             get { return _tool2Navigation; }
