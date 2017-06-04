@@ -50,10 +50,11 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                         Status = "Completed";
                     }
                     break;
+                case BoardAlignmentState.MovingToSecondFiducial:
                 case BoardAlignmentState.Idle:
                     break;
                 default:
-                    if((DateTime.Now - _lastActivity).TotalSeconds > 5)
+                    if((DateTime.Now - _lastActivity).TotalSeconds > 10)
                     {
                         _boardAlignmentState = BoardAlignmentState.Idle;
                         Status = "Timeout";

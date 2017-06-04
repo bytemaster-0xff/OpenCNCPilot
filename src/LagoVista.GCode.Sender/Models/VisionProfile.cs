@@ -68,6 +68,22 @@ namespace LagoVista.GCode.Sender.Models
             set { _findIrregularPolygons = value; RaisePropertyChanged(); }
         }
 
+
+        private bool _findLandScape = true;
+        public bool FindLandScape
+        {
+            get { return _findLandScape; }
+            set { _findLandScape = value; RaisePropertyChanged(); }
+        }
+
+        private bool _findPortrait = true;
+        public bool FindPortrait
+        {
+            get { return _findPortrait; }
+            set { _findPortrait = value; RaisePropertyChanged(); }
+        }
+
+
         private bool _contourFindOnlyClosed = true;
         public bool ContourFindOnlyClosed
         {
@@ -154,7 +170,18 @@ namespace LagoVista.GCode.Sender.Models
         public int CannyApetureSize
         {
             get { return _cannyApetureSize; }
-            set { _cannyApetureSize = value; RaisePropertyChanged(); }
+            set {
+                if(value % 2 == 0)
+                {
+                    value += 1;
+                }
+
+                value = Math.Min(value, 7);
+                value = Math.Max(value, 3);
+
+                _cannyApetureSize = value;
+                RaisePropertyChanged();
+            }
         }
 
         private bool _cannyGradiant = true;

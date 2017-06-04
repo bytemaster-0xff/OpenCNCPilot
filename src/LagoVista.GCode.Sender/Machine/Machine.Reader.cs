@@ -16,6 +16,8 @@ namespace LagoVista.GCode.Sender
      
         private void ParseMessage(string fullMessageLine)
         {
+            Debug.WriteLine(fullMessageLine);
+
             if (fullMessageLine.StartsWith("ok"))
             {
                 if (GCodeFileManager.HasValidFile && Mode == OperatingMode.SendingGCodeFile)
@@ -151,6 +153,9 @@ namespace LagoVista.GCode.Sender
                     {
                         AddStatusMessage(StatusMessageTypes.ReceivedLine, fullMessageLine);
                     }
+
+                    /*
+                     * Not sure why we would dequeue if we couldn't parse the line...may need to revisit *
                     lock (_queueAccessLocker)
                     {
                         if (_sentQueue.Any())
@@ -158,7 +163,7 @@ namespace LagoVista.GCode.Sender
                             var sentLine = _sentQueue.Dequeue();
                             UnacknowledgedBytesSent -= (sentLine.Length + 1);
                         }
-                    }
+                    }*/
                 }
             }
             else

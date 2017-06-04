@@ -128,9 +128,9 @@
                         Content="BaudRate" Grid.Row="3" />
                     <Label Content="bps" Grid.Row="3" Grid.Column="2" />
 
-                    <TextBox  Text="{Binding Settings.ControllerBufferSize, Mode=TwoWay}" Grid.Row="5"/>
-                    <Label Content="Controller Buffer" Grid.Row="5"  />
-                    <Label Content="bytes" Grid.Row="4" Grid.Column="5" />
+                    <TextBox Text="{Binding Settings.ControllerBufferSize, Mode=TwoWay}" Grid.Row="4" Grid.Column="1"/>
+                    <Label Content="Controller Buffer" Grid.Row="4"  />
+                    <Label Content="bytes" Grid.Row="4" Grid.Column="2" />
 
                     <Label Content="Idle Status Poll Interval" Grid.Row="6" />
                     <TextBox Text="{Binding Settings.StatusPollIntervalIdle}" Grid.Row="6"/>

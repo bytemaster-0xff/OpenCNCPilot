@@ -76,15 +76,18 @@
                     <Label Content="Canny Edge Detection 1" Style="{StaticResource Link}" MouseDown="ShowLink_Handler" Tag="{Binding  CannyLink}" />
                     <Label Content="Canny Edge Detection 2" Style="{StaticResource Link}" MouseDown="ShowLink_Handler" Tag="{Binding  CannyLink2}" />
                     <StackPanel Orientation="Horizontal">
+                        <Label Content="Use Canny Edge Detection" Style="{StaticResource Caption}"/>
+                        <CheckBox IsChecked="{Binding Path=Profile.UseCannyEdgeDetection}" VerticalAlignment="Center" HorizontalAlignment="Right"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <Label Content="Gradient: " Style="{StaticResource Caption}"/>
+                        <CheckBox IsChecked="{Binding Profile.CannyGradient, Mode=TwoWay}" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
                         <Label Content="Apeture Size:" Style="{StaticResource Caption}"/>
                         <Label Content="{Binding Profile.CannyApetureSize, FallbackValue=3}" />
                     </StackPanel>
-                    <Slider Value="{Binding  Path=Profile.CannyApetureSize, Mode=TwoWay}" ToolTip="{Binding CannyApetureSizeHelp}" Minimum="0" Maximum="10" />
-                    <StackPanel Orientation="Horizontal">
-                        <Label Content="Gradient: " Style="{StaticResource Caption}"/>
-                        <Label Content="{Binding Profile.CannyGradient, FallbackValue=3}" Style="{StaticResource Value}" />
-                    </StackPanel>
-                    <Slider Value="{Binding Path=Profile.CannyGradient, Mode=TwoWay}" ToolTip="{Binding CannyGradientHelp}" />
+                    <Slider Value="{Binding  Path=Profile.CannyApetureSize, Mode=TwoWay}" ToolTip="{Binding CannyApetureSizeHelp}" Minimum="3" Maximum="11" />
                     <Label Content="Threshold" Style="{StaticResource Caption}" HorizontalAlignment="Left" FontWeight="Bold"/>
                     <StackPanel Orientation="Horizontal">
                         <Label Content="Low:" Style="{StaticResource Caption}"/>
@@ -209,10 +212,21 @@
                     </StackPanel>
 
                     <StackPanel Orientation="Horizontal">
+                        <Label Content="Find Landscape" Width="270"/>
+                        <CheckBox IsChecked="{Binding Path=Profile.FindLandScape, Mode=TwoWay}"  VerticalAlignment="Center"/>
+                    </StackPanel>
+
+
+                    <StackPanel Orientation="Horizontal">
+                        <Label Content="Find Portrait" Width="270"/>
+                        <CheckBox IsChecked="{Binding Path=Profile.FindPortrait, Mode=TwoWay}"  VerticalAlignment="Center"/>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal">
                         <Label Content="Epsilon:" Width="210"/>
                         <Label Content="{Binding Profile.PolygonEpsilonFactor, FallbackValue=3.324, StringFormat=0.000}" Width="80" HorizontalContentAlignment="Right" />
                     </StackPanel>
-                    <Slider Value="{Binding Path=Profile.PolygonEpsilonFactor, Mode=TwoWay}" ToolTip="{Binding PolygonEpsilonHelp}" Minimum="0.01" Maximum="1.0" SmallChange="0.05" LargeChange="0.05" />
+                    <Slider Value="{Binding Path=Profile.PolygonEpsilonFactor, Mode=TwoWay}" ToolTip="{Binding PolygonEpsilonHelp}" Minimum="0.01" Maximum="0.25" SmallChange="0.01" LargeChange="0.01" />
                     <StackPanel Orientation="Horizontal">
                         <Label Content="Min Area:" Width="210"/>
                         <Label Content="{Binding Profile.ContourMinArea, FallbackValue=3}" HorizontalContentAlignment="Right" Width="80"/>

@@ -64,8 +64,6 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             }
         }
 
-
-
         public async void SaveProfile()
         {
             await Storage.StoreAsync(_topCameraProfile, "TopCameraVision.json");
@@ -303,6 +301,11 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
         }
         #endregion
 
+        FloatMedianFilter _rectP1 = new FloatMedianFilter();
+        FloatMedianFilter _rectP2 = new FloatMedianFilter();
+        FloatMedianFilter _rectP3 = new FloatMedianFilter();
+        FloatMedianFilter _rectP4 = new FloatMedianFilter();
+
         #region Find Rotated Rectangles
         private void FindRectangles(IImage input, IInputOutputArray output, Size size)
         {
@@ -314,7 +317,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                 var lines = CvInvoke.HoughLinesP(edges, Profile.HoughLinesRHO, Profile.HoughLinesTheta * (Math.PI / 180), Profile.HoughLinesThreshold, Profile.HoughLinesMinLineLength, Profile.HoughLinesMaxLineGap);
                 foreach (var line in lines)
                 {
-                    Line(output, line.P1.X, line.P1.Y, line.P2.X, line.P2.Y, System.Drawing.Color.Beige);
+                    Line(output, line.P1.X, line.P1.Y, line.P2.X, line.P2.Y, System.Drawing.Color.Yellow);
                 }
             }
 
@@ -363,28 +366,64 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                                 {
                                     var rect = CvInvoke.MinAreaRect(approxContour);
 
-                                    var point1 = new System.Drawing.Point(Convert.ToInt32(rect.Center.X - (rect.Size.Width / 2)), Convert.ToInt32(rect.Center.Y - (rect.Size.Height / 2)));
-                                    var point2 = new System.Drawing.Point(Convert.ToInt32(rect.Center.X - (rect.Size.Width / 2)), Convert.ToInt32(rect.Center.Y + (rect.Size.Height / 2)));
-                                    var point3 = new System.Drawing.Point(Convert.ToInt32(rect.Center.X + (rect.Size.Width / 2)), Convert.ToInt32(rect.Center.Y + (rect.Size.Height / 2)));
-                                    var point4 = new System.Drawing.Point(Convert.ToInt32(rect.Center.X + (rect.Size.Width / 2)), Convert.ToInt32(rect.Center.Y - (rect.Size.Height / 2)));
+                                    if (rect.Center.X > ((size.Width / 2) - Profile.TargetImageRadius) && rect.Center.X < ((size.Width / 2) + Profile.TargetImageRadius) &&
+                                        rect.Center.Y > ((size.Height / 2) - Profile.TargetImageRadius) && rect.Center.Y < ((size.Height / 2) + Profile.TargetImageRadius))
+                                    {
+                                        if (rect.Size.Width > rect.Size.Height && Profile.FindLandScape ||
+                                            rect.Size.Height > rect.Size.Width && Profile.FindPortrait)
+                                        {
+                                            var point1 = new System.Drawing.Point(Convert.ToInt32(rect.Center.X - (rect.Size.Width / 2)), Convert.ToInt32(rect.Center.Y - (rect.Size.Height / 2)));
+                                            var point2 = new System.Drawing.Point(Convert.ToInt32(rect.Center.X - (rect.Size.Width / 2)), Convert.ToInt32(rect.Center.Y + (rect.Size.Height / 2)));
+                                            var point3 = new System.Drawing.Point(Convert.ToInt32(rect.Center.X + (rect.Size.Width / 2)), Convert.ToInt32(rect.Center.Y + (rect.Size.Height / 2)));
+                                            var point4 = new System.Drawing.Point(Convert.ToInt32(rect.Center.X + (rect.Size.Width / 2)), Convert.ToInt32(rect.Center.Y - (rect.Size.Height / 2)));
 
-                                    CvInvoke.Line(output, point1, point2, new Bgr(System.Drawing.Color.White).MCvScalar);
-                                    CvInvoke.Line(output, point2, point3, new Bgr(System.Drawing.Color.White).MCvScalar);
-                                    CvInvoke.Line(output, point3, point4, new Bgr(System.Drawing.Color.White).MCvScalar);
-                                    CvInvoke.Line(output, point4, point1, new Bgr(System.Drawing.Color.White).MCvScalar);
+                                            var p1 = new LagoVista.Core.Models.Drawing.Point2D<float>(Convert.ToInt32(rect.Center.X - (rect.Size.Width / 2)), Convert.ToInt32(rect.Center.Y - (rect.Size.Height / 2)));
+                                            var p2 = new LagoVista.Core.Models.Drawing.Point2D<float>(Convert.ToInt32(rect.Center.X - (rect.Size.Width / 2)), Convert.ToInt32(rect.Center.Y + (rect.Size.Height / 2)));
+                                            var p3 = new LagoVista.Core.Models.Drawing.Point2D<float>(Convert.ToInt32(rect.Center.X + (rect.Size.Width / 2)), Convert.ToInt32(rect.Center.Y + (rect.Size.Height / 2)));
+                                            var p4 = new LagoVista.Core.Models.Drawing.Point2D<float>(Convert.ToInt32(rect.Center.X + (rect.Size.Width / 2)), Convert.ToInt32(rect.Center.Y - (rect.Size.Height / 2)));
+
+
+                                            _rectP1.Add(p1);
+                                            _rectP2.Add(p2);
+                                            _rectP3.Add(p3);
+                                            _rectP4.Add(p4);
+
+
+                                            /*
+                                            CvInvoke.Line(output, point1, point2, new Bgr(System.Drawing.Color.Red).MCvScalar);
+                                            CvInvoke.Line(output, point2, point3, new Bgr(System.Drawing.Color.Red).MCvScalar);
+                                            CvInvoke.Line(output, point3, point4, new Bgr(System.Drawing.Color.Red).MCvScalar);
+                                            CvInvoke.Line(output, point4, point1, new Bgr(System.Drawing.Color.Red).MCvScalar);
+                                            */
+                                        }
+                                    }
                                 }
+                                
                             }
-                            else
+                            else if (Profile.FindIrregularPolygons)
                             {
                                 var rectEdges = PointCollection.PolyLine(pts, true);
                                 for (var idx = 0; idx < rectEdges.Length - 1; ++idx)
                                 {
-                                    CvInvoke.Line(output, rectEdges[idx].P1, rectEdges[idx].P2, new Bgr(System.Drawing.Color.White).MCvScalar);
+                                    CvInvoke.Line(output, rectEdges[idx].P1, rectEdges[idx].P2, new Bgr(System.Drawing.Color.LightBlue).MCvScalar);
                                 }
 
                             }
                         }
                     }
+                }
+
+                var avg1 = _rectP1.Filtered;
+                var avg2 = _rectP2.Filtered;
+                var avg3 = _rectP3.Filtered;
+                var avg4 = _rectP4.Filtered;
+
+                if (avg1 != null && avg2 != null && avg3 != null && avg4 != null)
+                {
+                    Line(output, (int)avg1.X, (int)avg1.Y, (int)avg2.X, (int)avg2.Y, System.Drawing.Color.Red);
+                    Line(output, (int)avg2.X, (int)avg2.Y, (int)avg3.X, (int)avg3.Y, System.Drawing.Color.Red);
+                    Line(output, (int)avg3.X, (int)avg3.Y, (int)avg4.X, (int)avg4.Y, System.Drawing.Color.Red);
+                    Line(output, (int)avg4.X, (int)avg4.Y, (int)avg1.X, (int)avg1.Y, System.Drawing.Color.Red);
                 }
             }
         }
