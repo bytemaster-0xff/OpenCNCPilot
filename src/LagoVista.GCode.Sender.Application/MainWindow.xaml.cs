@@ -439,6 +439,7 @@ namespace LagoVista.GCode.Sender.Application
                 case "FeederAlignment": new Views.MVFeederLocatorView(ViewModel.Machine, _pnpJob, _pnpJobFileName).Show(); break;
                 case "HomingView": new Views.HomingView(ViewModel.Machine).Show(); break;
                 case "Calibration": new Views.MVCalibrationView(ViewModel.Machine).Show(); break;
+                case "PickAndPlace": new Views.MVPNPView(ViewModel.Machine).Show(); break;
             }
         }
 

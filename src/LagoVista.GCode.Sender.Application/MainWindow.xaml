@@ -73,6 +73,7 @@
                 <MenuItem Header="Tool Alignment" Tag="ToolAlignment" Click="ViewMenu_Show" />
                 <MenuItem Header="FeederAlignmentt"  Tag="FeederAlignment"  Click="ViewMenu_Show" IsEnabled="False" x:Name="FeederAlignementView" />
                 <MenuItem Header="Calibration" Tag="Calibration" Click="ViewMenu_Show" />
+                <MenuItem Header="Pick and Place" Tag="PickAndPlace" Click="ViewMenu_Show" />
             </MenuItem>
             <MenuItem Header="Height Map" >
                 <MenuItem Header="New Generated HeightMap" x:Name="NewGeneratedHeigtMap" Click="NewGeneratedHeigtMap_Click" />

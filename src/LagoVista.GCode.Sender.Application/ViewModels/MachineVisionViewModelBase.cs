@@ -436,34 +436,42 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                 return null;
             }
 
-            using (var gray = new Image<Gray, byte>(img.Bitmap))
-            using (var blurredGray = new Image<Gray, float>(gray.Size))
+            try
             {
-                var output = ShowOriginalImage ? img : (IInputOutputArray)gray;
-
-                var input = (IImage)gray;
-                if (UseBlurredImage)
+                using (var gray = new Image<Gray, byte>(img.Bitmap))
+                using (var blurredGray = new Image<Gray, float>(gray.Size))
                 {
-                    CvInvoke.GaussianBlur(gray, blurredGray, new System.Drawing.Size(5, 5), Profile.GaussianSigmaX);
-                    input = blurredGray;
-                }
+                    var output = ShowOriginalImage ? img : (IInputOutputArray)gray;
 
-                if (!Machine.Busy)
-                {
-                    if (ShowCrossHairs) DrawCrossHairs(output, img.Size);
-                    if (ShowCircles) FindCircles(input, output, img.Size);
-                    if (ShowHarrisCorners) FindCorners(input, output, img.Size);
-                    if (ShowRectangles) FindRectangles(input, output, img.Size);
-                }
-                else
-                {
-                    _stabilizedPointCount = 0;
-                }
+                    var input = (IImage)gray;
+                    if (UseBlurredImage)
+                    {
+                        CvInvoke.GaussianBlur(gray, blurredGray, new System.Drawing.Size(5, 5), Profile.GaussianSigmaX);
+                        input = blurredGray;
+                    }
 
-                if (ShowOriginalImage) return img;
-                else if (UseBlurredImage) return blurredGray.Clone();
+                    if (!Machine.Busy)
+                    {
+                        if (ShowCrossHairs) DrawCrossHairs(output, img.Size);
+                        if (ShowCircles) FindCircles(input, output, img.Size);
+                        if (ShowHarrisCorners) FindCorners(input, output, img.Size);
+                        if (ShowRectangles) FindRectangles(input, output, img.Size);
+                    }
+                    else
+                    {
+                        _stabilizedPointCount = 0;
+                    }
 
-                return gray.Clone();
+                    if (ShowOriginalImage) return img;
+                    else if (UseBlurredImage) return blurredGray.Clone();
+
+                    return gray.Clone();
+                }
+            }
+            catch(Exception)
+            {
+                /*NOP, sometimes OpenCV acts a little funny. */
+                return null;
             }
         }
     }

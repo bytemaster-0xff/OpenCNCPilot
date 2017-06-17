@@ -56,6 +56,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
 
         public async void BeginMVHomingCycle()
         {
+            Machine.PCBManager.Tool1Navigation = true;
             _state = States.MVHoming;
             Machine.SendCommand("G91");
             Machine.GotoPoint(Machine.Settings.HomeFiducialOffset, true);

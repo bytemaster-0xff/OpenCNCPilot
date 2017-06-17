@@ -227,10 +227,14 @@
     <Compile Include="ViewModels\MachineVisionViewModelBase.Commanding.cs" />
     <Compile Include="ViewModels\MachineVisionViewModelBase.cs" />
     <Compile Include="ViewModels\MachineVisionViewModelBase.Properties.cs" />
+    <Compile Include="ViewModels\MVPNPViewModel.cs" />
     <Compile Include="ViewModels\ToolAlignmentViewModel.cs" />
     <Compile Include="ViewModels\WorkAlignmentViewModel.cs" />
     <Compile Include="Views\FeederLibraryWindow.xaml.cs">
       <DependentUpon>FeederLibraryWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\MVPNPViewModel.xaml.cs">
+      <DependentUpon>MVPNPViewModel.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\HomingView.xaml.cs">
       <DependentUpon>HomingView.xaml</DependentUpon>
@@ -407,6 +411,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\FeederLibraryWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\MVPNPViewModel.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

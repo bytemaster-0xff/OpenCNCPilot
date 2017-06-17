@@ -163,7 +163,7 @@ namespace LagoVista.GCode.Sender.Managers
             }
         }
 
-        private bool _cameraNavigation = false;
+        private bool _cameraNavigation = true;
         public bool CameraNavigation
         {
             get { return _cameraNavigation; }
@@ -185,7 +185,7 @@ namespace LagoVista.GCode.Sender.Managers
             }
         }
 
-        private bool _tool1Navigation = true;
+        private bool _tool1Navigation = false;
         public bool Tool1Navigation
         {
             get { return _tool1Navigation; }
