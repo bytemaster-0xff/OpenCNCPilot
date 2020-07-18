@@ -60,7 +60,7 @@ namespace LagoVista.GCode.Sender.Application.Controls
         void ReadController(object state)
         {
             if (_controller.IsConnected &&
-                !_viewModel.Machine.Connected &&
+                _viewModel.Machine.Connected &&
                 _viewModel.Machine.Mode == OperatingMode.Manual)
             {
                 var controllerState = _controller.GetState();
