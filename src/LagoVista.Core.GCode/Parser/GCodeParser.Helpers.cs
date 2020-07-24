@@ -48,7 +48,7 @@ namespace LagoVista.Core.GCode.Parser
                     }
                     if (param == 91)
                     {
-                        State.DistanceMode = ParseDistanceMode.Incremental;
+                        State.DistanceMode = ParseDistanceMode.Relative;
                         words.RemoveAt(0);
                         continue;
                     }
@@ -60,7 +60,7 @@ namespace LagoVista.Core.GCode.Parser
                     }
                     if (param == 91.1)
                     {
-                        State.ArcDistanceMode = ParseDistanceMode.Incremental;
+                        State.ArcDistanceMode = ParseDistanceMode.Relative;
                         words.RemoveAt(0);
                         continue;
                     }

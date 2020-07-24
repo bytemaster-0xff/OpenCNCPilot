@@ -117,16 +117,16 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             _originalPickLocation = new Vector2(Machine.NormalizedPosition.X, Machine.NormalizedPosition.Y);
 
             var bldr = new StringBuilder();
+            bldr.AppendLine("T0");
+            bldr.AppendLine("G28 Z");
+            bldr.AppendLine("M62 P1");
+            bldr.AppendLine("M64 P0"); /* Close Exahust */
+            bldr.AppendLine("M63 P0");
+            bldr.AppendLine("M60 P1");
+            bldr.AppendLine("G04 P500");
+
             for (var idx = 0; idx < 5; ++idx)
             {
-                bldr.AppendLine("M62 P1");
-                bldr.AppendLine("M64 P0"); /* Close Exahust */
-                bldr.AppendLine("M63 P0");
-
-                bldr.AppendLine("M60 P1");
-
-                bldr.AppendLine("G04 P500");
-
                 bldr.AppendLine($"G0 X{_originalPickLocation.X.ToDim()} Y{_originalPickLocation.Y.ToDim()} Z50 F{JogSpeed}");
                 bldr.AppendLine($"G0 Z{TrayHeight.ToDim()} F{Plunge}");
                 bldr.AppendLine("G04 P100");
@@ -149,11 +149,12 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                 bldr.AppendLine("G04 P100");
                 bldr.AppendLine("M63 P0"); /* Turn off vacuum */
                 bldr.AppendLine("M64 P1"); /* Open exaust */
-                bldr.AppendLine("G04 P100"); /* Return to origin Z */
-                bldr.AppendLine("G0 Z50 F{Plunge}"); ;
-                bldr.AppendLine("M62 P0"); /* Turn off pump */
-                bldr.AppendLine("M60 P0"); /* Turn off light */
+                bldr.AppendLine("G04 P100"); 
+                bldr.AppendLine("G0 Z50 F{Plunge}"); /* Return to origin Z */
             }
+
+            bldr.AppendLine("M62 P0"); /* Turn off pump */
+            bldr.AppendLine("M60 P0"); /* Turn off light */
 
             Machine.GCodeFileManager.SetGCode(bldr.ToString());
         }

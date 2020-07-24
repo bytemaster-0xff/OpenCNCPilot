@@ -33,7 +33,7 @@ namespace LagoVista.Core.GCode.Parser
                     break;
             }
 
-            int ArcIncremental = (State.ArcDistanceMode == ParseDistanceMode.Incremental) ? 1 : 0;
+            int ArcIncremental = (State.ArcDistanceMode == ParseDistanceMode.Relative) ? 1 : 0;
 
             for (int i = 0; i < words.Count; i++)
             {

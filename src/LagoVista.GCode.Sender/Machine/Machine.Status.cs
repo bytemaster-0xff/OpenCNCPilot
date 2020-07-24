@@ -38,6 +38,94 @@ namespace LagoVista.GCode.Sender
             }
         }
 
+        bool? _endStopXMin = null;
+        public bool? EndStopXMin
+        {
+            get { return _endStopXMin; }
+            set
+            {
+                _endStopXMin = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        bool? _endStopXMax = null;
+        public bool? EndStopXMax
+        {
+            get { return _endStopXMax; }
+            set
+            {
+                _endStopXMax = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        bool? _endStopYMin = null;
+        public bool? EndStopYMin
+        {
+            get { return _endStopYMin; }
+            set
+            {
+                _endStopYMin = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        bool? _endStopYMax = null;
+        public bool? EndStopYMax
+        {
+            get { return _endStopYMax; }
+            set
+            {
+                _endStopYMax = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        bool? _endStopZ1Min = null;
+        public bool? EndStopZ1Min
+        {
+            get { return _endStopZ1Min; }
+            set
+            {
+                _endStopZ1Min = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        bool? _endStopZ1Max = null;
+        public bool? EndStopZ1Max
+        {
+            get { return _endStopZ1Max; }
+            set
+            {
+                _endStopZ1Max = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        bool? _endStopZ2Min = null;
+        public bool? EndStopZ2Min
+        {
+            get { return _endStopZ2Min; }
+            set
+            {
+                _endStopZ2Min = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        bool? _endStopZ2Max = null;
+        public bool? EndStopZ2Max
+        {
+            get { return _endStopZ2Max; }
+            set
+            {
+                _endStopZ2Max = value;
+                RaisePropertyChanged();
+            }
+        }
+
 
         private int _filePosition = 0;
         public int FilePosition

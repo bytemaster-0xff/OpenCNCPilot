@@ -209,6 +209,10 @@ namespace LagoVista.GCode.Sender
                 {
                     Enqueue("\n$G\n", true);
                 }
+                else if (Settings.MachineType == FirmwareTypes.LagoVista_PnP)
+                {
+                    Enqueue("*", true);
+                }
 
                 while (Connected)
                 {

@@ -272,5 +272,66 @@ namespace LagoVista.GCode.Sender
                 RaisePropertyChanged(nameof(IsPnPMachine));
             }
         }
+
+        private bool _topLightOn = false;
+        public bool TopLightOn
+        {
+            get { return _topLightOn; }
+            set
+            {
+                SendCommand(value ? "M60 P255" : "M60 P0");
+                _topLightOn = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private bool _bottomLightOn = false;
+        public bool BottomLightOn
+        {
+            get { return _bottomLightOn; }
+            set
+            {
+                SendCommand(value ? "M61 P255" : "M61 P0");
+                _bottomLightOn = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private bool _vacuum1On = false;
+        public bool Vacuum1On
+        {
+            get { return _vacuum1On; }
+            set
+            {
+                SendCommand(value ? "M62 P255" : "M62 P0");
+                _vacuum1On = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private bool _vacuum2On = false;
+        public bool Vacuum2On
+        {
+            get { return _vacuum2On; }
+            set
+            {
+                SendCommand(value ? "M63 P255" : "M63 P0");
+                _vacuum2On = value;
+                RaisePropertyChanged();
+            }
+        }
+
+
+        private bool _solendoidOn = false;
+        public bool SolendoidOn
+        {
+            get { return _solendoidOn; }
+            set
+            {
+                SendCommand(value ? "M64 P255" : "M64 P0");
+                _solendoidOn = value;
+                RaisePropertyChanged();
+            }
+        }
     }
 }

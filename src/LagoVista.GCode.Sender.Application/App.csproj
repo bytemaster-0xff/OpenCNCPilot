@@ -507,7 +507,9 @@
     <Resource Include="Imgs\TopLight.png" />
     <Resource Include="Imgs\Vacuum.png" />
     <Resource Include="Imgs\ExhaustSolenoid.png" />
-    <Resource Include="Imgs\SuctionSolenoid.png" />
+    <Resource Include="Imgs\Solenoid.png" />
+    <Resource Include="Imgs\Vacuum1.png" />
+    <Resource Include="Imgs\Vacuum2.png" />
     <Content Include="KegeratorController.brd">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

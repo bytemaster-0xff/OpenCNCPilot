@@ -46,7 +46,6 @@ namespace LagoVista.GCode.Sender
 
                 AddStatusMessage(StatusMessageTypes.Info, $"Opened Serial Port");
 
-
                 await Task.Run(() =>
                 {
                     Work(port.InputStream, port.OutputStream);

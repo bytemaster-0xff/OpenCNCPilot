@@ -9,7 +9,7 @@ namespace LagoVista.Core.GCode
     public enum ParseDistanceMode
     {
         Absolute,
-        Incremental
+        Relative
     }
 
     public enum ParseUnit

@@ -59,7 +59,12 @@ namespace LagoVista.GCode.Sender.Interfaces
         double Tool1Normalized { get; }
         double Tool2Normalized { get; }
 
-        
+
+        bool TopLightOn { get; set; }
+        bool BottomLightOn { get; set; }
+        bool Vacuum1On { get; set; }
+        bool Vacuum2On { get; set; }
+        bool SolendoidOn { get; set; }
 
         /// <summary>
         /// Current mode of the machine, such as Connected, Running a Job, etc....

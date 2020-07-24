@@ -57,10 +57,6 @@ namespace LagoVista.GCode.Sender
                     UnacknowledgedBytesSent = 0;
                 }
             }
-            else if (fullMessageLine.Contains("endstops"))
-            {
-                AddStatusMessage(StatusMessageTypes.FatalError, fullMessageLine);
-            }
             else if (fullMessageLine != null)
             {
                 if (fullMessageLine.StartsWith("error:"))
@@ -171,7 +167,6 @@ namespace LagoVista.GCode.Sender
                 AddStatusMessage(StatusMessageTypes.Warning, $"Empty Response From Machine.", MessageVerbosityLevels.Normal);
             }
         }
-
 
         private void ProcessResponseLine(String line)
         {
