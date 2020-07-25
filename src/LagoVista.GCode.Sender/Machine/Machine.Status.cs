@@ -5,8 +5,40 @@ using System.Diagnostics;
 
 namespace LagoVista.GCode.Sender
 {
+    public enum ViewTypes
+    {
+        Camera,
+        Tool1,
+        Tool2,
+    }
+
     public partial class Machine
     {
+        private ViewTypes _viewType;
+        public ViewTypes ViewType
+        { 
+            get { return _viewType; }
+            set {
+                _viewType = value;
+                RaisePropertyChanged();
+                switch(value)
+                {
+                    case ViewTypes.Camera: Enqueue("M50"); break;
+                    case ViewTypes.Tool1: Enqueue("M51"); break;
+                    case ViewTypes.Tool2: Enqueue("M51"); break;
+                }
+            }
+        }
+
+        void SetViewType(ViewTypes viewType)
+        {
+            if(_viewType != viewType)
+            {
+                _viewType = viewType;
+                RaisePropertyChanged();
+            }
+        }
+
 
         private Vector3 _machinePosition = new Vector3();
         /// <summary>

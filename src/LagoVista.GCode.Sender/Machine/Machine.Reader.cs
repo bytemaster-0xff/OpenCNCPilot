@@ -18,7 +18,8 @@ namespace LagoVista.GCode.Sender
         {
             Debug.WriteLine(fullMessageLine);
 
-            if (fullMessageLine.StartsWith("ok"))
+            if (fullMessageLine.StartsWith("ok") ||
+                fullMessageLine.StartsWith("<ok:"))
             {
                 if (GCodeFileManager.HasValidFile && Mode == OperatingMode.SendingGCodeFile)
                 {

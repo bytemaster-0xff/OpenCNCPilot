@@ -192,6 +192,11 @@
                         <Image Source="/imgs/GotoWorkspaceHome.png"/>
                     </Button.Content>
                 </Button>
+                <Button BorderBrush="Transparent"  Background="Transparent" Command="{Binding GotoFiducialHomeCommand}"  ToolTip="Go To Home"   >
+                    <Button.Content>
+                        <Image Source="/imgs/GotoFiducialHome.png"/>
+                    </Button.Content>
+                </Button>
                 <Button BorderBrush="Transparent"  Background="Transparent" Command="{Binding SetFavorite1Command}"  ToolTip="Set Favorite 1"   >
                     <Button.Content>
                         <Image Source="/imgs/AddFavorite1.png"/>

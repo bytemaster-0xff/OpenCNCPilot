@@ -15,7 +15,7 @@ namespace LagoVista.GCode.Sender
 
         private static Regex CurrentPositionRegEx = new Regex(@"X:(?'MX'-?[0-9\.]*)\s?Y:(?'MY'-?[0-9\.]*)\s?Z:(?'MZ'-?[0-9\.]*)\s?E:(?'E'-?[0-9\.]*)\s?Count\s?X:(?'WX'.-?[0-9\.]*)\s?Y:(?'WY'.-?[0-9\.]*)\s?Z:(?'WZ'.-?[0-9\.]*)");
 
-        private static Regex LagoVistaStatusRegEx1 = new Regex(@"<(?'State'Idle|Alarm|Run|Hold|Home|Check|Door)(:[0-9])?(?:.m:(?'MX'-?[0-9\.]*),(?'MY'-?[0-9\.]*),(?'MT0'-?[0-9\.]*),(?'MT1'-?[0-9\.]*),(?'MT2'-?[0-9\.]*))>");
+        private static Regex LagoVistaStatusRegEx1 = new Regex(@"<(?'State'Idle|Alarm|Run|Hold|Home|Check|Door)(:[0-9])?(?:.m:(?'MX'-?[0-9\.]*),(?'MY'-?[0-9\.]*),(?'MT0'-?[0-9\.]*),(?'MT1'-?[0-9\.]*),(?'MT2'-?[0-9\.]*)),(?'VT'camera|tool1|tool2)>");
         private static Regex LagoVistaStatusRegEx2 = new Regex(@"<(?:w:(?'WX'-?[0-9\.]*),(?'WY'-?[0-9\.]*),(?'WT0'-?[0-9\.]*),(?'WT1'-?[0-9\.]*),(?'WT2'-?[0-9\.]*))>");
         private static Regex LagoVistaStatusRegEx3 = new Regex(@"<(?:TL:(?'TL'-?[01]*)),(?:BL:(?'BL'-?[01]*)),(?:VA:(?'VA'-?[01]*)),(?:SU:(?'SU'-?[01]*)),(?:EX:(?'EX'-?[01]*)),(?:TO:(?'TO'-?[0-9]*)),(?:PA:(?'PA'-?[01]*))>");
 
@@ -108,13 +108,21 @@ namespace LagoVista.GCode.Sender
                     my = lgvStatusMatch1.Groups["MY"],
                     mt0 = lgvStatusMatch1.Groups["MT0"],
                     mt1 = lgvStatusMatch1.Groups["MT1"],
-                    mt2 = lgvStatusMatch1.Groups["MT2"];
+                    mt2 = lgvStatusMatch1.Groups["MT2"],
+                    vt = lgvStatusMatch1.Groups["VT"];
 
                 var newMachinePosition = new Vector3(double.Parse(mx.Value, Constants.DecimalParseFormat), double.Parse(my.Value, Constants.DecimalParseFormat), 0);
 
                 if (MachinePosition != newMachinePosition)
                 {
                     MachinePosition = newMachinePosition;
+                }
+
+                switch(vt.Value)
+                {
+                    case "camera": SetViewType(ViewTypes.Camera); break;
+                    case "tool1": SetViewType(ViewTypes.Tool1); break;
+                    case "tool2": SetViewType(ViewTypes.Tool2); break;
                 }
 
                 Tool0 = double.Parse(mt0.Value, Constants.DecimalParseFormat);

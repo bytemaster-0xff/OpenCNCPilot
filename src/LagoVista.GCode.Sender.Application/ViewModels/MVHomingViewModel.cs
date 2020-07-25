@@ -21,7 +21,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             EndStopHomingCycleCommand = new RelayCommand(EndStopHomingCycle, () => HasFrame);
             BeginMVHomingCycleCommand = new RelayCommand(BeginMVHomingCycle, () => HasFrame);
 
-            SetXYZeroCommand = new RelayCommand(SetXYZero, () => HasFrame);
+            SetFiducialHomeCommand = new RelayCommand(SetFiducialHome, () => HasFrame);
             if (Machine.Settings.HomeFiducialOffset == null)
             {
                 Machine.Settings.HomeFiducialOffset = new Point2D<double>(5, 5);
@@ -39,14 +39,14 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
         {
             EndStopHomingCycleCommand.RaiseCanExecuteChanged();
             BeginMVHomingCycleCommand.RaiseCanExecuteChanged();
-            SetXYZeroCommand.RaiseCanExecuteChanged();
+            SetFiducialHomeCommand.RaiseCanExecuteChanged();
         }
 
         protected override void CaptureEnded()
         {
             EndStopHomingCycleCommand.RaiseCanExecuteChanged();
             BeginMVHomingCycleCommand.RaiseCanExecuteChanged();
-            SetXYZeroCommand.RaiseCanExecuteChanged();
+            SetFiducialHomeCommand.RaiseCanExecuteChanged();
         }
 
         public void EndStopHomingCycle()
@@ -68,6 +68,12 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
         {
             _state = States.Idle;
             Machine.SendCommand("G92 X Y");
+        }
+
+        public void SetFiducialHome()
+        {
+            _state = States.Idle;
+            Machine.SendCommand("M70");
         }
 
         public override async Task InitAsync()
@@ -134,6 +140,6 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
         public RelayCommand EndStopHomingCycleCommand { get; private set; }
         public RelayCommand BeginMVHomingCycleCommand { get; private set; }
 
-        public RelayCommand SetXYZeroCommand { get; private set; }
+        public RelayCommand SetFiducialHomeCommand { get; private set; }
     }
 }
