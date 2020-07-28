@@ -31,6 +31,7 @@ namespace LagoVista.GCode.Sender.ViewModels
                 JogCommand.RaiseCanExecuteChanged();
                 ResetCommand.RaiseCanExecuteChanged();
                 HomeCommand.RaiseCanExecuteChanged();
+                SetViewTypeCommand.RaiseCanExecuteChanged();
             }
 
             if (e.PropertyName == nameof(Machine.Settings))

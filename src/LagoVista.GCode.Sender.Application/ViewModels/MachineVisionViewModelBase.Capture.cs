@@ -200,9 +200,9 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                         _bottomCameraCapture = InitCapture(Machine.Settings.PartInspectionCamera.CameraIndex);
                     }
                     else
-                    {
+                    {                        
+                        _topCameraCapture = InitCapture(Machine.Settings.PositioningCamera.CameraIndex);
                         _bottomCameraCapture = InitCapture(Machine.Settings.PartInspectionCamera.CameraIndex);
-                        _topCameraCapture = InitCapture(Machine.Settings.PositioningCamera.CameraIndex);                        
                     }
                     StartImageRecognization();
                 }
