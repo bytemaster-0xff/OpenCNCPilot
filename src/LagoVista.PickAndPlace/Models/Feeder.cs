@@ -20,6 +20,8 @@ namespace LagoVista.PickAndPlace.Models
             Id = Guid.NewGuid().ToId();
         }
 
+
+
         public string Name { get; set; }
 
         public double Width { get; set; }

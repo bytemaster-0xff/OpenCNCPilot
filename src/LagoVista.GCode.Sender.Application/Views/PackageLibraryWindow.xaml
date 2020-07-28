@@ -67,6 +67,7 @@
                         <RowDefinition Height="auto" />
                         <RowDefinition Height="auto" />
                         <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="120" />
@@ -85,8 +86,11 @@
                     <ctls:MaskingTextBox Text="{Binding Height, Mode=TwoWay}"  UnitType="Size" Grid.Row="3" Grid.Column="1"  />
                     <Label Content="(mm)" Grid.Row="3" Grid.Column="2" />
                     <Label Content="Tape Width" Grid.Row="4" />
-                    <ctls:MaskingTextBox Text="{Binding Height, Mode=TwoWay}"  UnitType="Size" Grid.Row="4" Grid.Column="1"  />
+                    <ctls:MaskingTextBox Text="{Binding TapeWidth, Mode=TwoWay}"  UnitType="Size" Grid.Row="4" Grid.Column="1"  />
                     <Label Content="(mm)" Grid.Row="4" Grid.Column="2" />
+                    <Label Content="Rotation in tape" Grid.Row="5" />
+                    <ctls:MaskingTextBox Text="{Binding RotationInTape, Mode=TwoWay}"  UnitType="Size" Grid.Row="5" Grid.Column="1"  />
+                    <Label Content="(deg)" Grid.Row="5" Grid.Column="2" />
                 </Grid>
                 <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.ColumnSpan="3" HorizontalAlignment="Right">
                     <StackPanel.Resources>

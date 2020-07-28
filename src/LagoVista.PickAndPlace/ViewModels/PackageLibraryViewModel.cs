@@ -60,7 +60,7 @@ namespace LagoVista.PickAndPlace.ViewModels
         {
             if(CurrentPackage != null || _isDirty)
             {
-                if(await Popups.ConfirmAsync("Lose Changes?","You have unsaved work, opening a new file will cause you to lose changes.\r\n\r\nContinue?"))
+                if(!await Popups.ConfirmAsync("Lose Changes?","You have unsaved work, opening a new file will cause you to lose changes.\r\n\r\nContinue?"))
                 {
                     return;
                 }
@@ -103,7 +103,7 @@ namespace LagoVista.PickAndPlace.ViewModels
         {
             if (String.IsNullOrEmpty(_fileName))
             {
-                _fileName = await Popups.ShowSaveFileAsync("Package Library (*.pckgs) | *.pckgs");
+                _fileName = await Popups.ShowSaveFileAsync("Package Library (*.pckgs)|*.pckgs");
                 if(String.IsNullOrEmpty(_fileName))
                 {
                     return;

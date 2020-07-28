@@ -42,7 +42,6 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             
         }
 
-
         public PnPJob Job { get { return _job; } }
 
         private FeederInstance _feederInstance;

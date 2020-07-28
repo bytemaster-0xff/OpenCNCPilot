@@ -67,7 +67,7 @@ namespace LagoVista.PickAndPlace.ViewModels
         public void AddFeeder()
         {
             var feederInstance = new FeederInstance();
-            feederInstance.SetFeder(SelectedFeeder);
+            feederInstance.SetFeeder(SelectedFeeder);
             JobFeeders.Add(feederInstance);
             feederInstance.Name = $"Feeder - {JobFeeders.Count}";
             SelectedFeederInstance = feederInstance;

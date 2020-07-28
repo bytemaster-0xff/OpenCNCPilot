@@ -62,7 +62,7 @@ namespace LagoVista.PickAndPlace.Models
             Rows[row].CurrentPartIndex++;
         }
 
-        public void SetFeder(Feeder feeder)
+        public void SetFeeder(Feeder feeder)
         {
             Feeder = feeder;
             Name = Feeder.Name;

@@ -1,13 +1,5 @@
-﻿using LagoVista.GCode.Sender.ViewModels;
-using System;
-using System.Windows;
-using Emgu.CV;
-using System.Windows.Input;
-using System.Threading.Tasks;
-using System.Threading;
-using System.Windows.Media.Imaging;
+﻿using System.Windows;
 using LagoVista.GCode.Sender.Interfaces;
-using LagoVista.GCode.Sender.Application.ViewModels;
 
 namespace LagoVista.GCode.Sender.Application
 {

@@ -14,6 +14,8 @@ namespace LagoVista.PickAndPlace.Models
 
         public double FirstComponentY { get; set; }
 
+        public double FirstComponentX { get; set; }
+
         public double CenterX { get; set; }
 
         public double DeltaY { get; set; }
@@ -35,6 +37,11 @@ namespace LagoVista.PickAndPlace.Models
                     return $"{RowNumber}.";
                 }
             }
+        }
+
+        public override string ToString()
+        {
+            return Display;
         }
 
     }
