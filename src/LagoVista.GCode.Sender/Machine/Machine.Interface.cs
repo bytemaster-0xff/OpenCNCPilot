@@ -46,7 +46,6 @@ namespace LagoVista.GCode.Sender
 
                 AddStatusMessage(StatusMessageTypes.Info, $"Opened Serial Port");
 
-
                 await Task.Run(() =>
                 {
                     Work(port.InputStream, port.OutputStream);
@@ -214,6 +213,11 @@ namespace LagoVista.GCode.Sender
             if (Settings.MachineType == FirmwareTypes.GRBL1_1) { 
                 Enqueue("G0 Z0");
             }
+        }
+
+        public void GotoFiducialHome()
+        {
+            Enqueue("M71");
         }
 
         public void SetFavorite1()

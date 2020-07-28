@@ -37,7 +37,7 @@ namespace LagoVista.GCode.Sender.Application.Views
             get { return DataContext as CalibrationViewModel; }
             set
             {
-                DataContext = this;
+                DataContext = value;
             }
         }
     }

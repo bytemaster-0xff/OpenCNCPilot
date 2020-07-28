@@ -18,7 +18,7 @@ namespace LagoVista.Core.GCode.Parser
             Position = new Vector3();
             Plane = ArcPlane.XY;
             DistanceMode = ParseDistanceMode.Absolute;
-            ArcDistanceMode = ParseDistanceMode.Incremental;
+            ArcDistanceMode = ParseDistanceMode.Relative;
             Unit = ParseUnit.Metric;
             LastMotionMode = -1;
         }

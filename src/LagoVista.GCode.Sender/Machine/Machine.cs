@@ -105,7 +105,7 @@ namespace LagoVista.GCode.Sender
                 if (code == 90)
                     DistanceMode = ParseDistanceMode.Absolute;
                 if (code == 91)
-                    DistanceMode = ParseDistanceMode.Incremental;
+                    DistanceMode = ParseDistanceMode.Relative;
             }
         }
 

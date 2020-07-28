@@ -14,6 +14,7 @@ namespace LagoVista.GCode.Sender.ViewModels
             FeedHoldCommand = new RelayCommand(FeedHold, CanFeedHold);
             HomeCommand = new RelayCommand((param) => Home((HomeAxis)param), CanHome);
             CycleStartCommand = new RelayCommand(CycleStart, CanCycleStart);
+            SetViewTypeCommand = new RelayCommand((param) => SetViewType((ViewTypes)param), CanSetViewType);
 
             Machine.PropertyChanged += Machine_PropertyChanged;
         }
@@ -30,6 +31,7 @@ namespace LagoVista.GCode.Sender.ViewModels
                 JogCommand.RaiseCanExecuteChanged();
                 ResetCommand.RaiseCanExecuteChanged();
                 HomeCommand.RaiseCanExecuteChanged();
+                SetViewTypeCommand.RaiseCanExecuteChanged();
             }
 
             if (e.PropertyName == nameof(Machine.Settings))
@@ -44,6 +46,16 @@ namespace LagoVista.GCode.Sender.ViewModels
                 XYStepSizeSlider = originalXYStepSize;
                 ZStepSizeSlider = originalZStepSize;
             }
+        }
+
+        public void SetViewType(ViewTypes viewType)
+        {
+            Machine.ViewType = viewType;
+        }
+
+        public bool CanSetViewType(object param)
+        {
+            return Machine.Connected && Machine.Mode == OperatingMode.Manual;
         }
 
         public bool CanHome(object param)
@@ -81,6 +93,7 @@ namespace LagoVista.GCode.Sender.ViewModels
             return Machine.Connected && Machine.Mode == OperatingMode.Alarm;
         }
 
+        public RelayCommand SetViewTypeCommand { get; private set; }
         public RelayCommand JogCommand { get; private set; }
         public RelayCommand HomeCommand { get; private set; }
         public RelayCommand ResetCommand { get; private set; }

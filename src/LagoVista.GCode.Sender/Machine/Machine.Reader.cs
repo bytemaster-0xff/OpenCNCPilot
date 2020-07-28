@@ -18,7 +18,8 @@ namespace LagoVista.GCode.Sender
         {
             Debug.WriteLine(fullMessageLine);
 
-            if (fullMessageLine.StartsWith("ok"))
+            if (fullMessageLine.StartsWith("ok") ||
+                fullMessageLine.StartsWith("<ok:"))
             {
                 if (GCodeFileManager.HasValidFile && Mode == OperatingMode.SendingGCodeFile)
                 {
@@ -56,10 +57,6 @@ namespace LagoVista.GCode.Sender
                     LagoVista.Core.PlatformSupport.Services.Logger.Log(LagoVista.Core.PlatformSupport.LogLevel.Warning, "Machine_Work", "Received OK without anything in the Sent Buffer");
                     UnacknowledgedBytesSent = 0;
                 }
-            }
-            else if (fullMessageLine.Contains("endstops"))
-            {
-                AddStatusMessage(StatusMessageTypes.FatalError, fullMessageLine);
             }
             else if (fullMessageLine != null)
             {
@@ -171,7 +168,6 @@ namespace LagoVista.GCode.Sender
                 AddStatusMessage(StatusMessageTypes.Warning, $"Empty Response From Machine.", MessageVerbosityLevels.Normal);
             }
         }
-
 
         private void ProcessResponseLine(String line)
         {

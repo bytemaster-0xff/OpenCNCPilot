@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 
 namespace LagoVista.GCode.Sender.Interfaces
 {
+
+
     public interface IMachine : INotifyPropertyChanged
     {
         /// <summary>
@@ -59,7 +61,12 @@ namespace LagoVista.GCode.Sender.Interfaces
         double Tool1Normalized { get; }
         double Tool2Normalized { get; }
 
-        
+
+        bool TopLightOn { get; set; }
+        bool BottomLightOn { get; set; }
+        bool Vacuum1On { get; set; }
+        bool Vacuum2On { get; set; }
+        bool SolendoidOn { get; set; }
 
         /// <summary>
         /// Current mode of the machine, such as Connected, Running a Job, etc....
@@ -70,6 +77,11 @@ namespace LagoVista.GCode.Sender.Interfaces
         /// Total number of messages in the message list to be displayed, primarily used to scroll the list.
         /// </summary>
         int MessageCount { get; }
+
+        /// <summary>
+        /// Type of view such as camera, tool1, tool2
+        /// </summary>
+        ViewTypes ViewType { get; set; }
 
         /// <summary>
         /// Mode in which GCode commands should be interpretted.  These are either absolute with repsect to
@@ -185,6 +197,8 @@ namespace LagoVista.GCode.Sender.Interfaces
         void GotoPoint(double x, double y, double z, bool rapidMove = true);
 
         void GotoWorkspaceHome();
+
+        void GotoFiducialHome();
 
         /// <summary>
         /// Send a message to the machine to immediately stop any motion operation

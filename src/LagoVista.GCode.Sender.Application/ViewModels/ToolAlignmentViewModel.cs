@@ -79,6 +79,8 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                 };
             }
 
+            Machine.SendCommand("M72");
+
             IsDirty = true;
 
         }
@@ -87,6 +89,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
         {
             BottomCameraLocation = new Point2D<double>(Machine.MachinePosition.X + Tool1Offset.Y, Machine.MachinePosition.Y - Tool1Offset.Y);
             IsDirty = true;
+            Machine.SendCommand("M74");
         }
 
         public void SetTool1Location()
@@ -99,6 +102,8 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                     X = TopCameraLocation.X - Tool1Location.X,
                     Y = TopCameraLocation.Y - Tool1Location.Y,
                 };
+
+                Machine.SendCommand("M73");
 
                 SetBottomCameraLocationCommand.RaiseCanExecuteChanged();
                 IsDirty = true;
@@ -148,10 +153,11 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             Machine.BoardAlignmentManager.CornerLocated(point);
         }
 
+        public RelayCommand SetBottomCameraLocationCommand { get; private set; }
+
         public RelayCommand SetToolOneLocationCommand { get; private set; }
         public RelayCommand SetToolTwoLocationCommand { get; private set; }
         public RelayCommand SetTopCameraLocationCommand { get; private set; }
-        public RelayCommand SetBottomCameraLocationCommand { get; private set; }
         public RelayCommand SaveCalibrationCommand { get; private set; }
 
         public Point2D<double> TopCameraLocation

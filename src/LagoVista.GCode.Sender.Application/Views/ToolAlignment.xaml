@@ -52,39 +52,44 @@
 
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="120" />
+                        <ColumnDefinition Width="100" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
                     <TextBlock Text="Top Camera" />
                     <TextBlock Text="{Binding TopCameraLocation, Converter={StaticResource Point2TextConverter}}" Grid.Column="1" TextAlignment="Right" />
                 </Grid>
+                
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="120" />
+                        <ColumnDefinition Width="100" />
                         <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="80" />
                     </Grid.ColumnDefinitions>
                     <TextBlock Text="Bottom Camera" />
                     <TextBlock Text="{Binding BottomCameraLocation, Converter={StaticResource Point2TextConverter}}" Grid.Column="1" TextAlignment="Right" />
                 </Grid>
+                
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="120" />
+                        <ColumnDefinition Width="100" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
                     <TextBlock Text="Tool 1 Location" />
                     <TextBlock Text="{Binding Tool1Location, Converter={StaticResource Point2TextConverter}}" Grid.Column="1" TextAlignment="Right" />
                 </Grid>
+                
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="120" />
+                        <ColumnDefinition Width="100" />
                         <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="80" />
                     </Grid.ColumnDefinitions>
                     <TextBlock Text="Tool 1 Offset" />
                     <TextBlock Text="{Binding Tool1Offset, Converter={StaticResource Point2TextConverter}}" Grid.Column="1" TextAlignment="Right" />
                 </Grid>
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="120" />
+                        <ColumnDefinition Width="100" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
                     <TextBlock Text="Tool 2 Location" />
@@ -92,12 +97,13 @@
                 </Grid>
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="120" />
+                        <ColumnDefinition Width="100" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
                     <TextBlock Text="Tool 2 Offset" />
                     <TextBlock Text="{Binding Tool2Offset, Converter={StaticResource Point2TextConverter}}" Grid.Column="1" TextAlignment="Right" />
                 </Grid>
+                
                 <Button Command="{Binding SaveCalibrationCommand}" Content="Save" />
             </StackPanel>
         </Grid>

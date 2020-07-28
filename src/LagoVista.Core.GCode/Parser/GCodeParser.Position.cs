@@ -9,7 +9,7 @@ namespace LagoVista.Core.GCode.Parser
         {
             Vector3 EndPos = State.Position;
 
-            int Incremental = (State.DistanceMode == ParseDistanceMode.Incremental) ? 1 : 0;
+            int Incremental = (State.DistanceMode == ParseDistanceMode.Relative) ? 1 : 0;
 
             for (int i = 0; i < words.Count; i++)
             {

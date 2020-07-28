@@ -192,6 +192,11 @@
                         <Image Source="/imgs/GotoWorkspaceHome.png"/>
                     </Button.Content>
                 </Button>
+                <Button BorderBrush="Transparent"  Background="Transparent" Command="{Binding GotoFiducialHomeCommand}"  ToolTip="Go To Home"   >
+                    <Button.Content>
+                        <Image Source="/imgs/GotoFiducialHome.png"/>
+                    </Button.Content>
+                </Button>
                 <Button BorderBrush="Transparent"  Background="Transparent" Command="{Binding SetFavorite1Command}"  ToolTip="Set Favorite 1"   >
                     <Button.Content>
                         <Image Source="/imgs/AddFavorite1.png"/>
@@ -212,29 +217,29 @@
                         <Image Source="/imgs/GotoFavorite2.png"/>
                     </Button.Content>
                 </Button>
-                <ToggleButton IsChecked="{Binding TopLightOn, Mode=TwoWay}">
+                <ToggleButton IsChecked="{Binding Machine.TopLightOn, Mode=TwoWay}">
                     <ToggleButton.Content>
                         <Image Source="/imgs/TopLight.png" />
                     </ToggleButton.Content>
                 </ToggleButton>
-                <ToggleButton IsChecked="{Binding BottomLightOn, Mode=TwoWay}">
+                <ToggleButton IsChecked="{Binding Machine.BottomLightOn, Mode=TwoWay}">
                     <ToggleButton.Content>
                         <Image Source="/imgs/BottomLight.png" />
                     </ToggleButton.Content>
                 </ToggleButton>
-                <ToggleButton IsChecked="{Binding SuctionSolenoidOn, Mode=TwoWay}" ToolTip="Suction Solenoid">
+                <ToggleButton IsChecked="{Binding Machine.Vacuum1On, Mode=TwoWay}" ToolTip="Vacuum Pump">
                     <ToggleButton.Content>
-                        <Image Source="/imgs/SuctionSolenoid.png" />
+                        <Image Source="/imgs/Vacuum1.png" />
                     </ToggleButton.Content>
                 </ToggleButton>
-                <ToggleButton IsChecked="{Binding ExhaustSolendoidOn, Mode=TwoWay}" ToolTip="Exhaust Solenoid">
+                <ToggleButton IsChecked="{Binding Machine.Vacuum2On, Mode=TwoWay}" ToolTip="Vacuum Pump">
                     <ToggleButton.Content>
-                        <Image Source="/imgs/ExhaustSolenoid.png" />
+                        <Image Source="/imgs/Vacuum2.png" />
                     </ToggleButton.Content>
                 </ToggleButton>
-                <ToggleButton IsChecked="{Binding VacuumOn, Mode=TwoWay}" ToolTip="Vacuum Pump">
+                <ToggleButton IsChecked="{Binding Machine.SolendoidOn, Mode=TwoWay}" ToolTip="Exhaust Solenoid">
                     <ToggleButton.Content>
-                        <Image Source="/imgs/Vacuum.png" />
+                        <Image Source="/imgs/Solenoid.png" />
                     </ToggleButton.Content>
                 </ToggleButton>                
             </StackPanel>

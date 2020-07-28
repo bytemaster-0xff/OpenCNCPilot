@@ -5,8 +5,40 @@ using System.Diagnostics;
 
 namespace LagoVista.GCode.Sender
 {
+    public enum ViewTypes
+    {
+        Camera,
+        Tool1,
+        Tool2,
+    }
+
     public partial class Machine
     {
+        private ViewTypes _viewType;
+        public ViewTypes ViewType
+        { 
+            get { return _viewType; }
+            set {
+                _viewType = value;
+                RaisePropertyChanged();
+                switch(value)
+                {
+                    case ViewTypes.Camera: Enqueue("M50"); break;
+                    case ViewTypes.Tool1: Enqueue("M51"); break;
+                    case ViewTypes.Tool2: Enqueue("M51"); break;
+                }
+            }
+        }
+
+        void SetViewType(ViewTypes viewType)
+        {
+            if(_viewType != viewType)
+            {
+                _viewType = viewType;
+                RaisePropertyChanged();
+            }
+        }
+
 
         private Vector3 _machinePosition = new Vector3();
         /// <summary>
@@ -35,6 +67,94 @@ namespace LagoVista.GCode.Sender
                 _workPositionOffset = value;
                 RaisePropertyChanged();
                 RaisePropertyChanged(nameof(NormalizedPosition));
+            }
+        }
+
+        bool? _endStopXMin = null;
+        public bool? EndStopXMin
+        {
+            get { return _endStopXMin; }
+            set
+            {
+                _endStopXMin = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        bool? _endStopXMax = null;
+        public bool? EndStopXMax
+        {
+            get { return _endStopXMax; }
+            set
+            {
+                _endStopXMax = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        bool? _endStopYMin = null;
+        public bool? EndStopYMin
+        {
+            get { return _endStopYMin; }
+            set
+            {
+                _endStopYMin = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        bool? _endStopYMax = null;
+        public bool? EndStopYMax
+        {
+            get { return _endStopYMax; }
+            set
+            {
+                _endStopYMax = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        bool? _endStopZ1Min = null;
+        public bool? EndStopZ1Min
+        {
+            get { return _endStopZ1Min; }
+            set
+            {
+                _endStopZ1Min = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        bool? _endStopZ1Max = null;
+        public bool? EndStopZ1Max
+        {
+            get { return _endStopZ1Max; }
+            set
+            {
+                _endStopZ1Max = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        bool? _endStopZ2Min = null;
+        public bool? EndStopZ2Min
+        {
+            get { return _endStopZ2Min; }
+            set
+            {
+                _endStopZ2Min = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        bool? _endStopZ2Max = null;
+        public bool? EndStopZ2Max
+        {
+            get { return _endStopZ2Max; }
+            set
+            {
+                _endStopZ2Max = value;
+                RaisePropertyChanged();
             }
         }
 

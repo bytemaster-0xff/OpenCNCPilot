@@ -26,56 +26,81 @@
                 <RowDefinition Height="*" />
                 <RowDefinition Height="*" />
                 <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <Grid.Resources>
 
             </Grid.Resources>
-            <Button Style="{StaticResource JogArrow}" Grid.Row="0" Grid.Column="2" Command="{Binding JogCommand}" CommandParameter="{x:Static sndr:JogDirections.T2Minus}">
+
+            <Button Grid.Row="0" Grid.Column="1" Command="{Binding SetViewTypeCommand}" CommandParameter="{x:Static sndr:ViewTypes.Camera}">
+                <Button.Content>
+                    <fa:ImageAwesome Icon="VideoCamera" />
+                </Button.Content>
+            </Button>
+            <Button  Grid.Row="0" Grid.Column="2" Command="{Binding SetViewTypeCommand}" CommandParameter="{x:Static sndr:ViewTypes.Tool1}">
+                <Button.Content>
+                    <Grid>
+                        <fa:ImageAwesome Icon="Wrench" />
+                        <Label Content="1" HorizontalAlignment="Right" VerticalAlignment="Bottom" FontSize="16" Margin="0,0,-5,-10" />
+                    </Grid>
+                </Button.Content>
+            </Button>
+            <Button   Grid.Row="0" Grid.Column="3"  Command="{Binding SetViewTypeCommand}" CommandParameter="{x:Static sndr:ViewTypes.Tool2}">
+                <Button.Content>
+                    <Grid>
+                        <fa:ImageAwesome  Icon="Wrench" />
+                        <Label Content="2" HorizontalAlignment="Right" VerticalAlignment="Bottom" FontSize="16" Margin="0,0,-5,-10" />
+                    </Grid>
+                </Button.Content>
+            </Button>
+            <TextBlock Text="{Binding Machine.ViewType, FallbackValue=Camera}" Grid.Row="0" Grid.ColumnSpan="4" Grid.Column="4" Foreground="White" FontSize="24" VerticalAlignment="Center" Margin="10,0,0,0"/>
+
+            <Button Style="{StaticResource JogArrow}" Grid.Row="1" Grid.Column="2" Command="{Binding JogCommand}" CommandParameter="{x:Static sndr:JogDirections.T2Minus}">
                 <Button.Content>
                     <fa:ImageAwesome Icon="Undo" />
                 </Button.Content>
             </Button>
-            <Button Style="{StaticResource JogArrow}"  Grid.Row="0" Grid.Column="5" Command="{Binding JogCommand}" CommandParameter="{x:Static sndr:JogDirections.T2Plus}">
+            <Button Style="{StaticResource JogArrow}"  Grid.Row="1" Grid.Column="5" Command="{Binding JogCommand}" CommandParameter="{x:Static sndr:JogDirections.T2Plus}">
                 <Button.Content>
                     <fa:ImageAwesome Icon="Repeat" />
                 </Button.Content>
             </Button>
-            <Button Style="{StaticResource JogArrow}"  Grid.Row="1" Grid.Column="2"  Command="{Binding JogCommand}" CommandParameter="{x:Static sndr:JogDirections.YPlus}">
+            <Button Style="{StaticResource JogArrow}"  Grid.Row="2" Grid.Column="2"  Command="{Binding JogCommand}" CommandParameter="{x:Static sndr:JogDirections.YPlus}">
                 <Button.Content>
                     <fa:ImageAwesome  Icon="ArrowCircleUp" />
                 </Button.Content>
             </Button>
-            <Button Style="{StaticResource JogArrow}"  Grid.Row="2" Grid.Column="1"   Command="{Binding JogCommand}" CommandParameter="{x:Static sndr:JogDirections.XMinus}">
+            <Button Style="{StaticResource JogArrow}"  Grid.Row="3" Grid.Column="1"   Command="{Binding JogCommand}" CommandParameter="{x:Static sndr:JogDirections.XMinus}">
                 <Button.Content>
                     <fa:ImageAwesome Icon="ArrowCircleLeft" />
                 </Button.Content>
             </Button>
-            <Button Style="{StaticResource JogArrow}"  Grid.Row="2" Grid.Column="3"  Command="{Binding JogCommand}" CommandParameter="{x:Static sndr:JogDirections.XPlus}">
+            <Button Style="{StaticResource JogArrow}"  Grid.Row="3" Grid.Column="3"  Command="{Binding JogCommand}" CommandParameter="{x:Static sndr:JogDirections.XPlus}">
                 <Button.Content>
                     <fa:ImageAwesome Icon="ArrowCircleRight" />
                 </Button.Content>
             </Button>
-            <Button Style="{StaticResource JogArrow}" Grid.Row="3" Grid.Column="2"  Command="{Binding JogCommand}" CommandParameter="{x:Static sndr:JogDirections.YMinus}">
+            <Button Style="{StaticResource JogArrow}" Grid.Row="4" Grid.Column="2"  Command="{Binding JogCommand}" CommandParameter="{x:Static sndr:JogDirections.YMinus}">
                 <Button.Content>
                     <fa:ImageAwesome Icon="ArrowCircleDown" />
                 </Button.Content>
             </Button>
-            <Button Style="{StaticResource JogArrow}" Grid.Row="1" Grid.Column="5" Command="{Binding JogCommand}" CommandParameter="{x:Static sndr:JogDirections.T0Minus}">
+            <Button Style="{StaticResource JogArrow}" Grid.Row="2" Grid.Column="5" Command="{Binding JogCommand}" CommandParameter="{x:Static sndr:JogDirections.T0Minus}">
                 <Button.Content>
                     <fa:ImageAwesome Icon="ArrowCircleUp" />
                 </Button.Content>
             </Button>
-            <Button Style="{StaticResource JogArrow}"  Grid.Row="3" Grid.Column="5" Command="{Binding JogCommand}" CommandParameter="{x:Static sndr:JogDirections.T0Plus}">
+            <Button Style="{StaticResource JogArrow}"  Grid.Row="4" Grid.Column="5" Command="{Binding JogCommand}" CommandParameter="{x:Static sndr:JogDirections.T0Plus}">
                 <Button.Content>
                     <fa:ImageAwesome Icon="ArrowCircleDown" />
                 </Button.Content>
             </Button>
-            <Button Style="{StaticResource JogArrow}" Grid.Row="1" Grid.Column="7" Command="{Binding JogCommand}" CommandParameter="{x:Static sndr:JogDirections.T1Minus}">
+            <Button Style="{StaticResource JogArrow}" Grid.Row="2" Grid.Column="7" Command="{Binding JogCommand}" CommandParameter="{x:Static sndr:JogDirections.T1Minus}">
                 <Button.Content>
                     <fa:ImageAwesome Icon="ArrowCircleUp" />
                 </Button.Content>
             </Button>
-            <Button Style="{StaticResource JogArrow}"  Grid.Row="3" Grid.Column="7" Command="{Binding JogCommand}" CommandParameter="{x:Static sndr:JogDirections.T1Plus}">
+            <Button Style="{StaticResource JogArrow}"  Grid.Row="4" Grid.Column="7" Command="{Binding JogCommand}" CommandParameter="{x:Static sndr:JogDirections.T1Plus}">
                 <Button.Content>
                     <fa:ImageAwesome Icon="ArrowCircleDown" />
                 </Button.Content>
