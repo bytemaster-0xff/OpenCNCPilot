@@ -16,6 +16,12 @@ namespace LagoVista.GCode.Sender.ViewModels
             CycleStartCommand = new RelayCommand(CycleStart, CanCycleStart);
             SetViewTypeCommand = new RelayCommand((param) => SetViewType((ViewTypes)param), CanSetViewType);
 
+            MoveToBottomCameraCommand = new RelayCommand((obj) => Machine.SendCommand("M52"), CanJog);
+
+            SetToMoveHeightCommand = new RelayCommand((obj) => Machine.SendCommand("M54"), CanJog);
+            SetToPickHeightCommand = new RelayCommand((obj) => Machine.SendCommand("M55"), CanJog);
+            SetToPlaceHeightCommand = new RelayCommand((obj)=>Machine.SendCommand("M56"), CanJog);            
+
             Machine.PropertyChanged += Machine_PropertyChanged;
         }
 
@@ -27,11 +33,16 @@ namespace LagoVista.GCode.Sender.ViewModels
                 SoftResetCommand.RaiseCanExecuteChanged();
                 ClearAlarmCommand.RaiseCanExecuteChanged();
                 FeedHoldCommand.RaiseCanExecuteChanged();
-                CycleStartCommand.RaiseCanExecuteChanged(); 
+                CycleStartCommand.RaiseCanExecuteChanged();
                 JogCommand.RaiseCanExecuteChanged();
                 ResetCommand.RaiseCanExecuteChanged();
                 HomeCommand.RaiseCanExecuteChanged();
                 SetViewTypeCommand.RaiseCanExecuteChanged();
+
+                SetToMoveHeightCommand.RaiseCanExecuteChanged();
+                SetToPickHeightCommand.RaiseCanExecuteChanged();
+                SetToPlaceHeightCommand.RaiseCanExecuteChanged();
+                MoveToBottomCameraCommand.RaiseCanExecuteChanged();
             }
 
             if (e.PropertyName == nameof(Machine.Settings))
@@ -101,5 +112,10 @@ namespace LagoVista.GCode.Sender.ViewModels
         public RelayCommand ClearAlarmCommand { get; private set; }
         public RelayCommand FeedHoldCommand { get; private set; }
         public RelayCommand CycleStartCommand { get; private set; }
+
+        public RelayCommand SetToMoveHeightCommand { get; private set; }
+        public RelayCommand SetToPickHeightCommand { get; private set; }
+        public RelayCommand SetToPlaceHeightCommand { get; private set; }
+        public RelayCommand MoveToBottomCameraCommand { get; private set; }
     }
 }

@@ -28,21 +28,21 @@
 
         <Grid Grid.Column="1" Grid.RowSpan="2" Background="White">
             <StackPanel Margin="10">
+                <TextBlock Text="Initial Calibration" FontWeight="Bold" FontSize="16" />
                 <TextBlock Text="Step 1 - End Stop Homing" Margin="0,0,0,5" />
                 <Button Command="{Binding EndStopHomingCycleCommand}" Content="Perform End Stop Homing" Margin="0,0,0,15" />
-                <TextBlock Text="Step 2 - Machine Vision Homing" />
-                <TextBlock Text="Look for a fiducial at an X,Y Offset from the End Stop Home" TextWrapping="Wrap" Margin="0,0,0,5"  />
-                <TextBlock Text="Approx X Home Fiducial"  />
-                <ctls:MaskingTextBox  UnitType="Size" Min="0" Max="99" Text="{Binding Path=Machine.Settings.HomeFiducialOffset.X, Mode=TwoWay}"  Margin="4,4,0,4" Grid.Column="1" Grid.Row="3" />
-                <TextBlock Text="Approx Y Home Fiducial"  />
-                <ctls:MaskingTextBox  UnitType="Size" Min="0" Max="99" Text="{Binding Path=Machine.Settings.HomeFiducialOffset.Y, Mode=TwoWay}"  Margin="4,4,0,4" Grid.Column="1" Grid.Row="3" />
+                <TextBlock Text="Step 2 - Set Fiducial Location" />
+                <Button Command="{Binding SetFiducialHomeCommand}" Content="Set Fiducial XY" />
+
+                <TextBlock Text="Work Calibration" FontWeight="Bold" FontSize="16" Margin="0,20,0,0" />
+                <TextBlock Text="Step 1 - End Stop Homing" Margin="0,0,0,5" />
+                <Button Command="{Binding EndStopHomingCycleCommand}" Content="Perform End Stop Homing" Margin="0,0,0,15" />
+                <TextBlock Text="Step 2 - Go to fiducial location" Margin="0,0,0,5" />
+                <Button Command="{Binding GoToFiducialHomeCommand}" Content="Go to fiducial location" Margin="0,0,0,15" />
+                <TextBlock Text="Step 3 - Machine Vision Homing" />
                 <Button Command="{Binding BeginMVHomingCycleCommand}" Content="Perform Machine Vision Homing"  Margin="0,0,0,15" />
-                <TextBlock Text="Step 3 - Set (0,0)" />
-                <TextBlock Text="X Offset"  />
-                <ctls:MaskingTextBox  UnitType="Size" Min="0" Max="99" Text="{Binding Path=XZeroOffset, Mode=TwoWay}"  Margin="4,4,0,4" Grid.Column="1" Grid.Row="3" />
-                <TextBlock Text="Y Offset"  />
-                <ctls:MaskingTextBox  UnitType="Size" Min="0" Max="99" Text="{Binding Path=YZeroOffset, Mode=TwoWay}"  Margin="4,4,0,4" Grid.Column="1" Grid.Row="3" />
-                <Button Command="{Binding SetFiducialHomeCommand}" Content="Set XY Zero" />
+                <TextBlock Text="Step 3 - Calibrate new fiducial location" />
+                <Button Command="{Binding CalibrateFiducialHomeCommand}" Content="Set actual location"  Margin="0,0,0,15" />
             </StackPanel>
         </Grid>
 

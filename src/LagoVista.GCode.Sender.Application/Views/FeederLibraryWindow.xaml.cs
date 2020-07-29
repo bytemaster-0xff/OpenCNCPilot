@@ -24,7 +24,7 @@ namespace LagoVista.GCode.Sender.Application.Views
         {
             InitializeComponent();
             this.Loaded += FeederLibraryWindow_Loaded;
-            DataContext = new FeederDefinitionsViewModel();
+            //DataContext = new FeederDefinitionsViewModel();
         }
 
         private async void FeederLibraryWindow_Loaded(object sender, RoutedEventArgs e)

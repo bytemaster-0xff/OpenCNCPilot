@@ -2,29 +2,149 @@
         x:Class="LagoVista.GCode.Sender.Application.Views.MVFeederLocatorView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:fa="http://schemas.fontawesome.io/icons/"
+        xmlns:ctls="clr-namespace:LagoVista.GCode.Sender.Application.Controls"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:LagoVista.GCode.Sender.Application.Views"
         mc:Ignorable="d"
-          Title="Feeder Locator View" Height="720" Width="1200">
+          Title="Feeder Locator View" Height="800" Width="1600">
     <Grid >
         <Grid.RowDefinitions>
             <RowDefinition Height="48"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="350"/>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="300" />
         </Grid.ColumnDefinitions>
-        <StackPanel Orientation="Horizontal">
+
+        <Grid Grid.Row="1" DataContext="{Binding FeederDefinitions}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="auto" />
+            </Grid.RowDefinitions>
+            <Button />
+            <StackPanel Grid.ColumnSpan="3" HorizontalAlignment="Left" Orientation="Horizontal" >
+                <Button Width="32" Height="32"  Command="{Binding AddFeederCommand}" >
+                    <Button.Content>
+                        <fa:ImageAwesome  Icon="PlusCircle" />
+                    </Button.Content>
+                </Button>
+                <Button Width="32" Height="32"  Command="{Binding SaveLibraryCommand}" >
+                    <Button.Content>
+                        <fa:ImageAwesome  Icon="Save" />
+                    </Button.Content>
+                </Button>
+            </StackPanel>
+            <ListView Grid.Row="1" ItemsSource="{Binding FeederDefintions}" SelectedItem="{Binding CurrentFeeder}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="120" />
+                                <ColumnDefinition Width="60" />
+                                <ColumnDefinition Width="60" />
+                            </Grid.ColumnDefinitions>
+                            <Label Content="{Binding Name}" />
+                            <Label Content="{Binding Length}" Grid.Column="1" />
+                            <Label Content="{Binding Width}" Grid.Column="2" />
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+            <Grid Grid.Row="2" Width="320" IsEnabled="{Binding CurrentFeeder, Converter={StaticResource NotNullEnabledConverter}}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="0" DataContext="{Binding CurrentFeeder}" Width="320">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />                            
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="120" />
+                            <ColumnDefinition Width="120" />
+                            <ColumnDefinition Width="80" />
+                        </Grid.ColumnDefinitions>
+                        <Label Content="Name" />
+                        <TextBox Text="{Binding Name, Mode=TwoWay}" Grid.Column="1" />
+                        <Label Content="Width" Grid.Row="1" />
+                        <ctls:MaskingTextBox Text="{Binding Width, Mode=TwoWay}"  UnitType="Size" Grid.Row="1" Grid.Column="1" />
+                        <Label Content="(mm)" Grid.Row="1" Grid.Column="2" />
+                        <Label Content="Height" Grid.Row="2" />
+                        <ctls:MaskingTextBox Text="{Binding Length, Mode=TwoWay}"   UnitType="Size" Grid.Row="2" Grid.Column="1" />
+                        <Label Content="(mm)" Grid.Row="2" Grid.Column="2" />
+                        <Label Content="Part Height" Grid.Row="3" />
+                        <ctls:MaskingTextBox Text="{Binding PartHeight, Mode=TwoWay}"   UnitType="Size" Grid.Row="3" Grid.Column="1" />
+                        <Label Content="(mm)" Grid.Row="3" Grid.Column="2" />
+
+                        <Label Content="Number Rows" Grid.Row="4" />
+                        <ctls:MaskingTextBox Text="{Binding NumberRows, Mode=TwoWay}"  UnitType="Count"  Grid.Row="4" Grid.Column="1"  />
+                        <Label Content="(mm)" Grid.Row="4" Grid.Column="2" />
+
+                        <Label Content="First Row Offset" Grid.Row="5" />
+                        <ctls:MaskingTextBox Text="{Binding FirstRowOffset, Mode=TwoWay}"  UnitType="Size" Grid.Row="5" Grid.Column="1"  />
+                        <Label Content="(mm)" Grid.Row="5" Grid.Column="2" />
+
+                        <Label Content="Row Width" Grid.Row="6" />
+                        <ctls:MaskingTextBox Text="{Binding RowWidth, Mode=TwoWay}"  UnitType="Size" Grid.Row="6" Grid.Column="1"  />
+                        <Label Content="(mm)" Grid.Row="6" Grid.Column="2" />
+
+                        <Label Content="Tape Width" Grid.Row="7" />
+                        <ctls:MaskingTextBox Text="{Binding TapeWidth, Mode=TwoWay}"  UnitType="Size" Grid.Row="7" Grid.Column="1"  />
+                        <Label Content="(mm)" Grid.Row="7" Grid.Column="2" />
+
+                        <Label Content="X" Grid.Row="8" />
+                        <ctls:MaskingTextBox Text="{Binding X, Mode=TwoWay}"  UnitType="Size" Grid.Row="8" Grid.Column="1"  />
+                        <Label Content="(mm)" Grid.Row="8" Grid.Column="2" />
+
+                        <Label Content="Y" Grid.Row="9" />
+                        <ctls:MaskingTextBox Text="{Binding Y, Mode=TwoWay}"  UnitType="Size" Grid.Row="9" Grid.Column="1"  />
+                        <Label Content="(mm)" Grid.Row="9" Grid.Column="2" />
+                    </Grid>
+                    <Button Command="{Binding SetLocationCommand}" Grid.Row="1" Grid.ColumnSpan="3"  Content="Set Location" />
+                    <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.ColumnSpan="3" HorizontalAlignment="Right">
+                        <StackPanel.Resources>
+                            <Style TargetType="Button">
+                                <Setter Property="Margin" Value="4" />
+                                <Setter Property="Width" Value="24" />
+                                <Setter Property="Width" Value="64" />
+                            </Style>
+                        </StackPanel.Resources>
+                        <Button Content="Save" Command="{Binding SaveFeederCommand}" />
+                        <Button Content="Delete" Command="{Binding DeleteFeederCommand}" />
+                        <Button Content="Cancel" Command="{Binding CancelFeederCommand}" />
+                    </StackPanel>
+                    
+                </Grid>
+            </Grid>
+        </Grid>
+
+        <StackPanel Orientation="Horizontal" Grid.ColumnSpan="2">
             <Controls:MVCommandBar x:Name="CmdBar" Grid.ColumnSpan="2" HorizontalAlignment="Left" />
         </StackPanel>
 
-        <Image x:Name="WebCamImage" Source="{Binding PrimaryCapturedImage}" Stretch="Uniform" Grid.Row="1" Grid.RowSpan="2" />
-        <Controls:MVViewOptions HorizontalAlignment="Right" VerticalAlignment="Top" Grid.Row="1" />
-        <Controls:MVAquiredPoints HorizontalAlignment="Right" VerticalAlignment="Bottom" Grid.Row="1"/>
+        <Image x:Name="WebCamImage" Source="{Binding PrimaryCapturedImage}" Stretch="Uniform" Grid.Row="1" Grid.RowSpan="2" Grid.Column="1" />
+        <Controls:MVViewOptions HorizontalAlignment="Right" VerticalAlignment="Top" Grid.Row="1" Grid.Column="1" />
+        <Controls:MVAquiredPoints HorizontalAlignment="Right" VerticalAlignment="Bottom" Grid.Row="1" Grid.Column="1"/>
 
-        <Grid Background="White" Grid.RowSpan="2" Grid.Column="1">
+        <Grid Background="White" Grid.RowSpan="2" Grid.Column="2">
             <Grid.RowDefinitions>
                 <RowDefinition Height="200" />
                 <RowDefinition Height="200" />
@@ -94,9 +214,9 @@
             <Button Content="Save" Command="{Binding SaveCommand}" Grid.Row="3" Width="120" HorizontalAlignment="Right"  Margin="10"/>
         </Grid>
 
-        <Controls:ImageAdjustments Grid.Column="1" Grid.RowSpan="2" Visibility="{Binding AreToolSettingsVisible, Converter={StaticResource BoolToVisibilityConverter}}" />
-        <Controls:XYJog DataContext="{Binding MachineControls}" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Bottom" />
-        <Controls:LoadingMask Grid.ColumnSpan="2" Grid.Row="1"   />
+        <Controls:ImageAdjustments Grid.Column="2" Grid.RowSpan="2" Visibility="{Binding AreToolSettingsVisible, Converter={StaticResource BoolToVisibilityConverter}}" />
+        <Controls:XYJog DataContext="{Binding MachineControls}" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Bottom" Grid.Column="1" />
+        <Controls:LoadingMask Grid.ColumnSpan="2" Grid.Row="1" Grid.Column="1"   />
 
     </Grid>
 </Window>

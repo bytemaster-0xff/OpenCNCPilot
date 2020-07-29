@@ -1,5 +1,6 @@
 ﻿using LagoVista.Core.Commanding;
 using LagoVista.Core.ViewModels;
+using LagoVista.GCode.Sender.Interfaces;
 using LagoVista.PickAndPlace.Models;
 using LagoVista.PickAndPlace.Repos;
 using System;
@@ -18,9 +19,13 @@ namespace LagoVista.PickAndPlace.ViewModels
         private bool _isDirty = false;
         private bool _isEditing = false;
 
-        public FeederDefinitionsViewModel()
+        private readonly IMachine _machine;
+
+        public FeederDefinitionsViewModel(IMachine machine)
         {
-            _feederLibrary = new FeederLibrary();
+            _machine = machine ?? throw new NullReferenceException(nameof(machine));
+
+            _feederLibrary = new FeederLibrary();            
             FeederDefintions = new ObservableCollection<Feeder>();
 
             AddFeederCommand = new RelayCommand(AddPackage, () => CurrentFeeder == null);
@@ -29,6 +34,8 @@ namespace LagoVista.PickAndPlace.ViewModels
             SaveLibraryCommand = new RelayCommand(SaveLibrary, () => _isDirty == true);
 
             DeleteFeederCommand = new RelayCommand(DeleteFeeder, () => (CurrentFeeder != null && _isEditing == true));
+
+            SetLocationCommand = new RelayCommand(SetLocation, () => CurrentFeeder != null);
 
             CurrentFeeder = null;
         }
@@ -58,8 +65,15 @@ namespace LagoVista.PickAndPlace.ViewModels
             SaveFeederCommand.RaiseCanExecuteChanged();
             DeleteFeederCommand.RaiseCanExecuteChanged();
             CancelFeederCommand.RaiseCanExecuteChanged();
+            SetLocationCommand.RaiseCanExecuteChanged();
         }
         
+        public void SetLocation()
+        {
+            CurrentFeeder.X = _machine.MachinePosition.X;
+            CurrentFeeder.Y = _machine.MachinePosition.Y;
+        }
+
 
         public void CancelPackage()
         {
@@ -85,6 +99,7 @@ namespace LagoVista.PickAndPlace.ViewModels
             CurrentFeeder = null;
             AddFeederCommand.RaiseCanExecuteChanged();
             SaveLibraryCommand.RaiseCanExecuteChanged();
+            SetLocationCommand.RaiseCanExecuteChanged();
         }
 
         public async void SaveLibrary()
@@ -107,6 +122,7 @@ namespace LagoVista.PickAndPlace.ViewModels
                 SaveFeederCommand.RaiseCanExecuteChanged();
                 DeleteFeederCommand.RaiseCanExecuteChanged();
                 CancelFeederCommand.RaiseCanExecuteChanged();
+                SetLocationCommand.RaiseCanExecuteChanged();
             }
         }
 
@@ -117,5 +133,7 @@ namespace LagoVista.PickAndPlace.ViewModels
         public RelayCommand SaveFeederCommand { get; private set; }
         public RelayCommand DeleteFeederCommand { get; private set; }
         public RelayCommand CancelFeederCommand { get; private set; }
+
+        public RelayCommand SetLocationCommand { get; private set; }
     }
 }

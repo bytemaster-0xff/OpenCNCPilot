@@ -12,14 +12,56 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
 {
     public abstract partial class MachineVisionViewModelBase
     {
-        public bool ShowPolygons { get; set; } = false;
-        public bool ShowRectangles { get; set; } = false;
-        public bool ShowCircles { get; set; } = true;
-        public bool ShowLines { get; set; } = false;
-        public bool ShowCrossHairs { get; set; } = true;
-        public bool ShowHarrisCorners { get; set; } = false;
-        public bool ShowOriginalImage { get; set; } = true;
-        public bool UseBlurredImage { get; set; } = true;
+        bool _showPolygons = false;
+        bool _showRectangles = false;
+        bool _showCircles = false;
+        bool _showLines = false;
+        bool _showCrossHairs = true;
+        bool _showHarrisCorners = false;
+        bool _showOriginalImage = true;
+        bool _useBlurredImage = true;
+
+        public bool ShowPolygons 
+        {
+            get { return _showPolygons; }
+            set { Set(ref _showPolygons, value);  }
+        }
+        public bool ShowRectangles
+        {
+            get { return _showRectangles; }
+            set { Set(ref _showRectangles, value); }
+        }
+        public bool ShowCircles
+        {
+            get { return _showCircles; }
+            set { Set(ref _showCircles, value); }
+        }
+        public bool ShowLines
+        {
+            get { return _showLines; }
+            set { Set(ref _showLines, value); }
+        }
+        public bool ShowCrossHairs
+        {
+            get { return _showCrossHairs; }
+            set { Set(ref _showCrossHairs, value); }
+        }
+        public bool ShowHarrisCorners
+        {
+            get { return _showHarrisCorners; }
+            set { Set(ref _showHarrisCorners, value); }
+        }
+        public bool ShowOriginalImage
+        {
+            get { return _showOriginalImage; }
+            set { Set(ref _showOriginalImage, value); }
+        }        
+        
+        public bool UseBlurredImage
+        {
+            get { return _useBlurredImage; }
+            set { Set(ref _useBlurredImage, value); }
+        }
 
         public string PolygonHelp { get { return "http://docs.opencv.org/2.4/doc/tutorials/imgproc/shapedescriptors/bounding_rects_circles/bounding_rects_circles.html?highlight=approxpolydp"; } }
         public string PolygonEpsilonHelp { get { return "Parameter specifying the approximation accuracy. This is the maximum distance between the original curve and its approximation"; } }

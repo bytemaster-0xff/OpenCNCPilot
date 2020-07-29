@@ -217,7 +217,7 @@ namespace LagoVista.GCode.Sender
 
         public void GotoFiducialHome()
         {
-            Enqueue("M71");
+            Enqueue("M53");
         }
 
         public void SetFavorite1()

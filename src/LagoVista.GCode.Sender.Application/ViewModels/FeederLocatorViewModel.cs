@@ -2,6 +2,7 @@
 using LagoVista.Core.Models.Drawing;
 using LagoVista.GCode.Sender.Interfaces;
 using LagoVista.PickAndPlace.Models;
+using LagoVista.PickAndPlace.ViewModels;
 using System.Threading.Tasks;
 
 namespace LagoVista.GCode.Sender.Application.ViewModels
@@ -18,6 +19,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             _job = job;
             _pnpJobFileName = pnpJobFileName;
             SaveCommand = new RelayCommand(Save);
+            FeederDefinitions = new FeederDefinitionsViewModel(machine);
         }
 
         public async void Save()
@@ -28,6 +30,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
 
         public override async Task InitAsync()
         {
+            await FeederDefinitions.InitAsync();
             await base.InitAsync();
         }
 
@@ -60,5 +63,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
         }
 
         public RelayCommand SaveCommand { get; private set; }
+
+        public FeederDefinitionsViewModel FeederDefinitions { get; private set; }
     }
 }

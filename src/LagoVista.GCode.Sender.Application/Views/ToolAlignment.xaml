@@ -49,6 +49,19 @@
                 <TextBlock Text="Move Tool 1 over the center of the bottom facing camera and rotate the C Axis." TextWrapping="Wrap" Margin="0,0,0,5"  />
                 <Button Command="{Binding SetBottomCameraLocationCommand}" Content="Set Bottom Camera Position" Margin="0,0,0,15" />
 
+                <TextBlock Text="Step 5 - Pick Head Move" Margin="0,0,0,5" />
+                <TextBlock Text="Move the Pick head to the location to be set when the picked component is being moved." TextWrapping="Wrap" Margin="0,0,0,5"  />
+                <Button Command="{Binding SetToolOneMovePositionCommand}" Content="Set Tool One Move Position" Margin="0,0,0,15" />
+
+                <TextBlock Text="Step 6 - Pick Head Pick" Margin="0,0,0,5" />
+                <TextBlock Text="Set the Pick head ot the location where it will pick the default size component" TextWrapping="Wrap" Margin="0,0,0,5"  />
+                <Button Command="{Binding SetToolOnePickPositionCommand}" Content="Set Tool One Pick Position" Margin="0,0,0,15" />
+
+                <TextBlock Text="Step 7 - Bottom Camera" Margin="0,0,0,5" />
+                <TextBlock Text="Move Tool 1 over the center of the bottom facing camera and rotate the C Axis." TextWrapping="Wrap" Margin="0,0,0,5"  />
+                <Button Command="{Binding SetToolOnePlacePositionCommand}" Content="Set Tool One Place Position" Margin="0,0,0,15" />
+
+
 
                 <Grid>
                     <Grid.ColumnDefinitions>

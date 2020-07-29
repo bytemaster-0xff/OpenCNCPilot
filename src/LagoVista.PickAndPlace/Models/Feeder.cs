@@ -5,13 +5,14 @@ using System.Linq;
 using System.Text;
 using LagoVista.Core;
 using System.Threading.Tasks;
+using LagoVista.Core.Models;
 
 namespace LagoVista.PickAndPlace.Models
 {
     /// <summary>
     /// Defines the Physical Definition of a Parts Tray
     /// </summary>
-    public class Feeder
+    public class Feeder : ModelBase
     {
         public string Id { get; set; }
 
@@ -19,8 +20,6 @@ namespace LagoVista.PickAndPlace.Models
         {
             Id = Guid.NewGuid().ToId();
         }
-
-
 
         public string Name { get; set; }
 
@@ -37,5 +36,24 @@ namespace LagoVista.PickAndPlace.Models
         public bool IsStatic { get; set; }
 
         public int NumberRows { get; set; }
+
+        private double _x;
+        private double _y;
+        public double X 
+        { 
+            get { return _x; }
+            set
+            {
+                Set(ref _x, value);
+            }
+        }
+        public double Y
+        {
+            get { return _y; }
+            set
+            {
+                Set(ref _y, value);
+            }
+        }
     }
 }

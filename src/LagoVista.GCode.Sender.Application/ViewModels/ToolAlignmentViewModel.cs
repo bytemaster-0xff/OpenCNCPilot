@@ -13,11 +13,15 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
     {
         public ToolAlignmentViewModel(IMachine machine) : base(machine)
         {
+
+            SetToolOneMovePositionCommand = new RelayCommand(SetTool1MovePosition, () => HasFrame);
+            SetToolOnePickPositionCommand = new RelayCommand(SetTool1PickPosition, () => HasFrame);
+            SetToolOnePlacePositionCommand = new RelayCommand(SetTool1PlacePosition, () => HasFrame);
+
             SetToolOneLocationCommand = new RelayCommand(SetTool1Location, () => HasFrame);
             SetToolTwoLocationCommand = new RelayCommand(SetTool2Location, () => HasFrame);
-
             SetTopCameraLocationCommand = new RelayCommand(SetTopCameraLocation, () => HasFrame);
-            SetBottomCameraLocationCommand = new RelayCommand(SetBottomCameraLocation, () => HasFrame && Tool1Offset != null);
+            SetBottomCameraLocationCommand = new RelayCommand(SetBottomCameraLocation, () => HasFrame);
 
             SaveCalibrationCommand = new RelayCommand(SaveCalibration, () => IsDirty);
         }
@@ -47,6 +51,9 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             SetToolTwoLocationCommand.RaiseCanExecuteChanged();
             SetTopCameraLocationCommand.RaiseCanExecuteChanged();
             SetBottomCameraLocationCommand.RaiseCanExecuteChanged();
+            SetToolOneMovePositionCommand.RaiseCanExecuteChanged();
+            SetToolOnePickPositionCommand.RaiseCanExecuteChanged();
+            SetToolOnePlacePositionCommand.RaiseCanExecuteChanged();
         }
 
         protected override void CaptureEnded()
@@ -55,75 +62,45 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             SetToolTwoLocationCommand.RaiseCanExecuteChanged();
             SetTopCameraLocationCommand.RaiseCanExecuteChanged();
             SetBottomCameraLocationCommand.RaiseCanExecuteChanged();
+            SetToolOneMovePositionCommand.RaiseCanExecuteChanged();
+            SetToolOnePickPositionCommand.RaiseCanExecuteChanged();
+            SetToolOnePlacePositionCommand.RaiseCanExecuteChanged();
         }
 
         public void SetTopCameraLocation()
         {
-            TopCameraLocation = new Point2D<double>(Machine.MachinePosition.X, Machine.MachinePosition.Y);
-
-            if (Tool1Location != null)
-            {
-                Tool1Offset = new Point2D<double>()
-                {
-                    X = Tool1Location.X - TopCameraLocation.X,
-                    Y = Tool1Location.Y - TopCameraLocation.Y,
-                };
-            }
-
-            if (Tool2Location != null)
-            {
-                Tool2Offset = new Point2D<double>()
-                {
-                    X = Tool2Location.X - TopCameraLocation.X,
-                    Y = Tool2Location.Y - TopCameraLocation.Y,
-                };
-            }
-
-            Machine.SendCommand("M72");
-
-            IsDirty = true;
-
+            Machine.SendCommand("M75");
         }
 
         public void SetBottomCameraLocation()
         {
-            BottomCameraLocation = new Point2D<double>(Machine.MachinePosition.X + Tool1Offset.Y, Machine.MachinePosition.Y - Tool1Offset.Y);
-            IsDirty = true;
+            Machine.SendCommand("M71");
+        }
+
+        public void SetTool1MovePosition()
+        {
+            Machine.SendCommand("M72");
+        }
+
+
+        public void SetTool1PickPosition()
+        {
+            Machine.SendCommand("M73");
+        }
+
+        public void SetTool1PlacePosition()
+        {
             Machine.SendCommand("M74");
         }
 
         public void SetTool1Location()
         {
-            Tool1Location = new Point2D<double>(Machine.MachinePosition.X, Machine.MachinePosition.Y);
-            if (TopCameraLocation != null)
-            {
-                Tool1Offset = new Point2D<double>()
-                {
-                    X = TopCameraLocation.X - Tool1Location.X,
-                    Y = TopCameraLocation.Y - Tool1Location.Y,
-                };
-
-                Machine.SendCommand("M73");
-
-                SetBottomCameraLocationCommand.RaiseCanExecuteChanged();
-                IsDirty = true;
-            }
+            Machine.SendCommand("M76");
         }
-
 
         public void SetTool2Location()
         {
-            Tool2Location = new Point2D<double>(Machine.MachinePosition.X, Machine.MachinePosition.Y);
-            if (TopCameraLocation != null)
-            {
-                Tool2Offset = new Point2D<double>()
-                {
-                    X = TopCameraLocation.X- Tool2Location.X,
-                    Y = TopCameraLocation.Y- Tool2Location.Y,
-                };
-
-                IsDirty = true;
-            }
+            Machine.SendCommand("M77");
         }
 
         public async void SaveCalibration()
@@ -158,6 +135,10 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
         public RelayCommand SetToolOneLocationCommand { get; private set; }
         public RelayCommand SetToolTwoLocationCommand { get; private set; }
         public RelayCommand SetTopCameraLocationCommand { get; private set; }
+
+        public RelayCommand SetToolOnePlacePositionCommand { get; private set; }
+        public RelayCommand SetToolOneMovePositionCommand { get; private set; }
+        public RelayCommand SetToolOnePickPositionCommand { get; private set; }
         public RelayCommand SaveCalibrationCommand { get; private set; }
 
         public Point2D<double> TopCameraLocation

@@ -54,27 +54,21 @@ namespace LagoVista.GCode.Sender.ViewModels
                     Machine.SendCommand($"{Machine.Settings.JogGCodeCommand} Z{(current.Z - ZStepSize).ToDim()} F{Machine.Settings.JogFeedRate}");
                     break;
                 case JogDirections.T0Minus:
-                    Machine.SendCommand("T0");
                     Machine.SendCommand($"{Machine.Settings.JogGCodeCommand} Z{(currentTool0 - ZStepSize).ToDim()} F{Machine.Settings.JogFeedRate}");
                     break;
                 case JogDirections.T0Plus:
-                    Machine.SendCommand("T0");
                     Machine.SendCommand($"{Machine.Settings.JogGCodeCommand} Z{(currentTool0 + ZStepSize).ToDim()} F{Machine.Settings.JogFeedRate}");
                     break;
                 case JogDirections.T1Minus:
-                    Machine.SendCommand("T1");
                     Machine.SendCommand($"{Machine.Settings.JogGCodeCommand} Z{(currentTool1 - ZStepSize).ToDim()} F{Machine.Settings.JogFeedRate}");
                     break;
                 case JogDirections.T1Plus:
-                    Machine.SendCommand("T1");
                     Machine.SendCommand($"{Machine.Settings.JogGCodeCommand} Z{(currentTool1 + ZStepSize).ToDim()} F{Machine.Settings.JogFeedRate}");
                     break;
                 case JogDirections.T2Minus:
-                    Machine.SendCommand("T2");
                     Machine.SendCommand($"{Machine.Settings.JogGCodeCommand} Z{(currentTool2 - ZStepSize).ToDim()} F{Machine.Settings.JogFeedRate}");
                     break;
                 case JogDirections.T2Plus:
-                    Machine.SendCommand("T2");
                     Machine.SendCommand($"{Machine.Settings.JogGCodeCommand} Z{(currentTool2 + ZStepSize).ToDim()} F{Machine.Settings.JogFeedRate}");
                     break;
             }

@@ -2,7 +2,6 @@
 using LagoVista.Core.Models.Drawing;
 using LagoVista.GCode.Sender.Interfaces;
 using System;
-using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace LagoVista.GCode.Sender.Application.ViewModels
@@ -20,6 +19,10 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
         {
             EndStopHomingCycleCommand = new RelayCommand(EndStopHomingCycle, () => HasFrame);
             BeginMVHomingCycleCommand = new RelayCommand(BeginMVHomingCycle, () => HasFrame);
+            
+            GoToFiducialHomeCommand = new RelayCommand(GoToFiducialHome, () => HasFrame);
+
+            CalibrateFiducialHomeCommand = new RelayCommand(CalibrateFiducialHome, () => HasFrame);
 
             SetFiducialHomeCommand = new RelayCommand(SetFiducialHome, () => HasFrame);
             if (Machine.Settings.HomeFiducialOffset == null)
@@ -40,6 +43,8 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             EndStopHomingCycleCommand.RaiseCanExecuteChanged();
             BeginMVHomingCycleCommand.RaiseCanExecuteChanged();
             SetFiducialHomeCommand.RaiseCanExecuteChanged();
+            GoToFiducialHomeCommand.RaiseCanExecuteChanged();
+            CalibrateFiducialHomeCommand.RaiseCanExecuteChanged();
         }
 
         protected override void CaptureEnded()
@@ -47,6 +52,18 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             EndStopHomingCycleCommand.RaiseCanExecuteChanged();
             BeginMVHomingCycleCommand.RaiseCanExecuteChanged();
             SetFiducialHomeCommand.RaiseCanExecuteChanged();
+            GoToFiducialHomeCommand.RaiseCanExecuteChanged();
+            CalibrateFiducialHomeCommand.RaiseCanExecuteChanged();
+        }
+
+        public override async Task InitAsync()
+        {
+            await base.InitAsync();
+            Machine.TopLightOn = true;
+            ShowTopCamera = true;
+            ShowCircles = false;
+            ShowHarrisCorners = true;
+            StartCapture();
         }
 
         public void EndStopHomingCycle()
@@ -58,27 +75,26 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
         {
             Machine.PCBManager.Tool1Navigation = true;
             _state = States.MVHoming;
-            Machine.SendCommand("G91");
             Machine.GotoPoint(Machine.Settings.HomeFiducialOffset, true);
-            Machine.SendCommand("G90");
             await Machine.MachineRepo.SaveAsync();
         }
 
-        public void SetXYZero()
+        public void CalibrateFiducialHome()
+        {            
+            Machine.SendCommand("M80");
+            _state = States.Idle;
+        }
+
+        public void GoToFiducialHome()
         {
             _state = States.Idle;
-            Machine.SendCommand("G92 X Y");
+            Machine.SendCommand("M53");
         }
 
         public void SetFiducialHome()
         {
             _state = States.Idle;
             Machine.SendCommand("M70");
-        }
-
-        public override async Task InitAsync()
-        {
-            await base.InitAsync();
         }
 
         public override void CircleCentered(Point2D<double> point, double diameter)
@@ -98,11 +114,9 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                     stabilizedPointCount++;
                     if (stabilizedPointCount > 10)
                     {
-                        var newLocationX = -Math.Round((offset.X / 20), 4);
-                        var newLocationY = Math.Round((offset.Y / 20), 4);
-                        Machine.SendCommand("G91");
+                        var newLocationX = -Math.Round((offset.X / 20), 4) + Machine.MachinePosition.X;
+                        var newLocationY = Math.Round((offset.Y / 20), 4) + Machine.MachinePosition.Y;
                         Machine.GotoPoint(new Point2D<double>() { X = newLocationX, Y = newLocationY }, true);
-                        Machine.SendCommand("G90");
                         stabilizedPointCount = 0;
                         XZeroOffset = newLocationX;
                         YZeroOffset = newLocationY;
@@ -117,10 +131,32 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             }
         }
 
-        public override void CornerLocated(Point2D<double> point, Point2D<double> stdDev)
+        public override void CornerLocated(Point2D<double> offset, Point2D<double> stdDeviation)
         {
+            Machine.BoardAlignmentManager.CornerLocated(offset);
 
-            Machine.BoardAlignmentManager.CornerLocated(point);
+            if (_state == States.MVHoming)
+            {
+                if (stdDeviation.X < 0.5 && stdDeviation.Y < 0.5)
+                {
+                    stabilizedPointCount++;
+                    if (stabilizedPointCount > 10)
+                    {
+                        var newLocationX = -Math.Round((offset.X / 20), 4) + Machine.MachinePosition.X;
+                        var newLocationY = Math.Round((offset.Y / 20), 4) + Machine.MachinePosition.Y;
+                        Machine.GotoPoint(new Point2D<double>() { X = newLocationX, Y = newLocationY }, true);
+                        stabilizedPointCount = 0;
+                        XZeroOffset = newLocationX;
+                        YZeroOffset = newLocationY;
+                    }
+                }
+                else
+                {
+                    XZeroOffset = null;
+                    YZeroOffset = null;
+                    stabilizedPointCount = 0;
+                }
+            }
         }
 
         double? _xZeroOffset;
@@ -141,5 +177,9 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
         public RelayCommand BeginMVHomingCycleCommand { get; private set; }
 
         public RelayCommand SetFiducialHomeCommand { get; private set; }
+
+        public RelayCommand GoToFiducialHomeCommand { get; private set; }
+
+        public RelayCommand CalibrateFiducialHomeCommand { get; private set; }
     }
 }

@@ -361,7 +361,7 @@ namespace LagoVista.GCode.Sender.Application
 
         private void EditFeederLibrary_Click(object sender, RoutedEventArgs e)
         {
-            var lbrWindow = new Views.FeederLibraryWindow();
+            var lbrWindow = new Views.MVFeederLocatorView(ViewModel.Machine, _pnpJob, _pnpJobFileName);
             lbrWindow.Owner = this;
             lbrWindow.ShowDialog();
         }

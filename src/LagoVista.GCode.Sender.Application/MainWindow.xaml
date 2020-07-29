@@ -10,7 +10,7 @@
 	    mc:Ignorable="d"
 		AllowDrop="True"
         MinHeight="800" MinWidth="1200"
-        Title="DIY PCB Commander" Height="800" Width="1200" Closing="Window_Closing">
+        Title="DIY PCB Commander" Height="900" Width="1600" Closing="Window_Closing">
     <Window.Resources>
         <ResourceDictionary Source="MainWindow.Resources.xaml"/>
     </Window.Resources>
