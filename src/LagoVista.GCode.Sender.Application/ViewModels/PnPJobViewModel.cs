@@ -2,6 +2,7 @@
 using LagoVista.Core.ViewModels;
 using LagoVista.EaglePCB.Models;
 using LagoVista.GCode.Sender;
+using LagoVista.GCode.Sender.Interfaces;
 using LagoVista.PickAndPlace.Models;
 using LagoVista.PickAndPlace.Repos;
 using System;
@@ -11,9 +12,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LagoVista.PickAndPlace.ViewModels
+namespace LagoVista.GCode.Sender.Application.ViewModels
 {
-    public class PnPJobViewModel : ViewModelBase
+    public class PnPJobViewModel : MachineVisionViewModelBase
     {
         private bool _isEditing;
         private bool _isDirty = false;
@@ -21,7 +22,7 @@ namespace LagoVista.PickAndPlace.ViewModels
 
         private FeederLibrary _feederLibrary;
 
-        public PnPJobViewModel(Models.PnPJob job)
+        public PnPJobViewModel(IMachine machine, PnPJob job) : base(machine)
         {
             _billOfMaterials = new BOM(job.Board);
             _job = job;
@@ -52,6 +53,7 @@ namespace LagoVista.PickAndPlace.ViewModels
         public override async Task InitAsync()
         {
             FeederTypes = await _feederLibrary.GetFeedersAsync();
+            LoadingMask = false;
         }
 
         public bool CanAddFeeder()
@@ -109,9 +111,9 @@ namespace LagoVista.PickAndPlace.ViewModels
         {
             get
             {
-                if(SelectedPart != null)
+                if (SelectedPart != null)
                 {
-                    return JobFeeders.Where(fdr => fdr.Feeder.Id == SelectedPart.FeederId).FirstOrDefault();  
+                    return JobFeeders.Where(fdr => fdr.Feeder.Id == SelectedPart.FeederId).FirstOrDefault();
                 }
                 else
                 {
@@ -166,9 +168,16 @@ namespace LagoVista.PickAndPlace.ViewModels
             }
         }
 
-        public PCB Board
+        public LagoVista.EaglePCB.Models.PCB Board
         {
             get { return Job.Board; }
+        }
+
+        Component _selectPartToBePlaced;
+        public Component SelectPartToBePlaced
+        {
+            get { return _selectPartToBePlaced; }
+            set { Set(ref _selectPartToBePlaced, value);  }
         }
 
         public BOM BillOfMaterials
@@ -191,11 +200,23 @@ namespace LagoVista.PickAndPlace.ViewModels
                 Set(ref _selectedPart, value);
                 RaisePropertyChanged(nameof(SelectedPartFeeder));
                 RaisePropertyChanged(nameof(SelectedPartRow));
+
+                PartsToBePlaced.Clear();
+                var partsOfType = _billOfMaterials.SMDEntries.Where(ent =>
+                   value.LibraryName == ent.Package.LibraryName &&
+                        value.PackageName == ent.Package.Name &&
+                        value.Value == ent.Value);
+
+                foreach (var part in partsOfType)
+                {
+                    foreach (var component in part.Components)
+                        PartsToBePlaced.Add(component);
+                }
             }
         }
 
-        private Models.PnPJob _job;
-        public Models.PnPJob Job
+        private LagoVista.PickAndPlace.Models.PnPJob _job;
+        public LagoVista.PickAndPlace.Models.PnPJob Job
         {
             get { return _job; }
             set
@@ -212,6 +233,8 @@ namespace LagoVista.PickAndPlace.ViewModels
             get;
             set;
         }
+
+        public ObservableCollection<Component> PartsToBePlaced { get; set; } = new ObservableCollection<Component>();
 
         public bool HasJob { get { return Job != null; } }
 

@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using LagoVista.PickAndPlace.Models;
 using LagoVista.PickAndPlace.ViewModels;
 using LagoVista.PickAndPlace.Repos;
+using LagoVista.GCode.Sender.Application.ViewModels;
 
 namespace LagoVista.GCode.Sender.Application
 {
@@ -351,7 +352,6 @@ namespace LagoVista.GCode.Sender.Application
             }
         }
 
-
         private void EditPackageLibrary_Click(object sender, RoutedEventArgs e)
         {
             var librWindow = new Views.PackageLibraryWindow();
@@ -375,7 +375,7 @@ namespace LagoVista.GCode.Sender.Application
                 ViewModel.AddPnPJobFile(file);
                 _pnpJob = await Core.PlatformSupport.Services.Storage.GetAsync<PnPJob>(file);
                 await _pnpJob.OpenAsync();
-                var pnpViewModel = new PnPJobViewModel(_pnpJob);
+                var pnpViewModel = new PnPJobViewModel(ViewModel.Machine, _pnpJob);
                 pnpViewModel.FileName = file;
                 await pnpViewModel.InitAsync();
                 var jobWindow = new Views.PNPJobWindow();
@@ -401,7 +401,7 @@ namespace LagoVista.GCode.Sender.Application
                     var pnpJob = new PnPJob();
                     pnpJob.Board = ViewModel.Machine.PCBManager.Board;
                     pnpJob.EagleBRDFilePath = ViewModel.Machine.PCBManager.Project.EagleBRDFilePath;
-                    var pnpViewModel = new PnPJobViewModel(pnpJob);
+                    var pnpViewModel = new PnPJobViewModel(ViewModel.Machine, pnpJob);
                     await pnpViewModel.InitAsync();
                     var jobWindow = new Views.PNPJobWindow();
                     jobWindow.DataContext = pnpViewModel;
@@ -447,7 +447,8 @@ namespace LagoVista.GCode.Sender.Application
         {
             if (_pnpJob != null)
             {
-                var pnpViewModel = new PnPJobViewModel(_pnpJob);
+                var pnpViewModel = new PnPJobViewModel(ViewModel.Machine, _pnpJob);
+                pnpViewModel.FileName = _pnpJobFileName;
                 await pnpViewModel.InitAsync();
                 var jobWindow = new Views.PNPJobWindow();
                 jobWindow.DataContext = pnpViewModel;

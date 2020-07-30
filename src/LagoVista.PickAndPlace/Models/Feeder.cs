@@ -55,5 +55,10 @@ namespace LagoVista.PickAndPlace.Models
                 Set(ref _y, value);
             }
         }
+
+        public override string ToString()
+        {
+            return $"{Name} - {X} {Y}";
+        }
     }
 }

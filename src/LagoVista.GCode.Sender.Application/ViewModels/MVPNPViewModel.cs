@@ -13,7 +13,6 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
 {
     public class MVPNPViewModel : MachineVisionViewModelBase
     {
-
         public MVPNPViewModel(IMachine machine) : base(machine)
         {
             PickPartFromBoardCommand = new RelayCommand(PickPartFromBoard);

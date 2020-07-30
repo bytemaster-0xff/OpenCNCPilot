@@ -1,28 +1,48 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using LagoVista.Core.Models;
 
 namespace LagoVista.PickAndPlace.Models
 {
-    public class Row
+    public class Row : ModelBase
     {
         public int RowNumber { get; set; }
 
-        public Part Part { get; set; }
+        private Part _part;
+        public Part Part
+        {
+            get { return _part; }
+            set { Set(ref _part, value); }
+        }
 
-        public double FirstComponentY { get; set; }
+        private double _firstComponentX;
+        public double FirstComponentX 
+        { 
+            get { return _firstComponentX; }
+            set { Set(ref _firstComponentX, value); }
+        }
 
-        public double FirstComponentX { get; set; }
+        public double SpacingX { get; set; }
 
-        public double CenterX { get; set; }
+        private int _currentPartIndex;
+        public int CurrentPartIndex 
+        {
+            get { return _currentPartIndex; }
+            set { Set(ref _currentPartIndex, value); } 
+        }
 
-        public double DeltaY { get; set; }
+        private int _partCount;
+        public int PartCount 
+        { 
+            get { return _partCount;  }
+            set { Set(ref _partCount, value); }
+        }
 
-        public int CurrentPartIndex { get; set; }
-
-        public int PartCount { get; set; }
+        public double CurrentPartX
+        {
+            get
+            {
+                return _firstComponentX + (SpacingX * CurrentPartIndex);
+            }
+        }
 
         public string Display
         {
@@ -30,7 +50,7 @@ namespace LagoVista.PickAndPlace.Models
             {
                 if (Part != null)
                 {
-                    return $"{RowNumber}. {Part.Display}";
+                    return $"{RowNumber}. {Part.Display} - {CurrentPartIndex}/{PartCount} - {CurrentPartX}";
                 }
                 else
                 {

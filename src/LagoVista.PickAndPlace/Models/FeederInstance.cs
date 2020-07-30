@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Runtime.CompilerServices;
 
 namespace LagoVista.PickAndPlace.Models
 {
@@ -38,14 +39,13 @@ namespace LagoVista.PickAndPlace.Models
             get; set;
         }
 
-
         public Vector3 GetCurrentPartLocation(int rowIndex)
         {
             var row = Rows[rowIndex];
             return new Vector3()
             {
-                X = Location.X + row.CenterX,
-                Y = Location.Y + row.FirstComponentY + row.DeltaY * row.CurrentPartIndex,
+                X = Location.X + row.CurrentPartX,
+                Y = Location.Y + Feeder.FirstRowOffset + Feeder.RowWidth * rowIndex,
                 Z = Feeder.PartZ
             };
         }

@@ -228,6 +228,7 @@
     <Compile Include="ViewModels\MachineVisionViewModelBase.cs" />
     <Compile Include="ViewModels\MachineVisionViewModelBase.Properties.cs" />
     <Compile Include="ViewModels\MVPNPViewModel.cs" />
+    <Compile Include="ViewModels\PnPJobViewModel.cs" />
     <Compile Include="ViewModels\ToolAlignmentViewModel.cs" />
     <Compile Include="ViewModels\WorkAlignmentViewModel.cs" />
     <Compile Include="Views\FeederLibraryWindow.xaml.cs">

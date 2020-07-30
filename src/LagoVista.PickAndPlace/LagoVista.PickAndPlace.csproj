@@ -64,7 +64,6 @@
     <Compile Include="ViewModels\FeederDefinitionsViewModel.cs" />
     <Compile Include="ViewModels\PartViewModel.cs" />
     <Compile Include="ViewModels\PnPControlViewModel.cs" />
-    <Compile Include="ViewModels\PnPJobViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="LagoVista.Core, Version=0.8.0.0, Culture=neutral, PublicKeyToken=2698135e9954a85d, processorArchitecture=MSIL">

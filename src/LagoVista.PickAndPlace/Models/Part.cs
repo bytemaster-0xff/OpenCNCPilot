@@ -22,9 +22,48 @@ namespace LagoVista.PickAndPlace.Models
 
         public string PartNumber { get; set; }
 
-        public String FeederId { get; set; }
 
-        public int? RowNumber { get; set; }
+        private string _feederId;
+        public String FeederId 
+        {
+            get { return _feederId; }
+            set
+            {
+                _feederId = value;
+                Set(ref _feederId, value);
+                RaisePropertyChanged(nameof(IsConfigured));
+            }
+        }
+
+        public bool IsConfigured
+        {
+            get { return !String.IsNullOrEmpty(FeederId) && RowNumber.HasValue;  }
+        }
+
+        private int? _rowNumber;
+        public int? RowNumber 
+        { 
+            get { return _rowNumber;  }
+            set
+            {
+                Set(ref _rowNumber, value);
+                RaisePropertyChanged(nameof(IsConfigured));
+            }
+        }
+
+        private bool _shouldPlace;
+        public bool ShouldPlace
+        {
+            get { return _shouldPlace; }
+            set { Set(ref _shouldPlace, value); }
+        }
+
+        private bool _wasPlaced;
+        public bool WasPlaced
+        {
+            get { return _wasPlaced; }
+            set { Set(ref _wasPlaced, value); }
+        }
 
         public string Display
         {

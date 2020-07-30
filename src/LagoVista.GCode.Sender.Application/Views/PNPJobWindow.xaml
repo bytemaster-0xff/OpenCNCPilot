@@ -4,10 +4,12 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:fa="http://schemas.fontawesome.io/icons/"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+         xmlns:Controls="clr-namespace:LagoVista.GCode.Sender.Application.Controls"
+  
         xmlns:local="clr-namespace:LagoVista.GCode.Sender.Application.Views"
         WindowStartupLocation="CenterOwner"
         mc:Ignorable="d"
-        Title="Pick and Place Job" Height="800" Width="1200">
+        Title="Pick and Place Job" Height="800" Width="1600">
     <Grid>
         <TabControl>
             <TabItem Header="Parts">
@@ -20,27 +22,22 @@
                     <ToolBar>
                         <Button Content="+" />
                     </ToolBar>
-                    <ListView Grid.Row="0" ItemsSource="{Binding Parts}" HorizontalContentAlignment="Stretch" SelectedItem="{Binding SelectedPart, Mode=TwoWay}">
-                        <ListView.ItemTemplate>
-                            <DataTemplate>
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="40" />
-                                        <ColumnDefinition Width="160" />
-                                        <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="80" />
-                                    </Grid.ColumnDefinitions>
-
-                                    <TextBlock Text="{Binding Count}" TextAlignment="Right" Margin="0,0,10,0" Grid.Column="0" />
-                                    <TextBlock Text="{Binding PackageName}" Grid.Column="1" />
-                                    <TextBlock Text="{Binding LibraryName}" Grid.Column="2" />
-                                    <TextBlock Text="{Binding Value}" Grid.Column="3" />
-                                </Grid>
-                            </DataTemplate>
-                        </ListView.ItemTemplate>
-                    </ListView>
+                    <DataGrid Grid.Row="0" AutoGenerateColumns="False" ItemsSource="{Binding Parts}" HorizontalContentAlignment="Stretch" SelectedItem="{Binding SelectedPart, Mode=TwoWay}">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Count" Binding="{Binding Count}"  />
+                            <DataGridTextColumn Header="Is Configured" Binding="{Binding IsConfigured}"  />
+                            <DataGridCheckBoxColumn Header="Should Place" Binding="{Binding ShouldPlace, Mode=TwoWay}"  />
+                            <DataGridTextColumn Header="Was Placed" Binding="{Binding WasPlaced}"  />
+                            <DataGridTextColumn Header="Package Name" Width="100" Binding="{Binding PackageName}"  />
+                            <DataGridTextColumn Header="Library Name" Width="120" Binding="{Binding LibraryName}"  />
+                            <DataGridTextColumn Header="Feeder Id" Width="200" Binding="{Binding FeederId}"  />
+                            <DataGridTextColumn Header="Row Number" Width="60" Binding="{Binding RowNumber}"  />
+                            <DataGridTextColumn Header="Value" Width="80" Binding="{Binding Value}"  />
+                        </DataGrid.Columns>
+                    </DataGrid>
                     <Grid  Grid.Row="1">
                         <Grid.RowDefinitions>
+                            <RowDefinition Height="auto" />
                             <RowDefinition Height="auto" />
                             <RowDefinition Height="auto" />
                             <RowDefinition Height="auto" />
@@ -54,13 +51,15 @@
                         <Label Content="Package" />
                         <Label Content="Library" Grid.Row="1" />
                         <Label Content="Value" Grid.Row="2" />
-                        <Label Content="Feeder" Grid.Row="3" />
-                        <Label Content="Row" Grid.Row="4" />
+                        <Label Content="Should Place" Grid.Row="3" />
+                        <Label Content="Feeder" Grid.Row="4" />
+                        <Label Content="Row" Grid.Row="5" />
                         <TextBlock Text="{Binding SelectedPart.PackageName}" Grid.Column="1" />
                         <TextBlock Text="{Binding SelectedPart.LibraryName}" Grid.Row="1" Grid.Column="1" />
                         <TextBlock Text="{Binding SelectedPart.Value}" Grid.Row="2" Grid.Column="1" />
-                        <ComboBox ItemsSource="{Binding JobFeeders}" SelectedItem="{Binding SelectedPartFeeder}" DisplayMemberPath="Name" Grid.Row="3" Grid.Column="1" />
-                        <ComboBox ItemsSource="{Binding SelectedPartFeeder.Rows}" DisplayMemberPath="Display" SelectedValuePath="Row" Grid.Row="4" Grid.Column="1" SelectedItem="{Binding SelectedPartRow}" />
+                        <CheckBox IsChecked="{Binding SelectedPart.ShouldPlace, Mode=TwoWay}" Grid.Row="3" Grid.Column="1" />
+                        <ComboBox ItemsSource="{Binding JobFeeders}" SelectedItem="{Binding SelectedPartFeeder}" DisplayMemberPath="Name" Grid.Row="4" Grid.Column="1" />
+                        <ComboBox ItemsSource="{Binding SelectedPartFeeder.Rows}" DisplayMemberPath="Display" SelectedValuePath="Row" Grid.Row="5" Grid.Column="1" SelectedItem="{Binding SelectedPartRow}" />
                     </Grid>
                     <Button Grid.Row="2" Command="{Binding SaveJobCommand}" Content="Save" Width="80" Height="20" Margin="4" HorizontalAlignment="Right" />
                 </Grid>
@@ -133,6 +132,93 @@
                             </DataTemplate>
                         </ListView.ItemTemplate>
                     </ListView>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Place">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="48"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="300"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="300" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Orientation="Horizontal" Grid.ColumnSpan="3">
+                        <Controls:MVCommandBar x:Name="CmdBar"  HorizontalAlignment="Left" />
+                    </StackPanel>
+
+                    <Grid Grid.Row="1">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <StackPanel Orientation="Horizontal">
+                            <Button Width="36" Height="36"   Margin="2" HorizontalAlignment="Right"  Style="{StaticResource VideoControlButton}" >
+                                <Button.Content>
+                                    <fa:ImageAwesome  Icon="Backward" />
+                                </Button.Content>
+                            </Button>
+                            <Button Width="36" Height="36"   Margin="2" HorizontalAlignment="Right"  Style="{StaticResource VideoControlButton}" >
+                                <Button.Content>
+                                    <fa:ImageAwesome  Icon="Play" />
+                                </Button.Content>
+                            </Button>
+                            <Button Width="36" Height="36"   Margin="2" HorizontalAlignment="Right"  Style="{StaticResource VideoControlButton}" >
+                                <Button.Content>
+                                    <fa:ImageAwesome  Icon="Forward" />
+                                </Button.Content>
+                            </Button>
+                        </StackPanel>
+
+                        <StackPanel Grid.Row="1">
+                            <TextBlock Text="{Binding SelectedPartFeeder.Feeder}" ></TextBlock>
+                            <TextBlock Text="{Binding SelectedPartRow}" ></TextBlock>
+                            <Button Command="{Binding GoToPartPositionInTrayCommand}" Content="Goto Part in tray"></Button>
+                        </StackPanel>
+                        
+                        <Grid Grid.Row="2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="120"></ColumnDefinition>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
+                            </Grid.RowDefinitions>
+                            <Label Content="Part" />
+                            <Label Content="X" Grid.Row="1" />
+                            <Label Grid.Row="2" Content="Y" />
+                            <Label  Grid.Row="3" Content="Rotate" />
+                            <TextBlock Grid.Column="1" Grid.Row="0" Text="{Binding SelectPartToBePlaced.Name}" ></TextBlock>
+                            <TextBlock Grid.Column="1" Grid.Row="1" Text="{Binding SelectPartToBePlaced.X}" ></TextBlock>
+                            <TextBlock Grid.Column="1" Grid.Row="2" Text="{Binding SelectPartToBePlaced.Y}" ></TextBlock>
+                            <TextBlock Grid.Column="1" Grid.Row="3" Text="{Binding SelectPartToBePlaced.Rotate}" ></TextBlock>
+                           
+                            <Button Grid.Row="4" Grid.ColumnSpan="4" Command="{Binding GoToPartOnBoard}" Content="Goto Part on board"></Button>
+                        </Grid>
+                                    
+
+                        <DataGrid Grid.Row="3" ItemsSource="{Binding PartsToBePlaced}" SelectedItem="{Binding SelectPartToBePlaced}" AutoGenerateColumns="False" CanUserAddRows="False">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="NameX" Binding="{Binding Name}" />
+                                <DataGridTextColumn Header="X" Binding="{Binding X}" />
+                                <DataGridTextColumn Header="Y" Binding="{Binding Y}" />
+                                <DataGridTextColumn Header="Rotate" Binding="{Binding Rotate}" />
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
+                    <Image x:Name="WebCamImage" Source="{Binding PrimaryCapturedImage}"  Grid.Column="1" Stretch="Uniform" Grid.Row="1" Grid.RowSpan="2" />
+
+                    <Controls:LoadingMask Grid.ColumnSpan="3" Grid.Row="1"  />
+
+                    <Controls:PnPButtons Grid.Column="1" DataContext="{Binding MachineControls}" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="1,0,0,0.4" />
                 </Grid>
             </TabItem>
         </TabControl>
