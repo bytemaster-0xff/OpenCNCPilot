@@ -187,12 +187,17 @@
                         <Image Source="/imgs/SpindleOff.png"/>
                     </Button.Content>
                 </Button>
+                <Button BorderBrush="Transparent"  Background="Transparent" Command="{Binding SetWorkspaceHomeCommand}"  ToolTip="Set Workspace Home"   >
+                    <Button.Content>
+                        <Image Source="/imgs/AddWorkspaceHome.png"/>
+                    </Button.Content>
+                </Button>                
                 <Button BorderBrush="Transparent"  Background="Transparent" Command="{Binding GotoWorkspaceHomeCommand}"  ToolTip="Go To Home"   >
                     <Button.Content>
                         <Image Source="/imgs/GotoWorkspaceHome.png"/>
                     </Button.Content>
                 </Button>
-                <Button BorderBrush="Transparent"  Background="Transparent" Command="{Binding GotoFiducialHomeCommand}"  ToolTip="Go To Home"   >
+                <Button BorderBrush="Transparent"  Background="Transparent" Command="{Binding GotoFiducialHomeCommand}"  ToolTip="Go To Fiducial Home"   >
                     <Button.Content>
                         <Image Source="/imgs/GotoFiducialHome.png"/>
                     </Button.Content>

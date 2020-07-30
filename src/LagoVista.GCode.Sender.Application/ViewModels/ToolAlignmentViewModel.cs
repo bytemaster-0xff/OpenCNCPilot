@@ -113,11 +113,12 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
 
         public override async Task InitAsync()
         {
+            await base.InitAsync();
+
             Tool1Offset = Machine.Settings.PositioningCamera.Tool1Offset;
             Tool2Offset = Machine.Settings.PositioningCamera.Tool2Offset;
             BottomCameraLocation = Machine.Settings.PartInspectionCamera.AbsolutePosition;
-
-            await base.InitAsync();
+            StartCapture();         
         }
 
         public override void CircleLocated(Point2D<double> point, double diameter, Point2D<double> stdDev)

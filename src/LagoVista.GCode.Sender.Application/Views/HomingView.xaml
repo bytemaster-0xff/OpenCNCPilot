@@ -21,7 +21,8 @@
             <Controls:MVCommandBar x:Name="CmdBar" Grid.ColumnSpan="2" HorizontalAlignment="Left" />
         </StackPanel>
 
-        <Image x:Name="WebCamImage" Source="{Binding PrimaryCapturedImage}" Stretch="Uniform" Grid.Row="1" Grid.RowSpan="2" />
+        <Image x:Name="WebCamImage" Source="{Binding PrimaryCapturedImage}"  MouseDown="WebCamImage_MouseDown" Stretch="Uniform" Grid.Row="1" Grid.RowSpan="2" />
+        <Rectangle x:Name="BirdsEye" Fill="Black" MouseDown="BirdsEye_MouseDown" Width="125" Height="200" HorizontalAlignment="Right" VerticalAlignment="Bottom" Grid.Row="1" Grid.RowSpan="2" Grid.Column="1"  ></Rectangle>
 
         <Controls:MVViewOptions HorizontalAlignment="Right" VerticalAlignment="Top" Grid.Row="1" />
         <Controls:MVAquiredPoints HorizontalAlignment="Right" VerticalAlignment="Bottom" Grid.Row="1"/>

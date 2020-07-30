@@ -61,6 +61,11 @@ namespace LagoVista.GCode.Sender.ViewModels
             Machine.LaserOff();
         }
 
+        public void SetWorkspaceHome()
+        {
+            Machine.SetWorkspaceHome();
+        }
+
         public void GotoWorkspaceHome()
         {
             Machine.GotoWorkspaceHome();

@@ -46,6 +46,8 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             RaisePropertyChanged(nameof(JogSpeed));
 
             await base.InitAsync();
+
+            StartCapture();
         }
 
         public void PickPartFromBoard()

@@ -196,6 +196,7 @@ namespace LagoVista.GCode.Sender.Interfaces
 
         void GotoPoint(double x, double y, double z, bool rapidMove = true);
 
+        void SetWorkspaceHome();
         void GotoWorkspaceHome();
 
         void GotoFiducialHome();

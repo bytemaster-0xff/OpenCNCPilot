@@ -40,6 +40,7 @@ namespace LagoVista.GCode.Sender.ViewModels
             SetFavorite2Command = new RelayCommand(SetFavorite2, CanMove);
 
             GotoWorkspaceHomeCommand = new RelayCommand(GotoWorkspaceHome, CanMove);
+            SetWorkspaceHomeCommand = new RelayCommand(SetWorkspaceHome, CanMove);
             GotoFiducialHomeCommand = new RelayCommand(GotoFiducialHome, CanGotoFiducialHome);
 
             Machine.PropertyChanged += _machine_PropertyChanged;
@@ -86,6 +87,7 @@ namespace LagoVista.GCode.Sender.ViewModels
             SetFavorite1Command.RaiseCanExecuteChanged();
             SetFavorite2Command.RaiseCanExecuteChanged();
             GotoWorkspaceHomeCommand.RaiseCanExecuteChanged();
+            SetWorkspaceHomeCommand.RaiseCanExecuteChanged();
         }
 
         public bool CanManipulateLaser()
@@ -263,6 +265,7 @@ namespace LagoVista.GCode.Sender.ViewModels
         public RelayCommand GotoFavorite2Command { get; private set; }
 
         public RelayCommand GotoWorkspaceHomeCommand { get; private set; }
+        public RelayCommand SetWorkspaceHomeCommand { get; private set; }
         public RelayCommand GotoFiducialHomeCommand { get; private set; }
         public RelayCommand LaserOnCommand { get; private set; }
         public RelayCommand LaserOffCommand { get; private set; }

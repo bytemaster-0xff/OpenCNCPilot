@@ -203,15 +203,23 @@ namespace LagoVista.GCode.Sender
 
         public void GotoWorkspaceHome()
         {
-            if (Settings.MachineType == FirmwareTypes.GRBL1_1)
+            if (Settings.MachineType == FirmwareTypes.LagoVista_PnP)
             {
-                Enqueue("G0 Z20");
+                Enqueue("M57");
             }
+            else
+            {
+                if (Settings.MachineType == FirmwareTypes.GRBL1_1)
+                {
+                    Enqueue("G0 Z20");
+                }
 
-            Enqueue("G0 X0 Y0");
+                Enqueue("G0 X0 Y0");
 
-            if (Settings.MachineType == FirmwareTypes.GRBL1_1) { 
-                Enqueue("G0 Z0");
+                if (Settings.MachineType == FirmwareTypes.GRBL1_1)
+                {
+                    Enqueue("G0 Z0");
+                }
             }
         }
 
@@ -220,25 +228,30 @@ namespace LagoVista.GCode.Sender
             Enqueue("M53");
         }
 
+        public void SetWorkspaceHome()
+        {
+            Enqueue("M77");
+        }
+
         public void SetFavorite1()
         {
-            Enqueue("G28.1");
+            Enqueue("M78");
         }
 
         public void SetFavorite2()
         {
 
-            Enqueue("G30.1");
+            Enqueue("M79");
         }
 
         public void GotoFavorite1()
         {
-            Enqueue("G28");
+            Enqueue("M58");
         }
 
         public void GotoFavorite2()
         {
-            Enqueue("G30");
+            Enqueue("M59");
         }
 
         public void HomingCycle()
