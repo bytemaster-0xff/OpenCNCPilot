@@ -1,4 +1,5 @@
 ﻿using LagoVista.Core.Commanding;
+using LagoVista.Core.Models;
 using LagoVista.Core.ViewModels;
 using LagoVista.EaglePCB.Models;
 using LagoVista.GCode.Sender;
@@ -19,8 +20,11 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
         private bool _isEditing;
         private bool _isDirty = false;
         private BOM _billOfMaterials;
-
+        PackageLibrary _packageLibrary;
         private FeederLibrary _feederLibrary;
+
+        private int _partIndex = -1;
+
 
         public PnPJobViewModel(IMachine machine, PnPJob job) : base(machine)
         {
@@ -30,8 +34,21 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
 
             AddFeederCommand = new RelayCommand(AddFeeder, () => CanAddFeeder());
             SaveJobCommand = new RelayCommand(SaveJob, () => CanSaveJob());
-            _feederLibrary = new FeederLibrary();
 
+            GoToPartOnBoardCommand = new RelayCommand(GoToPartOnBoard);
+            GoToPartPositionInTrayCommand = new RelayCommand(GoToPartPositionInTray);
+
+            SelectPackagesFileCommand = new RelayCommand(SelectPackagesFile);
+
+            ResetCurrentComponentCommand = new RelayCommand(ResetCurrentComponent, () => SelectedPartRow != null);
+            MoveToPreviousComponentInTapeCommand = new RelayCommand(MoveToPreviousComponent, () => SelectedPartRow != null && SelectedPartRow.CurrentPartIndex > 0);
+            MoveToNextComponentInTapeCommand = new RelayCommand(MoveToNextComponentInTape, () => SelectedPartRow != null && SelectedPartRow.CurrentPartIndex < SelectedPartRow.PartCount);
+            SetFirstComponentLocationCommand = new RelayCommand(SetFirstComponentLocation, () => SelectedPartRow != null);
+            GoToFirstComponentReferenceCommand = new RelayCommand(GoToFirstComponentReference, () => SelectedPartRow != null);
+            PlacePartCommand = new RelayCommand(PlacePart, () => SelectedPart != null);
+            _feederLibrary = new FeederLibrary();
+            _packageLibrary = new PackageLibrary();
+        
             foreach (var entry in _billOfMaterials.SMDEntries)
             {
                 if (!Parts.Where(prt => prt.PackageName == entry.Package.Name &&
@@ -52,8 +69,124 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
 
         public override async Task InitAsync()
         {
+            await base.InitAsync();
             FeederTypes = await _feederLibrary.GetFeedersAsync();
             LoadingMask = false;
+
+            if (!String.IsNullOrEmpty(_job.PackagesPath) && System.IO.File.Exists(_job.PackagesPath))
+            {
+                _packages = await _packageLibrary.GetPackagesAsync(_job.PackagesPath);
+            }
+        }
+
+        public void GoToFirstComponentReference()
+        {
+            if(SelectedPartRow != null)
+            {
+                Machine.SendCommand($"G0 X{SelectedPartRow.FirstComponentX} Y{SelectedPartRow.FirstComponentY}");
+            }
+        }
+
+        public void ResetCurrentComponent()
+        {
+            SelectedPartRow.CurrentPartIndex = 0;
+            GoToPartPositionInTray();
+            SaveJob();
+        }
+
+        public void MoveToPreviousComponent()
+        {
+            if (SelectedPartRow.CurrentPartIndex > 0)
+            {
+                SelectedPartRow.CurrentPartIndex--;
+                MoveToNextComponentInTapeCommand.RaiseCanExecuteChanged();
+                MoveToPreviousComponentInTapeCommand.RaiseCanExecuteChanged();
+                ResetCurrentComponentCommand.RaiseCanExecuteChanged();
+                SaveJob();
+                GoToPartPositionInTray();
+            }
+        }
+
+        public void MoveToNextComponentInTape()
+        {
+            if (SelectedPartRow.CurrentPartIndex < SelectedPartRow.PartCount)
+            {
+                SelectedPartRow.CurrentPartIndex++;
+                MoveToNextComponentInTapeCommand.RaiseCanExecuteChanged();
+                MoveToPreviousComponentInTapeCommand.RaiseCanExecuteChanged();
+                ResetCurrentComponentCommand.RaiseCanExecuteChanged();
+                SaveJob();
+                GoToPartPositionInTray();
+            }
+        }
+
+        public void SetFirstComponentLocation()
+        {
+            SelectedPartRow.FirstComponentX = Machine.MachinePosition.X;
+            SelectedPartRow.FirstComponentY = Machine.MachinePosition.Y;
+            MoveToNextComponentInTapeCommand.RaiseCanExecuteChanged();
+            MoveToPreviousComponentInTapeCommand.RaiseCanExecuteChanged();
+            ResetCurrentComponentCommand.RaiseCanExecuteChanged();
+            SaveJob();
+        }
+
+        public async void PlacePart()
+        {
+            if (_partIndex < PartsToBePlaced.Count - 1)
+            {
+                _partIndex++;
+                _selectPartToBePlaced = PartsToBePlaced[_partIndex];
+                SelectedPartRow.CurrentPartIndex++;
+                SaveJob();
+                RaisePropertyChanged(nameof(SelectedPartToBePlaced));
+                GoToPartPositionInTray();
+
+                Machine.SendCommand("M54");
+
+                while (Machine.Busy) await Task.Delay(1);
+
+                Machine.SendCommand("M55");
+
+                while (Machine.Busy) await Task.Delay(1);
+
+                Machine.SendCommand("G4 P100");
+
+                while (Machine.Busy) await Task.Delay(1);
+
+                Machine.SendCommand("M64 P255");
+
+                while (Machine.Busy) await Task.Delay(1);
+
+                Machine.SendCommand("G4 P100");
+
+                while (Machine.Busy) await Task.Delay(1);
+
+                Machine.SendCommand("M54");
+
+                while (Machine.Busy) await Task.Delay(1);
+
+                GoToPartOnBoard();
+
+                while (Machine.Busy) await Task.Delay(1);
+
+                Machine.SendCommand("M56");
+
+                while (Machine.Busy) await Task.Delay(1);
+
+                Machine.SendCommand("G4 P100");
+
+                while (Machine.Busy) await Task.Delay(1);
+
+                Machine.SendCommand("M64 P0");
+
+                while (Machine.Busy) await Task.Delay(1);
+
+                Machine.SendCommand("G4 P250");
+
+                while (Machine.Busy) await Task.Delay(1);
+
+                Machine.SendCommand("M54");
+            }
         }
 
         public bool CanAddFeeder()
@@ -76,6 +209,27 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             SelectedFeeder = null;
         }
 
+        public void GoToPartPositionInTray()
+        {
+            if (SelectedPartPackage != null && SelectedPartRow != null)
+            {
+                var offsetY = SelectedPartRow.FirstComponentY + SelectedPartPackage.CenterYFromHole;
+                var offsetX = SelectedPartRow.CurrentPartIndex * SelectedPartPackage.HoleSpacing + SelectedPartPackage.CenterXFromHole + SelectedPartRow.FirstComponentX;
+                Machine.SendCommand($"G0 X{offsetX} Y{offsetY}");
+            }
+        }
+
+        public void GoToPartOnBoard()
+        {
+            Machine.SendCommand($"G1 X{SelectedPartToBePlaced.X} Y{SelectedPartToBePlaced.Y}");
+        }
+
+        ObservableCollection<PickAndPlace.Models.Package> _packages;
+        public ObservableCollection<PickAndPlace.Models.Package> Packages
+        {
+            get { return _packages; }
+            set { Set(ref _packages, value); }
+        }
 
         ObservableCollection<Feeder> _feederTypes;
         public ObservableCollection<Feeder> FeederTypes
@@ -105,6 +259,36 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
         {
             get { return _selectedFeederInstance; }
             set { Set(ref _selectedFeederInstance, value); }
+        }
+
+        public string SelectedPackageId
+        {
+            get { return SelectedPart?.PackageId; }
+            set
+            {
+                if (SelectedPart != null && value != null)
+                {
+                    SelectedPart.PackageId = value;
+                    _isDirty = true;
+                    SaveJobCommand.RaiseCanExecuteChanged();
+
+                }
+
+                RaisePropertyChanged(nameof(SelectedPartPackage));
+                RaisePropertyChanged();
+            }
+        }
+
+        public PickAndPlace.Models.Package SelectedPartPackage
+        {
+            get
+            {
+                if (SelectedPart != null)
+                {
+                    return Packages.Where(pck => pck.Id == SelectedPart.PackageId).FirstOrDefault();
+                }
+                return null;
+            }
         }
 
         public FeederInstance SelectedPartFeeder
@@ -165,6 +349,13 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                     SaveJobCommand.RaiseCanExecuteChanged();
                 }
                 RaisePropertyChanged();
+
+                _partIndex = -1;
+
+                MoveToNextComponentInTapeCommand.RaiseCanExecuteChanged();
+                MoveToPreviousComponentInTapeCommand.RaiseCanExecuteChanged();
+                ResetCurrentComponentCommand.RaiseCanExecuteChanged();
+                SetFirstComponentLocationCommand.RaiseCanExecuteChanged();
             }
         }
 
@@ -174,10 +365,14 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
         }
 
         Component _selectPartToBePlaced;
-        public Component SelectPartToBePlaced
+        public Component SelectedPartToBePlaced
         {
             get { return _selectPartToBePlaced; }
-            set { Set(ref _selectPartToBePlaced, value);  }
+            set
+            {
+                Set(ref _selectPartToBePlaced, value);
+                GoToPartOnBoard();
+            }
         }
 
         public BOM BillOfMaterials
@@ -200,6 +395,13 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                 Set(ref _selectedPart, value);
                 RaisePropertyChanged(nameof(SelectedPartFeeder));
                 RaisePropertyChanged(nameof(SelectedPartRow));
+                RaisePropertyChanged(nameof(SelectedPackageId));
+
+                MoveToNextComponentInTapeCommand.RaiseCanExecuteChanged();
+                MoveToPreviousComponentInTapeCommand.RaiseCanExecuteChanged();
+                ResetCurrentComponentCommand.RaiseCanExecuteChanged();
+                SetFirstComponentLocationCommand.RaiseCanExecuteChanged();
+                PlacePartCommand.RaiseCanExecuteChanged();
 
                 PartsToBePlaced.Clear();
                 var partsOfType = _billOfMaterials.SMDEntries.Where(ent =>
@@ -214,6 +416,25 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                 }
             }
         }
+
+        public async void SelectPackagesFile()
+        {
+            var result = await Popups.ShowOpenFileAsync(Constants.FileFilterPCB);
+            if (!String.IsNullOrEmpty(result))
+            {
+                try
+                {
+                    Job.PackagesPath = result;
+                    Packages = await _packageLibrary.GetPackagesAsync(result);
+                    SaveJob();
+                }
+                catch
+                {
+                    await Popups.ShowAsync("Could not open packages");
+                }
+            }
+        }
+
 
         private LagoVista.PickAndPlace.Models.PnPJob _job;
         public LagoVista.PickAndPlace.Models.PnPJob Job
@@ -271,5 +492,19 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
         public RelayCommand AddFeederCommand { get; private set; }
 
         public RelayCommand SaveJobCommand { get; private set; }
+
+        public RelayCommand GoToPartOnBoardCommand { get; private set; }
+
+        public RelayCommand GoToPartPositionInTrayCommand { get; private set; }
+
+        public RelayCommand SelectPackagesFileCommand { get; private set; }
+
+        public RelayCommand ResetCurrentComponentCommand { get; set; }
+        public RelayCommand MoveToPreviousComponentInTapeCommand { get; set; }
+        public RelayCommand MoveToNextComponentInTapeCommand { get; set; }
+        public RelayCommand SetFirstComponentLocationCommand { get; set; }
+        public RelayCommand GoToFirstComponentReferenceCommand { get; set; }
+
+        public RelayCommand PlacePartCommand { get; set; }
     }
 }

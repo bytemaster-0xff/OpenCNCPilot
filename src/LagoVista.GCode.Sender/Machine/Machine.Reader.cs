@@ -1,4 +1,5 @@
-﻿using LagoVista.GCode.Sender.Util;
+﻿using LagoVista.Core.PlatformSupport;
+using LagoVista.GCode.Sender.Util;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -7,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Windows.Threading;
 
 namespace LagoVista.GCode.Sender
 {
@@ -46,6 +48,26 @@ namespace LagoVista.GCode.Sender
                 {
                     lock (_queueAccessLocker)
                     {
+                        if (PendingQueue.Count > 0)
+                        {
+                            var responseRegEx = new Regex("<ok:(?'CODE'[A-Z0-9]+)>");
+                            var responseGCode = responseRegEx.Match(fullMessageLine);
+                            if (responseGCode.Success)
+                            {
+                                var code = responseGCode.Groups["CODE"].Value;
+
+                                if(PendingQueue[0].StartsWith(code))
+                                {
+                                    Services.DispatcherServices.Invoke(() =>
+                                    {
+                                        PendingQueue.RemoveAt(0);
+                                    });
+                                }
+
+                                Debug.WriteLine($"TOP ITEM {PendingQueue[0]} - {code} ");
+                            }
+                        }
+
                         if (_sentQueue.Any())
                         {
                             var sentLine = _sentQueue.Dequeue();

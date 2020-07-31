@@ -164,7 +164,7 @@ namespace LagoVista.GCode.Sender
         }
 
 
-        private void Enqueue(String cmd, bool highPriority = false)
+        public void Enqueue(String cmd, bool highPriority = false)
         {
             if (AssertConnected())
             {
@@ -177,6 +177,7 @@ namespace LagoVista.GCode.Sender
                     else
                     {
                         _toSend.Enqueue(cmd);
+                        PendingQueue.Add(cmd);
                         UnacknowledgedBytesSent += cmd.Length + 1;
                     }
                 }

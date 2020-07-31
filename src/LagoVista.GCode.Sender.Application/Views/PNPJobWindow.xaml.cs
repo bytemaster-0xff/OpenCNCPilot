@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LagoVista.GCode.Sender.Application.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,6 +23,21 @@ namespace LagoVista.GCode.Sender.Application.Views
         public PNPJobWindow()
         {
             InitializeComponent();
+        }
+
+        public PnPJobViewModel ViewModel
+        {
+            get => DataContext as PnPJobViewModel;
+        }
+
+        private void WebCamImage_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            var percentX = (e.GetPosition(WebCamImage).X / WebCamImage.ActualWidth) - 0.5;
+            var percentY = -((e.GetPosition(WebCamImage).Y / WebCamImage.ActualHeight) - 0.5);
+            var absX = percentX * 38 + ViewModel.Machine.MachinePosition.X;
+            var absY = percentY * 28 + ViewModel.Machine.MachinePosition.Y;
+
+            ViewModel.Machine.GotoPoint(absX, absY);
         }
     }
 }

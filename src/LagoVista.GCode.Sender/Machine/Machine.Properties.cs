@@ -220,6 +220,8 @@ namespace LagoVista.GCode.Sender
             }
         }
 
+        public ObservableCollection<string> PendingQueue { get; } = new ObservableCollection<string>();
+
         ObservableCollection<Models.StatusMessage> _messages;
         public ObservableCollection<Models.StatusMessage> Messages
         {
@@ -330,6 +332,16 @@ namespace LagoVista.GCode.Sender
             {
                 SendCommand(value ? "M64 P255" : "M64 P0");
                 _solendoidOn = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private int _machinePendingQueueLength;
+        public int MachinePendingQueueLength
+        {
+            get { return _machinePendingQueueLength; }
+            set {
+                _machinePendingQueueLength = value;
                 RaisePropertyChanged();
             }
         }

@@ -1,16 +1,18 @@
 ﻿using LagoVista.Core.Models;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LagoVista.PickAndPlace.Models
 {
     public class Part : ModelBase
     {
         public int Count { get; set; }
-        public Package Package { get; set; }
+
+        private String _packageId;
+        public String PackageId
+        {
+            get => _packageId;
+            set => Set(ref _packageId, value);
+        }
 
         public String PackageName { get; set; }
 

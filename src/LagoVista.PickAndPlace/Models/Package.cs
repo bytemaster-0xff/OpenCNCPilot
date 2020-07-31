@@ -9,15 +9,61 @@ namespace LagoVista.PickAndPlace.Models
         public Package()
         {
             Id = Guid.NewGuid().ToId();
+            HoleSpacing = 4;
+            CenterXFromHole = 2;
+            CenterYFromHole = 3.5;
+            CenterHoleFromBottom = 2.0;
+            TapeWidth = 9;
         }
 
         public string Id { get; set; }
 
         public string Name { get; set; }
+        
         public double Length { get; set; }
         public double Width { get; set; }
         public double Height { get; set; }
-        public double TapeWidth { get; set; }
+
+        private double _centerXFromHole;
+        public double CenterXFromHole
+        {
+            get => _centerXFromHole;
+            set => Set(ref _centerXFromHole, value);
+        }
+
+        private double _centerHoleFromBottom;
+        public double CenterHoleFromBottom
+        {
+            get => _centerHoleFromBottom;
+            set => Set(ref _centerHoleFromBottom, value);
+        }
+
+        private double _centerYFromHole;
+        public double CenterYFromHole
+        {
+            get => _centerYFromHole;
+            set => Set(ref _centerYFromHole, value);
+        }
+
+        private double _holeSpacing;
+        public double HoleSpacing
+        {
+            get => _holeSpacing;
+            set => Set(ref _holeSpacing, value);
+        }
+
+        private double _tapeWidth;
+        public double TapeWidth 
+        {
+            get => _tapeWidth;
+            set => Set(ref _tapeWidth, value);
+        }
+
         public int RotationInTape { get; set; }
+
+        public override string ToString()
+        {
+            return Name;
+        }
     }
 }

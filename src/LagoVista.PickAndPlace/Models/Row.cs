@@ -20,6 +20,13 @@ namespace LagoVista.PickAndPlace.Models
             set { Set(ref _firstComponentX, value); }
         }
 
+        private double _firstComponentY;
+        public double FirstComponentY
+        {
+            get { return _firstComponentY; }
+            set { Set(ref _firstComponentY, value); }
+        }
+
         public double SpacingX { get; set; }
 
         private int _currentPartIndex;

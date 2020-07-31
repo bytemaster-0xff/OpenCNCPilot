@@ -12,6 +12,23 @@
         Title="Pick and Place Job" Height="800" Width="1600">
     <Grid>
         <TabControl>
+            <TabItem Header="Job">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="120" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="60" />
+                    </Grid.ColumnDefinitions>
+
+                    <Label Content="Packages File" />
+                    <Controls:MaskingTextBox Text="{Binding Path=Job.PackagesPath, Mode=TwoWay}" Grid.Column="1" Margin="4,4,0,4" />
+                    <Button Content="..." Width="30" HorizontalAlignment="Left" Grid.Column="2" Margin="0,4,4,4" Command="{Binding SelectPackagesFileCommand}" />
+
+                </Grid>
+            </TabItem>
             <TabItem Header="Parts">
                 <Grid>
                     <Grid.RowDefinitions>
@@ -43,6 +60,7 @@
                             <RowDefinition Height="auto" />
                             <RowDefinition Height="auto" />
                             <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="80" />
@@ -54,12 +72,14 @@
                         <Label Content="Should Place" Grid.Row="3" />
                         <Label Content="Feeder" Grid.Row="4" />
                         <Label Content="Row" Grid.Row="5" />
+                        <Label Content="Package" Grid.Row="6" />
                         <TextBlock Text="{Binding SelectedPart.PackageName}" Grid.Column="1" />
                         <TextBlock Text="{Binding SelectedPart.LibraryName}" Grid.Row="1" Grid.Column="1" />
                         <TextBlock Text="{Binding SelectedPart.Value}" Grid.Row="2" Grid.Column="1" />
                         <CheckBox IsChecked="{Binding SelectedPart.ShouldPlace, Mode=TwoWay}" Grid.Row="3" Grid.Column="1" />
                         <ComboBox ItemsSource="{Binding JobFeeders}" SelectedItem="{Binding SelectedPartFeeder}" DisplayMemberPath="Name" Grid.Row="4" Grid.Column="1" />
                         <ComboBox ItemsSource="{Binding SelectedPartFeeder.Rows}" DisplayMemberPath="Display" SelectedValuePath="Row" Grid.Row="5" Grid.Column="1" SelectedItem="{Binding SelectedPartRow}" />
+                        <ComboBox ItemsSource="{Binding Packages}" Grid.Row="6" Grid.Column="1" SelectedValue="{Binding SelectedPackageId}" DisplayMemberPath="Name" SelectedValuePath="Id" />
                     </Grid>
                     <Button Grid.Row="2" Command="{Binding SaveJobCommand}" Content="Save" Width="80" Height="20" Margin="4" HorizontalAlignment="Right" />
                 </Grid>
@@ -154,31 +174,81 @@
                             <RowDefinition Height="auto" />
                             <RowDefinition Height="auto" />
                             <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
                             <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
-                        <StackPanel Orientation="Horizontal">
-                            <Button Width="36" Height="36"   Margin="2" HorizontalAlignment="Right"  Style="{StaticResource VideoControlButton}" >
+      
+                        <Grid Grid.Row="1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="120"></ColumnDefinition>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                <ColumnDefinition Width="auto"></ColumnDefinition>
+                                <ColumnDefinition Width="auto"></ColumnDefinition>
+                                <ColumnDefinition Width="auto"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />                                
+                            </Grid.RowDefinitions>
+                            
+                            <Label Content="Feeder" Grid.Row="0" />
+                            <TextBlock Text="{Binding SelectedPartFeeder.Feeder, FallbackValue=-}" Grid.Column="1" Grid.ColumnSpan="4" ></TextBlock>
+                            
+                            <Label Content="Package Part Row" Grid.Row="1" />
+                            <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding SelectedPartRow, FallbackValue=-}"  Grid.ColumnSpan="4"></TextBlock>
+
+                            <Label Content="Package Template" Grid.Row="2" />
+                            <TextBlock Grid.Row="2" Text="{Binding SelectedPartPackage, FallbackValue=-}" Grid.Column="1" Grid.ColumnSpan="4"></TextBlock>
+
+                            <Label Content="Part Count" Grid.Row="3" />
+
+                            <Controls:MaskingTextBox Text="{Binding SelectedPartRow.PartCount, Mode=TwoWay}"  UnitType="Size" Grid.Row="3" Grid.Column="1"  />
+
+                            <Button Width="24" Height="24"   Margin="2" HorizontalAlignment="Right"  Style="{StaticResource VideoControlButton}" Grid.Row="4" Grid.Column="2" Command="{Binding ResetCurrentComponentCommand}">
+                                <Button.Content>
+                                    <fa:ImageAwesome  Icon="MailReply" />
+                                </Button.Content>
+                            </Button>
+
+                            <Button Width="24" Height="24"   Margin="2" HorizontalAlignment="Right"  Style="{StaticResource VideoControlButton}" Grid.Row="4" Grid.Column="3" Command="{Binding MoveToPreviousComponentInTapeCommand}">
                                 <Button.Content>
                                     <fa:ImageAwesome  Icon="Backward" />
                                 </Button.Content>
                             </Button>
-                            <Button Width="36" Height="36"   Margin="2" HorizontalAlignment="Right"  Style="{StaticResource VideoControlButton}" >
-                                <Button.Content>
-                                    <fa:ImageAwesome  Icon="Play" />
-                                </Button.Content>
-                            </Button>
-                            <Button Width="36" Height="36"   Margin="2" HorizontalAlignment="Right"  Style="{StaticResource VideoControlButton}" >
+
+                            <Button Width="24" Height="24"   Margin="2" HorizontalAlignment="Right"  Style="{StaticResource VideoControlButton}" Grid.Row="4" Grid.Column="4" Command="{Binding MoveToNextComponentInTapeCommand}">
                                 <Button.Content>
                                     <fa:ImageAwesome  Icon="Forward" />
                                 </Button.Content>
                             </Button>
-                        </StackPanel>
 
-                        <StackPanel Grid.Row="1">
-                            <TextBlock Text="{Binding SelectedPartFeeder.Feeder}" ></TextBlock>
-                            <TextBlock Text="{Binding SelectedPartRow}" ></TextBlock>
-                            <Button Command="{Binding GoToPartPositionInTrayCommand}" Content="Goto Part in tray"></Button>
-                        </StackPanel>
+                            <Label Content="Current Part Index" Grid.Row="4" />
+                            <TextBlock Grid.Row="4" Text="{Binding SelectedPartRow.CurrentPartIndex, FallbackValue=-}" Grid.Column="1" ></TextBlock>
+
+                            <Label Content="First Location" Grid.Row="5" />
+                            <StackPanel Grid.Row="5" Grid.Column="1" Orientation="Horizontal">
+                                <TextBlock Text="{Binding SelectedPartRow.FirstComponentX , FallbackValue=-}" ></TextBlock>
+                                <TextBlock Text="," />
+                                <TextBlock Text="{Binding SelectedPartRow.FirstComponentY , FallbackValue=-}" ></TextBlock>
+                            </StackPanel>
+
+                            <Button Width="24" Height="24"   Margin="2" HorizontalAlignment="Right"  Style="{StaticResource VideoControlButton}" Grid.Row="5" Grid.Column="2" Command="{Binding SetFirstComponentLocationCommand}" >
+                                <Button.Content>
+                                    <fa:ImageAwesome Icon="Pencil" />
+                                </Button.Content>
+                            </Button>
+
+                            <Button Width="24" Height="24"   Margin="2" HorizontalAlignment="Right"  Style="{StaticResource VideoControlButton}" Grid.Row="5" Grid.Column="3" Command="{Binding GoToFirstComponentReferenceCommand}" >
+                                <Button.Content>
+                                    <fa:ImageAwesome Icon="MousePointer" />
+                                </Button.Content>
+                            </Button>
+                        </Grid>
                         
                         <Grid Grid.Row="2">
                             <Grid.ColumnDefinitions>
@@ -196,16 +266,15 @@
                             <Label Content="X" Grid.Row="1" />
                             <Label Grid.Row="2" Content="Y" />
                             <Label  Grid.Row="3" Content="Rotate" />
-                            <TextBlock Grid.Column="1" Grid.Row="0" Text="{Binding SelectPartToBePlaced.Name}" ></TextBlock>
-                            <TextBlock Grid.Column="1" Grid.Row="1" Text="{Binding SelectPartToBePlaced.X}" ></TextBlock>
-                            <TextBlock Grid.Column="1" Grid.Row="2" Text="{Binding SelectPartToBePlaced.Y}" ></TextBlock>
-                            <TextBlock Grid.Column="1" Grid.Row="3" Text="{Binding SelectPartToBePlaced.Rotate}" ></TextBlock>
-                           
-                            <Button Grid.Row="4" Grid.ColumnSpan="4" Command="{Binding GoToPartOnBoard}" Content="Goto Part on board"></Button>
+                            <TextBlock Grid.Column="1" Grid.Row="0" Text="{Binding SelectPartToBePlaced.Name, FallbackValue=-}" ></TextBlock>
+                            <TextBlock Grid.Column="1" Grid.Row="1" Text="{Binding SelectPartToBePlaced.X, FallbackValue=-}" ></TextBlock>
+                            <TextBlock Grid.Column="1" Grid.Row="2" Text="{Binding SelectPartToBePlaced.Y, FallbackValue=-}" ></TextBlock>
+                            <TextBlock Grid.Column="1" Grid.Row="3" Text="{Binding SelectPartToBePlaced.Rotate, FallbackValue=-}" ></TextBlock>
+
+                            <Button Grid.Row="4" Grid.ColumnSpan="4" Command="{Binding PlacePartCommand}" Content="Place Part"></Button>
                         </Grid>
                                     
-
-                        <DataGrid Grid.Row="3" ItemsSource="{Binding PartsToBePlaced}" SelectedItem="{Binding SelectPartToBePlaced}" AutoGenerateColumns="False" CanUserAddRows="False">
+                        <DataGrid Grid.Row="3" ItemsSource="{Binding PartsToBePlaced}" SelectedItem="{Binding SelectedPartToBePlaced}" AutoGenerateColumns="False" CanUserAddRows="False">
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="NameX" Binding="{Binding Name}" />
                                 <DataGridTextColumn Header="X" Binding="{Binding X}" />
@@ -214,7 +283,9 @@
                             </DataGrid.Columns>
                         </DataGrid>
                     </Grid>
-                    <Image x:Name="WebCamImage" Source="{Binding PrimaryCapturedImage}"  Grid.Column="1" Stretch="Uniform" Grid.Row="1" Grid.RowSpan="2" />
+                    
+                    <Image x:Name="WebCamImage" Source="{Binding PrimaryCapturedImage}"   MouseDown="WebCamImage_MouseDown"  Grid.Column="1" Stretch="Uniform" Grid.Row="1" Grid.RowSpan="2" />
+                    <Controls:ImageAdjustments Grid.Column="1" Grid.RowSpan="2" Visibility="{Binding AreToolSettingsVisible, Converter={StaticResource BoolToVisibilityConverter}}" />
 
                     <Controls:LoadingMask Grid.ColumnSpan="3" Grid.Row="1"  />
 

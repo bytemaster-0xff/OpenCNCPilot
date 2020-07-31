@@ -13,7 +13,11 @@
             <RowDefinition Height="auto"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
-        <Grid Background="LightGray">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="75*" />
+            <ColumnDefinition Width="25*" />
+        </Grid.ColumnDefinitions>
+        <Grid Background="LightGray" Grid.ColumnSpan="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="auto"/>
@@ -46,5 +50,19 @@
                 </DataTemplate>
             </ctls:ListBoxScroll.ItemTemplate>
         </ctls:ListBoxScroll>
+
+        <ctls:ListBoxScroll  HorizontalContentAlignment="Stretch"
+                             Grid.Row="1"
+                             Grid.Column="1"
+                 ItemsSource="{Binding Path=Machine.PendingQueue}"
+                 IsHitTestVisible="False" BorderThickness="0"
+                 ScrollViewer.HorizontalScrollBarVisibility="Disabled" >
+            <ctls:ListBoxScroll.ItemTemplate>
+                <DataTemplate>
+                       <TextBlock Text="{Binding .}"  />
+                </DataTemplate>
+            </ctls:ListBoxScroll.ItemTemplate>
+        </ctls:ListBoxScroll>
+
     </Grid>
 </UserControl>

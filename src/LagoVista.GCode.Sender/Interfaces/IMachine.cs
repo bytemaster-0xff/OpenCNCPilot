@@ -3,6 +3,7 @@ using LagoVista.Core.GCode.Commands;
 using LagoVista.Core.Models.Drawing;
 using LagoVista.Core.PlatformSupport;
 using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Threading.Tasks;
 
@@ -250,5 +251,7 @@ namespace LagoVista.GCode.Sender.Interfaces
         /// Current settings as to be used by the machine.
         /// </summary>
         MachineSettings Settings { get; set; }
+
+        ObservableCollection<string> PendingQueue { get; }
     }
 }
