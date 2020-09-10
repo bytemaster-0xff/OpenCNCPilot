@@ -452,8 +452,8 @@ namespace LagoVista.GCode.Sender.Application
                 await pnpViewModel.InitAsync();
                 var jobWindow = new Views.PNPJobWindow();
                 jobWindow.DataContext = pnpViewModel;
-                jobWindow.Owner = this;
-                jobWindow.ShowDialog();
+                //jobWindow.Owner = this;
+                jobWindow.Show();
             }
             else
             {

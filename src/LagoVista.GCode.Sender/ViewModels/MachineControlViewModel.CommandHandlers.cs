@@ -65,11 +65,11 @@ namespace LagoVista.GCode.Sender.ViewModels
                 case JogDirections.T1Plus:
                     Machine.SendCommand($"{Machine.Settings.JogGCodeCommand} Z{(currentTool1 + ZStepSize).ToDim()} F{Machine.Settings.JogFeedRate}");
                     break;
-                case JogDirections.T2Minus:
-                    Machine.SendCommand($"{Machine.Settings.JogGCodeCommand} Z{(currentTool2 - ZStepSize).ToDim()} F{Machine.Settings.JogFeedRate}");
+                case JogDirections.CMinus:
+                    Machine.SendCommand($"{Machine.Settings.JogGCodeCommand} C{(currentTool2 - 90).ToDim()} F{Machine.Settings.JogFeedRate}");
                     break;
-                case JogDirections.T2Plus:
-                    Machine.SendCommand($"{Machine.Settings.JogGCodeCommand} Z{(currentTool2 + ZStepSize).ToDim()} F{Machine.Settings.JogFeedRate}");
+                case JogDirections.CPlus:
+                    Machine.SendCommand($"{Machine.Settings.JogGCodeCommand} C{(currentTool2 + 90).ToDim()} F{Machine.Settings.JogFeedRate}");
                     break;
             }
         }
@@ -86,7 +86,6 @@ namespace LagoVista.GCode.Sender.ViewModels
                     Machine.SendCommand("G28 Z");
                     Machine.SendCommand("T1");
                     Machine.SendCommand("G28 Z");
-
                     break;
                 case Sender.HomeAxis.X:
                     Machine.SendCommand("G28 X");
@@ -98,16 +97,13 @@ namespace LagoVista.GCode.Sender.ViewModels
                     Machine.SendCommand("G28 Z");
                     break;
                 case HomeAxis.T0:
-                    Machine.SendCommand("T0");
                     Machine.SendCommand("G28 Z");
                     break;
                 case HomeAxis.T1:
-                    Machine.SendCommand("T1");
-                    Machine.SendCommand("G28 Z");
+                    Machine.SendCommand("G28 P");
                     break;
-                case HomeAxis.T2:
-                    Machine.SendCommand("T2");
-                    Machine.SendCommand("G0 Z0");
+                case HomeAxis.C:
+                    Machine.SendCommand("G28 C");
                     break;
             }
         }
@@ -117,7 +113,7 @@ namespace LagoVista.GCode.Sender.ViewModels
             switch (axis)
             {
                 case Sender.ResetAxis.All:
-                    Machine.SendCommand("G10 L20 P0 X0 Y0 Z0");
+                    Machine.SendCommand("G10 L20 P0 X0 Y0 Z0 C0");
                     break;
                 case Sender.ResetAxis.X:
                     Machine.SendCommand("G10 L20 P0 X0");
@@ -129,16 +125,13 @@ namespace LagoVista.GCode.Sender.ViewModels
                     Machine.SendCommand("G10 L20 P0 Z0");
                     break;
                 case Sender.ResetAxis.T0:
-                    Machine.SendCommand("T0");
                     Machine.SendCommand("G10 L20 P0 Z0");
                     break;
                 case Sender.ResetAxis.T1:
-                    Machine.SendCommand("T1");
                     Machine.SendCommand("G10 L20 P0 Z0");
                     break;
-                case Sender.ResetAxis.T2:
-                    Machine.SendCommand("T1");
-                    Machine.SendCommand("G10 L20 P0 Z0");
+                case Sender.ResetAxis.C:
+                    Machine.SendCommand("G10 L20 P0 C0");
                     break;
 
 

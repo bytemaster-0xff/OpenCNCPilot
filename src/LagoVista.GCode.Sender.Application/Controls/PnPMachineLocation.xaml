@@ -69,14 +69,14 @@
             <Button Content="Y" Grid.Column="3" Grid.Row="2" Command="{Binding ResetCommand}" CommandParameter="{x:Static sndr:ResetAxis.Y}" />
             <Button Content="P" Grid.Column="3" Grid.Row="3" Command="{Binding ResetCommand}" CommandParameter="{x:Static sndr:ResetAxis.T0}" />
             <Button Content="S" Grid.Column="3" Grid.Row="4" Command="{Binding ResetCommand}" CommandParameter="{x:Static sndr:ResetAxis.T1}" />
-            <Button Content="C" Grid.Column="3" Grid.Row="5" Command="{Binding ResetCommand}" CommandParameter="{x:Static sndr:ResetAxis.T2}" />
+            <Button Content="C" Grid.Column="3" Grid.Row="5" Command="{Binding ResetCommand}" CommandParameter="{x:Static sndr:ResetAxis.C}" />
             <Button Content="All" Grid.Column="3" Grid.Row="6" Command="{Binding ResetCommand}" CommandParameter="{x:Static sndr:ResetAxis.All}" />
 
             <Button Content="X" Grid.Column="4" Grid.Row="1" Command="{Binding HomeCommand}" CommandParameter="{x:Static sndr:HomeAxis.X}" />
             <Button Content="Y" Grid.Column="4" Grid.Row="2" Command="{Binding HomeCommand}" CommandParameter="{x:Static sndr:HomeAxis.Y}" />
             <Button Content="P" Grid.Column="4" Grid.Row="3" Command="{Binding HomeCommand}" CommandParameter="{x:Static sndr:HomeAxis.T0}" />
             <Button Content="S" Grid.Column="4" Grid.Row="4" Command="{Binding HomeCommand}" CommandParameter="{x:Static sndr:HomeAxis.T1}" />
-            <Button Content="C" Grid.Column="4" Grid.Row="5" Command="{Binding HomeCommand}" CommandParameter="{x:Static sndr:HomeAxis.T2}" />
+            <Button Content="C" Grid.Column="4" Grid.Row="5" Command="{Binding HomeCommand}" CommandParameter="{x:Static sndr:HomeAxis.C}" />
             <Button Content="All" Grid.Column="4" Grid.Row="6" Command="{Binding HomeCommand}" CommandParameter="{x:Static sndr:HomeAxis.All}" />
 
             <Grid Grid.Row="7" Grid.ColumnSpan="5" >

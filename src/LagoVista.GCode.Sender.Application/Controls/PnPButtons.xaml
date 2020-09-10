@@ -8,7 +8,7 @@
              xmlns:sndr="clr-namespace:LagoVista.GCode.Sender;assembly=LagoVista.GCode.Sender"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-    <Grid>
+    <Grid Background="Gray">
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
@@ -86,12 +86,12 @@
 
 
 
-            <Button Style="{StaticResource JogArrow}" Grid.Row="2" Grid.Column="2" Command="{Binding JogCommand}" CommandParameter="{x:Static sndr:JogDirections.T2Minus}">
+            <Button Style="{StaticResource JogArrow}" Grid.Row="2" Grid.Column="2" Command="{Binding JogCommand}" CommandParameter="{x:Static sndr:JogDirections.CMinus}">
                 <Button.Content>
                     <fa:ImageAwesome Icon="Undo" />
                 </Button.Content>
             </Button>
-            <Button Style="{StaticResource JogArrow}"  Grid.Row="2" Grid.Column="5" Command="{Binding JogCommand}" CommandParameter="{x:Static sndr:JogDirections.T2Plus}">
+            <Button Style="{StaticResource JogArrow}"  Grid.Row="2" Grid.Column="5" Command="{Binding JogCommand}" CommandParameter="{x:Static sndr:JogDirections.CPlus}">
                 <Button.Content>
                     <fa:ImageAwesome Icon="Repeat" />
                 </Button.Content>

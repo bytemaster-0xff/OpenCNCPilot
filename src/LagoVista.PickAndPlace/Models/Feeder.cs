@@ -35,7 +35,12 @@ namespace LagoVista.PickAndPlace.Models
 
         public bool IsStatic { get; set; }
 
-        public int NumberRows { get; set; }
+        private int _numberRows = 1;
+        public int NumberRows 
+        { 
+            get { return _numberRows; }
+            set{Set(ref _numberRows, value);}
+        }
 
         private double _x;
         private double _y;
@@ -55,6 +60,15 @@ namespace LagoVista.PickAndPlace.Models
                 Set(ref _y, value);
             }
         }
+
+        private double _firstPartXOffset;
+        public double FirstPartXOffset
+        {
+            get { return _firstPartXOffset; }
+            set { Set(ref _firstPartXOffset, value); }
+        }
+
+        public List<double> RowYHoleOffsets { get; private set; } = new List<double>();
 
         public override string ToString()
         {

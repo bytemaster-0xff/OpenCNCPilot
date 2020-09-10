@@ -244,7 +244,7 @@ namespace LagoVista.GCode.Sender
 
             Enqueue("M79");
         }
-
+         
         public void GotoFavorite1()
         {
             Enqueue("M58");

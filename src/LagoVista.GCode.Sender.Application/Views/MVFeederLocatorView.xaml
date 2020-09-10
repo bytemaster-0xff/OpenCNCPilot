@@ -23,7 +23,7 @@
         <Grid Grid.Row="1" DataContext="{Binding FeederDefinitions}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto" />
-                <RowDefinition Height="*" />
+                <RowDefinition Height="150" />
                 <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
             <Button />
@@ -62,8 +62,16 @@
                         <RowDefinition Height="auto" />
                         <RowDefinition Height="auto" />
                         <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
                     </Grid.RowDefinitions>
-                    <Grid Grid.Row="0" DataContext="{Binding CurrentFeeder}" Width="320">
+                    <StackPanel>
+                        <TextBlock Text="Instructions: "/>
+                        <TextBlock Text="1. Set XY location of feeder" />
+                        <TextBlock Text="2. Set X Offset for first part (any row)" />
+                        <TextBlock Text="3. Set Y offset for hole for each row" />
+                    </StackPanel>
+                    <Grid Grid.Row="1" DataContext="{Binding CurrentFeeder}" Width="320">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="auto" />
                             <RowDefinition Height="auto" />
@@ -75,7 +83,7 @@
                             <RowDefinition Height="auto" />
                             <RowDefinition Height="auto" />
                             <RowDefinition Height="auto" />
-                            <RowDefinition Height="auto" />                            
+                            <RowDefinition Height="auto" />
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="120" />
@@ -90,36 +98,40 @@
                         <Label Content="Height" Grid.Row="2" />
                         <ctls:MaskingTextBox Text="{Binding Length, Mode=TwoWay}"   UnitType="Size" Grid.Row="2" Grid.Column="1" />
                         <Label Content="(mm)" Grid.Row="2" Grid.Column="2" />
-                        <Label Content="Part Height" Grid.Row="3" />
-                        <ctls:MaskingTextBox Text="{Binding PartHeight, Mode=TwoWay}"   UnitType="Size" Grid.Row="3" Grid.Column="1" />
-                        <Label Content="(mm)" Grid.Row="3" Grid.Column="2" />
 
                         <Label Content="Number Rows" Grid.Row="4" />
                         <ctls:MaskingTextBox Text="{Binding NumberRows, Mode=TwoWay}"  UnitType="Count"  Grid.Row="4" Grid.Column="1"  />
                         <Label Content="(mm)" Grid.Row="4" Grid.Column="2" />
 
-                        <Label Content="First Row Offset" Grid.Row="5" />
-                        <ctls:MaskingTextBox Text="{Binding FirstRowOffset, Mode=TwoWay}"  UnitType="Size" Grid.Row="5" Grid.Column="1"  />
-                        <Label Content="(mm)" Grid.Row="5" Grid.Column="2" />
-
-                        <Label Content="Row Width" Grid.Row="6" />
-                        <ctls:MaskingTextBox Text="{Binding RowWidth, Mode=TwoWay}"  UnitType="Size" Grid.Row="6" Grid.Column="1"  />
-                        <Label Content="(mm)" Grid.Row="6" Grid.Column="2" />
-
-                        <Label Content="Tape Width" Grid.Row="7" />
-                        <ctls:MaskingTextBox Text="{Binding TapeWidth, Mode=TwoWay}"  UnitType="Size" Grid.Row="7" Grid.Column="1"  />
-                        <Label Content="(mm)" Grid.Row="7" Grid.Column="2" />
 
                         <Label Content="X" Grid.Row="8" />
                         <ctls:MaskingTextBox Text="{Binding X, Mode=TwoWay}"  UnitType="Size" Grid.Row="8" Grid.Column="1"  />
-                        <Label Content="(mm)" Grid.Row="8" Grid.Column="2" />
+                        
+                        <StackPanel Orientation="Horizontal" Grid.Row="8" Grid.Column="2" >
+                            <Label Content="(mm)" Grid.Row="8" Grid.Column="2" />
+                            <Button Content="Set" Command="{Binding SetFeederXCommand}" />
+                        </StackPanel>
 
                         <Label Content="Y" Grid.Row="9" />
                         <ctls:MaskingTextBox Text="{Binding Y, Mode=TwoWay}"  UnitType="Size" Grid.Row="9" Grid.Column="1"  />
-                        <Label Content="(mm)" Grid.Row="9" Grid.Column="2" />
+                        <StackPanel Orientation="Horizontal" Grid.Row="9" Grid.Column="2" >
+                            <Label Content="(mm)" />
+                            <Button Content="Set" Command="{Binding SetFeederYCommand}" />
+                        </StackPanel>
                     </Grid>
-                    <Button Command="{Binding SetLocationCommand}" Grid.Row="1" Grid.ColumnSpan="3"  Content="Set Location" />
-                    <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.ColumnSpan="3" HorizontalAlignment="Right">
+                    <ListView Grid.Row="3" ItemsSource="{Binding RowYOffsets}" Height="200">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <TextBlock Text="{Binding RowIndex}"></TextBlock>
+                                    <TextBlock Text="{Binding YPosition}"></TextBlock>
+                                    <TextBlock Text="{Binding TapeHeight}"></TextBlock>
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+
+                    <StackPanel Orientation="Horizontal" Grid.Row="4" Grid.ColumnSpan="3" HorizontalAlignment="Right">
                         <StackPanel.Resources>
                             <Style TargetType="Button">
                                 <Setter Property="Margin" Value="4" />
@@ -131,7 +143,7 @@
                         <Button Content="Delete" Command="{Binding DeleteFeederCommand}" />
                         <Button Content="Cancel" Command="{Binding CancelFeederCommand}" />
                     </StackPanel>
-                    
+
                 </Grid>
             </Grid>
         </Grid>
@@ -142,7 +154,7 @@
 
         <Image x:Name="WebCamImage" Source="{Binding PrimaryCapturedImage}" MouseDown="WebCamImage_MouseDown" Stretch="Uniform" Grid.Row="1" Grid.RowSpan="2" Grid.Column="1"  />
         <Rectangle x:Name="BirdsEye" Fill="Black" MouseDown="BirdsEye_MouseDown" Width="125" Height="200" HorizontalAlignment="Right" VerticalAlignment="Bottom" Grid.Row="1" Grid.RowSpan="2" Grid.Column="1"  ></Rectangle>
-        
+
         <Controls:MVViewOptions HorizontalAlignment="Right" VerticalAlignment="Top" Grid.Row="1" Grid.Column="1" />
         <Controls:MVAquiredPoints HorizontalAlignment="Right" VerticalAlignment="Bottom" Grid.Row="1" Grid.Column="1"/>
 

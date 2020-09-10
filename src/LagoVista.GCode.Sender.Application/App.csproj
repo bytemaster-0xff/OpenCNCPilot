@@ -513,6 +513,7 @@
     <Resource Include="Imgs\Vacuum2.png" />
     <Resource Include="Imgs\GotoFiducialHome.png" />
     <Resource Include="Imgs\AddWorkspaceHome.png" />
+    <Resource Include="Imgs\SetFiducialHome.png" />
     <Content Include="KegeratorController.brd">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

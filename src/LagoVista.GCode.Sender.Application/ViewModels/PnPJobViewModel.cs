@@ -41,6 +41,10 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             SelectPackagesFileCommand = new RelayCommand(SelectPackagesFile);
 
             ResetCurrentComponentCommand = new RelayCommand(ResetCurrentComponent, () => SelectedPartRow != null);
+
+            GoToWorkHomeCommand = new RelayCommand(() => Machine.GotoWorkspaceHome());
+            SetWorkHomeCommand = new RelayCommand(() => Machine.SetWorkspaceHome());
+
             MoveToPreviousComponentInTapeCommand = new RelayCommand(MoveToPreviousComponent, () => SelectedPartRow != null && SelectedPartRow.CurrentPartIndex > 0);
             MoveToNextComponentInTapeCommand = new RelayCommand(MoveToNextComponentInTape, () => SelectedPartRow != null && SelectedPartRow.CurrentPartIndex < SelectedPartRow.PartCount);
             SetFirstComponentLocationCommand = new RelayCommand(SetFirstComponentLocation, () => SelectedPartRow != null);
@@ -48,7 +52,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             PlacePartCommand = new RelayCommand(PlacePart, () => SelectedPart != null);
             _feederLibrary = new FeederLibrary();
             _packageLibrary = new PackageLibrary();
-        
+
             foreach (var entry in _billOfMaterials.SMDEntries)
             {
                 if (!Parts.Where(prt => prt.PackageName == entry.Package.Name &&
@@ -81,7 +85,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
 
         public void GoToFirstComponentReference()
         {
-            if(SelectedPartRow != null)
+            if (SelectedPartRow != null)
             {
                 Machine.SendCommand($"G0 X{SelectedPartRow.FirstComponentX} Y{SelectedPartRow.FirstComponentY}");
             }
@@ -130,10 +134,27 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             SaveJob();
         }
 
+        async Task SendInstructionSequenceAsync(List<string> cmds)
+        {
+            foreach (var cmd in cmds)
+            {
+                Machine.SendCommand(cmd);
+
+                while (Machine.Busy) await Task.Delay(1);
+            }
+        }
+
         public async void PlacePart()
         {
             if (_partIndex < PartsToBePlaced.Count - 1)
             {
+                if (!Machine.Vacuum1On || !Machine.Vacuum2On)
+                {
+                    Machine.Vacuum1On = true;
+                    Machine.Vacuum2On = true;
+                    await Task.Delay(2000);
+                }
+
                 _partIndex++;
                 _selectPartToBePlaced = PartsToBePlaced[_partIndex];
                 SelectedPartRow.CurrentPartIndex++;
@@ -141,51 +162,21 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                 RaisePropertyChanged(nameof(SelectedPartToBePlaced));
                 GoToPartPositionInTray();
 
-                Machine.SendCommand("M54");
+                var cmds = new List<string>();
+                cmds.Add("M54"); // Move to move height
+                cmds.Add(GetGoToPartInTrayGCode());                
+                cmds.Add("M55"); // Move to pick height
+                cmds.Add("M64 P255"); // Turn on solenoid 
+                cmds.Add("G4 P500"); // Wait 500ms to pickup part.
+                cmds.Add("M54"); // Go to move height
+                cmds.Add(GetGoToPartOnBoardGCode());
+                cmds.Add("M56"); // Go to place height
+                cmds.Add("G4 P100"); // Wait 100ms to before turning off solenoid
+                cmds.Add("M64 P0");
+                cmds.Add("G4 P500"); // Wait 500ms to let placed part settle in
+                cmds.Add("M54"); // Return to move height.
 
-                while (Machine.Busy) await Task.Delay(1);
-
-                Machine.SendCommand("M55");
-
-                while (Machine.Busy) await Task.Delay(1);
-
-                Machine.SendCommand("G4 P100");
-
-                while (Machine.Busy) await Task.Delay(1);
-
-                Machine.SendCommand("M64 P255");
-
-                while (Machine.Busy) await Task.Delay(1);
-
-                Machine.SendCommand("G4 P100");
-
-                while (Machine.Busy) await Task.Delay(1);
-
-                Machine.SendCommand("M54");
-
-                while (Machine.Busy) await Task.Delay(1);
-
-                GoToPartOnBoard();
-
-                while (Machine.Busy) await Task.Delay(1);
-
-                Machine.SendCommand("M56");
-
-                while (Machine.Busy) await Task.Delay(1);
-
-                Machine.SendCommand("G4 P100");
-
-                while (Machine.Busy) await Task.Delay(1);
-
-                Machine.SendCommand("M64 P0");
-
-                while (Machine.Busy) await Task.Delay(1);
-
-                Machine.SendCommand("G4 P250");
-
-                while (Machine.Busy) await Task.Delay(1);
-
-                Machine.SendCommand("M54");
+                await SendInstructionSequenceAsync(cmds);
             }
         }
 
@@ -209,19 +200,32 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             SelectedFeeder = null;
         }
 
+        private string GetGoToPartInTrayGCode()
+        {
+            var offsetY = SelectedPartRow.FirstComponentY + SelectedPartPackage.CenterYFromHole;
+            var offsetX = SelectedPartRow.CurrentPartIndex * SelectedPartPackage.HoleSpacing + SelectedPartPackage.CenterXFromHole + SelectedPartRow.FirstComponentX;
+            return $"G0 X{offsetX} Y{offsetY}";
+        }
+
         public void GoToPartPositionInTray()
         {
             if (SelectedPartPackage != null && SelectedPartRow != null)
             {
-                var offsetY = SelectedPartRow.FirstComponentY + SelectedPartPackage.CenterYFromHole;
-                var offsetX = SelectedPartRow.CurrentPartIndex * SelectedPartPackage.HoleSpacing + SelectedPartPackage.CenterXFromHole + SelectedPartRow.FirstComponentX;
-                Machine.SendCommand($"G0 X{offsetX} Y{offsetY}");
+                Machine.SendCommand(GetGoToPartInTrayGCode()); ;
             }
+        }
+
+        private String GetGoToPartOnBoardGCode()
+        {
+            return $"G1 X{SelectedPartToBePlaced.X} Y{SelectedPartToBePlaced.Y} F500";
         }
 
         public void GoToPartOnBoard()
         {
-            Machine.SendCommand($"G1 X{SelectedPartToBePlaced.X} Y{SelectedPartToBePlaced.Y}");
+            if (SelectedPartToBePlaced != null)
+            {
+                Machine.SendCommand(GetGoToPartOnBoardGCode());
+            }
         }
 
         ObservableCollection<PickAndPlace.Models.Package> _packages;
@@ -504,6 +508,9 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
         public RelayCommand MoveToNextComponentInTapeCommand { get; set; }
         public RelayCommand SetFirstComponentLocationCommand { get; set; }
         public RelayCommand GoToFirstComponentReferenceCommand { get; set; }
+
+        public RelayCommand GoToWorkHomeCommand { get; set; }
+        public RelayCommand SetWorkHomeCommand { get; set; }
 
         public RelayCommand PlacePartCommand { get; set; }
     }

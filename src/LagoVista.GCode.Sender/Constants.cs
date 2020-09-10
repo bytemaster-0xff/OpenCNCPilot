@@ -14,8 +14,8 @@ namespace LagoVista.GCode.Sender
         T0Minus,
         T1Plus,
         T1Minus,
-        T2Plus,
-        T2Minus,
+        CPlus,
+        CMinus,
     }
 
     public enum MachineOrigin
@@ -51,7 +51,7 @@ namespace LagoVista.GCode.Sender
         Z,
         T0,
         T1,
-        T2,
+        C,
         All
     }
 
@@ -62,7 +62,7 @@ namespace LagoVista.GCode.Sender
         Z,
         T0,
         T1,
-        T2,
+        C,
         All
     }
 
