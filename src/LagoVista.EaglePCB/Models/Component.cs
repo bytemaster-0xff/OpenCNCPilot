@@ -17,7 +17,9 @@ namespace LagoVista.EaglePCB.Models
         public double? X { get; set; }
         public double? Y { get; set; }
         public string Rotate { get; set; }
-
+        public bool Included { get; set; }
+        public string Function { get; set; }
+      
         public int Layer
         {
             get

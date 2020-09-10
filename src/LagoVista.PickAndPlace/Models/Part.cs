@@ -39,7 +39,7 @@ namespace LagoVista.PickAndPlace.Models
 
         public bool IsConfigured
         {
-            get { return !String.IsNullOrEmpty(FeederId) && RowNumber.HasValue;  }
+            get { return !String.IsNullOrEmpty(FeederId) && RowNumber.HasValue && !String.IsNullOrEmpty(PackageId);  }
         }
 
         private int? _rowNumber;

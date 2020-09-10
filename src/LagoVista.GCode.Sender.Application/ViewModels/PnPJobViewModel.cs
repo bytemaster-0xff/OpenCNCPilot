@@ -53,6 +53,8 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             _feederLibrary = new FeederLibrary();
             _packageLibrary = new PackageLibrary();
 
+            Parts.Clear();
+
             foreach (var entry in _billOfMaterials.SMDEntries)
             {
                 if (!Parts.Where(prt => prt.PackageName == entry.Package.Name &&
@@ -65,9 +67,29 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                         LibraryName = entry.Package.LibraryName,
                         PackageName = entry.Package.Name,
                         Value = entry.Value
-
                     });
                 }
+            }
+
+            BuildFlavors = job.BuildFlavors;
+            SelectedBuildFlavor = job.BuildFlavors.FirstOrDefault();
+            if (SelectedBuildFlavor == null)
+            {
+                SelectedBuildFlavor = new BuildFlavor()
+                {
+                    Name = "Default"
+                };
+
+                foreach (var entry in _billOfMaterials.SMDEntries)
+                {
+                    foreach(var component in entry.Components)
+                    {
+                        component.Included = true;
+                        SelectedBuildFlavor.Components.Add(component);
+                    }
+                }
+
+                job.BuildFlavors.Add(SelectedBuildFlavor);
             }
         }
 
@@ -423,7 +445,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
 
         public async void SelectPackagesFile()
         {
-            var result = await Popups.ShowOpenFileAsync(Constants.FileFilterPCB);
+            var result = await Popups.ShowOpenFileAsync(Constants.PartsPackages);
             if (!String.IsNullOrEmpty(result))
             {
                 try
@@ -458,6 +480,15 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             get;
             set;
         }
+
+        BuildFlavor _selectedBuildFlavor;
+        public BuildFlavor SelectedBuildFlavor
+        {
+            get => _selectedBuildFlavor;
+            set => Set(ref _selectedBuildFlavor, value);
+        }
+
+        public ObservableCollection<BuildFlavor> BuildFlavors { get; set; } = new ObservableCollection<BuildFlavor>();
 
         public ObservableCollection<Component> PartsToBePlaced { get; set; } = new ObservableCollection<Component>();
 

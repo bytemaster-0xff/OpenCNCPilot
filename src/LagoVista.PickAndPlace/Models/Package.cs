@@ -13,7 +13,7 @@ namespace LagoVista.PickAndPlace.Models
             CenterXFromHole = 2;
             CenterYFromHole = 3.5;
             CenterHoleFromBottom = 2.0;
-            TapeWidth = 9;
+            TapeWidth = 8;
         }
 
         public string Id { get; set; }

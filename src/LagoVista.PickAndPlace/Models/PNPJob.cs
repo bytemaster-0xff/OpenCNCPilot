@@ -2,11 +2,7 @@
 using LagoVista.EaglePCB.Managers;
 using LagoVista.EaglePCB.Models;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
@@ -26,6 +22,7 @@ namespace LagoVista.PickAndPlace.Models
         {
             Feeders = new ObservableCollection<FeederInstance>();
             Parts = new ObservableCollection<Part>();
+            BuildFlavors = new ObservableCollection<BuildFlavor>();
         }
 
         private double _safeHeight;
@@ -57,6 +54,8 @@ namespace LagoVista.PickAndPlace.Models
             get { return _eagleBRDFilePath; }
             set { Set(ref _eagleBRDFilePath, value); }
         }
+
+        public ObservableCollection<BuildFlavor> BuildFlavors { get; set; }
 
         public ObservableCollection<Part> Parts { get; set; }
 
