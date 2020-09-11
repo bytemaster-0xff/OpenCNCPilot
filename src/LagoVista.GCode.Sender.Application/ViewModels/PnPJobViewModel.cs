@@ -33,7 +33,8 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             _isDirty = true;
 
             AddFeederCommand = new RelayCommand(AddFeeder, () => CanAddFeeder());
-            SaveJobCommand = new RelayCommand(SaveJob, () => CanSaveJob());
+            SaveJobCommand = new RelayCommand(SaveJob);
+            CloneCommand = new RelayCommand(CloneConfiguration);
 
             GoToPartOnBoardCommand = new RelayCommand(GoToPartOnBoard);
             GoToPartPositionInTrayCommand = new RelayCommand(GoToPartPositionInTray);
@@ -53,24 +54,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             _feederLibrary = new FeederLibrary();
             _packageLibrary = new PackageLibrary();
 
-            Parts.Clear();
-
-            foreach (var entry in _billOfMaterials.SMDEntries)
-            {
-                if (!Parts.Where(prt => prt.PackageName == entry.Package.Name &&
-                                        prt.LibraryName == entry.Package.LibraryName &&
-                                        prt.Value == entry.Value).Any())
-                {
-                    Parts.Add(new Part()
-                    {
-                        Count = entry.Components.Count,
-                        LibraryName = entry.Package.LibraryName,
-                        PackageName = entry.Package.Name,
-                        Value = entry.Value
-                    });
-                }
-            }
-
+         
             BuildFlavors = job.BuildFlavors;
             SelectedBuildFlavor = job.BuildFlavors.FirstOrDefault();
             if (SelectedBuildFlavor == null)
@@ -90,6 +74,29 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                 }
 
                 job.BuildFlavors.Add(SelectedBuildFlavor);
+            }
+
+            PopulateParts();
+        }
+
+        private void PopulateParts()
+        {
+            Parts.Clear();
+
+            foreach (var entry in _billOfMaterials.SMDEntries)
+            {
+                if (!Parts.Where(prt => prt.PackageName == entry.Package.Name &&
+                                        prt.LibraryName == entry.Package.LibraryName &&
+                                        prt.Value == entry.Value).Any())
+                {
+                    Parts.Add(new Part()
+                    {
+                        Count = entry.Components.Count,
+                        LibraryName = entry.Package.LibraryName,
+                        PackageName = entry.Package.Name,
+                        Value = entry.Value
+                    });
+                }
             }
         }
 
@@ -111,6 +118,14 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             {
                 Machine.SendCommand($"G0 X{SelectedPartRow.FirstComponentX} Y{SelectedPartRow.FirstComponentY}");
             }
+        }
+
+        public async void CloneConfiguration()
+        {
+            var clonedName = await Popups.PromptForStringAsync("Cloned configuration name", isRequired: true);
+            var clonedFlavor = SelectedBuildFlavor.Clone(clonedName);
+            BuildFlavors.Add(clonedFlavor);
+            SelectedBuildFlavor = clonedFlavor;
         }
 
         public void ResetCurrentComponent()
@@ -430,15 +445,18 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                 PlacePartCommand.RaiseCanExecuteChanged();
 
                 PartsToBePlaced.Clear();
-                var partsOfType = _billOfMaterials.SMDEntries.Where(ent =>
-                   value.LibraryName == ent.Package.LibraryName &&
-                        value.PackageName == ent.Package.Name &&
-                        value.Value == ent.Value);
-
-                foreach (var part in partsOfType)
+                if (_selectedPart != null)
                 {
-                    foreach (var component in part.Components)
-                        PartsToBePlaced.Add(component);
+                    var partsOfType = _billOfMaterials.SMDEntries.Where(ent =>
+                       value.LibraryName == ent.Package.LibraryName &&
+                            value.PackageName == ent.Package.Name &&
+                            value.Value == ent.Value);
+
+                    foreach (var part in partsOfType)
+                    {
+                        foreach (var component in part.Components)
+                            PartsToBePlaced.Add(component);
+                    }
                 }
             }
         }
@@ -525,6 +543,8 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
 
 
         public RelayCommand AddFeederCommand { get; private set; }
+
+        public RelayCommand CloneCommand { get; private set; }
 
         public RelayCommand SaveJobCommand { get; private set; }
 

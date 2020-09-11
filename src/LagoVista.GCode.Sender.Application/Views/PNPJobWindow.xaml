@@ -98,20 +98,27 @@
                         <ColumnDefinition Width="200" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <Label Content="Flavor" />
-                    <TextBox Grid.Column="1" Width="200" Text="{Binding SelectedBuildFlavor.Name, Mode=TwoWay}" />
+                    <Label Content="Flavors" />
+                    <ComboBox ItemsSource="{Binding BuildFlavors}" Grid.Column="1" DisplayMemberPath="Name" SelectedItem="{Binding SelectedBuildFlavor, Mode=TwoWay}" />
 
-                    <Label Content="Notes" Grid.Row="1" />
-                    <TextBox  Grid.Row="1" Width="200" Grid.Column="1" Text="{Binding SelectedBuildFlavor.Notes, Mode=TwoWay}" />
+                    <Label Content="Flavor" Grid.Row="1" />
+                    <TextBox Grid.Column="1" Grid.Row="1" Width="200" Text="{Binding SelectedBuildFlavor.Name, Mode=TwoWay}" />
 
-                    <Button Command="{Binding SaveJobCommand}" Width="60" Margin="10" Grid.Column="2" Grid.RowSpan="3" Content="Save" />
+                    <Label Content="Notes" Grid.Row="2" />
+                    <TextBox  Grid.Row="2" Width="200" Grid.Column="1" Text="{Binding SelectedBuildFlavor.Notes, Mode=TwoWay}" />
 
-                    <DataGrid AutoGenerateColumns="False" Grid.ColumnSpan="3" Grid.Row="3" ItemsSource="{Binding SelectedBuildFlavor.Components}" HorizontalContentAlignment="Stretch" >
+                    <StackPanel Grid.Column="2" Grid.RowSpan="3" Orientation="Horizontal" >
+                    <Button Command="{Binding SaveJobCommand}" Width="60" Margin="10" Content="Save" />
+                    <Button Command="{Binding CloneCommand}" Width="60" Margin="10" Content="Clone" />
+                    </StackPanel>
+                    
+                    <DataGrid AutoGenerateColumns="False" Grid.ColumnSpan="3" Grid.Row="3" CanUserAddRows="False" ItemsSource="{Binding SelectedBuildFlavor.Components}" HorizontalContentAlignment="Stretch" >
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="Name" Width="80" Binding="{Binding Name}"  />
-                            <DataGridCheckBoxColumn Header="Include" Width="80" Binding="{Binding Included, Mode=TwoWay}"  />
+                            <DataGridTextColumn Header="Name" Width="60" IsReadOnly="true" Binding="{Binding Name}"  />
+                            <DataGridCheckBoxColumn Header="Include" Width="60" Binding="{Binding Included, Mode=TwoWay}"  />
                             <DataGridTextColumn Header="Value" Width="80" Binding="{Binding Value, Mode=TwoWay}"  />
-                            <DataGridTextColumn Header="Function" Width="80" Binding="{Binding Function, Mode=TwoWay}"  />
+                            <DataGridTextColumn Header="Function" Width="160" Binding="{Binding Function, Mode=TwoWay}"  />
+                            <DataGridTextColumn Header="Notes" Width="*" Binding="{Binding Notes, Mode=TwoWay}"  />
                         </DataGrid.Columns>
                     </DataGrid>
                </Grid>

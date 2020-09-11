@@ -38,5 +38,21 @@ namespace LagoVista.EaglePCB.Models
             };
         }
 
+        public Package Clone()
+        {
+            return new Package()
+            {
+                LibraryName = LibraryName,
+                Name = Name,
+                Description = Description,
+                Wires = Wires,
+                SMDs = SMDs,
+                Texts = Texts,
+                Pads = Pads,
+                Circles = Circles,
+                Holes = Holes,
+                Rects = Rects,
+            };
+        }
     }
 }

@@ -19,6 +19,7 @@ namespace LagoVista.EaglePCB.Models
         public string Rotate { get; set; }
         public bool Included { get; set; }
         public string Function { get; set; }
+        public string Notes { get; set; }
       
         public int Layer
         {
@@ -110,6 +111,24 @@ namespace LagoVista.EaglePCB.Models
                 Value = element.GetString("value"),
                 X = element.GetDouble("x"),
                 Y = element.GetDouble("y")
+            };
+        }
+
+        public Component Clone()
+        {
+            return new Component()
+            {
+                Name = Name,
+                LibraryName = LibraryName,
+                PackageName = PackageName,
+                Rotate = Rotate,
+                Value = Value,
+                X = X,
+                Y = Y,
+                Package = Package.Clone(),
+                Included = Included,
+                Function = Function,
+                Notes = Notes,
             };
         }
     }

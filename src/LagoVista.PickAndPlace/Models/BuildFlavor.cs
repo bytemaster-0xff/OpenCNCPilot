@@ -23,5 +23,24 @@ namespace LagoVista.PickAndPlace.Models
         }
 
         public ObservableCollection<Component> Components { get; private set; } = new ObservableCollection<Component>();
+
+        public BuildFlavor Clone(string clonedName)
+        {
+            var flavor = new BuildFlavor();
+            flavor.Name = clonedName;
+            flavor.Notes = "";
+
+            foreach(var component in Components)
+            {
+                flavor.Components.Add(component.Clone());
+            }
+
+            return flavor;
+        }
+
+        public override string ToString()
+        {
+            return base.ToString();
+        }
     }
 }
