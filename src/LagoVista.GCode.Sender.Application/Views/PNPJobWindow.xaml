@@ -23,9 +23,9 @@
                         <ColumnDefinition Width="60" />
                     </Grid.ColumnDefinitions>
 
-                    <Label Content="Packages File" />
-                    <Controls:MaskingTextBox Text="{Binding Path=Job.PackagesPath, Mode=TwoWay}" Grid.Column="1" Margin="4,4,0,4" />
-                    <Button Content="..." Width="30" HorizontalAlignment="Left" Grid.Column="2" Margin="0,4,4,4" Command="{Binding SelectPackagesFileCommand}" />
+                    <Label Content="Machine File" />
+                    <Controls:MaskingTextBox Text="{Binding Path=Job.PnPMachinePath, Mode=TwoWay}" Grid.Column="1" Margin="4,4,0,4" />
+                    <Button Content="..." Width="30" HorizontalAlignment="Left" Grid.Column="2" Margin="0,4,4,4" Command="{Binding SelectMachineFileCommand}" />
 
                 </Grid>
             </TabItem>
@@ -137,6 +137,51 @@
                             <DataGridTextColumn Header="Value" Width="80" IsReadOnly="true" Binding="{Binding Value, Mode=TwoWay}"  />
                         </DataGrid.Columns>
                     </DataGrid>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Part Pack Management" DataContext="{Binding PartPackManagerVM}" >
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.ColumnSpan="3" HorizontalAlignment="Left" Grid.Row="1" Orientation="Horizontal" Visibility="{Binding PartPacks, Converter={StaticResource NoTNullToVisibilityConverter}}">
+                        <Button Width="32" Height="32"  Command="{Binding AddPartPackCommand}" >
+                            <Button.Content>
+                                <fa:ImageAwesome  Icon="PlusCircle" />
+                            </Button.Content>
+                        </Button>
+                    </StackPanel>
+
+                    <ListView ItemsSource="{Binding PartPacks}" SelectedItem="{Binding SelectedPartPack, Mode=TwoWay}" Grid.Row="2" Visibility="{Binding PartPacks, Converter={StaticResource NoTNullToVisibilityConverter}}">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="200" />
+                                        <ColumnDefinition Width="100" />
+                                        <ColumnDefinition Width="60" />
+                                        <ColumnDefinition Width="60" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="{Binding Name}" />
+                                    <TextBlock Text="{Binding Id}" Grid.Column="1" />
+                                    <TextBlock Text="{Binding Rows.Count}" Grid.Column="2" />
+                                    <TextBlock Text="{Binding RowHeight}" Grid.Column="3" />
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+
+                    <Grid Grid.Column="1" Grid.RowSpan="3"  Visibility="{Binding SelectedPartPack, Converter={StaticResource NoTNullToVisibilityConverter}}">
+                        <Controls:PartPackControl DataContext="{Binding SelectedPartPack}" />
+                    </Grid>
+
+                    <TextBlock Text="Please open or create a part pack set" FontSize="24" Grid.ColumnSpan="2" Grid.RowSpan="3" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding PartPacks, Converter={StaticResource NullVisibilityConverter}}" />
                 </Grid>
             </TabItem>
             <TabItem Header="Feeders">

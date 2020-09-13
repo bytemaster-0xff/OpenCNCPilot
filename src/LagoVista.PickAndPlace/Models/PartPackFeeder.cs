@@ -40,7 +40,7 @@ namespace LagoVista.PickAndPlace.Models
                     Rows.Add(new Row());
                 }
 
-                for (var idx = value - 1; idx < Rows.Count; ++idx)
+                for (var idx = value; idx < Rows.Count; ++idx)
                 {
                     Rows.RemoveAt(idx);
                 }

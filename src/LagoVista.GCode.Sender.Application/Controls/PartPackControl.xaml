@@ -62,17 +62,16 @@
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="100" />
-                <ColumnDefinition Width="120" />
-                <ColumnDefinition Width="80" />
+                <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
             <Label Content="Package" Grid.Row="0" />
-            <TextBox Text="{Binding Path=SelectedRow.Part.PackageName, Mode=TwoWay}" Grid.Row="0" Grid.Column="1" />
+            <TextBox Text="{Binding Path=SelectedRow.Part.PackageName, Mode=TwoWay}" Grid.Row="0" Grid.Column="1" Margin="2" />
 
             <Label Content="Value" Grid.Row="1" />
-            <TextBox Text="{Binding Path=SelectedRow.Part.Value, Mode=TwoWay}" Grid.Row="1" Grid.Column="1" />
+            <TextBox Text="{Binding Path=SelectedRow.Part.Value, Mode=TwoWay}" Grid.Row="1" Grid.Column="1" Margin="2" />
 
-            <Button Width="120" Content="Done" Grid.Row="2" Command="{Binding DoneEditingRowCommand}" />
+            <Button Width="120" Content="Done" Grid.Row="2" Command="{Binding DoneEditingRowCommand}" Grid.Column="1" HorizontalAlignment="Left"  Margin="2"/>
         </Grid>
     </Grid>
 </UserControl>

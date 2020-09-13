@@ -7,8 +7,8 @@
         xmlns:ctl="clr-namespace:LagoVista.GCode.Sender.Application.Controls"
         mc:Ignorable="d"
         xmlns:fa="http://schemas.fontawesome.io/icons/"
-        Title="Part Pack Set Manager" Height="600" Width="800">
-    <Grid>
+        Title="Part Pack Set Manager" Height="600" Width="900" >
+<Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
@@ -23,6 +23,7 @@
             <MenuItem Header="File"  >
                 <MenuItem Header="New PnP Machine" Command="{Binding NewMachineCommand}" />
                 <MenuItem Header="Open PnP Machine" Command="{Binding OpenMachineCommand}" />
+                <MenuItem Header="Save PnP Machine" Command="{Binding SaveMachineCommand}" />
                 <Separator/>
                 <MenuItem  Header="Exit" x:Name="Exit" Click="Exit_Click" />
             </MenuItem>
@@ -32,11 +33,6 @@
             <Button Width="32" Height="32"  Command="{Binding AddPartPackCommand}" >
                 <Button.Content>
                     <fa:ImageAwesome  Icon="PlusCircle" />
-                </Button.Content>
-            </Button>
-            <Button Width="32" Height="32" Command="{Binding SaveLibraryCommand}" >
-                <Button.Content>
-                    <fa:ImageAwesome  Icon="Save" />
                 </Button.Content>
             </Button>
         </StackPanel>

@@ -39,11 +39,11 @@ namespace LagoVista.PickAndPlace.Models
             set => Set(ref _boardHeight, value);
         }
 
-        private string _packagesPath;
-        public string PackagesPath
+        private string _pnpMachinePath;
+        public string PnPMachinePath
         {
-            get => _packagesPath;
-            set => Set(ref _packagesPath, value);
+            get => _pnpMachinePath;
+            set => Set(ref _pnpMachinePath, value);
         }
 
         public bool DispensePaste { get; set; }

@@ -136,6 +136,7 @@ namespace LagoVista.GCode.Sender
         public static string PCBProject = "PCB Project|*.pcbproj|All Files|*.*";
         public static string FileFilterPCB = "Eagle|*.brd|All Files|*.*";
         public static string PartsPackages = "Package Library(*.pckgs)|*.pckgs";
+        public static string PnPMachine = "PNP Machine(*.pnp)|*.pnp";
         public static string FileFilterGCode = "GCode|*.g;*.tap;*.nc;*.ngc|All Files|*.*";
         public static string FileFilterHeightMap = "Height Maps|*.hmap|All Files|*.*";
 

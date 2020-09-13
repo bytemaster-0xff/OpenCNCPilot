@@ -4,8 +4,10 @@ using LagoVista.Core.ViewModels;
 using LagoVista.EaglePCB.Models;
 using LagoVista.GCode.Sender;
 using LagoVista.GCode.Sender.Interfaces;
+using LagoVista.PickAndPlace.Managers;
 using LagoVista.PickAndPlace.Models;
 using LagoVista.PickAndPlace.Repos;
+using LagoVista.PickAndPlace.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -20,7 +22,6 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
         private bool _isEditing;
         private bool _isDirty = false;
         private BOM _billOfMaterials;
-        PackageLibrary _packageLibrary;
         private FeederLibrary _feederLibrary;
 
         private int _partIndex = -1;
@@ -39,7 +40,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             GoToPartOnBoardCommand = new RelayCommand(GoToPartOnBoard);
             GoToPartPositionInTrayCommand = new RelayCommand(GoToPartPositionInTray);
 
-            SelectPackagesFileCommand = new RelayCommand(SelectPackagesFile);
+            SelectMachineFileCommand = new RelayCommand(SelectMachineFile);
 
             ResetCurrentComponentCommand = new RelayCommand(ResetCurrentComponent, () => SelectedPartRow != null);
 
@@ -54,9 +55,8 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
 
             PlacePartCommand = new RelayCommand(PlacePart, () => SelectedPart != null);
             _feederLibrary = new FeederLibrary();
-            _packageLibrary = new PackageLibrary();
 
-         
+
             BuildFlavors = job.BuildFlavors;
             SelectedBuildFlavor = job.BuildFlavors.FirstOrDefault();
             if (SelectedBuildFlavor == null)
@@ -68,7 +68,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
 
                 foreach (var entry in _billOfMaterials.SMDEntries)
                 {
-                    foreach(var component in entry.Components)
+                    foreach (var component in entry.Components)
                     {
                         component.Included = true;
                         SelectedBuildFlavor.Components.Add(component);
@@ -77,6 +77,8 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
 
                 job.BuildFlavors.Add(SelectedBuildFlavor);
             }
+
+            PartPackManagerVM = new PartPackManagerViewModel();
 
             PopulateParts();
             PopulateConfigurationParts();
@@ -107,8 +109,8 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
         {
             ConfigurationParts.Clear();
             var commonParts = SelectedBuildFlavor.Components.Where(prt => prt.Included).GroupBy(prt => prt.Key);
-            
-            foreach(var entry in commonParts)
+
+            foreach (var entry in commonParts)
             {
                 ConfigurationParts.Add(new Part()
                 {
@@ -125,9 +127,10 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             FeederTypes = await _feederLibrary.GetFeedersAsync();
             LoadingMask = false;
 
-            if (!String.IsNullOrEmpty(_job.PackagesPath) && System.IO.File.Exists(_job.PackagesPath))
+            if (!String.IsNullOrEmpty(_job.PnPMachinePath) && System.IO.File.Exists(_job.PnPMachinePath))
             {
-                _packages = await _packageLibrary.GetPackagesAsync(_job.PackagesPath);
+                PnPMachine = await PnPMachineManager.GetPnPMachineAsync(_job.PnPMachinePath);
+                PartPackManagerVM.SetMachine(PnPMachine);
             }
         }
 
@@ -220,7 +223,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
 
                 var cmds = new List<string>();
                 cmds.Add("M54"); // Move to move height
-                cmds.Add(GetGoToPartInTrayGCode());                
+                cmds.Add(GetGoToPartInTrayGCode());
                 cmds.Add("M55"); // Move to pick height
                 cmds.Add("M64 P255"); // Turn on solenoid 
                 cmds.Add("G4 P500"); // Wait 500ms to pickup part.
@@ -284,11 +287,25 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             }
         }
 
-        ObservableCollection<PickAndPlace.Models.Package> _packages;
+        public PartPackManagerViewModel PartPackManagerVM
+        {
+            get;
+        }
+
+        PnPMachine _pnpMachine;
+        public PnPMachine PnPMachine
+        {
+            get => _pnpMachine;
+            set
+            {
+                Set(ref _pnpMachine, value);
+                RaisePropertyChanged(nameof(Packages));
+            }
+        }
+
         public ObservableCollection<PickAndPlace.Models.Package> Packages
         {
-            get { return _packages; }
-            set { Set(ref _packages, value); }
+            get { return _pnpMachine?.Packages; }
         }
 
         ObservableCollection<Feeder> _feederTypes;
@@ -485,15 +502,16 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             }
         }
 
-        public async void SelectPackagesFile()
+        public async void SelectMachineFile()
         {
-            var result = await Popups.ShowOpenFileAsync(Constants.PartsPackages);
+            var result = await Popups.ShowOpenFileAsync(Constants.PnPMachine);
             if (!String.IsNullOrEmpty(result))
             {
                 try
                 {
-                    Job.PackagesPath = result;
-                    Packages = await _packageLibrary.GetPackagesAsync(result);
+                    Job.PnPMachinePath = result;
+                    PnPMachine = await PnPMachineManager.GetPnPMachineAsync(result);
+                    PartPackManagerVM.SetMachine(PnPMachine);
                     SaveJob();
                 }
                 catch
@@ -577,7 +595,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
 
         public RelayCommand GoToPartPositionInTrayCommand { get; private set; }
 
-        public RelayCommand SelectPackagesFileCommand { get; private set; }
+        public RelayCommand SelectMachineFileCommand { get; private set; }
 
         public RelayCommand ResetCurrentComponentCommand { get; set; }
         public RelayCommand MoveToPreviousComponentInTapeCommand { get; set; }

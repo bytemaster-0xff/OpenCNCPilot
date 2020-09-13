@@ -22,7 +22,7 @@ namespace LagoVista.PickAndPlace.ViewModels
 
         public PartPackManagerViewModel()
         {
-            SaveMachineCommands = new RelayCommand(SaveMachine, () => _machine != null);
+            SaveMachineCommand = new RelayCommand(SaveMachine, () => _machine != null);
             AddPartPackCommand = new RelayCommand(AddPartPack, () => _machine != null);
             OpenMachineCommand = new RelayCommand(OpenMachine);
             NewMachineCommand = new RelayCommand(NewMachine);
@@ -42,10 +42,15 @@ namespace LagoVista.PickAndPlace.ViewModels
             _fileName = await Popups.ShowOpenFileAsync("PnP Machine (*.pnp)|*.pnp");
             if (!String.IsNullOrEmpty(_fileName))
             {
-                _machine = await PnPMachineManager.GetPnPMachineAsync(_fileName);
+                var machine = await PnPMachineManager.GetPnPMachineAsync(_fileName);
+                SetMachine(machine);
             }
+        }
 
-            SaveMachineCommands.RaiseCanExecuteChanged();
+        public void SetMachine(PnPMachine machine)
+        {
+            _machine = machine;
+            SaveMachineCommand.RaiseCanExecuteChanged();
             AddPartPackCommand.RaiseCanExecuteChanged();
 
             RaisePropertyChanged(nameof(PartPacks));
@@ -64,7 +69,7 @@ namespace LagoVista.PickAndPlace.ViewModels
             _fileName = null;
             _machine = new PnPMachine();
 
-            SaveMachineCommands.RaiseCanExecuteChanged();
+            SaveMachineCommand.RaiseCanExecuteChanged();
             AddPartPackCommand.RaiseCanExecuteChanged();
 
             RaisePropertyChanged(nameof(PartPacks));
@@ -82,7 +87,12 @@ namespace LagoVista.PickAndPlace.ViewModels
         {
             if (_machine != null)
             {
-                var newPartPack = new PartPackFeeder();
+                var newPartPack = new PartPackFeeder()
+                {
+                    Name = $"Pack {_machine.Carrier.AvailablePartPacks.Count + 1}",
+                    Id = $"pack{_machine.Carrier.AvailablePartPacks.Count + 1}",
+                };
+
                 _machine.Carrier.AvailablePartPacks.Add(newPartPack);
 
                 SelectedPartPack = newPartPack;
@@ -118,13 +128,11 @@ namespace LagoVista.PickAndPlace.ViewModels
             set => Set(ref _selectedPartPack, value);
         }
 
-        public RelayCommand SaveMachineCommands { get; private set; }
+        public IEnumerable<Package> Packages { get => _machine.Packages; }
+        public RelayCommand SaveMachineCommand { get; private set; }
         public RelayCommand OpenMachineCommand { get; private set; }
-
         public RelayCommand NewMachineCommand { get; private set; }
-
         public RelayCommand AddPartPackCommand { get; private set; }
-
         public RelayCommand DoneEditingRowCommand { get; private set; }
     }
 }

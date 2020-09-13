@@ -1,10 +1,6 @@
-﻿using LagoVista.Core.Models.Drawing;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using LagoVista.Core;
-using System.Threading.Tasks;
 using LagoVista.Core.Models;
 
 namespace LagoVista.PickAndPlace.Models
