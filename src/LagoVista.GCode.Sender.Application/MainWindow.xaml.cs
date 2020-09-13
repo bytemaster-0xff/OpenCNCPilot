@@ -13,6 +13,7 @@ using LagoVista.PickAndPlace.Models;
 using LagoVista.PickAndPlace.ViewModels;
 using LagoVista.PickAndPlace.Repos;
 using LagoVista.GCode.Sender.Application.ViewModels;
+using LagoVista.GCode.Sender.Application.Views;
 
 namespace LagoVista.GCode.Sender.Application
 {
@@ -468,6 +469,16 @@ namespace LagoVista.GCode.Sender.Application
             EditPnPJob.IsEnabled = false;
             FeederAlignementView.IsEnabled = false;
             ClosePnPJob.IsEnabled = false;
+        }
+
+        private void PartPacks_Click(object sender, RoutedEventArgs e)
+        {
+            var partPackViewModel = new PartPackManagerViewModel();
+            var partPackView = new PartPackManagerView();
+            partPackView.DataContext = partPackViewModel;
+            partPackView.Owner = this;
+            partPackView.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            partPackView.ShowDialog();
         }
     }
 }

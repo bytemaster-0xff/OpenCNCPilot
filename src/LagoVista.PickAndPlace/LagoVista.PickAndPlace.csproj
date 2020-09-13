@@ -50,13 +50,18 @@
   <ItemGroup>
     <Compile Include="Managers\Planner.cs" />
     <Compile Include="Managers\PnPJobManager.cs" />
+    <Compile Include="Managers\PnPMachineManager.cs" />
     <Compile Include="Models\BuildFlavor.cs" />
     <Compile Include="Models\FeederInstance.cs" />
     <Compile Include="Models\Package.cs" />
     <Compile Include="Models\Part.cs" />
     <Compile Include="Models\Feeder.cs" />
+    <Compile Include="Models\PartPackCarrier.cs" />
     <Compile Include="Models\PartPackFeeder.cs" />
+    <Compile Include="Models\PartPackSlot.cs" />
+    <Compile Include="Models\PlaceablePart.cs" />
     <Compile Include="Models\PnPJob.cs" />
+    <Compile Include="Models\PnPMachine.cs" />
     <Compile Include="Models\Row.cs" />
     <Compile Include="PnPManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -64,6 +69,7 @@
     <Compile Include="Repos\PackageLibrary.cs" />
     <Compile Include="ViewModels\PackageLibraryViewModel.cs" />
     <Compile Include="ViewModels\FeederDefinitionsViewModel.cs" />
+    <Compile Include="ViewModels\PartPackManagerViewModel.cs" />
     <Compile Include="ViewModels\PartViewModel.cs" />
     <Compile Include="ViewModels\PnPControlViewModel.cs" />
   </ItemGroup>

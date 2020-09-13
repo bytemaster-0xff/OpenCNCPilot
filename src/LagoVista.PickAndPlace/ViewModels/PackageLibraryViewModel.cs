@@ -1,49 +1,39 @@
 ﻿using LagoVista.Core.Commanding;
 using LagoVista.Core.ViewModels;
+using LagoVista.PickAndPlace.Managers;
 using LagoVista.PickAndPlace.Models;
 using LagoVista.PickAndPlace.Repos;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LagoVista.PickAndPlace.ViewModels
 {
     public class PackageLibraryViewModel : ViewModelBase
     {
-        PackageLibrary _packageLibrary;
+        private PnPMachine _pnpMachine;
 
         private bool _isDirty = false;
         private bool _isEditing = false;
+        private string _fileName;
 
         public PackageLibraryViewModel()
         {
-            _packageLibrary = new PackageLibrary();
-            Packages = new ObservableCollection<Package>();
+            NewMachineCommand = new RelayCommand(NewMachine);
 
             AddPackageCommand = new RelayCommand(AddPackage, () => CurrentPackage == null);
             SavePackageCommand = new RelayCommand(SavePackage, () => CurrentPackage != null);
             CancelPackageCommand = new RelayCommand(CancelPackage, () => CurrentPackage != null);
 
-            SaveLibraryCommand = new RelayCommand(SaveLibrary, () => _isDirty == true);
-            OpenLibraryCommand = new RelayCommand(OpenLibrary);
+            SaveMachineCommand = new RelayCommand(SaveMachine, () => _isDirty == true);
+            OpenMachineCommand = new RelayCommand(OpenMachine);
             DeletePackageCommand = new RelayCommand(DeletePackage, () => (CurrentPackage != null && _isEditing == true));
 
             CurrentPackage = null;
         }
 
-        private string _fileName;
-
-        ObservableCollection<Package> _packages;
         public ObservableCollection<Package> Packages
         {
-            get { return _packages; }
-            set
-            {
-                Set(ref _packages, value);
-            }
+            get { return _pnpMachine?.Packages; }
         }
 
         public void AddPackage()
@@ -56,20 +46,39 @@ namespace LagoVista.PickAndPlace.ViewModels
             CancelPackageCommand.RaiseCanExecuteChanged();
         }
 
-        public async void OpenLibrary()
+        public async void NewMachine()
         {
-            if(CurrentPackage != null || _isDirty)
+            if (CurrentPackage != null || _isDirty)
             {
-                if(!await Popups.ConfirmAsync("Lose Changes?","You have unsaved work, opening a new file will cause you to lose changes.\r\n\r\nContinue?"))
+                if (!await Popups.ConfirmAsync("Lose Changes?", "You have unsaved work, opening a new file will cause you to lose changes.\r\n\r\nContinue?"))
                 {
                     return;
                 }
             }
 
-            var fileName = await Popups.ShowOpenFileAsync("Package Library (*.pckgs)|*.pckgs");
-            if(!String.IsNullOrEmpty(fileName))
+            _isDirty = true;
+            _isEditing = false;
+            _pnpMachine = new PnPMachine();
+
+            RaisePropertyChanged(nameof(Packages));
+            SaveMachineCommand.RaiseCanExecuteChanged();
+        }
+
+        public async void OpenMachine()
+        {
+            if (CurrentPackage != null || _isDirty)
             {
-                Packages = await _packageLibrary.GetPackagesAsync(fileName);
+                if (!await Popups.ConfirmAsync("Lose Changes?", "You have unsaved work, opening a new file will cause you to lose changes.\r\n\r\nContinue?"))
+                {
+                    return;
+                }
+            }
+
+            var fileName = await Popups.ShowOpenFileAsync("PnP Machine (*.pnp)|*.pnp");
+            if (!String.IsNullOrEmpty(fileName))
+            {
+                _pnpMachine = await PnPMachineManager.GetPnPMachineAsync(fileName);
+                RaisePropertyChanged(nameof(Packages));
             }
         }
 
@@ -96,24 +105,24 @@ namespace LagoVista.PickAndPlace.ViewModels
 
             CurrentPackage = null;
             AddPackageCommand.RaiseCanExecuteChanged();
-            SaveLibraryCommand.RaiseCanExecuteChanged();
+            SaveMachineCommand.RaiseCanExecuteChanged();
         }
 
-        public async void SaveLibrary()
+        public async void SaveMachine()
         {
             if (String.IsNullOrEmpty(_fileName))
             {
-                _fileName = await Popups.ShowSaveFileAsync("Package Library (*.pckgs)|*.pckgs");
-                if(String.IsNullOrEmpty(_fileName))
+                _fileName = await Popups.ShowSaveFileAsync("PnP Machine (*.pnp)|*.pnp");
+                if (String.IsNullOrEmpty(_fileName))
                 {
                     return;
                 }
             }
 
-            await _packageLibrary.SavePackagesAsync(Packages,_fileName);
+            await PnPMachineManager.SavePackagesAsync(_pnpMachine, _fileName);
 
             _isDirty = false;
-            SaveLibraryCommand.RaiseCanExecuteChanged();
+            SaveMachineCommand.RaiseCanExecuteChanged();
         }
 
         Package _currentPackage;
@@ -132,8 +141,9 @@ namespace LagoVista.PickAndPlace.ViewModels
         }
 
         public RelayCommand AddPackageCommand { get; private set; }
-        public RelayCommand OpenLibraryCommand { get; private set; }
-        public RelayCommand SaveLibraryCommand { get; private set; }
+        public RelayCommand NewMachineCommand { get; private set; }
+        public RelayCommand OpenMachineCommand { get; private set; }
+        public RelayCommand SaveMachineCommand { get; private set; }
 
         public RelayCommand SavePackageCommand { get; private set; }
         public RelayCommand DeletePackageCommand { get; private set; }

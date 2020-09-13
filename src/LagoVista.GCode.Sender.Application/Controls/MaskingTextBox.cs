@@ -107,7 +107,8 @@ namespace LagoVista.GCode.Sender.Application.Controls
             Size,
             RPM,
             Rate,
-            Seconds
+            Seconds,
+            String
         }
 
         private UnitTypes _unitType;

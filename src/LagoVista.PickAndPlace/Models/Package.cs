@@ -12,6 +12,7 @@ namespace LagoVista.PickAndPlace.Models
             HoleSpacing = 4;
             CenterXFromHole = 2;
             CenterYFromHole = 3.5;
+            SpacingX = 4;
             CenterHoleFromBottom = 2.0;
             TapeWidth = 8;
         }
@@ -52,11 +53,25 @@ namespace LagoVista.PickAndPlace.Models
             set => Set(ref _holeSpacing, value);
         }
 
+        private double _spacingX;
+        public double SpacingX
+        {
+            get => _spacingX;
+            set => Set(ref _spacingX, value);
+        }
+
         private double _tapeWidth;
         public double TapeWidth 
         {
             get => _tapeWidth;
             set => Set(ref _tapeWidth, value);
+        }
+
+        private string _notes;
+        public string Notes
+        {
+            get => _notes;
+            set => Set(ref _notes, value);
         }
 
         public int RotationInTape { get; set; }

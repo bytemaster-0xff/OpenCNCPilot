@@ -50,6 +50,8 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             MoveToNextComponentInTapeCommand = new RelayCommand(MoveToNextComponentInTape, () => SelectedPartRow != null && SelectedPartRow.CurrentPartIndex < SelectedPartRow.PartCount);
             SetFirstComponentLocationCommand = new RelayCommand(SetFirstComponentLocation, () => SelectedPartRow != null);
             GoToFirstComponentReferenceCommand = new RelayCommand(GoToFirstComponentReference, () => SelectedPartRow != null);
+            RefreshConfigurationPartsCommand = new RelayCommand(PopulateConfigurationParts);
+
             PlacePartCommand = new RelayCommand(PlacePart, () => SelectedPart != null);
             _feederLibrary = new FeederLibrary();
             _packageLibrary = new PackageLibrary();
@@ -77,6 +79,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             }
 
             PopulateParts();
+            PopulateConfigurationParts();
         }
 
         private void PopulateParts()
@@ -97,6 +100,22 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                         Value = entry.Value
                     });
                 }
+            }
+        }
+
+        private void PopulateConfigurationParts()
+        {
+            ConfigurationParts.Clear();
+            var commonParts = SelectedBuildFlavor.Components.Where(prt => prt.Included).GroupBy(prt => prt.Key);
+            
+            foreach(var entry in commonParts)
+            {
+                ConfigurationParts.Add(new Part()
+                {
+                    Count = entry.Count(),
+                    Value = entry.First().Value,
+                    PackageName = entry.First().PackageName
+                });
             }
         }
 
@@ -426,6 +445,11 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             get { return Job.Parts; }
         }
 
+        private ObservableCollection<Part> _confiugrationParts = new ObservableCollection<Part>();
+        public ObservableCollection<Part> ConfigurationParts
+        {
+            get { return _confiugrationParts; }
+        }
 
         private Part _selectedPart;
         public Part SelectedPart
@@ -543,6 +567,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
 
 
         public RelayCommand AddFeederCommand { get; private set; }
+        public RelayCommand RefreshConfigurationPartsCommand { get; private set; }
 
         public RelayCommand CloneCommand { get; private set; }
 

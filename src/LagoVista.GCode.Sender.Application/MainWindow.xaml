@@ -60,6 +60,7 @@
                 <MenuItem Header="Edit PnP Job" x:Name="EditPnPJob" Click="EditPnPJob_Click" IsEnabled="False" />
                 <Separator/>
                 <MenuItem Header="Edit Feeder Library" x:Name="EditFeederLibrary" Click="EditFeederLibrary_Click" />
+                <MenuItem Header="Edit Part Packs" x:Name="PartPacks" Click="PartPacks_Click" />
                 <Separator/>
                 <MenuItem  Header="Recent PnP Jobs" x:Name="RecentPNPJobs" />
                 <Separator />

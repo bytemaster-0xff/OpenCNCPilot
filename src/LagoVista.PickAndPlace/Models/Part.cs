@@ -14,11 +14,21 @@ namespace LagoVista.PickAndPlace.Models
             set => Set(ref _packageId, value);
         }
 
-        public String PackageName { get; set; }
+        private String _packageName;
+        public String PackageName
+        {
+            get => _packageName;
+            set => Set(ref _packageName, value);
+        }
 
         public String LibraryName { get; set; }
 
-        public string Value { get; set; }
+        private string _value;
+        public string Value
+        {
+            get => _value;
+            set { Set(ref _value, value); }
+        }
 
         public double Height { get; set; }
 
@@ -26,7 +36,7 @@ namespace LagoVista.PickAndPlace.Models
 
 
         private string _feederId;
-        public String FeederId 
+        public String FeederId
         {
             get { return _feederId; }
             set
@@ -39,13 +49,13 @@ namespace LagoVista.PickAndPlace.Models
 
         public bool IsConfigured
         {
-            get { return !String.IsNullOrEmpty(FeederId) && RowNumber.HasValue && !String.IsNullOrEmpty(PackageId);  }
+            get { return !String.IsNullOrEmpty(FeederId) && RowNumber.HasValue && !String.IsNullOrEmpty(PackageId); }
         }
 
         private int? _rowNumber;
-        public int? RowNumber 
-        { 
-            get { return _rowNumber;  }
+        public int? RowNumber
+        {
+            get { return _rowNumber; }
             set
             {
                 Set(ref _rowNumber, value);
@@ -73,7 +83,6 @@ namespace LagoVista.PickAndPlace.Models
             {
                 return $"{PackageName} - {Value}";
             }
-
         }
     }
 }

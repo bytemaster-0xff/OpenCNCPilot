@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:fa="http://schemas.fontawesome.io/icons/"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-         xmlns:Controls="clr-namespace:LagoVista.GCode.Sender.Application.Controls"
+        xmlns:Controls="clr-namespace:LagoVista.GCode.Sender.Application.Controls"
   
         xmlns:local="clr-namespace:LagoVista.GCode.Sender.Application.Views"
         WindowStartupLocation="CenterOwner"
@@ -96,6 +96,7 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="100" />
                         <ColumnDefinition Width="200" />
+                        <ColumnDefinition Width="400" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
                     <Label Content="Flavors" />
@@ -112,16 +113,31 @@
                     <Button Command="{Binding CloneCommand}" Width="60" Margin="10" Content="Clone" />
                     </StackPanel>
                     
-                    <DataGrid AutoGenerateColumns="False" Grid.ColumnSpan="3" Grid.Row="3" CanUserAddRows="False" ItemsSource="{Binding SelectedBuildFlavor.Components}" HorizontalContentAlignment="Stretch" >
+                    <DataGrid AutoGenerateColumns="False" Grid.ColumnSpan="3" CanUserDeleteRows="False" Grid.Row="3" CanUserAddRows="False" ItemsSource="{Binding SelectedBuildFlavor.Components}" HorizontalContentAlignment="Stretch" >
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Name" Width="60" IsReadOnly="true" Binding="{Binding Name}"  />
                             <DataGridCheckBoxColumn Header="Include" Width="60" Binding="{Binding Included, Mode=TwoWay}"  />
                             <DataGridTextColumn Header="Value" Width="80" Binding="{Binding Value, Mode=TwoWay}"  />
+                            <DataGridTextColumn Header="Package Name" Width="80" Binding="{Binding PackageName, Mode=TwoWay}"  />
                             <DataGridTextColumn Header="Function" Width="160" Binding="{Binding Function, Mode=TwoWay}"  />
                             <DataGridTextColumn Header="Notes" Width="*" Binding="{Binding Notes, Mode=TwoWay}"  />
                         </DataGrid.Columns>
                     </DataGrid>
-               </Grid>
+
+                    <Button Width="32" Height="32" Grid.Column="3" Command="{Binding RefreshConfigurationPartsCommand}">
+                        <Button.Content>
+                            <fa:FontAwesome Icon="Refresh"  />
+                        </Button.Content>
+                    </Button>
+
+                    <DataGrid AutoGenerateColumns="False" CanUserAddRows="false" CanUserDeleteRows="False" Grid.Column="3" ItemsSource="{Binding ConfigurationParts}" Grid.Row="3" HorizontalContentAlignment="Stretch" >
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Count" IsReadOnly="true" Width="80" Binding="{Binding Count, Mode=TwoWay}"  />
+                            <DataGridTextColumn Header="PackageName" IsReadOnly="true" Width="80" Binding="{Binding PackageName, Mode=TwoWay}"  />
+                            <DataGridTextColumn Header="Value" Width="80" IsReadOnly="true" Binding="{Binding Value, Mode=TwoWay}"  />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
             </TabItem>
             <TabItem Header="Feeders">
                 <Grid>
@@ -381,7 +397,7 @@
 
                         <TextBlock Text="{Binding Machine.X}" Foreground="White" Grid.Column="1" />
                         <TextBlock Text="Y=" Foreground="White" Grid.Column="2" />
-                        <TextBlock Text="{Binding Machine.X}" Foreground="White" Grid.Column="3" />
+                        <TextBlock Text="{Binding Machine.Y}" Foreground="White" Grid.Column="3" />
                     </Grid>
                 </Grid>
             </TabItem>

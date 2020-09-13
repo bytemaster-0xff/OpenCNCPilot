@@ -13,5 +13,10 @@ namespace LagoVista.GCode.Sender.Application.Views
             InitializeComponent();
             DataContext = new PackageLibraryViewModel();
         }
+
+        private void Close_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

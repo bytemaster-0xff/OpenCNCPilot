@@ -100,6 +100,8 @@ namespace LagoVista.EaglePCB.Models
             }
         }
 
+        public string Key => PackageName + "-" + Value;
+
         public static Component Create(XElement element)
         {
             return new Component()

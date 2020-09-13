@@ -4,6 +4,11 @@ namespace LagoVista.PickAndPlace.Models
 {
     public class Row : ModelBase
     {
+        public Row()
+        {
+            Part = new Part();
+        }
+
         public int RowNumber { get; set; }
 
         private Part _part;

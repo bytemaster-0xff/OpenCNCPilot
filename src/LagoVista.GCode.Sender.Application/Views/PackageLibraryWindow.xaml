@@ -9,51 +9,48 @@
         mc:Ignorable="d"
         WindowStyle="ToolWindow"
         WindowStartupLocation="CenterOwner"
-        Title="Available Pacakges" Height="800" Width="600">
+        Title="Available Pacakges" Height="800" Width="800">
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
         <Button />
-        <StackPanel Grid.ColumnSpan="3" HorizontalAlignment="Left" Orientation="Horizontal" >
+        <Menu>
+            <MenuItem Header="File">
+                <MenuItem Command="{Binding NewMachineCommand}" Header="New" />
+                <MenuItem Command="{Binding OpenMachineCommand}" Header="Open" />
+                <MenuItem Command="{Binding SaveMachineCommand}" Header="Save" />
+                <Separator/>
+                <MenuItem x:Name="Close" Click="Close_Click" Header="Close"/>
+            </MenuItem>
+        </Menu>
+
+        <TextBlock Text="Please open or create a PnP Machine" Visibility="{Binding Packages, Converter={StaticResource NullVisibilityConverter}}" FontSize="24" HorizontalAlignment="Center" VerticalAlignment="Center"  Grid.Row="1"  Grid.RowSpan="3" />
+
+        <StackPanel Grid.ColumnSpan="3" Grid.Row="1" HorizontalAlignment="Left" Orientation="Horizontal" Visibility="{Binding Packages, Converter={StaticResource NoTNullToVisibilityConverter}}" >
             <Button Width="32" Height="32"  Command="{Binding AddPackageCommand}" >
                 <Button.Content>
                     <fa:ImageAwesome  Icon="PlusCircle" />
                 </Button.Content>
             </Button>
-            <Button Width="32" Height="32" Command="{Binding SaveLibraryCommand}" >
-                <Button.Content>
-                    <fa:ImageAwesome  Icon="Save" />
-                </Button.Content>
-            </Button>
-            <Button Width="32" Height="32"  Command="{Binding OpenLibraryCommand}" >
-                <Button.Content>
-                    <fa:ImageAwesome  Icon="FolderOpen" />
-                </Button.Content>
-            </Button>
         </StackPanel>
-        <ListView Grid.Row="1" ItemsSource="{Binding Packages}" SelectedItem="{Binding CurrentPackage}">
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="120" />
-                            <ColumnDefinition Width="60" />
-                            <ColumnDefinition Width="60" />
-                            <ColumnDefinition Width="60" />
-                        </Grid.ColumnDefinitions>
-                        <Label Content="{Binding Name}" />
-                        <Label Content="{Binding Length}" Grid.Column="1" />
-                        <Label Content="{Binding Width}" Grid.Column="2" />
-                        <Label Content="{Binding Height}" Grid.Column="3" />
-                    </Grid>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+        <DataGrid Grid.Row="2" ItemsSource="{Binding Packages}" CanUserAddRows="False" AutoGenerateColumns="False" SelectedItem="{Binding CurrentPackage}" Visibility="{Binding Packages, Converter={StaticResource NoTNullToVisibilityConverter}}">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Value" Width="80" Binding="{Binding Name, Mode=TwoWay}"  />
+                <DataGridTextColumn Header="Length" Width="70" Binding="{Binding Length, Mode=TwoWay}"  />
+                <DataGridTextColumn Header="Width" Width="70" Binding="{Binding Width, Mode=TwoWay}"  />
+                <DataGridTextColumn Header="Height" Width="70" Binding="{Binding Height, Mode=TwoWay}"  />
+                <DataGridTextColumn Header="Tape Width" Width="70" Binding="{Binding TapeWidth, Mode=TwoWay}"  />
+                <DataGridTextColumn Header="Rotation" Width="70" Binding="{Binding RotationInTape, Mode=TwoWay}"  />
+                <DataGridTextColumn Header="Spacing X" Width="70" Binding="{Binding SpacingX, Mode=TwoWay}"  />
+                <DataGridTextColumn Header="Notes" Width="*" Binding="{Binding Notes, Mode=TwoWay}"  />
+            </DataGrid.Columns>
+        </DataGrid>
 
-        <Grid Grid.Row="2" Width="320" IsEnabled="{Binding CurrentPackage, Converter={StaticResource NotNullEnabledConverter}}">
+        <Grid Grid.Row="3" Width="320" IsEnabled="{Binding CurrentPackage, Converter={StaticResource NotNullEnabledConverter}}" Visibility="{Binding Packages, Converter={StaticResource NoTNullToVisibilityConverter}}">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto" />
@@ -61,6 +58,7 @@
                 </Grid.RowDefinitions>
                 <Grid Grid.Row="0" DataContext="{Binding CurrentPackage}" Width="320">
                     <Grid.RowDefinitions>
+                        <RowDefinition Height="auto" />
                         <RowDefinition Height="auto" />
                         <RowDefinition Height="auto" />
                         <RowDefinition Height="auto" />
@@ -101,17 +99,22 @@
                     <Label Content="(mm)" Grid.Row="5" Grid.Column="2" />
 
                     <Label Content="Center X from hole" Grid.Row="6" />
-                    <ctls:MaskingTextBox Text="{Binding CenterFromXHole, Mode=TwoWay}"   UnitType="Size" Grid.Row="6" Grid.Column="1" />
+                    <ctls:MaskingTextBox Text="{Binding CenterXFromHole, Mode=TwoWay}"   UnitType="Size" Grid.Row="6" Grid.Column="1" />
                     <Label Content="(mm)" Grid.Row="6" Grid.Column="2" />
 
                     <Label Content="Center Y from hole" Grid.Row="7" />
-                    <ctls:MaskingTextBox Text="{Binding CenterFromYHole, Mode=TwoWay}"  UnitType="Size" Grid.Row="7" Grid.Column="1"  />
+                    <ctls:MaskingTextBox Text="{Binding CenterYFromHole, Mode=TwoWay}"  UnitType="Size" Grid.Row="7" Grid.Column="1"  />
                     <Label Content="(mm)" Grid.Row="7" Grid.Column="2" />
 
-                    
-                    <Label Content="Rotation in tape" Grid.Row="8" />
-                    <ctls:MaskingTextBox Text="{Binding RotationInTape, Mode=TwoWay}"  UnitType="Size" Grid.Row="8" Grid.Column="1"  />
-                    <Label Content="(deg)" Grid.Row="8" Grid.Column="2" />
+
+                    <Label Content="Spacing X" Grid.Row="8" />
+                    <ctls:MaskingTextBox Text="{Binding SpacingX, Mode=TwoWay}"  UnitType="Size" Grid.Row="8" Grid.Column="1"  />
+                    <Label Content="(mm)" Grid.Row="8" Grid.Column="2" />
+
+
+                    <Label Content="Rotation in tape" Grid.Row="9" />
+                    <ctls:MaskingTextBox Text="{Binding RotationInTape, Mode=TwoWay}"  UnitType="Size" Grid.Row="9" Grid.Column="1"  />
+                    <Label Content="(deg)" Grid.Row="9" Grid.Column="2" />
                 
                 
                 </Grid>

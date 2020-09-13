@@ -142,6 +142,9 @@
     <Compile Include="Controls\MVNavigation.xaml.cs">
       <DependentUpon>MVNavigation.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\PartPackControl.xaml.cs">
+      <DependentUpon>PartPackControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\PnPMachineLocation.xaml.cs">
       <DependentUpon>PnPMachineLocation.xaml</DependentUpon>
     </Compile>
@@ -249,6 +252,9 @@
     <Compile Include="Views\PackageLibraryWindow.xaml.cs">
       <DependentUpon>PackageLibraryWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\PartPackManagerView.xaml.cs">
+      <DependentUpon>PartPackManagerView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\PNPJobWindow.xaml.cs">
       <DependentUpon>PNPJobWindow.xaml</DependentUpon>
     </Compile>
@@ -307,6 +313,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\MVNavigation.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\PartPackControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -434,6 +444,10 @@
     <Page Include="Views\PackageLibraryWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\PartPackManagerView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\PNPJobWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
