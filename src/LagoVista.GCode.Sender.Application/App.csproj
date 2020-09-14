@@ -145,6 +145,9 @@
     <Compile Include="Controls\PartPackControl.xaml.cs">
       <DependentUpon>PartPackControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\PartPackSlot.xaml.cs">
+      <DependentUpon>PartPackSlot.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\PnPMachineLocation.xaml.cs">
       <DependentUpon>PnPMachineLocation.xaml</DependentUpon>
     </Compile>
@@ -317,6 +320,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\PartPackControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\PartPackSlot.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

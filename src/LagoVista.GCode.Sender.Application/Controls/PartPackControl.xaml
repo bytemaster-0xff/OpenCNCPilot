@@ -23,6 +23,10 @@
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="120" />
@@ -43,8 +47,26 @@
             <ctls:MaskingTextBox Text="{Binding RowHeight, Mode=TwoWay}" UnitType="Size" Grid.Row="3" Grid.Column="1" />
             <Label Content="(mm)" Grid.Row="3" Grid.Column="2" />
 
-            <Label Content="Note" Grid.Row="5" />
-            <TextBox Text="{Binding Notes, Mode=TwoWay}" Grid.Row="5" Grid.Column="1" />
+            <Label Content="X" Grid.Row="4" />
+            <ctls:MaskingTextBox Text="{Binding X, Mode=TwoWay}"  UnitType="Size"  Grid.Row="4" Grid.Column="1" />
+            <Label Content="(mm)" Grid.Row="4" Grid.Column="3" />
+            <Button Content="Set" Grid.Row="4" Grid.Column="3" Margin="48,0,0,0" HorizontalAlignment="Left" Width="24" Height="20" Command="{Binding DataContext.SetPartPackXCommand, ElementName=Host}" />
+
+            <Label Content="Y" Grid.Row="5" />
+            <ctls:MaskingTextBox Text="{Binding Y, Mode=TwoWay}"  UnitType="Size"  Grid.Row="5" Grid.Column="1" />
+            <Label Content="(mm)" Grid.Row="5" Grid.Column="3" />
+            <Button Content="Set" Grid.Row="5" Grid.Column="3" Margin="48,0,0,0" HorizontalAlignment="Left" Width="24" Height="20" Command="{Binding DataContext.SetPartPackYCommand, ElementName=Host}" />
+
+            <Label Content="Width" Grid.Row="6" />
+            <ctls:MaskingTextBox Text="{Binding Width, Mode=TwoWay}"  UnitType="Size"  Grid.Row="6" Grid.Column="1" />
+            <Label Content="(mm)" Grid.Row="6" Grid.Column="3" />
+
+            <Label Content="Height" Grid.Row="7" />
+            <ctls:MaskingTextBox Text="{Binding Height, Mode=TwoWay}"  UnitType="Count"  Grid.Row="7" Grid.Column="1" />
+            <Label Content="(mm)" Grid.Row="7" Grid.Column="3" />
+
+            <Label Content="Note" Grid.Row="8" />
+            <TextBox Text="{Binding Notes, Mode=TwoWay}" Grid.ColumnSpan="2" Grid.Row="8" Grid.Column="1" />
         </Grid>
 
         <DataGrid ItemsSource="{Binding Rows, Mode=TwoWay}" SelectedItem="{Binding SelectedRow, Mode=TwoWay}" AutoGenerateColumns="False" CanUserAddRows="False" Grid.Row="1">
@@ -56,6 +78,8 @@
 
         <Grid Grid.Row="2" Visibility="{Binding SelectedRow, Converter={StaticResource NoTNullToVisibilityConverter}}">
             <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="auto" />
@@ -71,7 +95,13 @@
             <Label Content="Value" Grid.Row="1" />
             <TextBox Text="{Binding Path=SelectedRow.Part.Value, Mode=TwoWay}" Grid.Row="1" Grid.Column="1" Margin="2" />
 
-            <Button Width="120" Content="Done" Grid.Row="2" Command="{Binding DoneEditingRowCommand}" Grid.Column="1" HorizontalAlignment="Left"  Margin="2"/>
+            <Label Content="Current Index" Grid.Row="2" />
+            <ctls:MaskingTextBox Text="{Binding RowHeight, Mode=TwoWay}" UnitType="Count" Grid.Row="2" Grid.Column="1" Margin="2" />
+
+            <Label Content="Count" Grid.Row="3" />
+            <ctls:MaskingTextBox Text="{Binding RowHeight, Mode=TwoWay}" UnitType="Count" Grid.Row="3" Grid.Column="1" Margin="2" />
+
+            <Button Width="120" Content="Done" Grid.Row="4" Command="{Binding DoneEditingRowCommand}" Grid.Column="1" HorizontalAlignment="Left"  Margin="2"/>
         </Grid>
     </Grid>
 </UserControl>

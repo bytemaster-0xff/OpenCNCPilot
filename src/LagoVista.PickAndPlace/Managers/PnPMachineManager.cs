@@ -2,6 +2,7 @@
 using LagoVista.PickAndPlace.Models;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,21 +21,21 @@ namespace LagoVista.PickAndPlace.Managers
             get;
         }
 
-        public PlaceablePart FindPart(string package, string value)
+        public PlaceablePart FindPart(ObservableCollection<PartPackFeeder> partPacks, string package, string value)
         {
-            foreach (var pack in Machine.Carrier.AvailablePartPacks)
+            foreach (var pack in partPacks)
             {
                 foreach (var row in pack.Rows)
                 {
                     var quantity = row.PartCount - row.CurrentPartIndex;
 
-                    if (quantity > 0 && row.Part.PackageName == package &&
-                       row.Part.Value == value)
+                    if (quantity > 0 && row.Part.PackageName.ToUpper() == package.ToUpper() &&
+                       row.Part.Value.ToUpper() == value.ToUpper())
                     {
                         return new PlaceablePart
                         {
                             PartPack = EntityHeader.Create(pack.Id, pack.Name),
-                            Quantity = quantity,
+                            Count = quantity,
                             Row = row.Display
                         };
                     }

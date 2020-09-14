@@ -7,19 +7,18 @@
         xmlns:ctl="clr-namespace:LagoVista.GCode.Sender.Application.Controls"
         mc:Ignorable="d"
         xmlns:fa="http://schemas.fontawesome.io/icons/"
-        Title="Part Pack Set Manager" Height="600" Width="900" >
-<Grid>
+        Title="Part Pack Set Manager" Height="800" Width="1600" >
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="800"/>
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-
-        <Menu>
+        <Menu Grid.ColumnSpan="2">
             <MenuItem Header="File"  >
                 <MenuItem Header="New PnP Machine" Command="{Binding NewMachineCommand}" />
                 <MenuItem Header="Open PnP Machine" Command="{Binding OpenMachineCommand}" />
@@ -29,38 +28,144 @@
             </MenuItem>
         </Menu>
 
-        <StackPanel Grid.ColumnSpan="3" HorizontalAlignment="Left" Grid.Row="1" Orientation="Horizontal" Visibility="{Binding PartPacks, Converter={StaticResource NoTNullToVisibilityConverter}}">
-            <Button Width="32" Height="32"  Command="{Binding AddPartPackCommand}" >
-                <Button.Content>
-                    <fa:ImageAwesome  Icon="PlusCircle" />
-                </Button.Content>
-            </Button>
-        </StackPanel>
+        <TabControl Grid.Row="1" Visibility="{Binding Slots, Converter={StaticResource NoTNullToVisibilityConverter}}" x:Name="Host">
+            <TabItem Header="Carrier Slots">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
 
+                    <StackPanel Grid.ColumnSpan="3" HorizontalAlignment="Left" Grid.Row="0" Orientation="Horizontal" >
+                        <Button Width="32" Height="32"  Command="{Binding AddSlotCommand}" >
+                            <Button.Content>
+                                <fa:ImageAwesome  Icon="PlusCircle" />
+                            </Button.Content>
+                        </Button>
+                    </StackPanel>
 
-        <ListView ItemsSource="{Binding PartPacks}" SelectedItem="{Binding SelectedPartPack, Mode=TwoWay}" Grid.Row="2" Visibility="{Binding PartPacks, Converter={StaticResource NoTNullToVisibilityConverter}}">
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="200" />
-                            <ColumnDefinition Width="100" />
-                            <ColumnDefinition Width="60" />
-                            <ColumnDefinition Width="60" />
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Text="{Binding Name}" />
-                        <TextBlock Text="{Binding Id}" Grid.Column="1" />
-                        <TextBlock Text="{Binding Rows.Count}" Grid.Column="2" />
-                        <TextBlock Text="{Binding RowHeight}" Grid.Column="3" />
+                    <ListView ItemsSource="{Binding Slots}" SelectedItem="{Binding SelectedSlot, Mode=TwoWay}" Grid.Row="1" >
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="200" />
+                                        <ColumnDefinition Width="60" />
+                                        <ColumnDefinition Width="60" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="{Binding Name}" />
+                                    <TextBlock Text="{Binding Row}" Grid.Column="1" />
+                                    <TextBlock Text="{Binding Column}" Grid.Column="2" />
+                                    <TextBlock Text="{Binding PartPack.Name}" Grid.Column="3" />
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                    <Grid Grid.Row="2" Visibility="{Binding SelectedSlot, Converter={StaticResource NoTNullToVisibilityConverter}}">
+                        <Grid Grid.Row="2" DataContext="{Binding SelectedSlot}" >
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="120" />
+                                <ColumnDefinition Width="200" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <Label Content="Name" Grid.Row="0" />
+                            <TextBox Text="{Binding Name, Mode=TwoWay}" Grid.Row="0" Grid.Column="1" />
+
+                            <Label Content="Row" Grid.Row="1" />
+                            <ctl:MaskingTextBox Text="{Binding Row, Mode=TwoWay}"  UnitType="Count"  Grid.Row="1" Grid.Column="1" />
+
+                            <Label Content="Column" Grid.Row="2" />
+                            <ctl:MaskingTextBox Text="{Binding Column, Mode=TwoWay}"  UnitType="Size"  Grid.Row="2" Grid.Column="1" />
+
+                            <Label Content="X" Grid.Row="3" />
+                            <ctl:MaskingTextBox Text="{Binding X, Mode=TwoWay}"  UnitType="Size"  Grid.Row="3" Grid.Column="1" />
+                            <Label Content="(mm)" Grid.Row="3" Grid.Column="3" />
+                            <Button Content="Set" Grid.Row="3" Grid.Column="3" Margin="48,0,0,0" HorizontalAlignment="Left" Width="24" Height="20" Command="{Binding DataContext.SetSlotXCommand, ElementName=Host}" />
+
+                            <Label Content="Y" Grid.Row="4" />
+                            <ctl:MaskingTextBox Text="{Binding Y, Mode=TwoWay}"  UnitType="Size"  Grid.Row="4" Grid.Column="1" />
+                            <Label Content="(mm)" Grid.Row="4" Grid.Column="3" />
+                            <Button Content="Set" Grid.Row="4" Grid.Column="3" Margin="48,0,0,0" HorizontalAlignment="Left" Width="24" Height="20" Command="{Binding DataContext.SetSlotYCommand, ElementName=Host}" />
+
+                            <Label Content="Width" Grid.Row="5" />
+                            <ctl:MaskingTextBox Text="{Binding Width, Mode=TwoWay}"  UnitType="Size"  Grid.Row="5" Grid.Column="1" />
+                            <Label Content="(mm)" Grid.Row="5" Grid.Column="3" />
+
+                            <Label Content="Height" Grid.Row="6" />
+                            <ctl:MaskingTextBox Text="{Binding Height, Mode=TwoWay}"  UnitType="Count"  Grid.Row="6" Grid.Column="1" />
+                            <Label Content="(mm)" Grid.Row="6" Grid.Column="3" />
+
+                            <Button Command="{Binding DataContext.DoneEditSlotCommand, ElementName=Host}" Content="Done" Grid.Row="7" Grid.Column="2" Margin="4" Width="120" Height="24" HorizontalAlignment="Right" />
+                        </Grid>
                     </Grid>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Part Packs" >
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
 
-        <Grid Grid.Column="1" Grid.RowSpan="3"  Visibility="{Binding SelectedPartPack, Converter={StaticResource NoTNullToVisibilityConverter}}">
-            <ctl:PartPackControl DataContext="{Binding SelectedPartPack}" />
-        </Grid>
+                    <StackPanel Grid.ColumnSpan="3" HorizontalAlignment="Left" Grid.Row="1" Orientation="Horizontal" >
+                        <Button Width="32" Height="32"  Command="{Binding AddPartPackCommand}" >
+                            <Button.Content>
+                                <fa:ImageAwesome  Icon="PlusCircle" />
+                            </Button.Content>
+                        </Button>
+                    </StackPanel>
 
+                    <ListView ItemsSource="{Binding PartPacks}" SelectedItem="{Binding SelectedPartPack, Mode=TwoWay}" Grid.Row="2" >
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="100" />
+                                        <ColumnDefinition Width="60" />
+                                        <ColumnDefinition Width="60" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="{Binding Name}" />
+                                    <TextBlock Text="{Binding Id}" Grid.Column="1" />
+                                    <TextBlock Text="{Binding Rows.Count}" Grid.Column="2" />
+                                    <TextBlock Text="{Binding RowHeight}" Grid.Column="3" />
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+
+                    <Grid Grid.Column="1" Grid.RowSpan="3" >
+                        <ctl:PartPackControl DataContext="{Binding SelectedPartPack}" />
+                    </Grid>
+
+                </Grid>
+            </TabItem>
+        </TabControl>
         <TextBlock Text="Please open or create a part pack set" FontSize="24" Grid.ColumnSpan="2" Grid.RowSpan="3" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding PartPacks, Converter={StaticResource NullVisibilityConverter}}" />
+        <StackPanel Grid.Row="2" Grid.ColumnSpan="2" >
+            <Button Height="24" Width="120" Content="Save" Command="{Binding SaveMachineCommand}" HorizontalAlignment="Right" Margin="4" />
+        </StackPanel>
     </Grid>
 </Window>

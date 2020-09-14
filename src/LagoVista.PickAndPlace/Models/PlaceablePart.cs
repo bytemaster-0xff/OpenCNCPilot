@@ -9,8 +9,16 @@ namespace LagoVista.PickAndPlace.Models
 {
     public class PlaceablePart
     {
+        public int Count { get; set; }
+
+        public int Available { get; set; }
+
+        public string Package { get; set; }
+        public string Value { get; set; }
+
+        public string PackageId { get; set; }
+
         public EntityHeader PartPack { get; set; }
         public string Row { get; set; }
-        public int Quantity { get; set; }
     }
 }

@@ -34,7 +34,8 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             _isDirty = true;
 
             AddFeederCommand = new RelayCommand(AddFeeder, () => CanAddFeeder());
-            SaveJobCommand = new RelayCommand(SaveJob);
+            SaveCommand = new RelayCommand(() => SaveJob());
+            CloseCommand = new RelayCommand(Close);
             CloneCommand = new RelayCommand(CloneConfiguration);
 
             GoToPartOnBoardCommand = new RelayCommand(GoToPartOnBoard);
@@ -94,6 +95,8 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                                         prt.LibraryName == entry.Package.LibraryName &&
                                         prt.Value == entry.Value).Any())
                 {
+                  //  var partInTray = PnPMachine.Carrier.PartPackSlots.
+
                     Parts.Add(new Part()
                     {
                         Count = entry.Components.Count,
@@ -105,6 +108,12 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             }
         }
 
+        public async void Close()
+        {
+            await SaveJob();
+            CloseScreen();
+        }
+
         private void PopulateConfigurationParts()
         {
             ConfigurationParts.Clear();
@@ -112,11 +121,11 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
 
             foreach (var entry in commonParts)
             {
-                ConfigurationParts.Add(new Part()
+                ConfigurationParts.Add(new PlaceablePart()
                 {
                     Count = entry.Count(),
-                    Value = entry.First().Value,
-                    PackageName = entry.First().PackageName
+                    Value = entry.First().Value.ToUpper(),
+                    Package = entry.First().PackageName.ToUpper()
                 });
             }
         }
@@ -347,7 +356,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                 {
                     SelectedPart.PackageId = value;
                     _isDirty = true;
-                    SaveJobCommand.RaiseCanExecuteChanged();
+                    SaveCommand.RaiseCanExecuteChanged();
 
                 }
 
@@ -374,20 +383,22 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             {
                 if (SelectedPart != null)
                 {
-                    return JobFeeders.Where(fdr => fdr.Feeder.Id == SelectedPart.FeederId).FirstOrDefault();
+                //    return JobFeeders.Where(fdr => fdr.Feeder.Id == SelectedPart.FeederId).FirstOrDefault();
                 }
                 else
                 {
                     return null;
                 }
+
+                return null;
             }
             set
             {
                 if (SelectedPart != null && value != null)
                 {
-                    SelectedPart.FeederId = value.Feeder.Id;
+                   // SelectedPart.FeederId = value.Feeder.Id;
                     _isDirty = true;
-                    SaveJobCommand.RaiseCanExecuteChanged();
+                    SaveCommand.RaiseCanExecuteChanged();
                 }
 
                 RaisePropertyChanged();
@@ -398,6 +409,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
         {
             get
             {
+                /*
                 if (SelectedPart == null || !SelectedPart.RowNumber.HasValue)
                 {
                     return null;
@@ -414,21 +426,23 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                         return null;
                     }
 
-                }
+                }*/
+
+                return null;
             }
             set
             {
-                if (SelectedPart != null && value != null)
+             /*   if (SelectedPart != null && value != null)
                 {
                     SelectedPart.RowNumber = value.RowNumber;
                     value.Part = SelectedPart;
                     _isDirty = true;
-                    SaveJobCommand.RaiseCanExecuteChanged();
+                    SaveCommand.RaiseCanExecuteChanged();
                 }
                 RaisePropertyChanged();
 
                 _partIndex = -1;
-
+                */
                 MoveToNextComponentInTapeCommand.RaiseCanExecuteChanged();
                 MoveToPreviousComponentInTapeCommand.RaiseCanExecuteChanged();
                 ResetCurrentComponentCommand.RaiseCanExecuteChanged();
@@ -462,14 +476,10 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             get { return Job.Parts; }
         }
 
-        private ObservableCollection<Part> _confiugrationParts = new ObservableCollection<Part>();
-        public ObservableCollection<Part> ConfigurationParts
-        {
-            get { return _confiugrationParts; }
-        }
+        public ObservableCollection<PlaceablePart> ConfigurationParts { get; } = new ObservableCollection<PlaceablePart>();
 
-        private Part _selectedPart;
-        public Part SelectedPart
+        private PlaceablePart _selectedPart;
+        public PlaceablePart SelectedPart
         {
             get { return _selectedPart; }
             set
@@ -489,8 +499,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                 if (_selectedPart != null)
                 {
                     var partsOfType = _billOfMaterials.SMDEntries.Where(ent =>
-                       value.LibraryName == ent.Package.LibraryName &&
-                            value.PackageName == ent.Package.Name &&
+                            value.Package == ent.Package.Name &&
                             value.Value == ent.Value);
 
                     foreach (var part in partsOfType)
@@ -529,7 +538,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             set
             {
                 _isDirty = false;
-                SaveJobCommand.RaiseCanExecuteChanged();
+                SaveCommand.RaiseCanExecuteChanged();
                 Set(ref _job, value);
                 RaisePropertyChanged(nameof(HasJob));
             }
@@ -566,7 +575,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             set { Set(ref _isEditing, value); }
         }
 
-        public async void SaveJob()
+        public async Task SaveJob()
         {
             if (String.IsNullOrEmpty(FileName))
             {
@@ -579,8 +588,14 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
 
             await Storage.StoreAsync(Job, FileName);
 
+            if (!String.IsNullOrEmpty(Job.PnPMachinePath))
+            {
+                await PnPMachineManager.SavePackagesAsync(PnPMachine, Job.PnPMachinePath);
+            }
+
+
             _isDirty = false;
-            SaveJobCommand.RaiseCanExecuteChanged();
+            SaveCommand.RaiseCanExecuteChanged();
         }
 
 
@@ -589,7 +604,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
 
         public RelayCommand CloneCommand { get; private set; }
 
-        public RelayCommand SaveJobCommand { get; private set; }
+        public RelayCommand SaveCommand { get; private set; }
 
         public RelayCommand GoToPartOnBoardCommand { get; private set; }
 
@@ -605,6 +620,8 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
 
         public RelayCommand GoToWorkHomeCommand { get; set; }
         public RelayCommand SetWorkHomeCommand { get; set; }
+
+        public RelayCommand CloseCommand { get; set; }
 
         public RelayCommand PlacePartCommand { get; set; }
     }

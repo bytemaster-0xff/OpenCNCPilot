@@ -27,6 +27,9 @@ namespace LagoVista.PickAndPlace.ViewModels
             OpenMachineCommand = new RelayCommand(OpenMachine);
             NewMachineCommand = new RelayCommand(NewMachine);
             DoneEditingRowCommand = new RelayCommand(DoneEditingRow, () => SelectedPartPack != null && SelectedPartPack.SelectedRow != null);
+
+            AddSlotCommand = new RelayCommand(AddSlot);
+            DoneEditSlotCommand = new RelayCommand(() => SelectedSlot = null);
         }
 
         public async void OpenMachine()
@@ -54,6 +57,7 @@ namespace LagoVista.PickAndPlace.ViewModels
             AddPartPackCommand.RaiseCanExecuteChanged();
 
             RaisePropertyChanged(nameof(PartPacks));
+            RaisePropertyChanged(nameof(Slots));
         }
 
         public async void NewMachine()
@@ -73,16 +77,18 @@ namespace LagoVista.PickAndPlace.ViewModels
             AddPartPackCommand.RaiseCanExecuteChanged();
 
             RaisePropertyChanged(nameof(PartPacks));
+            RaisePropertyChanged(nameof(Slots));
         }
 
         public void DoneEditingRow()
         {
-            if(SelectedPartPack != null)
+            if (SelectedPartPack != null)
             {
                 SelectedPartPack.SelectedRow = null;
             }
         }
 
+       
         public void AddPartPack()
         {
             if (_machine != null)
@@ -97,6 +103,21 @@ namespace LagoVista.PickAndPlace.ViewModels
 
                 SelectedPartPack = newPartPack;
                 _isDirty = true;
+            }
+        }
+
+        public void AddSlot()
+        {
+            if (_machine != null)
+            {
+                var slot = new PartPackSlot()
+                {
+                    Width = 70,
+                    Height = 70
+                };
+
+                _machine.Carrier.PartPackSlots.Add(slot);
+                SelectedSlot = slot;
             }
         }
 
@@ -116,6 +137,11 @@ namespace LagoVista.PickAndPlace.ViewModels
             _isDirty = false;
         }
 
+        public ObservableCollection<PartPackSlot> Slots
+        {
+            get => _machine?.Carrier.PartPackSlots;
+        }
+
         public ObservableCollection<PartPackFeeder> PartPacks
         {
             get => _machine?.Carrier.AvailablePartPacks;
@@ -128,11 +154,23 @@ namespace LagoVista.PickAndPlace.ViewModels
             set => Set(ref _selectedPartPack, value);
         }
 
-        public IEnumerable<Package> Packages { get => _machine.Packages; }
-        public RelayCommand SaveMachineCommand { get; private set; }
-        public RelayCommand OpenMachineCommand { get; private set; }
-        public RelayCommand NewMachineCommand { get; private set; }
-        public RelayCommand AddPartPackCommand { get; private set; }
-        public RelayCommand DoneEditingRowCommand { get; private set; }
+        private PartPackSlot _selectedSlot;
+        public PartPackSlot SelectedSlot
+        {
+            get => _selectedSlot;
+            set => Set(ref _selectedSlot, value);
+        }
+
+        public IEnumerable<Package> Packages { get => _machine?.Packages; }
+
+        public RelayCommand SaveMachineCommand { get; }
+        public RelayCommand OpenMachineCommand { get; }
+        public RelayCommand NewMachineCommand { get; }
+        public RelayCommand AddPartPackCommand { get; }
+        public RelayCommand DoneEditingRowCommand { get; }
+
+
+        public RelayCommand DoneEditSlotCommand { get; }
+        public RelayCommand AddSlotCommand { get; }
     }
 }

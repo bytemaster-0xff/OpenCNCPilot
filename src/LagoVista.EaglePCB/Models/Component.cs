@@ -100,7 +100,7 @@ namespace LagoVista.EaglePCB.Models
             }
         }
 
-        public string Key => PackageName + "-" + Value;
+        public string Key => PackageName.ToUpper() + "-" + Value.ToUpper();
 
         public static Component Create(XElement element)
         {

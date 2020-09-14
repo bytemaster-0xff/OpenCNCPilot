@@ -132,8 +132,8 @@ namespace LagoVista.GCode.Sender
         public const double PixelToleranceEpsilon = 1.5;
         public const int PixelStabilizationToleranceCount = 10;
 
-        public static string PickAndPlaceProject = "Pick and Place|*.pnp|All Files|*.*";
-        public static string PCBProject = "PCB Project|*.pcbproj|All Files|*.*";
+        public static string PickAndPlaceProject = "Pick and Place (*.pnpjob)|*.pnpjob";
+        public static string PCBProject = "PCB Projec (*.pcbproj)|*.pcbproj|All Files|*.*";
         public static string FileFilterPCB = "Eagle|*.brd|All Files|*.*";
         public static string PartsPackages = "Package Library(*.pckgs)|*.pckgs";
         public static string PnPMachine = "PNP Machine(*.pnp)|*.pnp";

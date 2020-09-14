@@ -151,14 +151,10 @@ namespace LagoVista.GCode.Sender.Application
         private async void PnpJobMenu_Click(object sender, RoutedEventArgs e)
         {
             var menu = sender as MenuItem;
-            _pnpJob = await Core.PlatformSupport.Services.Storage.GetAsync<PnPJob>(menu.Tag as String);
-            _pnpJobFileName = menu.Tag as string;
-            EditPnPJob.IsEnabled = true;
-            ClosePnPJob.IsEnabled = true;
-            FeederAlignementView.IsEnabled = true;
+            
+            await OpenPnPJobAsync(menu.Tag as string);
 
             await _pnpJob.OpenAsync();
-
         }
 
         private async void GcodeFile_Click(object sender, RoutedEventArgs e)
@@ -367,25 +363,30 @@ namespace LagoVista.GCode.Sender.Application
             lbrWindow.ShowDialog();
         }
 
+        private async Task OpenPnPJobAsync(string fileName)
+        {
+            _pnpJobFileName = fileName;
+            ViewModel.AddPnPJobFile(fileName);
+            _pnpJob = await Core.PlatformSupport.Services.Storage.GetAsync<PnPJob>(fileName);
+            await _pnpJob.OpenAsync();
+            var pnpViewModel = new PnPJobViewModel(ViewModel.Machine, _pnpJob);
+            pnpViewModel.FileName = fileName;
+            await pnpViewModel.InitAsync();
+            var jobWindow = new Views.PNPJobWindow();
+            jobWindow.DataContext = pnpViewModel;
+            jobWindow.Owner = this;
+            jobWindow.ShowDialog();
+            EditPnPJob.IsEnabled = true;
+            ClosePnPJob.IsEnabled = true;
+            FeederAlignementView.IsEnabled = true;
+        }
+
         private async void OpenPnPJob_Click(object sender, RoutedEventArgs e)
         {
             var file = await Core.PlatformSupport.Services.Popups.ShowOpenFileAsync(Constants.PickAndPlaceProject);
             if (!String.IsNullOrEmpty(file))
             {
-                _pnpJobFileName = file;
-                ViewModel.AddPnPJobFile(file);
-                _pnpJob = await Core.PlatformSupport.Services.Storage.GetAsync<PnPJob>(file);
-                await _pnpJob.OpenAsync();
-                var pnpViewModel = new PnPJobViewModel(ViewModel.Machine, _pnpJob);
-                pnpViewModel.FileName = file;
-                await pnpViewModel.InitAsync();
-                var jobWindow = new Views.PNPJobWindow();
-                jobWindow.DataContext = pnpViewModel;
-                jobWindow.Owner = this;
-                jobWindow.ShowDialog();
-                EditPnPJob.IsEnabled = true;
-                ClosePnPJob.IsEnabled = true;
-                FeederAlignementView.IsEnabled = true;
+                await OpenPnPJobAsync(file);
             }
         }
 

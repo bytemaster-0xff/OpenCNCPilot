@@ -20,6 +20,41 @@ namespace LagoVista.PickAndPlace.Models
             set => Set(ref _name, value);
         }
 
+        private double _partZ;
+        public double PartZOffset
+        {
+            get => _partZ;
+            set => Set(ref _partZ, value);
+        }
+
+        private double _pin1X;
+        public double Pin1XOffset
+        {
+            get => _pin1X;
+            set => Set(ref _pin1X, value);
+        }
+
+        private double _pin1Y;
+        public double Pin1YOffset
+        {
+            get => _pin1Y;
+            set => Set(ref _pin1Y, value);
+        }
+
+        private PartPackSlot _currentSlot;
+        public PartPackSlot CurrentSlot
+        {
+            get => _currentSlot;
+            set => Set(ref _currentSlot, value);
+        }
+
+        private double _partsWidth;
+        public double PartsWidth
+        {
+            get => _partsWidth;
+            set => Set(ref _partsWidth, value);
+        }
+
         public ObservableCollection<Row> Rows { get; set; } = new ObservableCollection<Row>();
         
         private double _rowHeight;
