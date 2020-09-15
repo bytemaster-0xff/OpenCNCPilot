@@ -137,7 +137,7 @@
                     <DataGrid AutoGenerateColumns="False" CanUserAddRows="false" CanUserDeleteRows="False" Grid.Column="3" ItemsSource="{Binding ConfigurationParts}" Grid.Row="3" HorizontalContentAlignment="Stretch" >
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Count" IsReadOnly="true" Width="80" Binding="{Binding Count, Mode=TwoWay}"  />
-                            <DataGridTextColumn Header="PackageName" IsReadOnly="true" Width="80" Binding="{Binding PackageName, Mode=TwoWay}"  />
+                            <DataGridTextColumn Header="Package" IsReadOnly="true" Width="80" Binding="{Binding Package, Mode=TwoWay}"  />
                             <DataGridTextColumn Header="Value" Width="80" IsReadOnly="true" Binding="{Binding Value, Mode=TwoWay}"  />
                         </DataGrid.Columns>
                     </DataGrid>

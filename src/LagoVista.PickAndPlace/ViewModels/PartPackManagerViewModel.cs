@@ -1,4 +1,5 @@
 ﻿using LagoVista.Core.Commanding;
+using LagoVista.Core.Models;
 using LagoVista.Core.ViewModels;
 using LagoVista.PickAndPlace.Managers;
 using LagoVista.PickAndPlace.Models;
@@ -88,7 +89,7 @@ namespace LagoVista.PickAndPlace.ViewModels
             }
         }
 
-       
+
         public void AddPartPack()
         {
             if (_machine != null)
@@ -147,18 +148,42 @@ namespace LagoVista.PickAndPlace.ViewModels
             get => _machine?.Carrier.AvailablePartPacks;
         }
 
+
         private PartPackFeeder _selectedPartPack = null;
         public PartPackFeeder SelectedPartPack
         {
             get => _selectedPartPack;
-            set => Set(ref _selectedPartPack, value);
+            set
+            {
+                Set(ref _selectedPartPack, value);
+            }
         }
 
         private PartPackSlot _selectedSlot;
         public PartPackSlot SelectedSlot
         {
             get => _selectedSlot;
-            set => Set(ref _selectedSlot, value);
+            set
+            {
+                Set(ref _selectedSlot, value);
+                RaisePropertyChanged(nameof(CurrentSlotPartPack));
+            }
+        }
+
+        public string CurrentSlotPartPack
+        {
+            get => SelectedSlot?.PartPack?.Id;
+            set
+            {
+                if (SelectedSlot != null && !String.IsNullOrEmpty(value))
+                {
+                    SelectedSlot.PartPack = EntityHeader.Create(value, PartPacks.First(pp => pp.Id == value).Name);
+                }
+                else
+                {
+                    SelectedPartPack = null;
+                }
+            }
         }
 
         public IEnumerable<Package> Packages { get => _machine?.Packages; }

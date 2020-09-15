@@ -49,12 +49,25 @@
                         </Button>
                     </StackPanel>
 
-                    <ListView ItemsSource="{Binding Slots}" SelectedItem="{Binding SelectedSlot, Mode=TwoWay}" Grid.Row="1" >
+                    <Grid Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="120" />
+                            <ColumnDefinition Width="60" />
+                            <ColumnDefinition Width="60" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Name" />
+                        <TextBlock Text="Row" Grid.Column="1" />
+                        <TextBlock Text="Column" Grid.Column="2" />
+                        <TextBlock Text="Part Pack" Grid.Column="3"/>
+                    </Grid>
+                    
+                    <ListView ItemsSource="{Binding Slots}" SelectedItem="{Binding SelectedSlot, Mode=TwoWay}" Grid.Row="1" Margin="0,24,0,0" >
                         <ListView.ItemTemplate>
                             <DataTemplate>
                                 <Grid>
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="200" />
+                                        <ColumnDefinition Width="120" />
                                         <ColumnDefinition Width="60" />
                                         <ColumnDefinition Width="60" />
                                         <ColumnDefinition Width="*" />
@@ -62,7 +75,7 @@
                                     <TextBlock Text="{Binding Name}" />
                                     <TextBlock Text="{Binding Row}" Grid.Column="1" />
                                     <TextBlock Text="{Binding Column}" Grid.Column="2" />
-                                    <TextBlock Text="{Binding PartPack.Name}" Grid.Column="3" />
+                                    <TextBlock Text="{Binding PartPack.Text}" Grid.Column="3" />
                                 </Grid>
                             </DataTemplate>
                         </ListView.ItemTemplate>
@@ -70,6 +83,7 @@
                     <Grid Grid.Row="2" Visibility="{Binding SelectedSlot, Converter={StaticResource NoTNullToVisibilityConverter}}">
                         <Grid Grid.Row="2" DataContext="{Binding SelectedSlot}" >
                             <Grid.RowDefinitions>
+                                <RowDefinition Height="auto" />
                                 <RowDefinition Height="auto" />
                                 <RowDefinition Height="auto" />
                                 <RowDefinition Height="auto" />
@@ -98,12 +112,14 @@
                             <Label Content="X" Grid.Row="3" />
                             <ctl:MaskingTextBox Text="{Binding X, Mode=TwoWay}"  UnitType="Size"  Grid.Row="3" Grid.Column="1" />
                             <Label Content="(mm)" Grid.Row="3" Grid.Column="3" />
-                            <Button Content="Set" Grid.Row="3" Grid.Column="3" Margin="48,0,0,0" HorizontalAlignment="Left" Width="24" Height="20" Command="{Binding DataContext.SetSlotXCommand, ElementName=Host}" />
+                            <Button Content="Set" Grid.Row="3" Grid.Column="3" Margin="48,0,0,0" HorizontalAlignment="Left" Width="24" Height="20" 
+                                    Command="{Binding DataContext.SetSlotXCommand, ElementName=Host}" />
 
                             <Label Content="Y" Grid.Row="4" />
                             <ctl:MaskingTextBox Text="{Binding Y, Mode=TwoWay}"  UnitType="Size"  Grid.Row="4" Grid.Column="1" />
                             <Label Content="(mm)" Grid.Row="4" Grid.Column="3" />
-                            <Button Content="Set" Grid.Row="4" Grid.Column="3" Margin="48,0,0,0" HorizontalAlignment="Left" Width="24" Height="20" Command="{Binding DataContext.SetSlotYCommand, ElementName=Host}" />
+                            <Button Content="Set" Grid.Row="4" Grid.Column="3" Margin="48,0,0,0" HorizontalAlignment="Left" Width="24" Height="20" 
+                                    Command="{Binding DataContext.SetSlotYCommand, ElementName=Host}" />
 
                             <Label Content="Width" Grid.Row="5" />
                             <ctl:MaskingTextBox Text="{Binding Width, Mode=TwoWay}"  UnitType="Size"  Grid.Row="5" Grid.Column="1" />
@@ -113,7 +129,12 @@
                             <ctl:MaskingTextBox Text="{Binding Height, Mode=TwoWay}"  UnitType="Count"  Grid.Row="6" Grid.Column="1" />
                             <Label Content="(mm)" Grid.Row="6" Grid.Column="3" />
 
-                            <Button Command="{Binding DataContext.DoneEditSlotCommand, ElementName=Host}" Content="Done" Grid.Row="7" Grid.Column="2" Margin="4" Width="120" Height="24" HorizontalAlignment="Right" />
+                            <Label Content="Current Part Pack" Grid.Row="7" />
+                            <ComboBox Grid.Row="7" Grid.Column="1" ItemsSource="{Binding DataContext.PartPacks, ElementName=Host}" 
+                                      DisplayMemberPath="Name" SelectedValuePath="Id"  SelectedValue="{Binding DataContext.CurrentSlotPartPack,ElementName=Host}" />
+
+                            <Button Command="{Binding DataContext.DoneEditSlotCommand, ElementName=Host}" Content="Done" 
+                                    Grid.Row="8" Grid.ColumnSpan="3" Margin="4" Width="120" Height="24" HorizontalAlignment="Right" />
                         </Grid>
                     </Grid>
                 </Grid>
