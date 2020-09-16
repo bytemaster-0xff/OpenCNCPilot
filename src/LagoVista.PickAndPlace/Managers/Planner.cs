@@ -21,11 +21,10 @@ namespace LagoVista.PickAndPlace.Managers
                 {
                     var row = feeder.Rows.Where(rw => rw.Part.PartNumber == partType.PartNumber).FirstOrDefault();
                     var parts = board.Components.Where(prt => prt.LibraryName == partType.LibraryName && prt.Name == prt.Name);
-                    var idx = 0;
                     foreach(var part in parts)
                     {
                         bldr.Append($"G00 Z{job.SafeHeight}\n");
-                        bldr.Append(feeder.CurrentPartGCode(row.RowNumber));
+                  //      bldr.Append(feeder.CurrentPartGCode(row.RowNumber));
                         bldr.Append($"T0\n"); /* Set Place tool as current Z axis */
                         feeder.AdvancePart(row.RowNumber);
                         bldr.Append($"G00 Z{feeder.Feeder.PartZ}\n");

@@ -1,4 +1,5 @@
 ﻿using LagoVista.Core.Models;
+using Newtonsoft.Json;
 
 namespace LagoVista.PickAndPlace.Models
 {
@@ -18,20 +19,6 @@ namespace LagoVista.PickAndPlace.Models
             set { Set(ref _part, value); }
         }
 
-        private double _firstComponentX;
-        public double FirstComponentX 
-        { 
-            get { return _firstComponentX; }
-            set { Set(ref _firstComponentX, value); }
-        }
-
-        private double _firstComponentY;
-        public double FirstComponentY
-        {
-            get { return _firstComponentY; }
-            set { Set(ref _firstComponentY, value); }
-        }
-
         public double SpacingX { get; set; }
 
         private int _currentPartIndex;
@@ -48,12 +35,10 @@ namespace LagoVista.PickAndPlace.Models
             set { Set(ref _partCount, value); }
         }
 
-        public double CurrentPartX
+        [JsonIgnore]
+        public int AvailableParts
         {
-            get
-            {
-                return _firstComponentX + (SpacingX * CurrentPartIndex);
-            }
+            get { return _partCount - _currentPartIndex; }
         }
 
         public string Display
@@ -62,7 +47,7 @@ namespace LagoVista.PickAndPlace.Models
             {
                 if (Part != null)
                 {
-                    return $"{RowNumber}. {Part.Display} - {CurrentPartIndex}/{PartCount} - {CurrentPartX}";
+                    return $"{RowNumber}. {Part.Display} - {CurrentPartIndex}/{PartCount}";
                 }
                 else
                 {

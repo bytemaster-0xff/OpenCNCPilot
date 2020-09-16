@@ -39,23 +39,6 @@ namespace LagoVista.PickAndPlace.Models
             get; set;
         }
 
-        public Vector3 GetCurrentPartLocation(int rowIndex)
-        {
-            var row = Rows[rowIndex];
-            return new Vector3()
-            {
-                X = Location.X + row.CurrentPartX,
-                Y = Location.Y + Feeder.FirstRowOffset + Feeder.RowWidth * rowIndex,
-                Z = Feeder.PartZ
-            };
-        }
-
-        public String CurrentPartGCode(int rowIndex)
-        {
-            var location = GetCurrentPartLocation(rowIndex);
-
-            return $"G01 X{location.X.ToDim()} Y{location.Y.ToDim()}";
-        }
 
         public void AdvancePart(int row)
         {

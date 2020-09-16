@@ -11,38 +11,28 @@ namespace LagoVista.PickAndPlace.Managers
 {
     public class PnPMachineManager
     {
-        public PnPMachineManager(PnPMachine machine)
-        {
-            Machine = machine ?? throw new ArgumentNullException(nameof(machine));
-        }
+   
 
-        public PnPMachine Machine
+        public static void ResolvePart(PnPMachine machine, PlaceableParts part)
         {
-            get;
-        }
-
-        public PlaceablePart FindPart(ObservableCollection<PartPackFeeder> partPacks, string package, string value)
-        {
-            foreach (var pack in partPacks)
+            foreach (var slot in machine.Carrier.PartPackSlots)
             {
-                foreach (var row in pack.Rows)
+                if (!EntityHeader.IsNullOrEmpty(slot.PartPack))
                 {
-                    var quantity = row.PartCount - row.CurrentPartIndex;
-
-                    if (quantity > 0 && row.Part.PackageName.ToUpper() == package.ToUpper() &&
-                       row.Part.Value.ToUpper() == value.ToUpper())
+                    var pack = machine.Carrier.AvailablePartPacks.Where(prt => prt.Id == slot.PartPack.Id).First();
+                    foreach (var row in pack.Rows)
                     {
-                        return new PlaceablePart
+                        if (row.Part != null &&
+                            row.Part.PackageName?.ToUpper() == part.Package?.ToUpper() &&
+                           row.Part.Value?.ToUpper() == part.Value?.ToUpper())
                         {
-                            PartPack = EntityHeader.Create(pack.Id, pack.Name),
-                            Count = quantity,
-                            Row = row.Display
-                        };
+                            part.Slot = slot;
+                            part.PartPack = pack;
+                            part.Row = row;
+                        }
                     }
                 }
             }
-
-            return null;
         }
 
         public static Task<PnPMachine> GetPnPMachineAsync(string path)

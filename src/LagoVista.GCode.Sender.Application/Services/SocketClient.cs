@@ -10,8 +10,6 @@ namespace LagoVista.GCode.Sender.Application.Services
     {
         TcpClient _client;
 
-        Timer _pingTimer;
-
         public async Task ConnectAsync(string ipAddress, int port)
         {
             _client = new TcpClient();

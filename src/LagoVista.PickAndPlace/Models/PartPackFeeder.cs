@@ -6,6 +6,14 @@ namespace LagoVista.PickAndPlace.Models
 {
     public class PartPackFeeder : ModelBase
     {
+        public PartPackFeeder()
+        {
+            Width = 70;
+            Height = 70;
+            Pin1XOffset = 7.0;
+            Pin1YOffset = 6.5;
+        }
+
         private string _id;
         public string Id
         {
@@ -48,11 +56,25 @@ namespace LagoVista.PickAndPlace.Models
             set => Set(ref _currentSlot, value);
         }
 
-        private double _partsWidth;
-        public double PartsWidth
+        private double _pickZHeight;
+        public double PickZHeight
         {
-            get => _partsWidth;
-            set => Set(ref _partsWidth, value);
+            get => _pickZHeight;
+            set => Set(ref _pickZHeight, value);
+        }
+
+        private double _width;
+        public double Width
+        {
+            get => _width;
+            set => Set(ref _width, value);
+        }
+
+        private double _height;
+        public double Height
+        {
+            get => _height;
+            set => Set(ref _height, value);
         }
 
         public ObservableCollection<Row> Rows { get; set; } = new ObservableCollection<Row>();
@@ -78,6 +100,12 @@ namespace LagoVista.PickAndPlace.Models
                 for (var idx = value; idx < Rows.Count; ++idx)
                 {
                     Rows.RemoveAt(idx);
+                }
+
+                var rowNumber = 1; 
+                foreach(var row in Rows)
+                {
+                    row.RowNumber = rowNumber++;
                 }
             }
         }

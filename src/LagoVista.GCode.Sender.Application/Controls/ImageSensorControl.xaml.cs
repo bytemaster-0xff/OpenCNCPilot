@@ -20,7 +20,6 @@ namespace LagoVista.GCode.Sender.Application.Controls
         [DllImport("gdi32")]
         private static extern int DeleteObject(IntPtr o);
 
-        bool _timerStopped = true;
         VideoCapture _videoCapture;
         Object _videoCaptureLocker = new object();
 
@@ -136,8 +135,6 @@ namespace LagoVista.GCode.Sender.Application.Controls
                 Stop.Visibility = Visibility.Visible;
 
                 CaptureLoop();
-
-                _timerStopped = false;
             }
             catch (NullReferenceException excpt)
             {

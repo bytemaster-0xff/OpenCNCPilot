@@ -1,4 +1,5 @@
 ﻿using LagoVista.GCode.Sender.Application.ViewModels;
+using LagoVista.PickAndPlace.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,6 +39,23 @@ namespace LagoVista.GCode.Sender.Application.Views
             var absY = percentY * 28 + ViewModel.Machine.MachinePosition.Y;
 
             ViewModel.Machine.GotoPoint(absX, absY);
+        }
+
+        private void DataGrid_LoadingRow(object sender, DataGridRowEventArgs e)
+        {
+            var placeablePart = e.Row.DataContext as PlaceableParts;
+            if (placeablePart != null && placeablePart.Row != null)
+            {
+                if (placeablePart.Row.AvailableParts >= placeablePart.Count)
+                {
+                    e.Row.Background = new SolidColorBrush(Colors.Green);
+                    e.Row.Foreground = new SolidColorBrush(Colors.White);
+                }
+                else
+                {
+                    e.Row.Background = new SolidColorBrush(Colors.Yellow);
+                }
+            }
         }
     }
 }
