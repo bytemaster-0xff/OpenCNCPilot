@@ -77,6 +77,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             }
 
             PartPackManagerVM = new PartPackManagerViewModel();
+            PackageLibraryVM = new PackageLibraryViewModel();
 
             PopulateParts();
             PopulateConfigurationParts();
@@ -144,6 +145,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             {
                 PnPMachine = await PnPMachineManager.GetPnPMachineAsync(_job.PnPMachinePath);
                 PartPackManagerVM.SetMachine(PnPMachine);
+                PackageLibraryVM.SetMachine(PnPMachine);
             }
         }
 
@@ -254,7 +256,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
         {
             get
             {
-                if (SelectedPart != null)
+                if (SelectedPart != null && SelectedPartPackage != null)
                 {
                     return SelectedPart.PartPack.Pin1XOffset + SelectedPart.Slot.X + (SelectedPartRow.CurrentPartIndex * SelectedPartPackage.SpacingX) + SelectedPartPackage.CenterXFromHole;
                 }
@@ -311,6 +313,11 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             get;
         }
 
+        public PackageLibraryViewModel PackageLibraryVM
+        {
+            get;
+        }
+
         PnPMachine _pnpMachine;
         public PnPMachine PnPMachine
         {
@@ -355,7 +362,6 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             get => SelectedPart?.Row;
         }
         
-
         public LagoVista.EaglePCB.Models.PCB Board
         {
             get { return Job.Board; }

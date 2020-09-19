@@ -17,7 +17,6 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
-        <Button />
         <Menu>
             <MenuItem Header="File">
                 <MenuItem Command="{Binding NewMachineCommand}" Header="New" />

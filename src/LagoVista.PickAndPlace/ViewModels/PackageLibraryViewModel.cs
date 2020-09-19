@@ -82,6 +82,12 @@ namespace LagoVista.PickAndPlace.ViewModels
             }
         }
 
+        public void SetMachine(PnPMachine machine)
+        {
+            _pnpMachine = machine;
+            RaisePropertyChanged(nameof(Packages));
+        }
+
         public void CancelPackage()
         {
             CurrentPackage = null;

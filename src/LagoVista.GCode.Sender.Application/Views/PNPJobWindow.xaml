@@ -94,6 +94,7 @@
                     </DataGrid>
                 </Grid>
             </TabItem>
+            
             <TabItem Header="Part Pack Management" DataContext="{Binding PartPackManagerVM}" >
                 <Grid>
                     <Grid.RowDefinitions>
@@ -139,7 +140,230 @@
                     <TextBlock Text="Please open or create a part pack set" FontSize="24" Grid.ColumnSpan="2" Grid.RowSpan="3" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding PartPacks, Converter={StaticResource NullVisibilityConverter}}" />
                 </Grid>
             </TabItem>
-          
+
+            <TabItem Header="Carrier Slots" DataContext="{Binding PartPackManagerVM}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.ColumnSpan="3" HorizontalAlignment="Left" Grid.Row="0" Orientation="Horizontal" >
+                        <Button Width="32" Height="32"  Command="{Binding AddSlotCommand}" >
+                            <Button.Content>
+                                <fa:ImageAwesome  Icon="PlusCircle" />
+                            </Button.Content>
+                        </Button>
+                    </StackPanel>
+
+                    <Grid Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="120" />
+                            <ColumnDefinition Width="60" />
+                            <ColumnDefinition Width="60" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Name" />
+                        <TextBlock Text="Row" Grid.Column="1" />
+                        <TextBlock Text="Column" Grid.Column="2" />
+                        <TextBlock Text="Part Pack" Grid.Column="3"/>
+                    </Grid>
+
+                    <ListView ItemsSource="{Binding Slots}" SelectedItem="{Binding SelectedSlot, Mode=TwoWay}" Grid.Row="1" Margin="0,24,0,0" >
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="120" />
+                                        <ColumnDefinition Width="60" />
+                                        <ColumnDefinition Width="60" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="{Binding Name}" />
+                                    <TextBlock Text="{Binding Row}" Grid.Column="1" />
+                                    <TextBlock Text="{Binding Column}" Grid.Column="2" />
+                                    <TextBlock Text="{Binding PartPack.Text}" Grid.Column="3" />
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                    <Grid Grid.Row="2" Visibility="{Binding SelectedSlot, Converter={StaticResource NoTNullToVisibilityConverter}}">
+                        <Grid Grid.Row="2" DataContext="{Binding SelectedSlot}" >
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="120" />
+                                <ColumnDefinition Width="200" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <Label Content="Name" Grid.Row="0" />
+                            <TextBox Text="{Binding Name, Mode=TwoWay}" Grid.Row="0" Grid.Column="1" />
+
+                            <Label Content="Row" Grid.Row="1" />
+                            <Controls:MaskingTextBox Text="{Binding Row, Mode=TwoWay}"  UnitType="Count"  Grid.Row="1" Grid.Column="1" />
+
+                            <Label Content="Column" Grid.Row="2" />
+                            <Controls:MaskingTextBox Text="{Binding Column, Mode=TwoWay}"  UnitType="Size"  Grid.Row="2" Grid.Column="1" />
+
+                            <Label Content="X" Grid.Row="3" />
+                            <Controls:MaskingTextBox Text="{Binding X, Mode=TwoWay}"  UnitType="Size"  Grid.Row="3" Grid.Column="1" />
+                            <Label Content="(mm)" Grid.Row="3" Grid.Column="3" />
+                            <Button Content="Set" Grid.Row="3" Grid.Column="3" Margin="48,0,0,0" HorizontalAlignment="Left" Width="24" Height="20" 
+                                    Command="{Binding DataContext.SetSlotXCommand, ElementName=Host}" />
+
+                            <Label Content="Y" Grid.Row="4" />
+                            <Controls:MaskingTextBox Text="{Binding Y, Mode=TwoWay}"  UnitType="Size"  Grid.Row="4" Grid.Column="1" />
+                            <Label Content="(mm)" Grid.Row="4" Grid.Column="3" />
+                            <Button Content="Set" Grid.Row="4" Grid.Column="3" Margin="48,0,0,0" HorizontalAlignment="Left" Width="24" Height="20" 
+                                    Command="{Binding DataContext.SetSlotYCommand, ElementName=Host}" />
+
+                            <Label Content="Width" Grid.Row="5" />
+                            <Controls:MaskingTextBox Text="{Binding Width, Mode=TwoWay}"  UnitType="Size"  Grid.Row="5" Grid.Column="1" />
+                            <Label Content="(mm)" Grid.Row="5" Grid.Column="3" />
+
+                            <Label Content="Height" Grid.Row="6" />
+                            <Controls:MaskingTextBox Text="{Binding Height, Mode=TwoWay}"  UnitType="Count"  Grid.Row="6" Grid.Column="1" />
+                            <Label Content="(mm)" Grid.Row="6" Grid.Column="3" />
+
+                            <Label Content="Current Part Pack" Grid.Row="7" />
+                            <ComboBox Grid.Row="7" Grid.Column="1" ItemsSource="{Binding DataContext.PartPacks, ElementName=Host}" 
+                                      DisplayMemberPath="Name" SelectedValuePath="Id"  SelectedValue="{Binding DataContext.CurrentSlotPartPack,ElementName=Host}" />
+
+                            <Button Command="{Binding DataContext.DoneEditSlotCommand, ElementName=Host}" Content="Done" 
+                                    Grid.Row="8" Grid.ColumnSpan="3" Margin="4" Width="120" Height="24" HorizontalAlignment="Right" />
+                        </Grid>
+                    </Grid>
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="Package Management" DataContext="{Binding PackageLibraryVM}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="auto" />
+                    </Grid.RowDefinitions>
+                    <StackPanel Grid.ColumnSpan="3" Grid.Row="0" HorizontalAlignment="Left" Orientation="Horizontal" Visibility="{Binding Packages, Converter={StaticResource NoTNullToVisibilityConverter}}" >
+                        <Button Width="32" Height="32"  Command="{Binding AddPackageCommand}" >
+                            <Button.Content>
+                                <fa:ImageAwesome  Icon="PlusCircle" />
+                            </Button.Content>
+                        </Button>
+                    </StackPanel>
+                    <DataGrid Grid.Row="1" ItemsSource="{Binding Packages}" CanUserAddRows="False" AutoGenerateColumns="False" SelectedItem="{Binding CurrentPackage}" Visibility="{Binding Packages, Converter={StaticResource NoTNullToVisibilityConverter}}">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Value" Width="80" Binding="{Binding Name, Mode=TwoWay}"  />
+                            <DataGridTextColumn Header="Length" Width="70" Binding="{Binding Length, Mode=TwoWay}"  />
+                            <DataGridTextColumn Header="Width" Width="70" Binding="{Binding Width, Mode=TwoWay}"  />
+                            <DataGridTextColumn Header="Height" Width="70" Binding="{Binding Height, Mode=TwoWay}"  />
+                            <DataGridTextColumn Header="Tape Width" Width="70" Binding="{Binding TapeWidth, Mode=TwoWay}"  />
+                            <DataGridTextColumn Header="Rotation" Width="70" Binding="{Binding RotationInTape, Mode=TwoWay}"  />
+                            <DataGridTextColumn Header="Spacing X" Width="70" Binding="{Binding SpacingX, Mode=TwoWay}"  />
+                            <DataGridTextColumn Header="Notes" Width="*" Binding="{Binding Notes, Mode=TwoWay}"  />
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                    <Grid Grid.Row="2" Width="320" IsEnabled="{Binding CurrentPackage, Converter={StaticResource NotNullEnabledConverter}}" Visibility="{Binding Packages, Converter={StaticResource NoTNullToVisibilityConverter}}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
+                            </Grid.RowDefinitions>
+                            <Grid Grid.Row="0" DataContext="{Binding CurrentPackage}" Width="320">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="auto" />
+                                    <RowDefinition Height="auto" />
+                                    <RowDefinition Height="auto" />
+                                    <RowDefinition Height="auto" />
+                                    <RowDefinition Height="auto" />
+                                    <RowDefinition Height="auto" />
+                                    <RowDefinition Height="auto" />
+                                    <RowDefinition Height="auto" />
+                                    <RowDefinition Height="auto" />
+                                    <RowDefinition Height="auto" />
+                                    <RowDefinition Height="auto" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="120" />
+                                    <ColumnDefinition Width="120" />
+                                    <ColumnDefinition Width="80" />
+                                </Grid.ColumnDefinitions>
+                                <Label Content="Name" />
+                                <TextBox Text="{Binding Name, Mode=TwoWay}" Grid.Column="1" />
+
+                                <Label Content="Length" Grid.Row="1" />
+                                <Controls:MaskingTextBox Text="{Binding Length, Mode=TwoWay}"  UnitType="Size" Grid.Row="1" Grid.Column="1" />
+                                <Label Content="(mm)" Grid.Row="1" Grid.Column="2" />
+
+                                <Label Content="Width" Grid.Row="2" />
+                                <Controls:MaskingTextBox Text="{Binding Width, Mode=TwoWay}"   UnitType="Size" Grid.Row="2" Grid.Column="1" />
+                                <Label Content="(mm)" Grid.Row="2" Grid.Column="2" />
+
+                                <Label Content="Height" Grid.Row="3" />
+                                <Controls:MaskingTextBox Text="{Binding Height, Mode=TwoWay}"  UnitType="Size" Grid.Row="3" Grid.Column="1"  />
+                                <Label Content="(mm)" Grid.Row="3" Grid.Column="2" />
+
+                                <Label Content="Tape Width" Grid.Row="4" />
+                                <Controls:MaskingTextBox Text="{Binding TapeWidth, Mode=TwoWay}"  UnitType="Size" Grid.Row="4" Grid.Column="1"  />
+                                <Label Content="(mm)" Grid.Row="4" Grid.Column="2" />
+
+                                <Label Content="Hole Spacing" Grid.Row="5" />
+                                <Controls:MaskingTextBox Text="{Binding HoleSpacing, Mode=TwoWay}"  UnitType="Size" Grid.Row="5" Grid.Column="1"  />
+                                <Label Content="(mm)" Grid.Row="5" Grid.Column="2" />
+
+                                <Label Content="Center X from hole" Grid.Row="6" />
+                                <Controls:MaskingTextBox Text="{Binding CenterXFromHole, Mode=TwoWay}"   UnitType="Size" Grid.Row="6" Grid.Column="1" />
+                                <Label Content="(mm)" Grid.Row="6" Grid.Column="2" />
+
+                                <Label Content="Center Y from hole" Grid.Row="7" />
+                                <Controls:MaskingTextBox Text="{Binding CenterYFromHole, Mode=TwoWay}"  UnitType="Size" Grid.Row="7" Grid.Column="1"  />
+                                <Label Content="(mm)" Grid.Row="7" Grid.Column="2" />
+
+
+                                <Label Content="Spacing X" Grid.Row="8" />
+                                <Controls:MaskingTextBox Text="{Binding SpacingX, Mode=TwoWay}"  UnitType="Size" Grid.Row="8" Grid.Column="1"  />
+                                <Label Content="(mm)" Grid.Row="8" Grid.Column="2" />
+
+
+                                <Label Content="Rotation in tape" Grid.Row="9" />
+                                <Controls:MaskingTextBox Text="{Binding RotationInTape, Mode=TwoWay}"  UnitType="Size" Grid.Row="9" Grid.Column="1"  />
+                                <Label Content="(deg)" Grid.Row="9" Grid.Column="2" />
+
+
+                            </Grid>
+                            <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.ColumnSpan="3" HorizontalAlignment="Right">
+                                <StackPanel.Resources>
+                                    <Style TargetType="Button">
+                                        <Setter Property="Margin" Value="4" />
+                                        <Setter Property="Width" Value="24" />
+                                        <Setter Property="Width" Value="64" />
+                                    </Style>
+                                </StackPanel.Resources>
+                                <Button Content="Save" Command="{Binding SavePackageCommand}" />
+                                <Button Content="Delete" Command="{Binding DeletePackageCommand}" />
+                                <Button Content="Cancel" Command="{Binding CancelPackageCommand}" />
+                            </StackPanel>
+                        </Grid>
+                    </Grid>
+                </Grid>
+            </TabItem>
+            
             <TabItem Header="Place">
                 <Grid>
                     <Grid.RowDefinitions>
