@@ -76,7 +76,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                 job.BuildFlavors.Add(SelectedBuildFlavor);
             }
 
-            PartPackManagerVM = new PartPackManagerViewModel();
+            PartPackManagerVM = new PartPackManagerViewModel(Machine);
             PackageLibraryVM = new PackageLibraryViewModel();
 
             PopulateParts();

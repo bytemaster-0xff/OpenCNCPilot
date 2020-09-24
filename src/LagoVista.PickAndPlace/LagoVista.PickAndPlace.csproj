@@ -69,7 +69,6 @@
     <Compile Include="Repos\PackageLibrary.cs" />
     <Compile Include="ViewModels\PackageLibraryViewModel.cs" />
     <Compile Include="ViewModels\FeederDefinitionsViewModel.cs" />
-    <Compile Include="ViewModels\PartPackManagerViewModel.cs" />
     <Compile Include="ViewModels\PartViewModel.cs" />
     <Compile Include="ViewModels\PnPControlViewModel.cs" />
   </ItemGroup>

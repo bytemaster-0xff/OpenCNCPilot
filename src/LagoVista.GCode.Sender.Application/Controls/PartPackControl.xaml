@@ -71,7 +71,7 @@
             <Label Content="(mm)" Grid.Row="8" Grid.Column="3" />
 
             <Label Content="Note" Grid.Row="9" />
-            <TextBox Text="{Binding Notes, Mode=TwoWay}" Grid.ColumnSpan="2" Grid.Row="9" Grid.Column="1" />
+            <TextBox Text="{Binding Notes, Mode=TwoWay}" Grid.ColumnSpan="2" Grid.Row="9" Grid.Column="1"  />
         </Grid>
 
         <DataGrid ItemsSource="{Binding Rows, Mode=TwoWay}" SelectedItem="{Binding SelectedRow, Mode=TwoWay}" AutoGenerateColumns="False" CanUserAddRows="False" Grid.Row="1">

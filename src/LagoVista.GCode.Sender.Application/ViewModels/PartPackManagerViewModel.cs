@@ -1,6 +1,8 @@
 ﻿using LagoVista.Core.Commanding;
 using LagoVista.Core.Models;
 using LagoVista.Core.ViewModels;
+using LagoVista.GCode.Sender.Interfaces;
+using LagoVista.GCode.Sender.ViewModels;
 using LagoVista.PickAndPlace.Managers;
 using LagoVista.PickAndPlace.Models;
 using Newtonsoft.Json;
@@ -13,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace LagoVista.PickAndPlace.ViewModels
 {
-    public class PartPackManagerViewModel : ViewModelBase
+    public class PartPackManagerViewModel : GCodeAppViewModelBase
     {
         private bool _isDirty = false;
 
@@ -21,7 +23,7 @@ namespace LagoVista.PickAndPlace.ViewModels
 
         private PnPMachine _machine;
 
-        public PartPackManagerViewModel()
+        public PartPackManagerViewModel(IMachine machine) : base(machine)
         {
             SaveMachineCommand = new RelayCommand(SaveMachine, () => _machine != null);
             AddPartPackCommand = new RelayCommand(AddPartPack, () => _machine != null);
@@ -31,6 +33,11 @@ namespace LagoVista.PickAndPlace.ViewModels
 
             AddSlotCommand = new RelayCommand(AddSlot);
             DoneEditSlotCommand = new RelayCommand(() => SelectedSlot = null);
+
+            SetSlotXCommand = new RelayCommand(SetSlotX);
+            SetSlotYCommand = new RelayCommand(SetSlotY);
+            GoToSlotCommand = new RelayCommand(GoToSlot);
+            GoToPin1InFeederCommand = new RelayCommand(GoToPin1InFeeder);
         }
 
         public async void OpenMachine()
@@ -48,6 +55,17 @@ namespace LagoVista.PickAndPlace.ViewModels
             {
                 var machine = await PnPMachineManager.GetPnPMachineAsync(_fileName);
                 SetMachine(machine);
+            }
+        }
+
+        public void GoToPin1InFeeder()
+        {
+            if(SelectedPartPack != null)
+            {
+                var slot = _machine.Carrier.PartPackSlots.Where(pps => pps.PartPack.Id == SelectedPartPack.Id).FirstOrDefault();
+                var x = slot.X + SelectedPartPack.Pin1XOffset;
+                var y = slot.Y + SelectedPartPack.Pin1YOffset;
+                Machine.GotoPoint(x, y);
             }
         }
 
@@ -79,6 +97,30 @@ namespace LagoVista.PickAndPlace.ViewModels
 
             RaisePropertyChanged(nameof(PartPacks));
             RaisePropertyChanged(nameof(Slots));
+        }
+
+        public void GoToSlot()
+        {
+            if (SelectedSlot != null)
+            {
+                Machine.GotoPoint(SelectedSlot.X, SelectedSlot.Y);
+            }
+        }
+
+        public void SetSlotX()
+        {
+            if (SelectedSlot != null)
+            {
+                SelectedSlot.X = Machine.MachinePosition.X;
+            }            
+        }
+
+        public void SetSlotY()
+        {
+            if (SelectedSlot != null)
+            {
+                SelectedSlot.Y = Machine.MachinePosition.Y;
+            }
         }
 
         public void DoneEditingRow()
@@ -140,7 +182,7 @@ namespace LagoVista.PickAndPlace.ViewModels
 
         public ObservableCollection<PartPackSlot> Slots
         {
-            get => _machine?.Carrier.PartPackSlots;
+            get => new ObservableCollection<PartPackSlot>(_machine?.Carrier.PartPackSlots.OrderBy(slt => slt.Row).ThenBy(slt => slt.Column));
         }
 
         public ObservableCollection<PartPackFeeder> PartPacks
@@ -197,5 +239,12 @@ namespace LagoVista.PickAndPlace.ViewModels
 
         public RelayCommand DoneEditSlotCommand { get; }
         public RelayCommand AddSlotCommand { get; }
+
+        public RelayCommand SetSlotXCommand { get; }
+        public RelayCommand SetSlotYCommand { get; }
+
+        public RelayCommand GoToSlotCommand { get; }
+
+        public RelayCommand GoToPin1InFeederCommand { get; }
     }
 }

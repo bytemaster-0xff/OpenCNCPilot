@@ -33,7 +33,7 @@
 
                 </Grid>
             </TabItem>
-           
+
             <TabItem Header="Configuration">
                 <Grid>
                     <Grid.RowDefinitions>
@@ -59,10 +59,10 @@
                     <TextBox  Grid.Row="2" Width="200" Grid.Column="1" Text="{Binding SelectedBuildFlavor.Notes, Mode=TwoWay}" />
 
                     <StackPanel Grid.Column="2" Grid.RowSpan="3" Orientation="Horizontal" >
-                    <Button Command="{Binding SaveJobCommand}" Width="60" Margin="10" Content="Save" />
-                    <Button Command="{Binding CloneCommand}" Width="60" Margin="10" Content="Clone" />
+                        <Button Command="{Binding SaveJobCommand}" Width="60" Margin="10" Content="Save" />
+                        <Button Command="{Binding CloneCommand}" Width="60" Margin="10" Content="Clone" />
                     </StackPanel>
-                    
+
                     <DataGrid AutoGenerateColumns="False" Grid.ColumnSpan="3" CanUserDeleteRows="False" Grid.Row="3" CanUserAddRows="False" ItemsSource="{Binding SelectedBuildFlavor.Components}" HorizontalContentAlignment="Stretch" >
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Name" Width="60" IsReadOnly="true" Binding="{Binding Name}"  />
@@ -94,8 +94,8 @@
                     </DataGrid>
                 </Grid>
             </TabItem>
-            
-            <TabItem Header="Part Pack Management" DataContext="{Binding PartPackManagerVM}" >
+
+            <TabItem x:Name="PartPackManagerHost" Header="Part Pack Management" DataContext="{Binding PartPackManagerVM}" >
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="auto" />
@@ -112,6 +112,7 @@
                                 <fa:ImageAwesome  Icon="PlusCircle" />
                             </Button.Content>
                         </Button>
+                        <Button Grid.Row="10" Content="Go To Pin 1, Row 1" Grid.Column="1" Command="{Binding DataContext.GoToPin1InFeederCommand, ElementName=PartPackManagerHost}" />
                     </StackPanel>
 
                     <ListView ItemsSource="{Binding PartPacks}" SelectedItem="{Binding SelectedPartPack, Mode=TwoWay}" Grid.Row="2" Visibility="{Binding PartPacks, Converter={StaticResource NoTNullToVisibilityConverter}}">
@@ -136,12 +137,13 @@
                     <Grid Grid.Column="1" Grid.RowSpan="3"  Visibility="{Binding SelectedPartPack, Converter={StaticResource NoTNullToVisibilityConverter}}">
                         <Controls:PartPackControl DataContext="{Binding SelectedPartPack}" />
                     </Grid>
-
-                    <TextBlock Text="Please open or create a part pack set" FontSize="24" Grid.ColumnSpan="2" Grid.RowSpan="3" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding PartPacks, Converter={StaticResource NullVisibilityConverter}}" />
+                    
+                    <TextBlock Text="Please open or create a part pack set" FontSize="24" Grid.ColumnSpan="2" Grid.RowSpan="3" HorizontalAlignment="Center" 
+                               VerticalAlignment="Center" Visibility="{Binding PartPacks, Converter={StaticResource NullVisibilityConverter}}" />
                 </Grid>
             </TabItem>
 
-            <TabItem Header="Carrier Slots" DataContext="{Binding PartPackManagerVM}">
+            <TabItem Header="Carrier Slots" DataContext="{Binding PartPackManagerVM}" x:Name="PartPackMgrTab">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="auto" />
@@ -225,13 +227,13 @@
                             <Controls:MaskingTextBox Text="{Binding X, Mode=TwoWay}"  UnitType="Size"  Grid.Row="3" Grid.Column="1" />
                             <Label Content="(mm)" Grid.Row="3" Grid.Column="3" />
                             <Button Content="Set" Grid.Row="3" Grid.Column="3" Margin="48,0,0,0" HorizontalAlignment="Left" Width="24" Height="20" 
-                                    Command="{Binding DataContext.SetSlotXCommand, ElementName=Host}" />
+                                    Command="{Binding DataContext.SetSlotXCommand, ElementName=PartPackMgrTab}" />
 
                             <Label Content="Y" Grid.Row="4" />
                             <Controls:MaskingTextBox Text="{Binding Y, Mode=TwoWay}"  UnitType="Size"  Grid.Row="4" Grid.Column="1" />
                             <Label Content="(mm)" Grid.Row="4" Grid.Column="3" />
                             <Button Content="Set" Grid.Row="4" Grid.Column="3" Margin="48,0,0,0" HorizontalAlignment="Left" Width="24" Height="20" 
-                                    Command="{Binding DataContext.SetSlotYCommand, ElementName=Host}" />
+                                    Command="{Binding DataContext.SetSlotYCommand, ElementName=PartPackMgrTab}" />
 
                             <Label Content="Width" Grid.Row="5" />
                             <Controls:MaskingTextBox Text="{Binding Width, Mode=TwoWay}"  UnitType="Size"  Grid.Row="5" Grid.Column="1" />
@@ -242,11 +244,16 @@
                             <Label Content="(mm)" Grid.Row="6" Grid.Column="3" />
 
                             <Label Content="Current Part Pack" Grid.Row="7" />
-                            <ComboBox Grid.Row="7" Grid.Column="1" ItemsSource="{Binding DataContext.PartPacks, ElementName=Host}" 
-                                      DisplayMemberPath="Name" SelectedValuePath="Id"  SelectedValue="{Binding DataContext.CurrentSlotPartPack,ElementName=Host}" />
+                            <ComboBox Grid.Row="7" Grid.Column="1" ItemsSource="{Binding DataContext.PartPacks, ElementName=PartPackMgrTab}" 
+                                      DisplayMemberPath="Name" SelectedValuePath="Id"  SelectedValue="{Binding DataContext.CurrentSlotPartPack,ElementName=PartPackMgrTab}" />
 
-                            <Button Command="{Binding DataContext.DoneEditSlotCommand, ElementName=Host}" Content="Done" 
+                            <StackPanel Orientation="Horizontal" Grid.Row="8" Grid.Column="2" HorizontalAlignment="Right">
+                                <Button Command="{Binding DataContext.DoneEditSlotCommand, ElementName=PartPackMgrTab}" Content="Done" 
                                     Grid.Row="8" Grid.ColumnSpan="3" Margin="4" Width="120" Height="24" HorizontalAlignment="Right" />
+
+                                <Button Command="{Binding DataContext.GoToSlotCommand, ElementName=PartPackMgrTab}" Content="Go To Slot" 
+                                    Grid.Row="8" Grid.ColumnSpan="3" Margin="4" Width="120" Height="24" HorizontalAlignment="Right" />
+                            </StackPanel>
                         </Grid>
                     </Grid>
                 </Grid>
@@ -363,7 +370,7 @@
                     </Grid>
                 </Grid>
             </TabItem>
-            
+
             <TabItem Header="Place">
                 <Grid>
                     <Grid.RowDefinitions>
@@ -430,7 +437,7 @@
                             <DataGridTextColumn Header="Count" IsReadOnly="true" Width="60" Binding="{Binding Count, Mode=TwoWay}"  />
                         </DataGrid.Columns>
                     </DataGrid>
-                    
+
                     <Grid Grid.Row="1" Grid.Column="1">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="auto" />

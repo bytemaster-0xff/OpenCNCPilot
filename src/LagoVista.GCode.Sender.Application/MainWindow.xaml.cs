@@ -474,7 +474,7 @@ namespace LagoVista.GCode.Sender.Application
 
         private void PartPacks_Click(object sender, RoutedEventArgs e)
         {
-            var partPackViewModel = new PartPackManagerViewModel();
+            var partPackViewModel = new PartPackManagerViewModel(ViewModel.Machine);
             var partPackView = new PartPackManagerView();
             partPackView.DataContext = partPackViewModel;
             partPackView.Owner = this;
