@@ -50,6 +50,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             MoveToPreviousComponentInTapeCommand = new RelayCommand(MoveToPreviousComponent, () => SelectedPartRow != null && SelectedPartRow.CurrentPartIndex > 0);
             MoveToNextComponentInTapeCommand = new RelayCommand(MoveToNextComponentInTape, () => SelectedPartRow != null && SelectedPartRow.CurrentPartIndex < SelectedPartRow.PartCount);
             RefreshConfigurationPartsCommand = new RelayCommand(PopulateConfigurationParts);
+            GoToPartInTrayCommand = new RelayCommand(GoToPartPositionInTray);
 
             PlacePartCommand = new RelayCommand(PlacePart, () => SelectedPart != null);
             _feederLibrary = new FeederLibrary();
@@ -162,6 +163,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             SelectedPartRow.CurrentPartIndex = 0;
             RaisePropertyChanged(nameof(XPartInTray));
             RaisePropertyChanged(nameof(YPartInTray));
+            RaisePropertyChanged(nameof(SelectedPartRow));
             GoToPartPositionInTray();
             await SaveJob();
         }
@@ -176,6 +178,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                 ResetCurrentComponentCommand.RaiseCanExecuteChanged();
                 RaisePropertyChanged(nameof(XPartInTray));
                 RaisePropertyChanged(nameof(YPartInTray));
+                RaisePropertyChanged(nameof(SelectedPartRow));
                 await SaveJob();
                 GoToPartPositionInTray();
             }
@@ -191,6 +194,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                 ResetCurrentComponentCommand.RaiseCanExecuteChanged();
                 RaisePropertyChanged(nameof(XPartInTray));
                 RaisePropertyChanged(nameof(YPartInTray));
+                RaisePropertyChanged(nameof(SelectedPartRow));
                 await SaveJob();
                 GoToPartPositionInTray();
             }
@@ -271,7 +275,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
         {
             get
             {
-                if(SelectedPart != null)
+                if(SelectedPart != null && SelectedPartPackage != null)
                 {
                     return SelectedPart.PartPack.Pin1YOffset + SelectedPart.Slot.Y + ((SelectedPartRow.RowNumber - 1) * SelectedPart.PartPack.RowHeight) + SelectedPartPackage.CenterYFromHole;
                 }
@@ -291,7 +295,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
         {
             if (SelectedPartPackage != null && SelectedPartRow != null)
             {
-                Machine.SendCommand(GetGoToPartInTrayGCode()); ;
+                Machine.SendCommand(GetGoToPartInTrayGCode());
             }
         }
 
@@ -535,5 +539,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
         public RelayCommand CloseCommand { get; set; }
 
         public RelayCommand PlacePartCommand { get; set; }
+ 
+        public RelayCommand GoToPartInTrayCommand { get; }
     }
 }

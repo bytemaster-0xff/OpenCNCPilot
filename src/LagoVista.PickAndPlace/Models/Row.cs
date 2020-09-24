@@ -47,7 +47,7 @@ namespace LagoVista.PickAndPlace.Models
             {
                 if (Part != null)
                 {
-                    return $"{RowNumber}. {Part.Display} - {CurrentPartIndex}/{PartCount}";
+                    return $"{RowNumber}. {Part.Display} - {CurrentPartIndex + 1}/{PartCount}";
                 }
                 else
                 {
