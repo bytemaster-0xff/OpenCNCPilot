@@ -1,4 +1,5 @@
-﻿using LagoVista.GCode.Sender.ViewModels;
+﻿using LagoVista.GCode.Sender.Application.ViewModels;
+using LagoVista.GCode.Sender.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,25 +27,25 @@ namespace LagoVista.GCode.Sender.Application.Controls
             InitializeComponent();
         }
     
-        public MainViewModel ViewModel
+        public GCodeAppViewModelBase ViewModel
         {
-            get { return DataContext as MainViewModel; }
+            get { return DataContext as GCodeAppViewModelBase; }
         }
 
         private void TextBoxManual_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
             if (e.Key == System.Windows.Input.Key.Up)
             {
-                ViewModel.ManualSendVM.ShowPrevious();
+                ViewModel.ShowPrevious();
             }
             else if (e.Key == System.Windows.Input.Key.Down)
             {
-                ViewModel.ManualSendVM.ShowNext();
+                ViewModel.ShowNext();
             }
             else if (e.Key == System.Windows.Input.Key.Return)
             {
                 e.Handled = true;
-                ViewModel.ManualSendVM.ManualSend();
+                ViewModel.ManualSend();
             }
         }
 

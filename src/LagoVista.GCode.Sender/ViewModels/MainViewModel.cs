@@ -25,7 +25,6 @@ namespace LagoVista.GCode.Sender.ViewModels
         private void InitChildViewModels()
         {
             JobControlVM = new JobControlViewModel(Machine);
-            ManualSendVM = new ManualSendViewModel(Machine);
             MachineControlVM = new MachineControlViewModel(Machine);
         }
 

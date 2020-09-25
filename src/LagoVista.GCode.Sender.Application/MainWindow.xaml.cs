@@ -374,8 +374,7 @@ namespace LagoVista.GCode.Sender.Application
             await pnpViewModel.InitAsync();
             var jobWindow = new Views.PNPJobWindow();
             jobWindow.DataContext = pnpViewModel;
-            jobWindow.Owner = this;
-            jobWindow.ShowDialog();
+            jobWindow.Show();
             EditPnPJob.IsEnabled = true;
             ClosePnPJob.IsEnabled = true;
             FeederAlignementView.IsEnabled = true;
@@ -480,6 +479,15 @@ namespace LagoVista.GCode.Sender.Application
             partPackView.Owner = this;
             partPackView.WindowStartupLocation = WindowStartupLocation.CenterOwner;
             partPackView.ShowDialog();
+        }
+
+        private async void MachineControl_Click(object sender, RoutedEventArgs e)
+        {
+            var mcvm = new MVMachineControlViewModel(ViewModel.Machine);
+            await mcvm.InitAsync();
+            var mcv = new MVMachineControlView();
+            mcv.DataContext = mcvm;
+            mcv.Show();
         }
     }
 }

@@ -13,8 +13,6 @@ namespace LagoVista.GCode.Sender.ViewModels
     {
         public JobControlViewModel JobControlVM { get; private set; }
         public MachineControlViewModel MachineControlVM { get; private set; }
-        public ManualSendViewModel ManualSendVM { get; private set; }
-
 
         PCBProject _project;
         public PCBProject Project

@@ -120,7 +120,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             set { Set(ref _secondaryCapturedImage, value); }
         }
 
-        public MachineControlViewModel MachineControls { get; private set; }
+        public Sender.ViewModels.MachineControlViewModel MachineControls { get; private set; }
 
         private bool _areToolSettingsVisible;
         public bool AreToolSettingsVisible

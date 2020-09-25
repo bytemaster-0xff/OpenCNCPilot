@@ -177,16 +177,6 @@
     <Compile Include="ViewModels\MainViewModel.Properties.cs">
       <DependentUpon>MainViewModel.cs</DependentUpon>
     </Compile>
-    <Compile Include="ViewModels\ManualSendViewModel.CommandHandlers.cs">
-      <DependentUpon>ManualSendViewModel.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ViewModels\ManualSendViewModel.Commanding.cs">
-      <DependentUpon>ManualSendViewModel.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ViewModels\ManualSendViewModel.cs" />
-    <Compile Include="ViewModels\ManualSendViewModel.Properties.cs">
-      <DependentUpon>ManualSendViewModel.cs</DependentUpon>
-    </Compile>
     <Compile Include="ViewModels\NewHeightMapViewModel.CommandHandlers.cs">
       <DependentUpon>NewHeightMapViewModel.cs</DependentUpon>
     </Compile>

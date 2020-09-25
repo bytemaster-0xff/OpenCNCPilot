@@ -228,6 +228,7 @@
     <Compile Include="Util\BitmapSourceConverter.cs" />
     <Compile Include="ViewModels\CalibrationViewModel.cs" />
     <Compile Include="ViewModels\FeederLocatorViewModel.cs" />
+    <Compile Include="ViewModels\MVMachineControlViewModel.cs" />
     <Compile Include="ViewModels\MVHomingViewModel.cs" />
     <Compile Include="ViewModels\MachineVisionViewModelBase.Capture.cs" />
     <Compile Include="ViewModels\MachineVisionViewModelBase.Commanding.cs" />
@@ -240,6 +241,9 @@
     <Compile Include="ViewModels\WorkAlignmentViewModel.cs" />
     <Compile Include="Views\FeederLibraryWindow.xaml.cs">
       <DependentUpon>FeederLibraryWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\MVMachineControlView.xaml.cs">
+      <DependentUpon>MVMachineControlView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\MVPNPViewModel.xaml.cs">
       <DependentUpon>MVPNPViewModel.xaml</DependentUpon>
@@ -432,6 +436,10 @@
     <Page Include="Views\FeederLibraryWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\MVMachineControlView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\MVPNPViewModel.xaml">
       <Generator>MSBuild:Compile</Generator>

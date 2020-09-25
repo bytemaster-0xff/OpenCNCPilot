@@ -40,6 +40,7 @@
                 <MenuItem Header="Bottom Etching" Command="{Binding ShowBottomEtchingGCodeCommand}" />
               
             </MenuItem>
+            <MenuItem Header="Machine Control" x:Name="MachineControl" Click="MachineControl_Click" ></MenuItem>
             <MenuItem Header="PCB" >
                 <MenuItem Header="New Project" x:Name="NewPCBProject" Click="NewPCBProject_Click" />
                 <MenuItem Header="Open Project" x:Name="OpenPCBProject"  Click="OpenPCBProject_Click" />
