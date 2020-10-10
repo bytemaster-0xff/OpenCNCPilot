@@ -1,4 +1,5 @@
-﻿using LagoVista.Core.GCode.Parser;
+﻿using LagoVista.Core.GCode.Commands;
+using LagoVista.Core.GCode.Parser;
 using LagoVista.Core.Models.Drawing;
 using LagoVista.Core.PlatformSupport;
 using System;
@@ -75,7 +76,9 @@ namespace LagoVista.GCode.Sender
                 while (_commands.Any())
                 {
                     var cmd = _commands.Dequeue();
+                    Debug.WriteLine("Start -> " + cmd);
                     HandleCommand(cmd);
+                    Debug.WriteLine("End -> " + cmd);
                 }
                 _timer.Start();
             }
@@ -168,16 +171,33 @@ namespace LagoVista.GCode.Sender
 
         int idx = 1;
 
+        private void WriteOKResponse(String cmd)
+        {
+            if (_firmwareType == FirmwareTypes.LagoVista_PnP)
+            {
+                AddResponse($"<ok:{cmd}>");
+            }
+            else
+            {
+                AddResponse("ok - " + cmd);
+            }
+        }
+
+        private void WriteOKResponse(GCodeCommand cmd)
+        {
+            WriteOKResponse(cmd.Command);
+        }
+
         private void HandleGCode(String cmd)
         {
             Debug.WriteLine(DateTime.Now.ToString() + "  Handling G command: " + cmd);
 
             switch (cmd)
             {
-                case "G91": AddResponse("ok - " + cmd); return;
-                case "G90": AddResponse("ok - " + cmd); return;
-                case "G21": AddResponse("ok - " + cmd); return;
-                case "G20": AddResponse("ok - " + cmd); break;
+                case "G91": WriteOKResponse(cmd); return;
+                case "G90": WriteOKResponse(cmd); return;
+                case "G21": WriteOKResponse(cmd); return;
+                case "G20": WriteOKResponse(cmd); break;
             }
 
             if (cmd.StartsWith("G10"))
@@ -189,25 +209,33 @@ namespace LagoVista.GCode.Sender
                     if (part.StartsWith("Y")) _work.X = _machine.X;
                     if (part.StartsWith("Z")) _work.X = _machine.X;
                 }
-                AddResponse("ok - " + cmd);
+
                 return;
             }
 
             var line = _parser.CleanupLine(cmd, idx);
             var parsedLine = _parser.ParseMotionLine(line, idx);
-            if(parsedLine == null)
+            if (parsedLine == null)
             {
-                AddResponse("ok");
+
+                WriteOKResponse(parsedLine);
                 return;
             }
-         
-            if (parsedLine.Command == "G0" || 
-                parsedLine.Command == "G1" || 
+
+            if(parsedLine.Command == "G4")
+            {
+                System.Threading.Tasks.Task.Delay(250).Wait();
+
+                WriteOKResponse("G4");
+            }
+
+            if (parsedLine.Command == "G0" ||
+                parsedLine.Command == "G1" ||
                 parsedLine.Command == "G00" ||
                 parsedLine.Command == "G01")
             {
                 Debug.WriteLine("Pausing For: " + parsedLine.EstimatedRunTime.ToString());
-                var finishTime = DateTime.Now + parsedLine.EstimatedRunTime;
+                var finishTime =  DateTime.Now + (_firmwareType == FirmwareTypes.LagoVista_PnP ? TimeSpan.FromSeconds(1) : parsedLine.EstimatedRunTime);
                 SpinWait.SpinUntil(() => DateTime.Now > finishTime);
 
                 var parts = cmd.Split(' ');
@@ -224,33 +252,34 @@ namespace LagoVista.GCode.Sender
                         case "Z":
                             _machine.Z = GetParamValue(part);
                             break;
+                        case "C":
+                            _rotation = GetParamValue(part);
+                            break;
                     }
                 }
 
-                AddResponse("ok - " + cmd);
+                WriteOKResponse(parsedLine);
             }
-            else if(parsedLine.Command.StartsWith("G04"))
+            else if (parsedLine.Command.StartsWith("G04"))
             {
                 var finishTime = DateTime.Now + TimeSpan.FromSeconds(3);
                 Debug.WriteLine("Handing Pause until " + finishTime + " or " + 3 + " seconds");
                 SpinWait.SpinUntil(() => DateTime.Now > finishTime);
-
-                AddResponse("ok - " + cmd);
+                WriteOKResponse(parsedLine);
                 Debug.WriteLine("Done " + DateTime.Now);
             }
             else if (parsedLine.Command.StartsWith("G38"))
             {
-                AddResponse("ok - " + cmd);
-
                 var finishTime = DateTime.Now + TimeSpan.FromSeconds(3);
                 SpinWait.SpinUntil(() => DateTime.Now > finishTime);
                 var newHeight = _rnd.NextDouble() - 0.5;
 
                 AddResponse($"[PRB:0.00,0.00,{newHeight}:1]");
+                WriteOKResponse(parsedLine);
             }
             else if (parsedLine.Command.StartsWith("G92"))
             {
-                AddResponse("ok - " + cmd);
+                WriteOKResponse(parsedLine);
             }
         }
 
@@ -260,20 +289,36 @@ namespace LagoVista.GCode.Sender
         {
             Debug.WriteLine(DateTime.Now.ToString() + "  Handling M command: " + cmd);
 
-            if (cmd == "M114")
+            var cmdPair = cmd.Split(' ');
+
+            switch(cmdPair[0])
             {
-                var response = $"X: {_work.X} Y: {_work.Y} RZ: {_work.Z} LZ: 0.00 Count X:{_machine.X} Y: {_machine.Y} RZ: {_machine.Z} LZ: 41.02";
-                AddResponse(response);
-            }
-            else
-            {
-                Debug.WriteLine("Handling MCode " + cmd);
-                AddResponse("ok - " + cmd);
+                case "M114":
+                    var response = $"X: {_work.X} Y: {_work.Y} RZ: {_work.Z} LZ: 0.00 Count X:{_machine.X} Y: {_machine.Y} RZ: {_machine.Z} LZ: 41.02";
+                    AddResponse(response);
+                    WriteOKResponse(cmd);
+                    break;
+                case "M54":
+                    _machine.Z = 10;
+                    WriteOKResponse(cmd);
+                    break;
+                case "M55":
+                    _machine.Z = 20;
+                    WriteOKResponse(cmd);
+                    break;
+                case "M56":
+                    _machine.Z = 30;
+                    WriteOKResponse(cmd);
+                    break;
+                default:
+                    WriteOKResponse(cmdPair[0]);
+                    break;
             }
         }
 
         Vector3 _machine = new Vector3();
         Vector3 _work = new Vector3();
+        double _rotation;
 
         private enum States
         {
@@ -304,7 +349,8 @@ namespace LagoVista.GCode.Sender
                     break;
                 case 'S':
                     Debug.WriteLine("Setting Spindle Speed");
-                    AddResponse("ok - " + command);
+                    WriteOKResponse("S"); 
+
                     break;
             }
         }
@@ -319,7 +365,15 @@ namespace LagoVista.GCode.Sender
 
                 if (cleanCommand == "?")
                 {
-                    AddResponse($"<{_state},MPos:{_machine.X},{_machine.Y},{_machine.Z},WPos:{_work.X},{_work.Y},{_work.Z}>");
+                    if (this._firmwareType == FirmwareTypes.GRBL1_1)
+                    {
+                        AddResponse($"<{_state},MPos:{_machine.X},{_machine.Y},{_machine.Z},WPos:{_work.X},{_work.Y},{_work.Z}>");
+                    }
+                    else
+                    {
+                        AddResponse($"<{_state},m:{_machine.X},{_machine.Y},{_machine.Z},{_machine.Z},{_rotation},0,camera>");
+
+                    }
                 }
                 else
                 {

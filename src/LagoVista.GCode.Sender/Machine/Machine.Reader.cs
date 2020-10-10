@@ -18,6 +18,7 @@ namespace LagoVista.GCode.Sender
      
         private void ParseMessage(string fullMessageLine)
         {
+            fullMessageLine = fullMessageLine.ToLower();
             Debug.WriteLine(fullMessageLine);
 
             if (fullMessageLine.StartsWith("ok") ||
@@ -50,13 +51,13 @@ namespace LagoVista.GCode.Sender
                     {
                         if (PendingQueue.Count > 0)
                         {
-                            var responseRegEx = new Regex("<ok:(?'CODE'[A-Z0-9]+)>");
+                            var responseRegEx = new Regex("<ok:(?'CODE'[A-Za-z0-9]+)>");
                             var responseGCode = responseRegEx.Match(fullMessageLine);
                             if (responseGCode.Success)
                             {
                                 var code = responseGCode.Groups["CODE"].Value;
 
-                                if(PendingQueue[0].StartsWith(code))
+                                if(PendingQueue[0].StartsWith(code.ToUpper()))
                                 {
                                     Services.DispatcherServices.Invoke(() =>
                                     {

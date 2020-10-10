@@ -1,4 +1,5 @@
-﻿using LagoVista.Core.Commanding;
+﻿using HelixToolkit.Wpf;
+using LagoVista.Core.Commanding;
 using LagoVista.Core.Models;
 using LagoVista.Core.ViewModels;
 using LagoVista.GCode.Sender.Interfaces;
@@ -190,15 +191,50 @@ namespace LagoVista.PickAndPlace.ViewModels
             get => _machine?.Carrier.AvailablePartPacks;
         }
 
-
         private PartPackFeeder _selectedPartPack = null;
         public PartPackFeeder SelectedPartPack
         {
             get => _selectedPartPack;
             set
             {
+                if(_selectedPartPack != null)
+                {
+                    _selectedPartPack.PropertyChanged -= _selectedPartPack_PropertyChanged;
+                }
+
                 Set(ref _selectedPartPack, value);
+                if (value != null)
+                {
+                    SelectedSlot = _machine.Carrier.PartPackSlots.SingleOrDefault(slt => slt.PartPack != null && slt.PartPack.Id == value.Id);
+                    _selectedPartPack.PropertyChanged += _selectedPartPack_PropertyChanged;
+                }
+                else
+                {
+                    SelectedSlot = null;
+                }
             }
+        }
+
+        private void _selectedPartPack_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if(e.PropertyName == nameof(PartPackFeeder.SelectedRow))
+            {
+                RaisePropertyChanged(nameof(SelectedRow));
+                RaisePropertyChanged(nameof(SelectedPart));
+                RaisePropertyChanged(nameof(CurrentPackage));
+                RaisePropertyChanged(nameof(CurrentPartX));
+                RaisePropertyChanged(nameof(CurrentPartY));
+            }
+        }
+
+        public Part SelectedPart
+        {
+            get => SelectedRow?.Part;
+        }
+
+        public Row SelectedRow
+        {
+            get => SelectedPartPack?.SelectedRow;
         }
 
         private PartPackSlot _selectedSlot;
@@ -211,6 +247,46 @@ namespace LagoVista.PickAndPlace.ViewModels
                 RaisePropertyChanged(nameof(CurrentSlotPartPack));
             }
         }
+
+        public Package CurrentPackage
+        {
+            get
+            {
+                if(SelectedPart != null)
+                {
+                    return Packages.SingleOrDefault(pck => pck.Name == SelectedPart.PackageName);
+                }
+
+                return null;
+            }
+        }
+
+        public double? CurrentPartX
+        {
+            get
+            {
+                if(SelectedPartPack != null && SelectedRow != null && SelectedPart != null && CurrentPackage != null)
+                {
+                    return SelectedSlot.X + SelectedPartPack.Pin1XOffset + CurrentPackage.CenterXFromHole;
+                }
+
+                return null;
+            }
+        }
+
+        public double? CurrentPartY
+        {
+            get
+            {
+                if (SelectedPartPack != null && SelectedRow != null && SelectedPart != null && CurrentPackage != null)
+                {
+                    return SelectedSlot.Y + SelectedPartPack.Pin1YOffset + CurrentPackage.CenterYFromHole + (SelectedRow.RowNumber - 1) * SelectedPartPack.RowHeight;
+                }
+
+                return null;
+            }
+        }
+
 
         public string CurrentSlotPartPack
         {

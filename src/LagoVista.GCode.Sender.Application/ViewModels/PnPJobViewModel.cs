@@ -242,7 +242,10 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                 cmds.Add("G4 P500"); // Wait 500ms to let placed part settle in
                 cmds.Add("M54"); // Return to move height.
 
-                await SendInstructionSequenceAsync(cmds);
+                Task.Run(async () =>
+                {
+                    await SendInstructionSequenceAsync(cmds);
+                });
             }
         }
 
@@ -260,7 +263,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
         {
             get
             {
-                if (SelectedPart != null && SelectedPartPackage != null)
+                if (SelectedPart != null && SelectedPartRow != null && SelectedPartPackage != null)
                 {
                     return SelectedPart.PartPack.Pin1XOffset + SelectedPart.Slot.X + (SelectedPartRow.CurrentPartIndex * SelectedPartPackage.SpacingX) + SelectedPartPackage.CenterXFromHole;
                 }

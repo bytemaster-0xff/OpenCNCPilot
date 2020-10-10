@@ -168,19 +168,22 @@ namespace LagoVista.GCode.Sender
         {
             if (AssertConnected())
             {
-                lock (_queueAccessLocker)
+                Services.DispatcherServices.Invoke(() =>
                 {
-                    if (highPriority)
+                    lock (_queueAccessLocker)
                     {
-                        _toSendPriority.Enqueue(cmd);
+                        if (highPriority)
+                        {
+                            _toSendPriority.Enqueue(cmd);
+                        }
+                        else
+                        {
+                            _toSend.Enqueue(cmd);
+                            PendingQueue.Add(cmd);
+                            UnacknowledgedBytesSent += cmd.Length + 1;
+                        }
                     }
-                    else
-                    {
-                        _toSend.Enqueue(cmd);
-                        PendingQueue.Add(cmd);
-                        UnacknowledgedBytesSent += cmd.Length + 1;
-                    }
-                }
+                });
             }
         }
 
@@ -188,11 +191,14 @@ namespace LagoVista.GCode.Sender
         {
             if (AssertConnected())
             {
-                lock (_queueAccessLocker)
+                Services.DispatcherServices.Invoke(() =>
                 {
-                    _jobToSend.Enqueue(cmd);
-                    UnacknowledgedBytesSent += cmd.Line.Length + 1;
-                }
+                    lock (_queueAccessLocker)
+                    {
+                        _jobToSend.Enqueue(cmd);
+                        UnacknowledgedBytesSent += cmd.Line.Length + 1;
+                    }
+                });
             }
         }
 
@@ -244,7 +250,7 @@ namespace LagoVista.GCode.Sender
 
             Enqueue("M79");
         }
-         
+
         public void GotoFavorite1()
         {
             Enqueue("M58");
@@ -274,13 +280,14 @@ namespace LagoVista.GCode.Sender
 
         public void ClearAlarm()
         {
-            if(Settings.MachineType == FirmwareTypes.GRBL1_1) {
+            if (Settings.MachineType == FirmwareTypes.GRBL1_1)
+            {
                 Enqueue("$X\n", true);
             }
             else
             {
                 _toSendPriority.Enqueue(((char)0x06).ToString());
-            }            
+            }
         }
 
         public void CycleStart()
