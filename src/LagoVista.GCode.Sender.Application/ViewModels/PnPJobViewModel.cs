@@ -1,5 +1,6 @@
 ﻿using LagoVista.Core.Commanding;
 using LagoVista.Core.Models;
+using LagoVista.Core.Models.Drawing;
 using LagoVista.Core.ViewModels;
 using LagoVista.EaglePCB.Models;
 using LagoVista.GCode.Sender;
@@ -13,6 +14,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace LagoVista.GCode.Sender.Application.ViewModels
@@ -26,6 +28,15 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
 
         private int _partIndex = -1;
 
+        private enum MVLocatorState
+        {
+            Idle,
+            BoardFidicual1,
+            BoardFidicual2,
+            Default,
+        }
+
+        MVLocatorState _mvLocatorState = MVLocatorState.Default;
 
         public PnPJobViewModel(IMachine machine, PnPJob job) : base(machine)
         {
@@ -36,6 +47,8 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             SaveCommand = new RelayCommand(() => SaveJob());
             CloseCommand = new RelayCommand(Close);
             CloneCommand = new RelayCommand(CloneConfiguration);
+
+            PeformBoardAlignmentCommand = new RelayCommand(PerformBoardAlignment);
 
             GoToPartOnBoardCommand = new RelayCommand(GoToPartOnBoard);
             GoToPartPositionInTrayCommand = new RelayCommand(GoToPartPositionInTray);
@@ -77,8 +90,11 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                 job.BuildFlavors.Add(SelectedBuildFlavor);
             }
 
-            PartPackManagerVM = new PartPackManagerViewModel(Machine);
+            PartPackManagerVM = new PartPackManagerViewModel(Machine, this);
             PackageLibraryVM = new PackageLibraryViewModel();
+
+            GoToFiducial1Command = new RelayCommand(() => GoToFiducial(1));
+            GoToFiducial2Command = new RelayCommand(() => GoToFiducial(2));
 
             PopulateParts();
             PopulateConfigurationParts();
@@ -103,6 +119,50 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                     });
                 }
             }
+        }
+
+        private void GoToFiducial(int idx)
+        {
+            switch (idx)
+            {
+                case 1:
+                    {
+                        var gcode = $"G1 X{Job.BoardFiducial1.X} Y{Job.BoardFiducial1.Y}";
+                        Machine.SendCommand(gcode);
+                    }
+                    break;
+                case 2:
+                    {
+                        var gcode = $"G1 X{Job.BoardFiducial2.X} Y{Job.BoardFiducial2.Y}";
+                        Machine.SendCommand(gcode);
+                    }
+                    break;
+            }
+        }
+
+        public async void PerformBoardAlignment()
+        {
+            _mvLocatorState = MVLocatorState.Idle;
+
+            var waiter = new SpinWait();
+            Machine.GotoWorkspaceHome();
+            while (Machine.Busy)
+            {
+                waiter.SpinOnce();
+            }
+
+            var gcode = $"G1 X{Job.BoardFiducial1.X} Y{Job.BoardFiducial1.Y}";
+            Machine.SendCommand(gcode);
+
+            while (Machine.Busy)
+            {
+                waiter.SpinOnce();
+            }
+
+            SelectMVProfile("brdfiducual");
+            ShowCircles = true;
+
+            _mvLocatorState = MVLocatorState.BoardFidicual1;
         }
 
         public async void Close()
@@ -133,6 +193,63 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                 {
                     PnPMachineManager.ResolvePart(_pnpMachine, part);
                 }
+            }
+        }
+
+        public override void CircleLocated(Point2D<double> point, double diameter, Point2D<double> stdDeviation)
+        {
+            switch (_mvLocatorState)
+            {
+                case MVLocatorState.BoardFidicual1:
+                    JogToLocation(point);
+                    break;
+                case MVLocatorState.BoardFidicual2:
+                    JogToLocation(point);
+                    break;
+                default:
+                    if (PartPackManagerVM.IsLocating)
+                    {
+                        JogToLocation(point);
+                    }
+                    break;
+            }
+        }
+
+        private async void SetNewHome()
+        {
+            var newX = Machine.MachinePosition.X - Job.BoardFiducial1.X;
+            var newY = Machine.MachinePosition.Y - Job.BoardFiducial1.Y;
+
+            Machine.GotoPoint(newX, newY);
+
+            await Task.Delay(2000);
+
+            Machine.SetWorkspaceHome();
+
+            await Task.Delay(1000);
+
+            var gcode = $"G1 X{Job.BoardFiducial2.X} Y{Job.BoardFiducial2.Y}";
+            Machine.SendCommand(gcode);
+
+            ShowCircles = false;
+
+            _mvLocatorState = MVLocatorState.Default;
+        }
+
+        public override void CircleCentered(Point2D<double> point, double diameter)
+        {
+
+            switch (_mvLocatorState)
+            {
+                case MVLocatorState.BoardFidicual1:
+                    SetNewHome();
+                    break;
+                default:
+                    if (PartPackManagerVM.IsLocating)
+                    {
+                        PartPackManagerVM.FoundLocation(point, diameter);
+                    }
+                    break;
             }
         }
 
@@ -278,7 +395,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
         {
             get
             {
-                if(SelectedPart != null && SelectedPartPackage != null)
+                if (SelectedPart != null && SelectedPartRow != null && SelectedPartPackage != null)
                 {
                     return SelectedPart.PartPack.Pin1YOffset + SelectedPart.Slot.Y + ((SelectedPartRow.RowNumber - 1) * SelectedPart.PartPack.RowHeight) + SelectedPartPackage.CenterYFromHole;
                 }
@@ -368,7 +485,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
         {
             get => SelectedPart?.Row;
         }
-        
+
         public LagoVista.EaglePCB.Models.PCB Board
         {
             get { return Job.Board; }
@@ -513,11 +630,19 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                 await PnPMachineManager.SavePackagesAsync(PnPMachine, Job.PnPMachinePath);
             }
 
-
             _isDirty = false;
             SaveCommand.RaiseCanExecuteChanged();
+
+            SaveProfile();
         }
 
+        public override async Task IsClosingAsync()
+        {
+            await SaveJob();
+            await base.IsClosingAsync();
+        }
+
+        public RelayCommand GoToCurrentPartCommand { get; }
 
         public RelayCommand AddFeederCommand { get; private set; }
         public RelayCommand RefreshConfigurationPartsCommand { get; private set; }
@@ -535,14 +660,19 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
         public RelayCommand ResetCurrentComponentCommand { get; set; }
         public RelayCommand MoveToPreviousComponentInTapeCommand { get; set; }
         public RelayCommand MoveToNextComponentInTapeCommand { get; set; }
-     
+
         public RelayCommand GoToWorkHomeCommand { get; set; }
         public RelayCommand SetWorkHomeCommand { get; set; }
 
         public RelayCommand CloseCommand { get; set; }
 
         public RelayCommand PlacePartCommand { get; set; }
- 
+
         public RelayCommand GoToPartInTrayCommand { get; }
+
+        public RelayCommand PeformBoardAlignmentCommand { get; }
+
+        public RelayCommand GoToFiducial1Command { get; }
+        public RelayCommand GoToFiducial2Command { get; }
     }
 }

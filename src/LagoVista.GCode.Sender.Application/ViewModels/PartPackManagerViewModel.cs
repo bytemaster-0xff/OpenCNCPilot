@@ -1,22 +1,20 @@
-﻿using HelixToolkit.Wpf;
-using LagoVista.Core.Commanding;
+﻿using LagoVista.Core.Commanding;
 using LagoVista.Core.Models;
-using LagoVista.Core.ViewModels;
+using LagoVista.Core.Models.Drawing;
+using LagoVista.GCode.Sender.Application.ViewModels;
 using LagoVista.GCode.Sender.Interfaces;
-using LagoVista.GCode.Sender.ViewModels;
 using LagoVista.PickAndPlace.Managers;
 using LagoVista.PickAndPlace.Models;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LagoVista.PickAndPlace.ViewModels
 {
-    public class PartPackManagerViewModel : GCodeAppViewModelBase
+    public class PartPackManagerViewModel : MachineVisionViewModelBase
     {
         private bool _isDirty = false;
 
@@ -24,8 +22,12 @@ namespace LagoVista.PickAndPlace.ViewModels
 
         private PnPMachine _machine;
 
-        public PartPackManagerViewModel(IMachine machine) : base(machine)
+        MachineVisionViewModelBase _parent;
+
+        public PartPackManagerViewModel(IMachine machine, MachineVisionViewModelBase parent) : base(machine)
         {
+            _parent = parent;
+
             SaveMachineCommand = new RelayCommand(SaveMachine, () => _machine != null);
             AddPartPackCommand = new RelayCommand(AddPartPack, () => _machine != null);
             OpenMachineCommand = new RelayCommand(OpenMachine);
@@ -39,6 +41,12 @@ namespace LagoVista.PickAndPlace.ViewModels
             SetSlotYCommand = new RelayCommand(SetSlotY);
             GoToSlotCommand = new RelayCommand(GoToSlot);
             GoToPin1InFeederCommand = new RelayCommand(GoToPin1InFeeder);
+            GoToCurrentPartCommand = new RelayCommand(GoToCurrentPart);
+        }
+
+        public PartPackManagerViewModel(IMachine machine)  : this(machine, null)
+        {
+
         }
 
         public async void OpenMachine()
@@ -61,12 +69,45 @@ namespace LagoVista.PickAndPlace.ViewModels
 
         public void GoToPin1InFeeder()
         {
-            if(SelectedPartPack != null)
+            if (SelectedPartPack != null)
             {
+                if (_parent != null)
+                {
+                    _parent.SelectMVProfile("tapehole");
+                    _parent.ShowCircles = true;
+                }
+
                 var slot = _machine.Carrier.PartPackSlots.Where(pps => pps.PartPack.Id == SelectedPartPack.Id).FirstOrDefault();
-                var x = slot.X + SelectedPartPack.Pin1XOffset;
+                var x = slot.X + SelectedPartPack.Pin1XOffset + 4;
                 var y = slot.Y + SelectedPartPack.Pin1YOffset;
                 Machine.GotoPoint(x, y);
+                IsLocating = true;
+            }
+        }
+
+        public void FoundLocation(Point2D<double> point, double diameter)
+        {
+            Debug.WriteLine(point + " " + diameter);
+            IsLocating = false;
+
+            var slot = _machine.Carrier.PartPackSlots.Where(pps => pps.PartPack.Id == SelectedPartPack.Id).FirstOrDefault();
+
+            SelectedPartPack.Pin1XOffset = (Machine.MachinePosition.X - 4) - slot.X;
+            SelectedPartPack.Pin1YOffset = Machine.MachinePosition.Y - slot.Y;
+            var x = slot.X + SelectedPartPack.Pin1XOffset;
+            var y = slot.Y + SelectedPartPack.Pin1YOffset;
+            
+
+            Machine.GotoPoint(x, y);
+            IsLocating = false;
+
+        }
+
+        public void GoToCurrentPart()
+        {
+            if (CurrentPartX.HasValue && CurrentPartY.HasValue)
+            {
+                Machine.GotoPoint(CurrentPartX.Value, CurrentPartY.Value);
             }
         }
 
@@ -113,7 +154,7 @@ namespace LagoVista.PickAndPlace.ViewModels
             if (SelectedSlot != null)
             {
                 SelectedSlot.X = Machine.MachinePosition.X;
-            }            
+            }
         }
 
         public void SetSlotY()
@@ -197,7 +238,7 @@ namespace LagoVista.PickAndPlace.ViewModels
             get => _selectedPartPack;
             set
             {
-                if(_selectedPartPack != null)
+                if (_selectedPartPack != null)
                 {
                     _selectedPartPack.PropertyChanged -= _selectedPartPack_PropertyChanged;
                 }
@@ -217,7 +258,7 @@ namespace LagoVista.PickAndPlace.ViewModels
 
         private void _selectedPartPack_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if(e.PropertyName == nameof(PartPackFeeder.SelectedRow))
+            if (e.PropertyName == nameof(PartPackFeeder.SelectedRow))
             {
                 RaisePropertyChanged(nameof(SelectedRow));
                 RaisePropertyChanged(nameof(SelectedPart));
@@ -252,7 +293,7 @@ namespace LagoVista.PickAndPlace.ViewModels
         {
             get
             {
-                if(SelectedPart != null)
+                if (SelectedPart != null)
                 {
                     return Packages.SingleOrDefault(pck => pck.Name == SelectedPart.PackageName);
                 }
@@ -265,7 +306,7 @@ namespace LagoVista.PickAndPlace.ViewModels
         {
             get
             {
-                if(SelectedPartPack != null && SelectedRow != null && SelectedPart != null && CurrentPackage != null)
+                if (SelectedPartPack != null && SelectedRow != null && SelectedPart != null && CurrentPackage != null)
                 {
                     return SelectedSlot.X + SelectedPartPack.Pin1XOffset + CurrentPackage.CenterXFromHole;
                 }
@@ -318,9 +359,12 @@ namespace LagoVista.PickAndPlace.ViewModels
 
         public RelayCommand SetSlotXCommand { get; }
         public RelayCommand SetSlotYCommand { get; }
+        public RelayCommand GoToCurrentPartCommand { get; }
 
         public RelayCommand GoToSlotCommand { get; }
 
         public RelayCommand GoToPin1InFeederCommand { get; }
+
+        public bool IsLocating { get; private set; }
     }
 }

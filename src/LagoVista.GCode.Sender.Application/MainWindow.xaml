@@ -9,6 +9,7 @@
         Closed="Window_Closed" 
 	    mc:Ignorable="d"
 		AllowDrop="True"
+        WindowStartupLocation="CenterScreen"
         MinHeight="800" MinWidth="1200"
         Title="DIY PCB Commander" Height="900" Width="1600" Closing="Window_Closing">
     <Window.Resources>

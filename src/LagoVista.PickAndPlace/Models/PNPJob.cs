@@ -1,4 +1,5 @@
 ﻿using LagoVista.Core.Models;
+using LagoVista.Core.Models.Drawing;
 using LagoVista.EaglePCB.Managers;
 using LagoVista.EaglePCB.Models;
 using Newtonsoft.Json;
@@ -23,6 +24,8 @@ namespace LagoVista.PickAndPlace.Models
             Feeders = new ObservableCollection<FeederInstance>();
             Parts = new ObservableCollection<Part>();
             BuildFlavors = new ObservableCollection<BuildFlavor>();
+            BoardFiducial1 = new Point2D<double>();
+            BoardFiducial2 = new Point2D<double>();
         }
 
         private double _safeHeight;
@@ -37,6 +40,20 @@ namespace LagoVista.PickAndPlace.Models
         {
             get => _boardHeight;
             set => Set(ref _boardHeight, value);
+        }
+
+        private Point2D<double> _boardFiducial1;
+        public Point2D<double> BoardFiducial1
+        {
+            get => _boardFiducial1;
+            set => Set(ref _boardFiducial1, value);
+        }
+
+        private Point2D<double> _boardFiducial2;
+        public Point2D<double> BoardFiducial2
+        {
+            get => _boardFiducial2;
+            set => Set(ref _boardFiducial2, value);
         }
 
         private string _pnpMachinePath;

@@ -3,6 +3,7 @@ using Emgu.CV.CvEnum;
 using Emgu.CV.Structure;
 using Emgu.CV.Util;
 using LagoVista.Core.Commanding;
+using LagoVista.Core.Models;
 using LagoVista.Core.Models.Drawing;
 using LagoVista.GCode.Sender.Interfaces;
 using LagoVista.GCode.Sender.Models;
@@ -36,22 +37,50 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
 
             StartCaptureCommand = new RelayCommand(StartCapture, CanPlay);
             StopCaptureCommand = new RelayCommand(StopCapture, CanStop);
+
+            MVProfiles = new List<EntityHeader>()
+            {
+                EntityHeader.Create("default", "Default"),
+                EntityHeader.Create("brdfiducual", "Board Fiducial"),
+                EntityHeader.Create("tapehole", "Tape Hole"),
+                EntityHeader.Create("squarepart", "Square Part"),
+            };
+
+            CurrentMVProfile = MVProfiles.SingleOrDefault(mv => mv.Id == "default");
         }
 
         public override async Task InitAsync()
         {
-            _topCameraProfile = await Storage.GetAsync<Models.VisionProfile>("TopCameraVision.json");
-            _bottomCameraProfile = await Storage.GetAsync<Models.VisionProfile>("BottomCameraVision.json");
+            await LoadProfiles();
+        }
+
+        private async Task LoadProfiles()
+        {
+            var topFileName = CurrentMVProfile.Id == "default" ? "TopCameraVision.json" : $"Top.{CurrentMVProfile.Id}.mv.json";
+            var bottomFileName = CurrentMVProfile.Id == "default" ? "BottomCameraVision.json" : $"Bottom.{CurrentMVProfile.Id}.mv.json";
+
+            _topCameraProfile = await Storage.GetAsync<Models.VisionProfile>(topFileName);
+            _bottomCameraProfile = await Storage.GetAsync<Models.VisionProfile>(bottomFileName);
 
             if (_topCameraProfile == null)
             {
-                _topCameraProfile = new VisionProfile();
+                _topCameraProfile = await Storage.GetAsync<Models.VisionProfile>("TopCameraVision.json");
+                if (_topCameraProfile == null)
+                {
+                    _topCameraProfile = new VisionProfile();
+                }
             }
 
             if (_bottomCameraProfile == null)
             {
-                _bottomCameraProfile = new VisionProfile();
+                _bottomCameraProfile = await Storage.GetAsync<Models.VisionProfile>("BottomCameraVision.json");
+                if (_bottomCameraProfile == null)
+                {
+                    _bottomCameraProfile = new VisionProfile();
+                }
             }
+
+            SaveProfile();
 
             if (ShowTopCamera)
             {
@@ -64,10 +93,35 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             }
         }
 
+        public List<EntityHeader> MVProfiles { get; }
+
+        EntityHeader _currentMVProfile;
+        public EntityHeader CurrentMVProfile
+        {
+            get => _currentMVProfile;
+            set
+            {
+                SaveProfile();
+                Set(ref _currentMVProfile, value);
+                LoadProfiles();
+            }
+        }
+
+        public void SelectMVProfile(string profile)
+        {
+            CurrentMVProfile = MVProfiles.SingleOrDefault(mvp => mvp.Id == profile);
+        }
+
         public async void SaveProfile()
         {
-            await Storage.StoreAsync(_topCameraProfile, "TopCameraVision.json");
-            await Storage.StoreAsync(_bottomCameraProfile, "BottomCameraVision.json");
+            if (CurrentMVProfile != null)
+            {
+                var topFileName = CurrentMVProfile.Id == "default" ? "TopCameraVision.json" : $"Top.{CurrentMVProfile.Id}.mv.json";
+                var bottomFileName = CurrentMVProfile.Id == "default" ? "BottomCameraVision.json" : $"Bottom.{CurrentMVProfile.Id}.mv.json";
+
+                await Storage.StoreAsync(_topCameraProfile, topFileName);
+                await Storage.StoreAsync(_bottomCameraProfile, bottomFileName);
+            }
         }
 
         public RelayCommand SaveProfileCommand { get; private set; }
@@ -398,7 +452,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                                         }
                                     }
                                 }
-                                
+
                             }
                             else if (Profile.FindIrregularPolygons)
                             {
@@ -468,7 +522,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                     return gray.Clone();
                 }
             }
-            catch(Exception)
+            catch (Exception)
             {
                 /*NOP, sometimes OpenCV acts a little funny. */
                 return null;

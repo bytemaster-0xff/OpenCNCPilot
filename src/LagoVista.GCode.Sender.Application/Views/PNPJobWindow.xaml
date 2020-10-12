@@ -7,10 +7,10 @@
         xmlns:Controls="clr-namespace:LagoVista.GCode.Sender.Application.Controls"
   
         xmlns:local="clr-namespace:LagoVista.GCode.Sender.Application.Views"
-        WindowStartupLocation="CenterOwner"
+        WindowStartupLocation="CenterScreen"
         mc:Ignorable="d"
         Title="Pick and Place Job" Height="800" Width="1600">
-    <Grid>
+    <Grid x:Name="MainView">
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
             <RowDefinition Height="auto" />
@@ -19,19 +19,92 @@
             <TabItem Header="Job">
                 <Grid>
                     <Grid.RowDefinitions>
+                        <RowDefinition Height="50" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <StackPanel Orientation="Horizontal" Grid.ColumnSpan="5">
+                        <Controls:MVCommandBar  HorizontalAlignment="Left" />
+
+                        <Button BorderBrush="Transparent"  Background="Transparent" Command="{Binding GoToWorkHomeCommand}"  ToolTip="Go To Work Home"   >
+                            <Button.Content>
+                                <Image Source="/imgs/GotoFiducialHome.png"/>
+                            </Button.Content>
+                        </Button>
+
+                        <Button BorderBrush="Transparent"  Background="Transparent" Command="{Binding SetWorkHomeCommand}"  ToolTip="Set Work Home"   >
+                            <Button.Content>
+                                <Image Source="/imgs/SetFiducialHome.png"/>
+                            </Button.Content>
+                        </Button>
+
+                        <ToggleButton IsChecked="{Binding Machine.TopLightOn, Mode=TwoWay}">
+                            <ToggleButton.Content>
+                                <Image Source="/imgs/TopLight.png" />
+                            </ToggleButton.Content>
+                        </ToggleButton>
+                        <ToggleButton IsChecked="{Binding Machine.BottomLightOn, Mode=TwoWay}">
+                            <ToggleButton.Content>
+                                <Image Source="/imgs/BottomLight.png" />
+                            </ToggleButton.Content>
+                        </ToggleButton>
+                        <ToggleButton IsChecked="{Binding Machine.Vacuum1On, Mode=TwoWay}" ToolTip="Vacuum Pump 1">
+                            <ToggleButton.Content>
+                                <Image Source="/imgs/Vacuum1.png" />
+                            </ToggleButton.Content>
+                        </ToggleButton>
+                        <ToggleButton IsChecked="{Binding Machine.Vacuum2On, Mode=TwoWay}" ToolTip="Vacuum Pump 2">
+                            <ToggleButton.Content>
+                                <Image Source="/imgs/Vacuum2.png" />
+                            </ToggleButton.Content>
+                        </ToggleButton>
+                        <ToggleButton IsChecked="{Binding Machine.SolendoidOn, Mode=TwoWay}" ToolTip="Exhaust Solenoid">
+                            <ToggleButton.Content>
+                                <Image Source="/imgs/Solenoid.png" />
+                            </ToggleButton.Content>
+                        </ToggleButton>
+
+                    </StackPanel>
+
+                <Grid  Grid.Row="1">
+                    <Grid.RowDefinitions>
                         <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="120" />
-                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="200" />
                         <ColumnDefinition Width="60" />
-                    </Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                         <ColumnDefinition Width="400" />
+                     </Grid.ColumnDefinitions>
 
                     <Label Content="Machine File" />
                     <Controls:MaskingTextBox Text="{Binding Path=Job.PnPMachinePath, Mode=TwoWay}" Grid.Column="1" Margin="4,4,0,4" />
                     <Button Content="..." Width="30" HorizontalAlignment="Left" Grid.Column="2" Margin="0,4,4,4" Command="{Binding SelectMachineFileCommand}" />
-
+                    <Label Content="Fiducual 1 - X" Grid.Row="1" />
+                    <Controls:MaskingTextBox Text="{Binding Job.BoardFiducial1.X, Mode=TwoWay}"  UnitType="Size"  Grid.Row="1" Grid.Column="1" Margin="0,4,4,4" Width="80" HorizontalAlignment="Left" />
+                    <Label Content="Fiducual 1 - Y" Grid.Row="2" />
+                    <Controls:MaskingTextBox Text="{Binding Job.BoardFiducial1.Y, Mode=TwoWay}"  UnitType="Size"  Grid.Row="2" Grid.Column="1" Margin="0,4,4,4" Width="80" HorizontalAlignment="Left" />
+                    <Label Content="Fiducual 2 - X" Grid.Row="3" />
+                    <Controls:MaskingTextBox Text="{Binding Job.BoardFiducial2.X, Mode=TwoWay}"  UnitType="Size"  Grid.Row="3" Grid.Column="1" Margin="0,4,4,4" Width="80" HorizontalAlignment="Left" />
+                    <Label Content="Fiducual 2 - Y" Grid.Row="4" />
+                    <Controls:MaskingTextBox Text="{Binding Job.BoardFiducial2.Y, Mode=TwoWay}"  UnitType="Size " Grid.Row="4" Grid.Column="1" Margin="0,4,4,4" Width="80" HorizontalAlignment="Left" />
+                    <Image x:Name="BoadImage" Source="{Binding PrimaryCapturedImage}"   MouseDown="WebCamImage_MouseDown"  Grid.Column="3" VerticalAlignment="Top"  Stretch="Uniform" Grid.Row="0" Grid.RowSpan="7" />
+                    <Controls:MVViewOptions HorizontalAlignment="Right" VerticalAlignment="Top" Grid.Row="1" Grid.Column="3" Grid.RowSpan="7" />
+                    <Controls:ImageAdjustments Grid.Column="4" Grid.RowSpan="7" Visibility="{Binding AreToolSettingsVisible, Converter={StaticResource BoolToVisibilityConverter}}" />
+                        <StackPanel Grid.Row="5">
+                            <Button Command="{Binding PeformBoardAlignmentCommand}" Content="Perform Board Alignment" />
+                            <Button Command="{Binding GoToFiducial1Command}" Content="GoTo Fiducial 1" />
+                            <Button Command="{Binding GoToFiducial2Command}" Content="GoTo Fiducial 2" />
+                        </StackPanel>
+                    </Grid>
                 </Grid>
+
             </TabItem>
 
             <TabItem Header="Configuration">
@@ -103,11 +176,11 @@
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="300" />
+                        <ColumnDefinition Width="300" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <StackPanel Grid.ColumnSpan="3" HorizontalAlignment="Left" Grid.Row="1" Orientation="Horizontal" Visibility="{Binding PartPacks, Converter={StaticResource NoTNullToVisibilityConverter}}">
+                    <StackPanel Grid.ColumnSpan="3" HorizontalAlignment="Left" Grid.Row="0" Orientation="Horizontal" Visibility="{Binding PartPacks, Converter={StaticResource NoTNullToVisibilityConverter}}">
                         <Button Width="32" Height="32"  Command="{Binding AddPartPackCommand}" >
                             <Button.Content>
                                 <fa:ImageAwesome  Icon="PlusCircle" />
@@ -138,10 +211,10 @@
                     <Grid Grid.Column="1" Grid.RowSpan="3"  Visibility="{Binding SelectedPartPack, Converter={StaticResource NoTNullToVisibilityConverter}}">
                         <Controls:PartPackControl DataContext="{Binding SelectedPartPack}" />
                     </Grid>
-                    
+
                     <TextBlock Text="Please open or create a part pack set" FontSize="24" Grid.ColumnSpan="3" Grid.RowSpan="3" HorizontalAlignment="Center" 
                                VerticalAlignment="Center" Visibility="{Binding PartPacks, Converter={StaticResource NullVisibilityConverter}}" />
-                    <Grid Grid.Column="2" Visibility="{Binding SelectedSlot, Converter={StaticResource NoTNullToVisibilityConverter}}">
+                    <Grid Grid.Column="2" Grid.RowSpan="3" Visibility="{Binding SelectedSlot, Converter={StaticResource NoTNullToVisibilityConverter}}">
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="auto" />
@@ -161,8 +234,9 @@
                                 <ColumnDefinition Width="20" />
                                 <ColumnDefinition Width="100" />
                                 <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="60" />
                             </Grid.ColumnDefinitions>
-                        <Label Content="{Binding SelectedSlot.Name}" Grid.ColumnSpan="3" FontWeight="Bold" />
+                            <Label Content="{Binding SelectedSlot.Name}" Grid.ColumnSpan="3" FontWeight="Bold" />
                             <Label Content="Slot Location" Grid.Column="1" Grid.Row="1" FontWeight="Bold" VerticalAlignment="Center" />
 
                             <TextBlock  Grid.Column="2" Grid.Row="1" VerticalAlignment="Center" >
@@ -173,7 +247,7 @@
                                     </MultiBinding>
                                 </TextBlock.Text>
                             </TextBlock>
-                           
+
                             <Label Content="{Binding SelectedPartPack.SelectedRow}" Grid.ColumnSpan="2" FontWeight="Bold" Grid.Row="2"/>
 
                             <Label Content="Pin 1 Offset" Grid.Column="1" Grid.Row="3" FontWeight="Bold" VerticalAlignment="Center" />
@@ -207,6 +281,12 @@
                                 </TextBlock.Text>
                             </TextBlock>
 
+                            <Button Grid.Row="6" Grid.Column="3" Command="{Binding GoToCurrentPartCommand}" Content="Go" />
+                            <Button Grid.Row="3" Grid.Column="3" Command="{Binding GoToPin1InFeederCommand}" Content="Go" />
+                            <Button Grid.Row="1" Grid.Column="3" Command="{Binding GoToSlotCommand}" Content="Go" />
+
+                            <Image x:Name="WebCamImage2" Source="{Binding DataContext.PrimaryCapturedImage, ElementName=MainView}"  MouseDown="WebCamImage_MouseDown"  Grid.ColumnSpan="4" VerticalAlignment="Top"  Stretch="Uniform" Grid.Row="7" Margin="5"  />
+                            <Controls:MVViewOptions HorizontalAlignment="Right" VerticalAlignment="Top" Grid.Row="7" Grid.ColumnSpan="4" />
                         </Grid>
                     </Grid>
                 </Grid>
@@ -439,7 +519,7 @@
                     </Grid>
                 </Grid>
             </TabItem>
-          
+
             <TabItem Header="Place">
                 <Grid>
                     <Grid.RowDefinitions>
@@ -447,13 +527,14 @@
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="320"/>
+                        <ColumnDefinition Width="8.167"/>
+                        <ColumnDefinition Width="311.833"/>
                         <ColumnDefinition Width="320"/>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="300" />
                     </Grid.ColumnDefinitions>
 
-                    <StackPanel Orientation="Horizontal" Grid.ColumnSpan="4">
+                    <StackPanel Orientation="Horizontal" Grid.ColumnSpan="5">
                         <Controls:MVCommandBar x:Name="CmdBar"  HorizontalAlignment="Left" />
 
                         <Button BorderBrush="Transparent"  Background="Transparent" Command="{Binding GoToWorkHomeCommand}"  ToolTip="Go To Work Home"   >
@@ -499,7 +580,7 @@
                     <DataGrid AutoGenerateColumns="False" CanUserAddRows="false" LoadingRow="DataGrid_LoadingRow" 
                               CanUserDeleteRows="False" Grid.Column="0" ItemsSource="{Binding ConfigurationParts}"
                               SelectedItem="{Binding SelectedPart, Mode=TwoWay}"
-                              Grid.Row="3" HorizontalContentAlignment="Stretch" >
+                              Grid.Row="1" HorizontalContentAlignment="Stretch" Grid.ColumnSpan="2" >
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Value" Width="120" IsReadOnly="true" Binding="{Binding Value, Mode=TwoWay}"  />
                             <DataGridTextColumn Header="Package" IsReadOnly="true" Width="120" Binding="{Binding Package, Mode=TwoWay}"  />
@@ -507,7 +588,7 @@
                         </DataGrid.Columns>
                     </DataGrid>
 
-                    <Grid Grid.Row="1" Grid.Column="1">
+                    <Grid Grid.Row="1" Grid.Column="2">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="auto" />
                             <RowDefinition Height="auto" />
@@ -533,7 +614,7 @@
                                 <RowDefinition Height="auto" />
                                 <RowDefinition Height="auto" />
                             </Grid.RowDefinitions>
-                            
+
                             <Label Content="Part in feeder" FontWeight="Bold" Grid.ColumnSpan="5" />
 
                             <Label Content="Feeder:" Grid.Row="1"  />
@@ -626,14 +707,15 @@
                         </DataGrid>
                     </Grid>
 
-                    <Image x:Name="WebCamImage" Source="{Binding PrimaryCapturedImage}"   MouseDown="WebCamImage_MouseDown"  Grid.Column="2" VerticalAlignment="Top"  Stretch="Uniform" Grid.Row="1" Grid.RowSpan="2" />
-                    <Controls:ImageAdjustments Grid.Column="3" Grid.RowSpan="2" Visibility="{Binding AreToolSettingsVisible, Converter={StaticResource BoolToVisibilityConverter}}" />
+                    <Image x:Name="WebCamImage" Source="{Binding PrimaryCapturedImage}"   MouseDown="WebCamImage_MouseDown"  Grid.Column="3" VerticalAlignment="Top"  Stretch="Uniform" Grid.Row="1" />
+                    <Controls:MVViewOptions HorizontalAlignment="Right" VerticalAlignment="Top" Grid.Row="1" Grid.Column="3" />
+                    <Controls:ImageAdjustments Grid.Column="4" Grid.RowSpan="2" Visibility="{Binding AreToolSettingsVisible, Converter={StaticResource BoolToVisibilityConverter}}" />
 
-                    <Controls:LoadingMask Grid.ColumnSpan="4" Grid.Row="1"  />
+                    <Controls:LoadingMask Grid.ColumnSpan="5" Grid.Row="1"  />
 
-                    <Controls:PnPButtons Grid.Column="2" DataContext="{Binding MachineControls}" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="1,0,0,0.4" />
+                    <Controls:PnPButtons Grid.Column="3" DataContext="{Binding MachineControls}" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="1,0,0,0" />
 
-                    <Grid VerticalAlignment="Bottom" HorizontalAlignment="Right" Grid.Column="2" Grid.Row="1">
+                    <Grid VerticalAlignment="Bottom" HorizontalAlignment="Right" Grid.Column="3" Grid.Row="1">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="20" />
                             <ColumnDefinition Width="50" />
