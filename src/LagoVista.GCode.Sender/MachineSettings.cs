@@ -155,6 +155,13 @@ namespace LagoVista.GCode.Sender
             set { Set(ref _homeFiducialOffset, value); }
         }
 
+        Vector3 _defaultWorkspaceOffset;
+        public Vector3 WorkspaceOffset
+        {
+            get { return _defaultWorkspaceOffset; }
+            set { Set(ref _defaultWorkspaceOffset, value); }
+        }
+
         public FirmwareTypes MachineType { get; set; }
 
         private string _settingsName;

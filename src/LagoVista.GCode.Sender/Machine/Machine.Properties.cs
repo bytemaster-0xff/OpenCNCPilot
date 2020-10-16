@@ -1,10 +1,5 @@
 ﻿using LagoVista.GCode.Sender.Interfaces;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LagoVista.GCode.Sender
 {
@@ -45,7 +40,9 @@ namespace LagoVista.GCode.Sender
 
         public bool IsPnPMachine
         {
-            get { return Settings.MachineType == FirmwareTypes.LagoVista_PnP; }
+            get { return Settings.MachineType == FirmwareTypes.LagoVista_PnP ||
+                         Settings.MachineType == FirmwareTypes.Repeteir_PnP ||
+                         Settings.MachineType == FirmwareTypes.SimulatedMachine; }
         }
 
         IPCBManager _pcbManager;
@@ -70,10 +67,6 @@ namespace LagoVista.GCode.Sender
             }
         }
 
-        public Core.Models.Drawing.Vector3 NormalizedPosition
-        {
-            get { return MachinePosition - WorkPositionOffset; }
-        }
 
         /* Normalized is height above PCB */
         public double Tool0Normalized
@@ -281,9 +274,17 @@ namespace LagoVista.GCode.Sender
             get { return _topLightOn; }
             set
             {
-                SendCommand(value ? "M60 P255" : "M60 P0");
-                _topLightOn = value;
-                RaisePropertyChanged();
+                if (_topLightOn != value)
+                {
+                    switch (Settings.MachineType)
+                    {
+                        case FirmwareTypes.Repeteir_PnP: Enqueue($"M42 P31 S{(value ? 255 : 0)}"); break;
+                        case FirmwareTypes.LagoVista_PnP: Enqueue($"M60 S{(value ? 255 : 0)}"); break;
+                    }
+
+                    _topLightOn = value;
+                    RaisePropertyChanged();
+                }
             }
         }
 
@@ -293,9 +294,17 @@ namespace LagoVista.GCode.Sender
             get { return _bottomLightOn; }
             set
             {
-                SendCommand(value ? "M61 P255" : "M61 P0");
-                _bottomLightOn = value;
-                RaisePropertyChanged();
+                if (_bottomLightOn != value)
+                {
+                    switch (Settings.MachineType)
+                    {
+                        case FirmwareTypes.Repeteir_PnP: Enqueue($"M42 P33 S{(value ? 255 : 0)}"); break;
+                        case FirmwareTypes.LagoVista_PnP: Enqueue($"M61 S{(value ? 255 : 0)}"); break;
+                    }
+
+                    _bottomLightOn = value;
+                    RaisePropertyChanged();
+                }
             }
         }
 
@@ -305,9 +314,17 @@ namespace LagoVista.GCode.Sender
             get { return _vacuum1On; }
             set
             {
-                SendCommand(value ? "M62 P255" : "M62 P0");
-                _vacuum1On = value;
-                RaisePropertyChanged();
+                if (_vacuum1On != value)
+                {
+                    switch (Settings.MachineType)
+                    {
+                        case FirmwareTypes.Repeteir_PnP: Enqueue($"M42 P25 S{(value ? 255 : 0)}"); break;
+                        case FirmwareTypes.LagoVista_PnP: Enqueue($"M64 S{(value ? 255 : 0)}"); break;
+                    }
+
+                    _vacuum1On = value;
+                    RaisePropertyChanged();
+                }
             }
         }
 
@@ -317,7 +334,15 @@ namespace LagoVista.GCode.Sender
             get { return _vacuum2On; }
             set
             {
-                SendCommand(value ? "M63 P255" : "M63 P0");
+                if (_vacuum2On != value)
+                {
+                    switch (Settings.MachineType)
+                    {
+                        case FirmwareTypes.Repeteir_PnP: Enqueue($"M42 P27 S{(value ? 255 : 0)}"); break;
+                        case FirmwareTypes.LagoVista_PnP: Enqueue($"M63 S{(value ? 255 : 0)}"); break;
+                    }
+                }
+
                 _vacuum2On = value;
                 RaisePropertyChanged();
             }
@@ -330,9 +355,17 @@ namespace LagoVista.GCode.Sender
             get { return _solendoidOn; }
             set
             {
-                SendCommand(value ? "M64 P255" : "M64 P0");
-                _solendoidOn = value;
-                RaisePropertyChanged();
+                if (_solendoidOn != value)
+                {
+                    switch (Settings.MachineType)
+                    {
+                        case FirmwareTypes.Repeteir_PnP: Enqueue($"M42 P29 S{(value ? 255 : 0)}"); break;
+                        case FirmwareTypes.LagoVista_PnP: Enqueue($"M64 S{(value ? 255 : 0)}"); break;
+                    }
+
+                    _solendoidOn = value;
+                    RaisePropertyChanged();
+                }
             }
         }
 
@@ -340,7 +373,8 @@ namespace LagoVista.GCode.Sender
         public int MachinePendingQueueLength
         {
             get { return _machinePendingQueueLength; }
-            set {
+            set
+            {
                 _machinePendingQueueLength = value;
                 RaisePropertyChanged();
             }

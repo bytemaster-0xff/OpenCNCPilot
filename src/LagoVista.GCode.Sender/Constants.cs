@@ -84,6 +84,7 @@ namespace LagoVista.GCode.Sender
         LagoVista,
         LagoVista_PnP,
         SimulatedMachine,
+        Repeteir_PnP,
     }
 
     public enum OperatingMode

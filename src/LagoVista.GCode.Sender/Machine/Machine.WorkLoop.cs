@@ -189,7 +189,10 @@ namespace LagoVista.GCode.Sender
                 await Send();
             }
 
-            ProcessResponseLine(lineTask.Result);
+            if (lineTask.IsCompleted)
+            {
+                ProcessResponseLine(lineTask.Result);
+            }
         }
 
         private async void Work(Stream inputStream, Stream outputStream)

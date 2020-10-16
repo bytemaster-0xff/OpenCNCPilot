@@ -16,12 +16,13 @@ namespace LagoVista.GCode.Sender
     {
         private ViewTypes _viewType;
         public ViewTypes ViewType
-        { 
+        {
             get { return _viewType; }
-            set {
+            set
+            {
                 _viewType = value;
                 RaisePropertyChanged();
-                switch(value)
+                switch (value)
                 {
                     case ViewTypes.Camera: Enqueue("M50"); break;
                     case ViewTypes.Tool1: Enqueue("M51"); break;
@@ -32,7 +33,7 @@ namespace LagoVista.GCode.Sender
 
         void SetViewType(ViewTypes viewType)
         {
-            if(_viewType != viewType)
+            if (_viewType != viewType)
             {
                 _viewType = viewType;
                 RaisePropertyChanged();
@@ -51,24 +52,39 @@ namespace LagoVista.GCode.Sender
             {
                 _machinePosition = value;
                 RaisePropertyChanged();
-                RaisePropertyChanged(nameof(NormalizedPosition));
+                RaisePropertyChanged(nameof(WorkspacePosition));
             }
         }
 
-        private Vector3 _workPositionOffset = new Vector3();
-        /// <summary>
-        ///  X, Y Machine of the origin of the material
-        /// </summary>
-        public Vector3 WorkPositionOffset
+        private Vector3 _workspacePosition = new Vector3();
+
+        public Vector3 WorkspacePosition
         {
-            get { return _workPositionOffset; }
+            get
+            {
+                if (Settings.MachineType == FirmwareTypes.Repeteir_PnP)
+                {
+                    return MachinePosition - Settings.WorkspaceOffset;
+                }
+                else
+                {
+                    return _workspacePosition;
+                }
+            }
             set
             {
-                _workPositionOffset = value;
-                RaisePropertyChanged();
-                RaisePropertyChanged(nameof(NormalizedPosition));
+                if (Settings.MachineType == FirmwareTypes.Repeteir_PnP)
+                {
+                    /* nop, always calculated on client. */
+                }
+                else
+                {
+                    _workspacePosition = value;
+                }
             }
+
         }
+
 
         bool? _endStopXMin = null;
         public bool? EndStopXMin
@@ -232,7 +248,7 @@ namespace LagoVista.GCode.Sender
                 RaisePropertyChanged();
             }
         }
-       
+
         public bool HasBufferSpaceAvailableForByteCount(int bytes)
         {
             return bytes < (Settings.ControllerBufferSize - UnacknowledgedBytesSent);
@@ -240,7 +256,7 @@ namespace LagoVista.GCode.Sender
 
         public void AddStatusMessage(StatusMessageTypes type, string message, MessageVerbosityLevels verbosityLevel = MessageVerbosityLevels.Normal)
         {
-            if (IsInitialized &&  Settings != null && verbosityLevel >= Settings.MessageVerbosity)
+            if (IsInitialized && Settings != null && verbosityLevel >= Settings.MessageVerbosity)
             {
                 Services.DispatcherServices.Invoke(() =>
                 {

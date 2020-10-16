@@ -1,4 +1,5 @@
-﻿using Emgu.CV;
+﻿
+using Emgu.CV;
 using Emgu.CV.CvEnum;
 using Emgu.CV.Structure;
 using Emgu.CV.Util;
@@ -28,7 +29,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
         private VisionProfile _topCameraProfile;
         private VisionProfile _bottomCameraProfile;
 
-
+        const double PIXEL_PER_MM = 20.0;
         public MachineVisionViewModelBase(IMachine machine) : base(machine)
         {
             MachineControls = new Sender.ViewModels.MachineControlViewModel(this.Machine);
@@ -199,15 +200,21 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
         }
 
 
+
         protected void JogToLocation(Point2D<double> offset)
         {
-            if (StandardDeviation.X < 0.5 && StandardDeviation.Y < 0.5)
+            var deltaX = Machine.MachinePosition.X - (offset.X / PIXEL_PER_MM);
+            var deltaY = Machine.MachinePosition.Y + (offset.Y / PIXEL_PER_MM);
+
+            var threshold = Math.Abs(deltaX) > 2 || Math.Abs(deltaY) > 2 ? 1.0f : 0.5;
+
+            if (StandardDeviation.X < threshold && StandardDeviation.Y < threshold)
             {
                 _stabilizedPointCount++;
                 if (_stabilizedPointCount > 10)
                 {
-                    var newLocationX = Math.Round(Machine.NormalizedPosition.X - (offset.X / 20), 4);
-                    var newLocationY = Math.Round(Machine.NormalizedPosition.Y + (offset.Y / 20), 4);
+                    var newLocationX = Math.Round(Machine.MachinePosition.X - (offset.X / 20), 4);
+                    var newLocationY = Math.Round(Machine.MachinePosition.Y + (offset.Y / 20), 4);
                     RequestedPosition = new Point2D<double>() { X = newLocationX, Y = newLocationY };
 
                     Machine.GotoPoint(RequestedPosition, true);
@@ -262,17 +269,19 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
 
                 var offset = new Point2D<double>(center.X - avg.X, center.Y - avg.Y);
 
+                var deltaX = Math.Abs(avg.X - center.X);
+                var deltaY = Math.Abs(avg.Y - center.Y);
+                //Debug.WriteLine($"{deltaX}, {deltaY} - {_stabilizedPointCount} - {_circleRadiusMedianFilter.StandardDeviation.X},{_circleRadiusMedianFilter.StandardDeviation.Y}");
                 /* If within one pixel of center, state we have a match */
-                if ((avg.X >= ((size.Width / 2) - 1)) && avg.X <= ((size.Width / 2) + 1) &&
-                   (avg.Y >= ((size.Height / 2) - 1)) && avg.Y <= ((size.Height / 2) + 1))
+                if (deltaX < 1 && deltaY < 1)
                 {
                     Line(output, 0, (int)avg.Y, size.Width, (int)avg.Y, System.Drawing.Color.Green);
                     Line(output, (int)avg.X, 0, (int)avg.X, size.Height, System.Drawing.Color.Green);
                     Circle(output, (int)avg.X, (int)avg.Y, (int)_circleRadiusMedianFilter.Filtered.X, System.Drawing.Color.Green);
-                    if (StandardDeviation.X < 0.5 && StandardDeviation.Y < 0.5)
+                    if (StandardDeviation.X < 0.7 && StandardDeviation.Y < 0.7)
                     {
                         _stabilizedPointCount++;
-                        if (_stabilizedPointCount > 10)
+                        if (_stabilizedPointCount > 5)
                         {
                             CircleCentered(offset, _circleRadiusMedianFilter.Filtered.X);
                         }
@@ -398,7 +407,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                         {
                             var pts = approxContour.ToArray();
 
-                            if (approxContour.Size == 4) //The contour has 4 vertices.
+                            if (approxContour.Size == 4 || true) //The contour has 4 vertices.
                             {
                                 bool isRectangle = true;
                                 var rectEdges = PointCollection.PolyLine(pts, true);

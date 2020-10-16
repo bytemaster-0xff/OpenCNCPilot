@@ -177,8 +177,8 @@ namespace LagoVista.GCode.Sender.Managers
 
                 var currentPoint = new Point2D<double>()
                 {
-                    X = Machine.NormalizedPosition.X,
-                    Y = Machine.NormalizedPosition.Y
+                    // X = Machine.NormalizedPosition.X,
+                    // Y = Machine.NormalizedPosition.Y
                 };
 
                 Machine.GotoPoint(currentPoint);
@@ -198,12 +198,12 @@ namespace LagoVista.GCode.Sender.Managers
                 Set(ref _tool1Navigation, value);
 
                 if (Machine.Settings.PositioningCamera != null &&
-                                   Machine.Settings.PositioningCamera.Tool1Offset != null)
+                   Machine.Settings.PositioningCamera.Tool1Offset != null)
                 {
                     var currentPoint = new Point2D<double>()
                     {
-                        X = Machine.NormalizedPosition.X - Machine.Settings.PositioningCamera.Tool1Offset.X,
-                        Y = Machine.NormalizedPosition.Y - Machine.Settings.PositioningCamera.Tool1Offset.Y
+                       // X = Machine.NormalizedPosition.X - Machine.Settings.PositioningCamera.Tool1Offset.X,
+                       // Y = Machine.NormalizedPosition.Y - Machine.Settings.PositioningCamera.Tool1Offset.Y
                     };
 
                     Machine.GotoPoint(currentPoint);
@@ -229,8 +229,8 @@ namespace LagoVista.GCode.Sender.Managers
                 {
                     var currentPoint = new Point2D<double>()
                     {
-                        X = Machine.NormalizedPosition.X - Machine.Settings.PositioningCamera.Tool1Offset.X,
-                        Y = Machine.NormalizedPosition.Y - Machine.Settings.PositioningCamera.Tool1Offset.Y
+                   //     X = Machine.NormalizedPosition.X - Machine.Settings.PositioningCamera.Tool1Offset.X,
+                     //   Y = Machine.NormalizedPosition.Y - Machine.Settings.PositioningCamera.Tool1Offset.Y
                     };
 
                     Machine.GotoPoint(currentPoint);

@@ -42,11 +42,9 @@ namespace LagoVista.GCode.Sender.Interfaces
         Vector3 MachinePosition { get; }
 
         /// <summary>
-        /// The current XYZ position of the machine with respect to the resetted home position of the work.
+        /// Current position with respect to the set offset (either managed by firmware or application)
         /// </summary>
-        Vector3 WorkPositionOffset { get; }
-
-        Vector3 NormalizedPosition{ get; }
+        Vector3 WorkspacePosition {get;}
 
         double Tool0 { get;  }
         double Tool1 { get; }
@@ -199,8 +197,6 @@ namespace LagoVista.GCode.Sender.Interfaces
 
         void SetWorkspaceHome();
         void GotoWorkspaceHome();
-
-        void GotoFiducialHome();
 
         /// <summary>
         /// Send a message to the machine to immediately stop any motion operation

@@ -62,7 +62,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
 
         public void PickPartFromTape()
         {
-            _originalPickLocation = new Vector2(Machine.NormalizedPosition.X, Machine.NormalizedPosition.Y);
+            _originalPickLocation = new Vector2(Machine.WorkspacePosition.X, Machine.WorkspacePosition.Y);
 
             Machine.SendCommand("M63 P0");
             Machine.SendCommand("G04 P1000");
@@ -115,7 +115,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
 
         public void FullCycle()
         {
-            _originalPickLocation = new Vector2(Machine.NormalizedPosition.X, Machine.NormalizedPosition.Y);
+            _originalPickLocation = new Vector2(Machine.WorkspacePosition.X, Machine.WorkspacePosition.Y);
 
             var bldr = new StringBuilder();
             bldr.AppendLine("T0");

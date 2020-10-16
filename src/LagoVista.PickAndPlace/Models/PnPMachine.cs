@@ -17,6 +17,6 @@ namespace LagoVista.PickAndPlace.Models
 
         public PartPackCarrier Carrier { get; set; }
 
-        public ObservableCollection<Package> Packages { get; set; }
+        public ObservableCollection<Package> Packages { get; set; }    
     }
 }

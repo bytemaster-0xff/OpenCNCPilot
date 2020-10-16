@@ -13,11 +13,14 @@ namespace LagoVista.GCode.Sender
         //private static Regex StatusEx = new Regex(@"<(?'State'Idle|Run|Hold|Home|Alarm|Check|Door)(:[0-9])?(?:.MPos:(?'MX'-?[0-9\.]*),(?'MY'-?[0-9\.]*),(?'MZ'-?[0-9\.]*))?(?:,WPos:(?'WX'-?[0-9\.]*),(?'WY'-?[0-9\.]*),(?'WZ'-?[0-9\.]*))?(?:,Buf:(?'Buf'[0-9]*))?(?:,RX:(?'RX'[0-9]*))?(?:,Ln:(?'L'[0-9]*))?(?:,F:(?'F'[0-9\.]*))?(?:,Lim:(?'Lim'[0-1]*))?(?:,Ctl:(?'Ctl'[0-1]*))?(?:.FS:(?'FSX'-?[0-9\.]*),(?'FSY'-?[0-9\.]*))?(?:.Pn.P)?(?:.WCO:(?'WCOX'-?[0-9\.]*),(?'WCOY'-?[0-9\.]*),(?'WCOZ'-?[0-9\.]*))?(?:.Ov:(?'OVX'-?[0-9\.]*),(?'OVY'-?[0-9\.]*),(?'OVZ'-?[0-9\.]*))?>");
         private static Regex StatusEx = new Regex(@"<(?'State'idle|run|hold|home|alarm|check|door)(:[0-9])?(?:.mpos:(?'MX'-?[0-9\.]*),(?'MY'-?[0-9\.]*),(?'MZ'-?[0-9\.]*))?(?:,wpos:(?'WX'-?[0-9\.]*),(?'WY'-?[0-9\.]*),(?'WZ'-?[0-9\.]*))?(?:,buf:(?'Buf'[0-9]*))?(?:,rx:(?'RX'[0-9]*))?(?:,ln:(?'L'[0-9]*))?(?:,f:(?'F'[0-9\.]*))?(?:,lim:(?'Lim'[0-1]*))?(?:,ctl:(?'Ctl'[0-1]*))?(?:.fs:(?'FSX'-?[0-9\.]*),(?'FSY'-?[0-9\.]*))?(?:.pn.p)?(?:.pn:.)?(?:.wco:(?'WCOX'-?[0-9\.]*),(?'WCOY'-?[0-9\.]*),(?'WCOZ'-?[0-9\.]*))?(?:.ov:(?'OVX'-?[0-9\.]*),(?'OVY'-?[0-9\.]*),(?'OVZ'-?[0-9\.]*))?>");
 
-        private static Regex CurrentPositionRegEx = new Regex(@"X:(?'MX'-?[0-9\.]*)\s?Y:(?'MY'-?[0-9\.]*)\s?Z:(?'MZ'-?[0-9\.]*)\s?E:(?'E'-?[0-9\.]*)\s?Count\s?X:(?'WX'.-?[0-9\.]*)\s?Y:(?'WY'.-?[0-9\.]*)\s?Z:(?'WZ'.-?[0-9\.]*)");
+        
 
-        private static Regex LagoVistaStatusRegEx1 = new Regex(@"<(?'State'idle|run|hold|home|alarm|check|door)(:[0-9])?(?:.m:(?'MX'-?[0-9\.]*),(?'MY'-?[0-9\.]*),(?'MT0'-?[0-9\.]*),(?'MT1'-?[0-9\.]*),(?'MT2'-?[0-9\.]*),(?'QUEUE'-?[0-9]*)),(?'VT'camera|tool1|tool2)>");
+        private static Regex LagoVistaStatusRegEx1 = new Regex(@"<(?'State'idle|run|hold|home|alarm|check|door)(:[0-9])?(?:.m:(?'MX'-?[0-9\.]*),(?'MY'-?[0-9\.]*),(?'MT0'-?[0-9\.]*),(?'MT1'-?[0-9\.]*),(?'MT2'-?[0-9\.]*),w:(?'WX'-?[0-9\.]*),(?'WY'-?[0-9\.]*),(?'WT0'-?[0-9\.]*),(?'WT1'-?[0-9\.]*),(?'WT2'-?[0-9\.]*),(?'QUEUE'-?[0-9]*)),(?'VT'camera|tool1|tool2)>");
         private static Regex LagoVistaStatusRegEx2 = new Regex(@"<(?:w:(?'WX'-?[0-9\.]*),(?'WY'-?[0-9\.]*),(?'WT0'-?[0-9\.]*),(?'WT1'-?[0-9\.]*),(?'WT2'-?[0-9\.]*))>");
         private static Regex LagoVistaStatusRegEx3 = new Regex(@"<(?:TL:(?'TL'-?[01]*)),(?:BL:(?'BL'-?[01]*)),(?:VA:(?'VA'-?[01]*)),(?:SU:(?'SU'-?[01]*)),(?:EX:(?'EX'-?[01]*)),(?:TO:(?'TO'-?[0-9]*)),(?:PA:(?'PA'-?[01]*))>");
+
+        private static Regex CurrentPositionRegEx = new Regex(@"X:(?'MX'-?[0-9\.]*)\s?Y:(?'MY'-?[0-9\.]*)\s?Z:(?'MZ'-?[0-9\.]*)\s?E:(?'E'-?[0-9\.]*)\s?Count\s?X:(?'WX'.-?[0-9\.]*)\s?Y:(?'WY'.-?[0-9\.]*)\s?Z:(?'WZ'.-?[0-9\.]*)");
+        private static Regex RepeteirPosition = new Regex(@"^x:(?'xpos'-?[0-9\.]*) y:(?'ypos'-?[0-9\.]*) z:(?'zpos'-?[0-9\.]*) e:(?'epos'-?[0-9\.]*)$");
 
         private static Regex LagoVistaMovementMode = new Regex(@"<mode:(?'mode'absolute|relative)>");
 
@@ -65,18 +68,18 @@ namespace LagoVista.GCode.Sender
             {
                 var newWorkPosition = new Vector3(double.Parse(wx.Value, Constants.DecimalParseFormat), double.Parse(wy.Value, Constants.DecimalParseFormat), double.Parse(wz.Value, Constants.DecimalParseFormat));
 
-                if (WorkPositionOffset != newWorkPosition)
+                if (WorkspacePosition != newWorkPosition)
                 {
-                    WorkPositionOffset = newWorkPosition;
+                    WorkspacePosition = newWorkPosition;
                 }
             }
             else if (wcox.Success)
             {
                 var newWorkPosition = new Vector3(double.Parse(wcox.Value, Constants.DecimalParseFormat), double.Parse(wcoy.Value, Constants.DecimalParseFormat), double.Parse(wcoz.Value, Constants.DecimalParseFormat));
 
-                if (WorkPositionOffset != newWorkPosition)
+                if (WorkspacePosition != newWorkPosition)
                 {
-                    WorkPositionOffset = newWorkPosition;
+                    WorkspacePosition = newWorkPosition;
                 }
             }
 
@@ -109,6 +112,11 @@ namespace LagoVista.GCode.Sender
                     mt0 = lgvStatusMatch1.Groups["MT0"],
                     mt1 = lgvStatusMatch1.Groups["MT1"],
                     mt2 = lgvStatusMatch1.Groups["MT2"],
+                    wx = lgvStatusMatch1.Groups["WX"],
+                    wy = lgvStatusMatch1.Groups["WY"],
+                    wt0 = lgvStatusMatch1.Groups["WT0"],
+                    wt1 = lgvStatusMatch1.Groups["WT1"],
+                    wt2 = lgvStatusMatch1.Groups["WT2"],
                     queue = lgvStatusMatch1.Groups["QUEUE"],
                     vt = lgvStatusMatch1.Groups["VT"];
 
@@ -119,7 +127,14 @@ namespace LagoVista.GCode.Sender
                     MachinePosition = newMachinePosition;
                 }
 
-                switch(vt.Value)
+                var newWorkPosition = new Vector3(double.Parse(wx.Value, Constants.DecimalParseFormat), double.Parse(wy.Value, Constants.DecimalParseFormat), double.Parse(_currentTool == 0 ? wt0.Value : wt1.Value, Constants.DecimalParseFormat));
+
+                if (WorkspacePosition != newWorkPosition)
+                {
+                    WorkspacePosition = newWorkPosition;
+                }
+
+                switch (vt.Value)
                 {
                     case "camera": SetViewType(ViewTypes.Camera); break;
                     case "tool1": SetViewType(ViewTypes.Tool1); break;
@@ -135,8 +150,6 @@ namespace LagoVista.GCode.Sender
             }
             else if (accMessage.Success)
             {
-                AddStatusMessage(StatusMessageTypes.ReceivedLine, line, MessageVerbosityLevels.Normal);
-
                 _bottomLightOn = accMessage.Groups["bottomLight"].Value == "1";
                 _topLightOn = accMessage.Groups["topLight"].Value == "1";
                 _vacuum1On = accMessage.Groups["vacuum1"].Value == "1";
@@ -172,9 +185,9 @@ namespace LagoVista.GCode.Sender
 
                 var newWorkPosition = new Vector3(double.Parse(wx.Value, Constants.DecimalParseFormat), double.Parse(wy.Value, Constants.DecimalParseFormat), double.Parse(_currentTool == 0 ? wt0.Value : wt1.Value, Constants.DecimalParseFormat));
 
-                if (WorkPositionOffset != newWorkPosition)
+                if (WorkspacePosition != newWorkPosition)
                 {
-                    WorkPositionOffset = newWorkPosition;
+                    WorkspacePosition = newWorkPosition;
                 }
                 return true;
             }
@@ -250,6 +263,24 @@ namespace LagoVista.GCode.Sender
 
         public bool ParseLine(String line)
         {
+            var repeteirPosition = RepeteirPosition.Match(line);
+            if(repeteirPosition.Success)
+            {
+                Group xpos = repeteirPosition.Groups["xpos"], ypos = repeteirPosition.Groups["ypos"], zpos = repeteirPosition.Groups["zpos"], epos = repeteirPosition.Groups["epos"];                
+
+                var newMachinePosition = new Vector3(double.Parse(xpos.Value, Constants.DecimalParseFormat), double.Parse(ypos.Value, Constants.DecimalParseFormat), 0);
+
+                if (MachinePosition != newMachinePosition)
+                {
+                    MachinePosition = newMachinePosition;
+                }
+
+                Tool0 = double.Parse(zpos.Value, Constants.DecimalParseFormat);
+                Tool2 = double.Parse(epos.Value, Constants.DecimalParseFormat);
+
+                return true;
+            }
+
             var m114PositionMatch = CurrentPositionRegEx.Match(line);
             if (!m114PositionMatch.Success)
             {
@@ -273,7 +304,7 @@ namespace LagoVista.GCode.Sender
             {
                 var newWorkPosition = new Vector3(double.Parse(wx.Value, Constants.DecimalParseFormat), double.Parse(wy.Value, Constants.DecimalParseFormat), double.Parse(wz.Value, Constants.DecimalParseFormat));
 
-                if (WorkPositionOffset != newWorkPosition)
+                if (WorkspacePosition != newWorkPosition)
                 {
                     //WorkPositionOffset = newWorkPosition;
                 }

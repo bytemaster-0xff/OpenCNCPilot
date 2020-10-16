@@ -25,13 +25,60 @@ namespace LagoVista.GCode.Sender.ViewModels
             Machine.ClearAlarm();
         }
 
-        public void Jog(JogDirections direction)
+        private void RelativeJog(JogDirections direction)
         {
-            var current = (Machine.Settings.MachineType == FirmwareTypes.GRBL1_1 || Machine.Settings.MachineType == FirmwareTypes.LagoVista || Machine.Settings.MachineType == FirmwareTypes.LagoVista_PnP) ? Machine.MachinePosition - Machine.WorkPositionOffset : Machine.MachinePosition;
-            var currentTool0 = Machine.Settings.MachineType == FirmwareTypes.GRBL1_1 || (Machine.Settings.MachineType == FirmwareTypes.LagoVista || Machine.Settings.MachineType == FirmwareTypes.LagoVista_PnP) ? Machine.Tool0 - Machine.Tool0Offset : Machine.Tool0;
-            var currentTool1 = Machine.Settings.MachineType == FirmwareTypes.GRBL1_1 || (Machine.Settings.MachineType == FirmwareTypes.LagoVista || Machine.Settings.MachineType == FirmwareTypes.LagoVista_PnP) ? Machine.Tool1 - Machine.Tool1Offset : Machine.Tool1;
-            var currentTool2 = Machine.Settings.MachineType == FirmwareTypes.GRBL1_1 || (Machine.Settings.MachineType == FirmwareTypes.LagoVista || Machine.Settings.MachineType == FirmwareTypes.LagoVista_PnP) ? Machine.Tool2 - Machine.Tool2Offset : Machine.Tool2;
+            Machine.SendCommand("G91");
 
+            switch (direction)
+            {
+                case JogDirections.XPlus:
+                    Machine.SendCommand($"{Machine.Settings.JogGCodeCommand} X{XYStepSize.ToDim()} F{Machine.Settings.JogFeedRate}");
+                    break;
+                case JogDirections.YPlus:
+                    Machine.SendCommand($"{Machine.Settings.JogGCodeCommand} Y{(XYStepSize).ToDim()} F{Machine.Settings.JogFeedRate}");
+                    break;
+                case JogDirections.ZPlus:
+                    Machine.SendCommand($"{Machine.Settings.JogGCodeCommand} Z{(ZStepSize).ToDim()} F{Machine.Settings.JogFeedRate}");
+                    break;
+                case JogDirections.XMinus:
+                    Machine.SendCommand($"{Machine.Settings.JogGCodeCommand} X{(-XYStepSize).ToDim()} F{Machine.Settings.JogFeedRate}");
+                    break;
+                case JogDirections.YMinus:
+                    Machine.SendCommand($"{Machine.Settings.JogGCodeCommand} Y{(-XYStepSize).ToDim()} F{Machine.Settings.JogFeedRate}");
+                    break;
+                case JogDirections.ZMinus:
+                    Machine.SendCommand($"{Machine.Settings.JogGCodeCommand} Z{(-ZStepSize).ToDim()} F{Machine.Settings.JogFeedRate}");
+                    break;
+                case JogDirections.T0Minus:
+                    Machine.SendCommand($"{Machine.Settings.JogGCodeCommand} Z{(-ZStepSize).ToDim()} F{Machine.Settings.JogFeedRate}");
+                    break;
+                case JogDirections.T0Plus:
+                    Machine.SendCommand($"{Machine.Settings.JogGCodeCommand} Z{(ZStepSize).ToDim()} F{Machine.Settings.JogFeedRate}");
+                    break;
+                case JogDirections.T1Minus:
+                    Machine.SendCommand($"{Machine.Settings.JogGCodeCommand} Z{(-ZStepSize).ToDim()} F{Machine.Settings.JogFeedRate}");
+                    break;
+                case JogDirections.T1Plus:
+                    Machine.SendCommand($"{Machine.Settings.JogGCodeCommand} Z{(ZStepSize).ToDim()} F{Machine.Settings.JogFeedRate}");
+                    break;
+                case JogDirections.CMinus:
+                    Machine.SendCommand($"{Machine.Settings.JogGCodeCommand} C{(-90.0).ToDim()} F{Machine.Settings.JogFeedRate}");
+                    break;
+                case JogDirections.CPlus:
+                    Machine.SendCommand($"{Machine.Settings.JogGCodeCommand} C{(+90.0).ToDim()} F{Machine.Settings.JogFeedRate}");
+                    break;
+            }
+
+            Machine.SendCommand("G90");
+
+        }
+
+        private void AbsoluteJog(JogDirections direction)
+        {
+            var current = Machine.WorkspacePosition;
+            var currentTool0 = Machine.Tool0 - Machine.Tool0Offset;
+            var currentTool1 = Machine.Tool1 - Machine.Tool1Offset;
+            var currentTool2 = Machine.Tool2 - Machine.Tool2Offset;
 
             switch (direction)
             {
@@ -74,6 +121,18 @@ namespace LagoVista.GCode.Sender.ViewModels
             }
         }
 
+        public void Jog(JogDirections direction)
+        {
+            if(Machine.Settings.MachineType == FirmwareTypes.Repeteir_PnP)
+            {
+                RelativeJog(direction);
+            }
+            else
+            {
+                AbsoluteJog(direction);
+            }
+        }
+
         public void Home(HomeAxis axis)
         {
             switch (axis)
@@ -113,7 +172,14 @@ namespace LagoVista.GCode.Sender.ViewModels
             switch (axis)
             {
                 case Sender.ResetAxis.All:
-                    Machine.SendCommand("G10 L20 P0 X0 Y0 Z0 C0");
+                    if (Machine.Settings.MachineType == FirmwareTypes.GRBL1_1)
+                    {
+                        Machine.SendCommand("G10 P0 L20 X0 Y0 Z0");
+                    }
+                    else
+                    {
+                        Machine.SendCommand("G10 L20 P0 X0 Y0 Z0 C0");
+                    }
                     break;
                 case Sender.ResetAxis.X:
                     Machine.SendCommand("G10 L20 P0 X0");

@@ -26,7 +26,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
         private BOM _billOfMaterials;
         private FeederLibrary _feederLibrary;
 
-        private int _partIndex = -1;
+        private int _partIndex = 0;
 
         private enum MVLocatorState
         {
@@ -322,14 +322,19 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             foreach (var cmd in cmds)
             {
                 Machine.SendCommand(cmd);
-
+                await Task.Delay(50);
                 while (Machine.Busy) await Task.Delay(1);
             }
         }
 
+        public string SafeHeightGCode()
+        {
+            return "G0 Z1";
+        }
+
         public async void PlacePart()
         {
-            if (_partIndex < SelectedPart.Parts.Count - 1)
+            if (_partIndex < SelectedPart.Parts.Count)
             {
                 if (!Machine.Vacuum1On || !Machine.Vacuum2On)
                 {
@@ -338,26 +343,47 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                     await Task.Delay(2000);
                 }
 
-                _partIndex++;
                 _selectPartToBePlaced = SelectedPart.Parts[_partIndex];
-                SelectedPartRow.CurrentPartIndex++;
-                await SaveJob();
                 RaisePropertyChanged(nameof(SelectedPartToBePlaced));
-                GoToPartPositionInTray();
 
                 var cmds = new List<string>();
                 cmds.Add("M54"); // Move to move height
                 cmds.Add(GetGoToPartInTrayGCode());
+
                 cmds.Add("M55"); // Move to pick height
                 cmds.Add("M64 P255"); // Turn on solenoid 
-                cmds.Add("G4 P500"); // Wait 500ms to pickup part.
+                cmds.Add("G4 P2500"); // Wait 500ms to pickup part.
                 cmds.Add("M54"); // Go to move height
+
+
+                var cRotation = SelectedPartToBePlaced.RotateAngle + SelectedPartPackage.RotationInTape;
+                if (cRotation > 360)
+                    cRotation -= 360;
+
+                if (cRotation == 270)
+                    cRotation = -90;
+
+                if (cRotation != 0)
+                {
+                    // rotation is sorta unique in that it is relative, there fore
+                    // to ensure that we will do the required rotation, we reset the 
+                    // rotation to ensure it's at zero.  Probably a better approach
+                    // could be done with different firmare.
+                    cmds.Add("G0 C0 F250");
+                    cmds.Add($"G0 C{cRotation} F300"); // Go to place height
+                }
+
                 cmds.Add(GetGoToPartOnBoardGCode());
                 cmds.Add("M56"); // Go to place height
                 cmds.Add("G4 P100"); // Wait 100ms to before turning off solenoid
                 cmds.Add("M64 P0");
                 cmds.Add("G4 P500"); // Wait 500ms to let placed part settle in
                 cmds.Add("M54"); // Return to move height.
+
+                SelectedPartRow.CurrentPartIndex++;
+                _partIndex++;
+
+                await SaveJob();
 
                 Task.Run(async () =>
                 {
@@ -408,7 +434,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
 
         private string GetGoToPartInTrayGCode()
         {
-            return $"G0 X{XPartInTray} Y{YPartInTray}";
+            return $"G0 X{XPartInTray} Y{YPartInTray} F1250";
         }
 
         public void GoToPartPositionInTray()
@@ -421,7 +447,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
 
         private String GetGoToPartOnBoardGCode()
         {
-            return $"G1 X{SelectedPartToBePlaced.X} Y{SelectedPartToBePlaced.Y} F500";
+            return $"G1 X{SelectedPartToBePlaced.X} Y{SelectedPartToBePlaced.Y} F1250";
         }
 
         public void GoToPartOnBoard()

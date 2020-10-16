@@ -70,12 +70,7 @@ namespace LagoVista.GCode.Sender.ViewModels
         {
             Machine.GotoWorkspaceHome();
         }
-
-        public void GotoFiducialHome()
-        {
-            Machine.GotoFiducialHome();
-        }
-
+        
         public void SetFavorite1()
         {
             Machine.SetFavorite1();

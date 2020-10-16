@@ -53,31 +53,14 @@
             <TextBlock Text="Solder" Grid.Row="4" TextAlignment="Center" />
             <TextBlock Text="C" Grid.Row="5" TextAlignment="Center" />
 
-            <TextBlock Text="{Binding Machine.MachinePosition.X, StringFormat=0.0, FallbackValue=33.2}" Style="{StaticResource Position}" Grid.Row="1" Grid.Column="1" />
-            <TextBlock Text="{Binding Machine.MachinePosition.Y, StringFormat=0.0, FallbackValue=12.7}" Style="{StaticResource Position}" Grid.Row="2" Grid.Column="1" />
+            <TextBlock Text="{Binding Machine.MachinePosition.X, StringFormat=0.00, FallbackValue=33.2}" Style="{StaticResource Position}" Grid.Row="1" Grid.Column="1" />
+            <TextBlock Text="{Binding Machine.MachinePosition.Y, StringFormat=0.00, FallbackValue=12.7}" Style="{StaticResource Position}" Grid.Row="2" Grid.Column="1" />
             <TextBlock Text="{Binding Machine.Tool0, StringFormat=0.0, FallbackValue=8.4}" Style="{StaticResource Position}" Grid.Row="3" Grid.Column="1" />
             <TextBlock Text="{Binding Machine.Tool1, StringFormat=0.0, FallbackValue=8.4}" Style="{StaticResource Position}" Grid.Row="4" Grid.Column="1" />
             <TextBlock Text="{Binding Machine.Tool2, StringFormat=0, FallbackValue=90}" Style="{StaticResource Position}" Grid.Row="5" Grid.Column="1" />
 
-            <TextBlock Text="{Binding Machine.NormalizedPosition.X, StringFormat=0.0, FallbackValue=42.5}" Style="{StaticResource Position}" Grid.Row="1" Grid.Column="2" />
-            <TextBlock Text="{Binding Machine.NormalizedPosition.Y, StringFormat=0.0, FallbackValue=18.2}" Style="{StaticResource Position}" Grid.Row="2" Grid.Column="2" />
-            <TextBlock Text="{Binding Machine.Tool0Normalized, StringFormat=0.0, FallbackValue=8.0}" Style="{StaticResource Position}" Grid.Row="3" Grid.Column="2" />
-            <TextBlock Text="{Binding Machine.Tool1Normalized, StringFormat=0.0, FallbackValue=8.4}" Style="{StaticResource Position}" Grid.Row="4" Grid.Column="2" />
-            <TextBlock Text="{Binding Machine.Tool2Normalized, StringFormat=0, FallbackValue=90}" Style="{StaticResource Position}" Grid.Row="5" Grid.Column="2" />
-
-            <Button Content="X" Grid.Column="3" Grid.Row="1" Command="{Binding ResetCommand}" CommandParameter="{x:Static sndr:ResetAxis.X}" />
-            <Button Content="Y" Grid.Column="3" Grid.Row="2" Command="{Binding ResetCommand}" CommandParameter="{x:Static sndr:ResetAxis.Y}" />
-            <Button Content="P" Grid.Column="3" Grid.Row="3" Command="{Binding ResetCommand}" CommandParameter="{x:Static sndr:ResetAxis.T0}" />
-            <Button Content="S" Grid.Column="3" Grid.Row="4" Command="{Binding ResetCommand}" CommandParameter="{x:Static sndr:ResetAxis.T1}" />
-            <Button Content="C" Grid.Column="3" Grid.Row="5" Command="{Binding ResetCommand}" CommandParameter="{x:Static sndr:ResetAxis.C}" />
-            <Button Content="All" Grid.Column="3" Grid.Row="6" Command="{Binding ResetCommand}" CommandParameter="{x:Static sndr:ResetAxis.All}" />
-
-            <Button Content="X" Grid.Column="4" Grid.Row="1" Command="{Binding HomeCommand}" CommandParameter="{x:Static sndr:HomeAxis.X}" />
-            <Button Content="Y" Grid.Column="4" Grid.Row="2" Command="{Binding HomeCommand}" CommandParameter="{x:Static sndr:HomeAxis.Y}" />
-            <Button Content="P" Grid.Column="4" Grid.Row="3" Command="{Binding HomeCommand}" CommandParameter="{x:Static sndr:HomeAxis.T0}" />
-            <Button Content="S" Grid.Column="4" Grid.Row="4" Command="{Binding HomeCommand}" CommandParameter="{x:Static sndr:HomeAxis.T1}" />
-            <Button Content="C" Grid.Column="4" Grid.Row="5" Command="{Binding HomeCommand}" CommandParameter="{x:Static sndr:HomeAxis.C}" />
-            <Button Content="All" Grid.Column="4" Grid.Row="6" Command="{Binding HomeCommand}" CommandParameter="{x:Static sndr:HomeAxis.All}" />
+            <TextBlock Text="{Binding Machine.WorkspacePosition.X, StringFormat=0.00, FallbackValue=42.5}" Style="{StaticResource Position}" Grid.Row="1" Grid.Column="2" />
+            <TextBlock Text="{Binding Machine.WorkspacePosition.Y, StringFormat=0.00, FallbackValue=18.2}" Style="{StaticResource Position}" Grid.Row="2" Grid.Column="2" />
 
             <Grid Grid.Row="7" Grid.ColumnSpan="5" >
                 <Grid.Resources>

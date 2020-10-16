@@ -41,7 +41,6 @@ namespace LagoVista.GCode.Sender.ViewModels
 
             GotoWorkspaceHomeCommand = new RelayCommand(GotoWorkspaceHome, CanMove);
             SetWorkspaceHomeCommand = new RelayCommand(SetWorkspaceHome, CanMove);
-            GotoFiducialHomeCommand = new RelayCommand(GotoFiducialHome, CanGotoFiducialHome);
 
             Machine.PropertyChanged += _machine_PropertyChanged;
             Machine.Settings.PropertyChanged += _machine_PropertyChanged;
@@ -73,7 +72,6 @@ namespace LagoVista.GCode.Sender.ViewModels
             HomingCycleCommand.RaiseCanExecuteChanged();
             FeedHoldCommand.RaiseCanExecuteChanged();
             CycleStartCommand.RaiseCanExecuteChanged();
-            GotoFiducialHomeCommand.RaiseCanExecuteChanged();
 
             EmergencyStopCommand.RaiseCanExecuteChanged();
 
@@ -187,13 +185,6 @@ namespace LagoVista.GCode.Sender.ViewModels
                 Machine.Mode == OperatingMode.ProbingHeight;
         }
 
-        public bool CanGotoFiducialHome()
-        {
-            return Machine.IsInitialized &&
-                    Machine.Connected &&
-                    Machine.Settings.MachineType == FirmwareTypes.LagoVista_PnP &&
-                    Machine.Mode == OperatingMode.Manual;
-        }
 
         public bool CanProbeHeightMap()
         {
@@ -266,7 +257,6 @@ namespace LagoVista.GCode.Sender.ViewModels
 
         public RelayCommand GotoWorkspaceHomeCommand { get; private set; }
         public RelayCommand SetWorkspaceHomeCommand { get; private set; }
-        public RelayCommand GotoFiducialHomeCommand { get; private set; }
         public RelayCommand LaserOnCommand { get; private set; }
         public RelayCommand LaserOffCommand { get; private set; }
         public RelayCommand SpindleOnCommand { get; private set; }

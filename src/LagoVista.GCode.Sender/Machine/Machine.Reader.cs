@@ -21,7 +21,11 @@ namespace LagoVista.GCode.Sender
             fullMessageLine = fullMessageLine.ToLower();
             Debug.WriteLine(fullMessageLine);
 
-            if (fullMessageLine.StartsWith("ok") ||
+            if(fullMessageLine.StartsWith("wait"))
+            {
+                /* nop */
+            }
+            else if (fullMessageLine.StartsWith("ok") ||
                 fullMessageLine.StartsWith("<ok:"))
             {
                 if (GCodeFileManager.HasValidFile && Mode == OperatingMode.SendingGCodeFile)
@@ -51,21 +55,25 @@ namespace LagoVista.GCode.Sender
                     {
                         if (PendingQueue.Count > 0)
                         {
-                            var responseRegEx = new Regex("<ok:(?'CODE'[A-Za-z0-9]+)>");
+                            var responseRegEx = new Regex("<ok:(?'CODE'[A-Za-z0-9]+).*>");
                             var responseGCode = responseRegEx.Match(fullMessageLine);
                             if (responseGCode.Success)
                             {
                                 var code = responseGCode.Groups["CODE"].Value;
 
-                                if(PendingQueue[0].StartsWith(code.ToUpper()))
+                                if (PendingQueue[0].StartsWith(code.ToUpper()))
                                 {
+                                    Debug.WriteLine($"MATCH =D -> TOP ITEM {PendingQueue[0]} - {code} ");
+
                                     Services.DispatcherServices.Invoke(() =>
                                     {
                                         PendingQueue.RemoveAt(0);
                                     });
                                 }
-
-                                Debug.WriteLine($"TOP ITEM {PendingQueue[0]} - {code} ");
+                                else
+                                {
+                                    Debug.WriteLine($"MISMATCH :( -> TOP ITEM {PendingQueue[0]} - {code} ");
+                                }
                             }
                         }
 

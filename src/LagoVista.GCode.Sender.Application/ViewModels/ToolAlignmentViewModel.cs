@@ -117,7 +117,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
 
             Tool1Offset = Machine.Settings.PositioningCamera.Tool1Offset;
             Tool2Offset = Machine.Settings.PositioningCamera.Tool2Offset;
-            BottomCameraLocation = Machine.Settings.PartInspectionCamera.AbsolutePosition;
+            BottomCameraLocation = Machine.Settings.PartInspectionCamera?.AbsolutePosition;
             StartCapture();         
         }
 

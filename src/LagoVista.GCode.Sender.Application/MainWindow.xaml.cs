@@ -187,6 +187,8 @@ namespace LagoVista.GCode.Sender.Application
             {
                 await ViewModel.Machine.DisconnectAsync();
             }
+
+            
         }
 
         MainViewModel _viewModel;

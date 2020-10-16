@@ -90,7 +90,7 @@ namespace LagoVista.GCode.Sender
                 Connected = false;
 
                 MachinePosition = new Vector3();
-                WorkPositionOffset = new Vector3();
+                WorkspacePosition = new Vector3();
 
                 Status = "Disconnected";
                 DistanceMode = ParseDistanceMode.Absolute;
@@ -179,7 +179,9 @@ namespace LagoVista.GCode.Sender
                         else
                         {
                             _toSend.Enqueue(cmd);
-                            PendingQueue.Add(cmd);
+                            if (Settings.MachineType == FirmwareTypes.LagoVista_PnP ||
+                               Settings.MachineType == FirmwareTypes.SimulatedMachine)
+                                PendingQueue.Add(cmd);
                             UnacknowledgedBytesSent += cmd.Length + 1;
                         }
                     }
@@ -214,6 +216,10 @@ namespace LagoVista.GCode.Sender
             {
                 Enqueue("M57");
             }
+            else if (Settings.MachineType == FirmwareTypes.Repeteir_PnP)
+            {
+                GotoPoint(Settings.WorkspaceOffset.X, Settings.WorkspaceOffset.Y);
+            }
             else
             {
                 if (Settings.MachineType == FirmwareTypes.GRBL1_1)
@@ -237,7 +243,16 @@ namespace LagoVista.GCode.Sender
 
         public void SetWorkspaceHome()
         {
-            Enqueue("M77");
+            if (Settings.MachineType == FirmwareTypes.Repeteir_PnP)
+            {                
+                Settings.WorkspaceOffset = MachinePosition;
+                RaisePropertyChanged(nameof(WorkspacePosition));
+                MachineRepo.SaveAsync();
+            }
+            else
+            {
+                Enqueue("M77");
+            }
         }
 
         public void SetFavorite1()

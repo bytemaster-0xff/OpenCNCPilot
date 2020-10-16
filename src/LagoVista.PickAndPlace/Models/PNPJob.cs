@@ -35,6 +35,13 @@ namespace LagoVista.PickAndPlace.Models
             set => Set(ref _safeHeight, value);
         }
 
+        private double _pickHeight;
+        public double PickHeight
+        {
+            get => _pickHeight;
+            set => Set(ref _pickHeight, value);
+        }
+
         private double _boardHeight;
         public double BoardZ
         {
