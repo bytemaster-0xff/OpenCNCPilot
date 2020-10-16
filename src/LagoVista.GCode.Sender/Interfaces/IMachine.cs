@@ -51,16 +51,6 @@ namespace LagoVista.GCode.Sender.Interfaces
         double Tool2 { get; }
 
 
-        double Tool0Offset { get; }
-        double Tool1Offset { get; }
-        double Tool2Offset { get; }
-
-
-        double Tool0Normalized { get; }
-        double Tool1Normalized { get; }
-        double Tool2Normalized { get; }
-
-
         bool TopLightOn { get; set; }
         bool BottomLightOn { get; set; }
         bool Vacuum1On { get; set; }

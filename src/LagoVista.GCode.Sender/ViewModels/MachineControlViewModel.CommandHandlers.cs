@@ -76,9 +76,6 @@ namespace LagoVista.GCode.Sender.ViewModels
         private void AbsoluteJog(JogDirections direction)
         {
             var current = Machine.WorkspacePosition;
-            var currentTool0 = Machine.Tool0 - Machine.Tool0Offset;
-            var currentTool1 = Machine.Tool1 - Machine.Tool1Offset;
-            var currentTool2 = Machine.Tool2 - Machine.Tool2Offset;
 
             switch (direction)
             {
@@ -101,22 +98,22 @@ namespace LagoVista.GCode.Sender.ViewModels
                     Machine.SendCommand($"{Machine.Settings.JogGCodeCommand} Z{(current.Z - ZStepSize).ToDim()} F{Machine.Settings.JogFeedRate}");
                     break;
                 case JogDirections.T0Minus:
-                    Machine.SendCommand($"{Machine.Settings.JogGCodeCommand} Z{(currentTool0 - ZStepSize).ToDim()} F{Machine.Settings.JogFeedRate}");
+                    Machine.SendCommand($"{Machine.Settings.JogGCodeCommand} Z{(Machine.Tool0 - ZStepSize).ToDim()} F{Machine.Settings.JogFeedRate}");
                     break;
                 case JogDirections.T0Plus:
-                    Machine.SendCommand($"{Machine.Settings.JogGCodeCommand} Z{(currentTool0 + ZStepSize).ToDim()} F{Machine.Settings.JogFeedRate}");
+                    Machine.SendCommand($"{Machine.Settings.JogGCodeCommand} Z{(Machine.Tool0 + ZStepSize).ToDim()} F{Machine.Settings.JogFeedRate}");
                     break;
                 case JogDirections.T1Minus:
-                    Machine.SendCommand($"{Machine.Settings.JogGCodeCommand} Z{(currentTool1 - ZStepSize).ToDim()} F{Machine.Settings.JogFeedRate}");
+                    Machine.SendCommand($"{Machine.Settings.JogGCodeCommand} Z{(Machine.Tool1 - ZStepSize).ToDim()} F{Machine.Settings.JogFeedRate}");
                     break;
                 case JogDirections.T1Plus:
-                    Machine.SendCommand($"{Machine.Settings.JogGCodeCommand} Z{(currentTool1 + ZStepSize).ToDim()} F{Machine.Settings.JogFeedRate}");
+                    Machine.SendCommand($"{Machine.Settings.JogGCodeCommand} Z{(Machine.Tool1 + ZStepSize).ToDim()} F{Machine.Settings.JogFeedRate}");
                     break;
                 case JogDirections.CMinus:
-                    Machine.SendCommand($"{Machine.Settings.JogGCodeCommand} C{(currentTool2 - 90).ToDim()} F{Machine.Settings.JogFeedRate}");
+                    Machine.SendCommand($"{Machine.Settings.JogGCodeCommand} C{(Machine.Tool2 - 90).ToDim()} F{Machine.Settings.JogFeedRate}");
                     break;
                 case JogDirections.CPlus:
-                    Machine.SendCommand($"{Machine.Settings.JogGCodeCommand} C{(currentTool2 + 90).ToDim()} F{Machine.Settings.JogFeedRate}");
+                    Machine.SendCommand($"{Machine.Settings.JogGCodeCommand} C{(Machine.Tool2 + 90).ToDim()} F{Machine.Settings.JogFeedRate}");
                     break;
             }
         }

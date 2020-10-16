@@ -43,6 +43,8 @@
                         <RowDefinition Height="auto" />
                         <RowDefinition Height="auto" />
                         <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="140" />
@@ -73,14 +75,22 @@
                     <TextBox Text="{Binding Settings.WorkAreaHeight}"  Grid.Row="4" Grid.ColumnSpan="2" />
                     <Label Content="mm" Grid.Row="4" Grid.Column="3" />
 
-                    <Label Grid.Row="5" Content="GCode Jog Command" />
-                    <ComboBox Grid.Row="5"  
+                    <Label Grid.Row="5" Content="Approx Work Home X" />
+                    <TextBox  Text="{Binding Settings.DefaultWorkspaceHome.X}" Grid.Row="5" Grid.ColumnSpan="2" />
+                    <Label Content="mm" Grid.Row="5" Grid.Column="3" />
+
+                    <Label Grid.Row="6" Content="Approx Work Home Y" />
+                    <TextBox Text="{Binding Settings.DefaultWorkspaceHome.Y}"  Grid.Row="6" Grid.ColumnSpan="2" />
+                    <Label Content="mm" Grid.Row="6" Grid.Column="3" />
+
+                    <Label Grid.Row="7" Content="GCode Jog Command" />
+                    <ComboBox Grid.Row="7"  
                           IsEnabled="{Binding CanChangeMachineConfig}"
                           SelectedValue="{Binding Path=GCodeJogCommand, Mode=TwoWay}"
                           ItemsSource="{Binding Path=GCodeJogCommands}" Grid.ColumnSpan="2"  />
 
-                    <Label Grid.Row="6" Content="Msg Output Level" />
-                    <ComboBox Grid.Row="6"  
+                    <Label Grid.Row="8" Content="Msg Output Level" />
+                    <ComboBox Grid.Row="8"  
                           SelectedValue="{Binding Path=MessgeOutputLevel, Mode=TwoWay}"
                           ItemsSource="{Binding Path=MessageOutputLevels}" Grid.ColumnSpan="2"  />
                 </Grid>

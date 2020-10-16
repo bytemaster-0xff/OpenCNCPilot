@@ -14,19 +14,53 @@ namespace LagoVista.GCode.Sender
 
     public partial class Machine
     {
-        private ViewTypes _viewType;
+        private ViewTypes _viewType = ViewTypes.Camera;
         public ViewTypes ViewType
         {
             get { return _viewType; }
             set
             {
-                _viewType = value;
-                RaisePropertyChanged();
-                switch (value)
+                if (_viewType != value)
                 {
-                    case ViewTypes.Camera: Enqueue("M50"); break;
-                    case ViewTypes.Tool1: Enqueue("M51"); break;
-                    case ViewTypes.Tool2: Enqueue("M51"); break;
+                    if (Settings.MachineType == FirmwareTypes.LagoVista_PnP)
+                    {
+                        _viewType = value;
+                        RaisePropertyChanged();
+
+                        switch (value)
+                        {
+                            case ViewTypes.Camera: Enqueue("M50"); break;
+                            case ViewTypes.Tool1: Enqueue("M51"); break;
+                            case ViewTypes.Tool2: Enqueue("M51"); break;
+                        }
+                    }
+                    else if (Settings.MachineType == FirmwareTypes.Repeteir_PnP)
+                    {
+                        // 1. capture current position of machine.
+                        var currentLocation = MachinePosition;
+
+                        // 2. set relative move
+                        Enqueue("G91"); // relative move
+
+                        // 3. move the machine to the tool that should be used. 
+                        if (_viewType == ViewTypes.Camera && value == ViewTypes.Tool1)
+                        {
+                            Enqueue($"G0 X{-Settings.Tool0Offset.X} Y{-Settings.Tool1Offset.Y}");
+                        }
+                        else if (_viewType == ViewTypes.Tool1 && value == ViewTypes.Camera)
+                        {
+                            Enqueue($"G0 X{Settings.Tool0Offset.X} Y{Settings.Tool1Offset.Y}");
+                        }
+
+                        // 4. set the machine back to absolute points
+                        Enqueue("G90");
+
+                        // 5. Set the machine location to where it was prior to the move.
+                        Enqueue($"G113 X{currentLocation.X} Y{currentLocation.Y}");
+
+                        _viewType = value;
+                        RaisePropertyChanged();
+                    }
                 }
             }
         }
@@ -38,8 +72,7 @@ namespace LagoVista.GCode.Sender
                 _viewType = viewType;
                 RaisePropertyChanged();
             }
-        }
-
+        } 
 
         private Vector3 _machinePosition = new Vector3();
         /// <summary>
@@ -62,25 +95,11 @@ namespace LagoVista.GCode.Sender
         {
             get
             {
-                if (Settings.MachineType == FirmwareTypes.Repeteir_PnP)
-                {
-                    return MachinePosition - Settings.WorkspaceOffset;
-                }
-                else
-                {
-                    return _workspacePosition;
-                }
+                return _workspacePosition;
             }
             set
             {
-                if (Settings.MachineType == FirmwareTypes.Repeteir_PnP)
-                {
-                    /* nop, always calculated on client. */
-                }
-                else
-                {
-                    _workspacePosition = value;
-                }
+                _workspacePosition = value;
             }
 
         }

@@ -127,8 +127,6 @@ namespace LagoVista.GCode.Sender
 
         public void GotoPoint(Point2D<double> point, bool rapidMove = true)
         {
-            var cmd = rapidMove ? "G0" : "G1";
-
             GotoPoint(point.X, point.Y, rapidMove);
         }
 

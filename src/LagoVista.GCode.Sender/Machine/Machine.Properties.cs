@@ -67,24 +67,6 @@ namespace LagoVista.GCode.Sender
             }
         }
 
-
-        /* Normalized is height above PCB */
-        public double Tool0Normalized
-        {
-            get { return _tool0 - _tool0Offset; }
-        }
-
-
-        public double Tool1Normalized
-        {
-            get { return _tool1 - _tool1Offset; }
-        }
-
-        public double Tool2Normalized
-        {
-            get { return _tool2 - _tool2Offset; }
-        }
-
         private double _tool0;
         public double Tool0
         {
@@ -95,7 +77,6 @@ namespace LagoVista.GCode.Sender
                 {
                     _tool0 = value;
                     RaisePropertyChanged();
-                    RaisePropertyChanged(nameof(Tool0Normalized));
                 }
             }
         }
@@ -111,7 +92,6 @@ namespace LagoVista.GCode.Sender
                 {
                     _tool1 = value;
                     RaisePropertyChanged();
-                    RaisePropertyChanged(nameof(Tool1Normalized));
                 }
             }
         }
@@ -126,54 +106,6 @@ namespace LagoVista.GCode.Sender
                 {
                     _tool2 = value;
                     RaisePropertyChanged();
-                    RaisePropertyChanged(nameof(Tool2Normalized));
-                }
-            }
-        }
-
-        /* Offset is from axis home to top of PCB */
-        private double _tool0Offset;
-        public double Tool0Offset
-        {
-            get { return _tool0Offset; }
-            set
-            {
-                if (_tool0Offset != value)
-                {
-                    _tool0Offset = value;
-                    RaisePropertyChanged();
-                    RaisePropertyChanged(nameof(Tool0Normalized));
-                }
-            }
-        }
-
-
-        private double _tool1Offset;
-        public double Tool1Offset
-        {
-            get { return _tool1Offset; }
-            set
-            {
-                if (_tool1Offset != value)
-                {
-                    _tool1Offset = value;
-                    RaisePropertyChanged();
-                    RaisePropertyChanged(nameof(Tool1Normalized));
-                }
-            }
-        }
-
-        private double _tool2Offset;
-        public double Tool2Offset
-        {
-            get { return _tool2Offset; }
-            set
-            {
-                if (_tool2Offset != value)
-                {
-                    _tool2Offset = value;
-                    RaisePropertyChanged();
-                    RaisePropertyChanged(nameof(Tool2Normalized));
                 }
             }
         }

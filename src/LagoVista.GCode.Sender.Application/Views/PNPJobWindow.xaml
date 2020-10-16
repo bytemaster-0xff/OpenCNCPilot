@@ -25,13 +25,13 @@
                     <StackPanel Orientation="Horizontal" Grid.ColumnSpan="5">
                         <Controls:MVCommandBar  HorizontalAlignment="Left" />
 
-                        <Button BorderBrush="Transparent"  Background="Transparent" Command="{Binding GoToWorkHomeCommand}"  ToolTip="Go To Work Home"   >
+                        <Button BorderBrush="Transparent"  Background="Transparent" Command="{Binding GoToWorkHomeCommand}"  ToolTip="Go To Work Home"  >
                             <Button.Content>
                                 <Image Source="/imgs/GotoFiducialHome.png"/>
                             </Button.Content>
                         </Button>
 
-                        <Button BorderBrush="Transparent"  Background="Transparent" Command="{Binding SetWorkHomeCommand}"  ToolTip="Set Work Home"   >
+                        <Button BorderBrush="Transparent"  Background="Transparent" Command="{Binding SetWorkHomeCommand}"  ToolTip="Set Work Home"  >
                             <Button.Content>
                                 <Image Source="/imgs/SetFiducialHome.png"/>
                             </Button.Content>

@@ -62,7 +62,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
 
         public void PickPartFromTape()
         {
-            _originalPickLocation = new Vector2(Machine.WorkspacePosition.X, Machine.WorkspacePosition.Y);
+            _originalPickLocation = new Vector2(Machine.MachinePosition.X, Machine.MachinePosition.Y);
 
             Machine.SendCommand("M63 P0");
             Machine.SendCommand("G04 P1000");

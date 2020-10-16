@@ -23,12 +23,6 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             GoToFiducialHomeCommand = new RelayCommand(GoToFiducialHome, () => HasFrame);
 
             CalibrateFiducialHomeCommand = new RelayCommand(CalibrateFiducialHome, () => HasFrame);
-
-            SetFiducialHomeCommand = new RelayCommand(SetFiducialHome, () => HasFrame);
-            if (Machine.Settings.HomeFiducialOffset == null)
-            {
-                Machine.Settings.HomeFiducialOffset = new Point2D<double>(5, 5);
-            }
         }
 
         States _state = States.Idle;
@@ -42,7 +36,6 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
         {
             EndStopHomingCycleCommand.RaiseCanExecuteChanged();
             BeginMVHomingCycleCommand.RaiseCanExecuteChanged();
-            SetFiducialHomeCommand.RaiseCanExecuteChanged();
             GoToFiducialHomeCommand.RaiseCanExecuteChanged();
             CalibrateFiducialHomeCommand.RaiseCanExecuteChanged();
         }
@@ -51,7 +44,6 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
         {
             EndStopHomingCycleCommand.RaiseCanExecuteChanged();
             BeginMVHomingCycleCommand.RaiseCanExecuteChanged();
-            SetFiducialHomeCommand.RaiseCanExecuteChanged();
             GoToFiducialHomeCommand.RaiseCanExecuteChanged();
             CalibrateFiducialHomeCommand.RaiseCanExecuteChanged();
         }
@@ -75,7 +67,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
         {
             Machine.PCBManager.Tool1Navigation = true;
             _state = States.MVHoming;
-            Machine.GotoPoint(Machine.Settings.HomeFiducialOffset, true);
+            Machine.GotoPoint(Machine.Settings.DefaultWorkspaceHome.X, Machine.Settings.DefaultWorkspaceHome.Y, true);
             await Machine.MachineRepo.SaveAsync();
         }
 

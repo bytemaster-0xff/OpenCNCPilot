@@ -179,10 +179,7 @@ namespace LagoVista.GCode.Sender
                  wt1 = lgvStatusMatch2.Groups["WT1"],
                  wt2 = lgvStatusMatch2.Groups["WT2"];
 
-                Tool0Offset = double.Parse(wt0.Value, Constants.DecimalParseFormat);
-                Tool1Offset = double.Parse(wt1.Value, Constants.DecimalParseFormat);
-                Tool2Offset = double.Parse(wt2.Value, Constants.DecimalParseFormat);
-
+              
                 var newWorkPosition = new Vector3(double.Parse(wx.Value, Constants.DecimalParseFormat), double.Parse(wy.Value, Constants.DecimalParseFormat), double.Parse(_currentTool == 0 ? wt0.Value : wt1.Value, Constants.DecimalParseFormat));
 
                 if (WorkspacePosition != newWorkPosition)

@@ -21,6 +21,27 @@ namespace LagoVista.GCode.Sender
         public double ArcToLineSegmentLength { get; set; }
         public double SplitSegmentLength { get; set; }
 
+        private Point2D<double> _tool0Offset = new Point2D<double>();
+        public Point2D<double> Tool0Offset
+        { 
+            get { return _tool0Offset; } 
+            set { Set(ref _tool0Offset, value); }
+        }
+
+        private Point2D<double> _tool1Offset = new Point2D<double>();
+        public Point2D<double> Tool1Offset
+        {
+            get { return _tool1Offset; }
+            set { Set(ref _tool1Offset, value); }
+        }
+
+        private Point3D<double> _defaultWorkspaceHome = new Point3D<double>();
+        public Point3D<double> DefaultWorkspaceHome
+        {
+            get { return _defaultWorkspaceHome; }
+            set { Set(ref _defaultWorkspaceHome, value); }
+        }
+
         SerialPortInfo _currentSerialPort;
         public SerialPortInfo CurrentSerialPort
         {
@@ -34,7 +55,6 @@ namespace LagoVista.GCode.Sender
             get { return _connectionType; }
             set { Set(ref _connectionType, value); }
         }
-
 
         private String _ipAddress;
         public String IPAddress
@@ -146,20 +166,6 @@ namespace LagoVista.GCode.Sender
         {
             get { return _partInspectionCamera; }
             set { Set(ref _partInspectionCamera, value); }
-        }
-
-        Point2D<double> _homeFiducialOffset;
-        public Point2D<double> HomeFiducialOffset
-        {
-            get { return _homeFiducialOffset; }
-            set { Set(ref _homeFiducialOffset, value); }
-        }
-
-        Vector3 _defaultWorkspaceOffset;
-        public Vector3 WorkspaceOffset
-        {
-            get { return _defaultWorkspaceOffset; }
-            set { Set(ref _defaultWorkspaceOffset, value); }
         }
 
         public FirmwareTypes MachineType { get; set; }

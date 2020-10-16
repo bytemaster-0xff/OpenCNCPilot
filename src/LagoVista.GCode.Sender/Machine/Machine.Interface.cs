@@ -218,7 +218,7 @@ namespace LagoVista.GCode.Sender
             }
             else if (Settings.MachineType == FirmwareTypes.Repeteir_PnP)
             {
-                GotoPoint(Settings.WorkspaceOffset.X, Settings.WorkspaceOffset.Y);
+                GotoPoint(0,0);
             }
             else
             {
@@ -244,10 +244,8 @@ namespace LagoVista.GCode.Sender
         public void SetWorkspaceHome()
         {
             if (Settings.MachineType == FirmwareTypes.Repeteir_PnP)
-            {                
-                Settings.WorkspaceOffset = MachinePosition;
-                RaisePropertyChanged(nameof(WorkspacePosition));
-                MachineRepo.SaveAsync();
+            {
+                Enqueue("G92 X0 Y0 Z0");
             }
             else
             {
