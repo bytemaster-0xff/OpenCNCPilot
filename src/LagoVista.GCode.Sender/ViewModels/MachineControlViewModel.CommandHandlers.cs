@@ -62,10 +62,10 @@ namespace LagoVista.GCode.Sender.ViewModels
                     Machine.SendCommand($"{Machine.Settings.JogGCodeCommand} Z{(ZStepSize).ToDim()} F{Machine.Settings.JogFeedRate}");
                     break;
                 case JogDirections.CMinus:
-                    Machine.SendCommand($"{Machine.Settings.JogGCodeCommand} C{(-90.0).ToDim()} F{Machine.Settings.JogFeedRate}");
+                    Machine.SendCommand($"{Machine.Settings.JogGCodeCommand} E{(-90.0).ToDim()} F500");
                     break;
                 case JogDirections.CPlus:
-                    Machine.SendCommand($"{Machine.Settings.JogGCodeCommand} C{(+90.0).ToDim()} F{Machine.Settings.JogFeedRate}");
+                    Machine.SendCommand($"{Machine.Settings.JogGCodeCommand} E{(+90.0).ToDim()} F500");
                     break;
             }
 
@@ -110,10 +110,10 @@ namespace LagoVista.GCode.Sender.ViewModels
                     Machine.SendCommand($"{Machine.Settings.JogGCodeCommand} Z{(Machine.Tool1 + ZStepSize).ToDim()} F{Machine.Settings.JogFeedRate}");
                     break;
                 case JogDirections.CMinus:
-                    Machine.SendCommand($"{Machine.Settings.JogGCodeCommand} C{(Machine.Tool2 - 90).ToDim()} F{Machine.Settings.JogFeedRate}");
+                    Machine.SendCommand($"{Machine.Settings.JogGCodeCommand} E{(-90.0).ToDim()} F500");
                     break;
                 case JogDirections.CPlus:
-                    Machine.SendCommand($"{Machine.Settings.JogGCodeCommand} C{(Machine.Tool2 + 90).ToDim()} F{Machine.Settings.JogFeedRate}");
+                    Machine.SendCommand($"{Machine.Settings.JogGCodeCommand} E{(90.0).ToDim()} F500");
                     break;
             }
         }

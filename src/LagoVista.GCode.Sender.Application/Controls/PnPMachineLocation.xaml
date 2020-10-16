@@ -11,12 +11,12 @@
         <Grid Margin="4">
             <Grid.Resources>
                 <Style TargetType="TextBlock" >
-                    <Setter Property="FontSize" Value="16" />
+                    <Setter Property="FontSize" Value="22" />
                     <Setter Property="Foreground" Value="#323C1E" />
                 </Style>
                 <Style TargetType="TextBlock" x:Key="Position" >
-                    <Setter Property="FontSize" Value="16" />
                     <Setter Property="Foreground" Value="#323C1E" />
+                    <Setter Property="FontSize" Value="24" />
                     <Setter Property="TextAlignment" Value="Right" />
                     <Setter Property="FontFamily" Value="DSEG14 Classic" />
                 </Style>
@@ -36,60 +36,20 @@
                 <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="2*" />
                 <ColumnDefinition Width="3*" />
-                <ColumnDefinition Width="3*" />
-                <ColumnDefinition Width="2*" />
                 <ColumnDefinition Width="2*" />
             </Grid.ColumnDefinitions>
-            <TextBlock Grid.Column="1" Text="Machine" TextAlignment="Center"/>
-            <TextBlock Grid.Column="2" Text="Work" TextAlignment="Center" />
-            <TextBlock Grid.Column="3" Text="Reset" TextAlignment="Center" />
-            <TextBlock Grid.Column="4" Text="Home" TextAlignment="Center" />
+            <TextBlock Text="X" Grid.Row="1" />
+            <TextBlock Text="Y" Grid.Row="2" />
+            <TextBlock Text="Place" Grid.Row="3" />
+            <TextBlock Text="Solder" Grid.Row="4" />
+            <TextBlock Text="C" Grid.Row="5" />
 
-            <TextBlock Text="X" Grid.Row="1" TextAlignment="Center"  />
-            <TextBlock Text="Y" Grid.Row="2" TextAlignment="Center" />
-            <TextBlock Text="Place" Grid.Row="3" TextAlignment="Center" />
-            <TextBlock Text="Solder" Grid.Row="4" TextAlignment="Center" />
-            <TextBlock Text="C" Grid.Row="5" TextAlignment="Center" />
-
-            <TextBlock Text="{Binding Machine.MachinePosition.X, StringFormat=0.00, FallbackValue=33.2}" Style="{StaticResource Position}" Grid.Row="1" Grid.Column="1" />
-            <TextBlock Text="{Binding Machine.MachinePosition.Y, StringFormat=0.00, FallbackValue=12.7}" Style="{StaticResource Position}" Grid.Row="2" Grid.Column="1" />
-            <TextBlock Text="{Binding Machine.Tool0, StringFormat=0.0, FallbackValue=8.4}" Style="{StaticResource Position}" Grid.Row="3" Grid.Column="1" />
-            <TextBlock Text="{Binding Machine.Tool1, StringFormat=0.0, FallbackValue=8.4}" Style="{StaticResource Position}" Grid.Row="4" Grid.Column="1" />
+            <TextBlock Text="{Binding Machine.MachinePosition.X, StringFormat=0.000, FallbackValue=33.2}" Style="{StaticResource Position}" Grid.Row="1" Grid.Column="1"  />
+            <TextBlock Text="{Binding Machine.MachinePosition.Y, StringFormat=0.000, FallbackValue=12.7}" Style="{StaticResource Position}" Grid.Row="2" Grid.Column="1" />
+            <TextBlock Text="{Binding Machine.Tool0, StringFormat=0.000, FallbackValue=8.4}" Style="{StaticResource Position}" Grid.Row="3" Grid.Column="1" />
+            <TextBlock Text="{Binding Machine.Tool1, StringFormat=0.000, FallbackValue=8.4}" Style="{StaticResource Position}" Grid.Row="4" Grid.Column="1" />
             <TextBlock Text="{Binding Machine.Tool2, StringFormat=0, FallbackValue=90}" Style="{StaticResource Position}" Grid.Row="5" Grid.Column="1" />
-
-            <TextBlock Text="{Binding Machine.WorkspacePosition.X, StringFormat=0.00, FallbackValue=42.5}" Style="{StaticResource Position}" Grid.Row="1" Grid.Column="2" />
-            <TextBlock Text="{Binding Machine.WorkspacePosition.Y, StringFormat=0.00, FallbackValue=18.2}" Style="{StaticResource Position}" Grid.Row="2" Grid.Column="2" />
-
-            <Grid Grid.Row="7" Grid.ColumnSpan="5" >
-                <Grid.Resources>
-                    <Style TargetType="TextBlock" x:Key="EndStopStatus">
-                        <Setter Property="FontSize" Value="12" />
-                        <Setter Property="Margin" Value="0,0,10,0" />
-                        <Setter Property="Foreground" Value="#323C1E" />
-                        <Setter Property="FontFamily" Value="DSEG14 Classic" />
-                    </Style>
-                </Grid.Resources>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="auto" />
-                    <RowDefinition Height="auto" />
-                    <RowDefinition Height="auto" />
-                </Grid.RowDefinitions>
-                <TextBlock Text="End Stop Status"/>
-                <StackPanel Orientation="Horizontal" Grid.Row="1">
-                    <TextBlock Text="x-min" Style="{StaticResource EndStopStatus}" />
-                    <TextBlock Text="x-max" Style="{StaticResource EndStopStatus}" />
-                    <TextBlock Text="Y-min" Style="{StaticResource EndStopStatus}" />
-                    <TextBlock Text="Y-min" Style="{StaticResource EndStopStatus}" />
-                </StackPanel>
-                <StackPanel Grid.Row="2" Orientation="Horizontal">
-                    <TextBlock Text="place" Style="{StaticResource EndStopStatus}" />
-                    <TextBlock Text="solder" Style="{StaticResource EndStopStatus}" />
-                </StackPanel>
-            </Grid>
-
-
         </Grid>
     </Grid>
 </UserControl>

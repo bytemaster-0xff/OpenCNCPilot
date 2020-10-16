@@ -14,15 +14,52 @@ namespace LagoVista.GCode.Sender.ViewModels
             FeedHoldCommand = new RelayCommand(FeedHold, CanFeedHold);
             HomeCommand = new RelayCommand((param) => Home((HomeAxis)param), CanHome);
             CycleStartCommand = new RelayCommand(CycleStart, CanCycleStart);
-            SetViewTypeCommand = new RelayCommand((param) => SetViewType((ViewTypes)param), CanSetViewType);
+            SetCameraCommand = new RelayCommand((param) => SetCamera(), CanSetCamera);
+            SetTool1Command = new RelayCommand((param) => SetTool1(), CanSetTool1);
 
             MoveToBottomCameraCommand = new RelayCommand((obj) => Machine.SendCommand("M52"), CanJog);
 
-            SetToMoveHeightCommand = new RelayCommand((obj) => Machine.SendCommand("M54"), CanJog);
-            SetToPickHeightCommand = new RelayCommand((obj) => Machine.SendCommand("M55"), CanJog);
-            SetToPlaceHeightCommand = new RelayCommand((obj)=>Machine.SendCommand("M56"), CanJog);            
+            SetToMoveHeightCommand = new RelayCommand((obj) => SetToMoveHeight(), CanJog);
+            SetToPickHeightCommand = new RelayCommand((obj) => SetToPickHeight(), CanJog);
+            SetToPlaceHeightCommand = new RelayCommand((obj) => SetToBoardHeight(), CanJog);
 
             Machine.PropertyChanged += Machine_PropertyChanged;
+        }
+
+        void SetToMoveHeight()
+        {
+            if (Machine.Settings.MachineType == FirmwareTypes.LagoVista_PnP)
+            {
+                Machine.SendCommand("M54");
+            }
+            else
+            {
+                Machine.SendCommand($"G0 Z{Machine.Settings.ToolSafeMoveHeight} F5000");
+            }
+        }
+
+        void SetToPickHeight()
+        {
+            if (Machine.Settings.MachineType == FirmwareTypes.LagoVista_PnP)
+            {
+                Machine.SendCommand("M55");
+            }
+            else
+            {
+                Machine.SendCommand($"G0 Z{Machine.Settings.ToolPickHeight} F5000");
+            }
+        }
+
+        void SetToBoardHeight()
+        {
+            if (Machine.Settings.MachineType == FirmwareTypes.LagoVista_PnP)
+            {
+                Machine.SendCommand("M56");
+            }
+            else
+            {
+                Machine.SendCommand($"G0 Z{Machine.Settings.ToolBoardHeight} F5000");
+            }
         }
 
         private void Machine_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -37,12 +74,19 @@ namespace LagoVista.GCode.Sender.ViewModels
                 JogCommand.RaiseCanExecuteChanged();
                 ResetCommand.RaiseCanExecuteChanged();
                 HomeCommand.RaiseCanExecuteChanged();
-                SetViewTypeCommand.RaiseCanExecuteChanged();
+                SetCameraCommand.RaiseCanExecuteChanged();
+                SetTool1Command.RaiseCanExecuteChanged();
 
                 SetToMoveHeightCommand.RaiseCanExecuteChanged();
                 SetToPickHeightCommand.RaiseCanExecuteChanged();
                 SetToPlaceHeightCommand.RaiseCanExecuteChanged();
                 MoveToBottomCameraCommand.RaiseCanExecuteChanged();
+            }
+
+            if(e.PropertyName == nameof(Machine.ViewType))
+            {
+                SetCameraCommand.RaiseCanExecuteChanged();
+                SetTool1Command.RaiseCanExecuteChanged();
             }
 
             if (e.PropertyName == nameof(Machine.Settings))
@@ -59,15 +103,26 @@ namespace LagoVista.GCode.Sender.ViewModels
             }
         }
 
-        public void SetViewType(ViewTypes viewType)
+        public bool CanSetCamera(object param)
         {
-            Machine.ViewType = viewType;
+            return Machine.ViewType == ViewTypes.Tool1;
         }
 
-        public bool CanSetViewType(object param)
+        public bool CanSetTool1(object param)
         {
-            return Machine.Connected && Machine.Mode == OperatingMode.Manual;
+            return Machine.ViewType == ViewTypes.Camera;
         }
+
+        public void SetCamera()
+        {
+            Machine.ViewType = ViewTypes.Camera;
+        }
+
+        public void SetTool1()
+        {
+            Machine.ViewType = ViewTypes.Tool1;
+        }
+
 
         public bool CanHome(object param)
         {
@@ -104,7 +159,6 @@ namespace LagoVista.GCode.Sender.ViewModels
             return Machine.Connected && Machine.Mode == OperatingMode.Alarm;
         }
 
-        public RelayCommand SetViewTypeCommand { get; private set; }
         public RelayCommand JogCommand { get; private set; }
         public RelayCommand HomeCommand { get; private set; }
         public RelayCommand ResetCommand { get; private set; }
@@ -117,5 +171,8 @@ namespace LagoVista.GCode.Sender.ViewModels
         public RelayCommand SetToPickHeightCommand { get; private set; }
         public RelayCommand SetToPlaceHeightCommand { get; private set; }
         public RelayCommand MoveToBottomCameraCommand { get; private set; }
+
+        public RelayCommand SetCameraCommand { get; private set; }
+        public RelayCommand SetTool1Command { get; private set; }
     }
 }

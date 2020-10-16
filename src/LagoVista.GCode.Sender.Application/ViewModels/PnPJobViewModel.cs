@@ -127,13 +127,13 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             {
                 case 1:
                     {
-                        var gcode = $"G1 X{Job.BoardFiducial1.X} Y{Job.BoardFiducial1.Y}";
+                        var gcode = $"G1 X{Job.BoardFiducial1.X} Y{Job.BoardFiducial1.Y} F{Machine.Settings.FastFeedRate}";
                         Machine.SendCommand(gcode);
                     }
                     break;
                 case 2:
                     {
-                        var gcode = $"G1 X{Job.BoardFiducial2.X} Y{Job.BoardFiducial2.Y}";
+                        var gcode = $"G1 X{Job.BoardFiducial2.X} Y{Job.BoardFiducial2.Y} F{Machine.Settings.FastFeedRate}";
                         Machine.SendCommand(gcode);
                     }
                     break;
@@ -151,8 +151,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                 waiter.SpinOnce();
             }
 
-            var gcode = $"G1 X{Job.BoardFiducial1.X} Y{Job.BoardFiducial1.Y}";
-            Machine.SendCommand(gcode);
+            GoToFiducial(1);
 
             while (Machine.Busy)
             {
@@ -215,20 +214,10 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             }
         }
 
-        private async void SetNewHome()
+        private void SetNewHome()
         {
-            var newX = Machine.MachinePosition.X - Job.BoardFiducial1.X;
-            var newY = Machine.MachinePosition.Y - Job.BoardFiducial1.Y;
-
-            Machine.GotoPoint(newX, newY);
-
-            await Task.Delay(2000);
-
-            Machine.SetWorkspaceHome();
-
-            await Task.Delay(1000);
-
-            var gcode = $"G1 X{Job.BoardFiducial2.X} Y{Job.BoardFiducial2.Y}";
+            Machine.SendCommand($"G92 X{Job.BoardFiducial1.X} Y{Job.BoardFiducial1.Y}");
+            var gcode = $"G1 X{Job.BoardFiducial2.X} Y{Job.BoardFiducial2.Y} F{Machine.Settings.FastFeedRate}";
             Machine.SendCommand(gcode);
 
             ShowCircles = false;
@@ -434,7 +423,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
 
         private string GetGoToPartInTrayGCode()
         {
-            return $"G0 X{XPartInTray} Y{YPartInTray} F1250";
+            return $"G0 X{XPartInTray} Y{YPartInTray} F{Machine.Settings.FastFeedRate}";
         }
 
         public void GoToPartPositionInTray()
@@ -447,7 +436,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
 
         private String GetGoToPartOnBoardGCode()
         {
-            return $"G1 X{SelectedPartToBePlaced.X} Y{SelectedPartToBePlaced.Y} F1250";
+            return $"G1 X{SelectedPartToBePlaced.X} Y{SelectedPartToBePlaced.Y} F{Machine.Settings.FastFeedRate}";
         }
 
         public void GoToPartOnBoard()

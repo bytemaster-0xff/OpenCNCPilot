@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:LagoVista.GCode.Sender.Application.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="110" d:DesignWidth="300">
-    <Grid Grid.ColumnSpan="4"  >
+    <Grid Grid.ColumnSpan="4"  Background="Gray">
         <Grid.Resources>
             <Style TargetType="Button" x:Key="JogSize">
                 <Setter Property="Width" Value="48" />
@@ -29,7 +29,7 @@
         <Slider Grid.Row="1" Grid.Column="1"
                     Grid.ColumnSpan="2"
                     Minimum="0"
-                    Maximum="5000" 
+                    Maximum="15000" 
                     LargeChange="500" 
                     SmallChange="100"
                     Value="{Binding Machine.Settings.JogFeedRate, Mode=TwoWay}" 

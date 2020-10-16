@@ -12,7 +12,7 @@ namespace LagoVista.GCode.Sender
     public partial class Machine
     {
         ISerialPort _port;
-
+        
         public async Task ConnectAsync(ISerialPort port)
         {
             if (Connected)
@@ -283,6 +283,12 @@ namespace LagoVista.GCode.Sender
             else
             {
                 Enqueue("G28");
+                if (Settings.MachineType == FirmwareTypes.Repeteir_PnP)
+                {
+                    Enqueue($"G0 X{Settings.DefaultWorkspaceHome.X} Y{Settings.DefaultWorkspaceHome.Y} F{Settings.FastFeedRate}");
+                    GotoPoint(Settings.DefaultWorkspaceHome.X, Settings.DefaultWorkspaceHome.Y);
+                    SetWorkspaceHome();
+                }
             }
         }
 

@@ -28,27 +28,6 @@ namespace LagoVista.PickAndPlace.Models
             BoardFiducial2 = new Point2D<double>();
         }
 
-        private double _safeHeight;
-        public double SafeHeight 
-        {
-            get => _safeHeight;
-            set => Set(ref _safeHeight, value);
-        }
-
-        private double _pickHeight;
-        public double PickHeight
-        {
-            get => _pickHeight;
-            set => Set(ref _pickHeight, value);
-        }
-
-        private double _boardHeight;
-        public double BoardZ
-        {
-            get => _boardHeight;
-            set => Set(ref _boardHeight, value);
-        }
-
         private Point2D<double> _boardFiducial1;
         public Point2D<double> BoardFiducial1
         {

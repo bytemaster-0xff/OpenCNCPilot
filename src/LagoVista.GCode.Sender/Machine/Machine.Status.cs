@@ -45,11 +45,11 @@ namespace LagoVista.GCode.Sender
                         // 3. move the machine to the tool that should be used. 
                         if (_viewType == ViewTypes.Camera && value == ViewTypes.Tool1)
                         {
-                            Enqueue($"G0 X{-Settings.Tool0Offset.X} Y{-Settings.Tool1Offset.Y}");
+                            Enqueue($"G0 X{-Settings.Tool1Offset.X} Y{-Settings.Tool1Offset.Y}");
                         }
                         else if (_viewType == ViewTypes.Tool1 && value == ViewTypes.Camera)
                         {
-                            Enqueue($"G0 X{Settings.Tool0Offset.X} Y{Settings.Tool1Offset.Y}");
+                            Enqueue($"G0 X{Settings.Tool1Offset.X} Y{Settings.Tool1Offset.Y}");
                         }
 
                         // 4. set the machine back to absolute points

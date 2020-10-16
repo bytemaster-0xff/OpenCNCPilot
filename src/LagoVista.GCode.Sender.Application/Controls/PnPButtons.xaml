@@ -34,12 +34,13 @@
 
             </Grid.Resources>
 
-            <Button Grid.Row="0" Grid.Column="1" Command="{Binding SetViewTypeCommand}" CommandParameter="{x:Static sndr:ViewTypes.Camera}">
+            <Button Style="{StaticResource JogArrow}" Grid.Row="0" Grid.Column="1" Command="{Binding SetCameraCommand}" CommandParameter="{x:Static sndr:ViewTypes.Camera}" Margin="0,0,0,10">
                 <Button.Content>
                     <fa:ImageAwesome Icon="VideoCamera" />
                 </Button.Content>
             </Button>
-            <Button  Grid.Row="0" Grid.Column="2" Command="{Binding SetViewTypeCommand}" CommandParameter="{x:Static sndr:ViewTypes.Tool1}">
+
+            <Button Style="{StaticResource JogArrow}" Grid.Row="0" Grid.Column="2" Command="{Binding SetTool1Command}" CommandParameter="{x:Static sndr:ViewTypes.Tool1}" Margin="0,0,0,10">
                 <Button.Content>
                     <Grid>
                         <fa:ImageAwesome Icon="Wrench" />
@@ -47,43 +48,35 @@
                     </Grid>
                 </Button.Content>
             </Button>
-            <Button   Grid.Row="0" Grid.Column="3"  Command="{Binding SetViewTypeCommand}" CommandParameter="{x:Static sndr:ViewTypes.Tool2}">
-                <Button.Content>
-                    <Grid>
-                        <fa:ImageAwesome  Icon="Wrench" />
-                        <Label Content="2" HorizontalAlignment="Right" VerticalAlignment="Bottom" FontSize="16" Margin="0,0,-5,-10" />
-                    </Grid>
-                </Button.Content>
-            </Button>
+
             <TextBlock Text="{Binding Machine.ViewType, FallbackValue=Camera}" Grid.Row="0" Grid.ColumnSpan="4" Grid.Column="4" Foreground="White" FontSize="24" VerticalAlignment="Center" Margin="10,0,0,0"/>
 
-            <Button Grid.Row="1" Grid.Column="1" Command="{Binding SetToMoveHeightCommand}" ToolTip="Move to safe move height." >
+            <Button Style="{StaticResource JogArrow}" Grid.Row="1" Grid.Column="1" Command="{Binding SetToMoveHeightCommand}" ToolTip="Move to safe move height." Margin="0,0,0,10" >
                 <Button.Content>
                     <fa:ImageAwesome Icon="Arrows" />
                 </Button.Content>
             </Button>
-            <Button  Grid.Row="1" Grid.Column="2" Command="{Binding SetToPickHeightCommand}" ToolTip="Move to pick height." >
+            <Button Style="{StaticResource JogArrow}" Grid.Row="1" Grid.Column="2" Command="{Binding SetToPickHeightCommand}" ToolTip="Move to pick height." Margin="0,0,0,10">
                 <Button.Content>
                     <Grid>
                         <fa:ImageAwesome Icon="ArrowDown" />
                     </Grid>
                 </Button.Content>
             </Button>
-            <Button   Grid.Row="1" Grid.Column="3"  Command="{Binding SetToPlaceHeightCommand}" ToolTip="Move to place height." >
+            <Button Style="{StaticResource JogArrow}"  Grid.Row="1" Grid.Column="3"  Command="{Binding SetToPlaceHeightCommand}" ToolTip="Move to place height." Margin="0,0,0,10">
                 <Button.Content>
                     <Grid>
                         <fa:ImageAwesome  Icon="ArrowCircleOutlineDown" />
                     </Grid>
                 </Button.Content>
             </Button>
-            <Button   Grid.Row="1" Grid.Column="5"  Command="{Binding MoveToBottomCameraCommand}" ToolTip="Move to bottom camera." >
+            <Button Style="{StaticResource JogArrow}"   Grid.Row="1" Grid.Column="5"  Command="{Binding MoveToBottomCameraCommand}" ToolTip="Move to bottom camera." Margin="0,0,0,10">
                 <Button.Content>
                     <Grid>
                         <fa:ImageAwesome  Icon="VideoCamera" />
                     </Grid>
                 </Button.Content>
             </Button>
-
 
 
             <Button Style="{StaticResource JogArrow}" Grid.Row="2" Grid.Column="2" Command="{Binding JogCommand}" CommandParameter="{x:Static sndr:JogDirections.CMinus}">

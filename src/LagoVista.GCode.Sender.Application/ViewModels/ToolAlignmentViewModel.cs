@@ -18,20 +18,22 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             SetToolOnePickPositionCommand = new RelayCommand(SetTool1PickPosition, () => HasFrame);
             SetToolOnePlacePositionCommand = new RelayCommand(SetTool1PlacePosition, () => HasFrame);
 
-            SetToolOneLocationCommand = new RelayCommand(SetTool1Location, () => HasFrame);
-            SetToolTwoLocationCommand = new RelayCommand(SetTool2Location, () => HasFrame);
+            SetToolOneLocationCommand = new RelayCommand(SetTool1Location, () => HasFrame && TopCameraLocation != null);
+            SetToolTwoLocationCommand = new RelayCommand(SetTool2Location, () => HasFrame && TopCameraLocation != null);
+
             SetTopCameraLocationCommand = new RelayCommand(SetTopCameraLocation, () => HasFrame);
-            SetBottomCameraLocationCommand = new RelayCommand(SetBottomCameraLocation, () => HasFrame);
+            SetBottomCameraLocationCommand = new RelayCommand(SetBottomCameraLocation, () => HasFrame && Machine.Settings.PartInspectionCamera != null);
 
             SaveCalibrationCommand = new RelayCommand(SaveCalibration, () => IsDirty);
         }
+        
+        public override async Task InitAsync()
+        {
+            await base.InitAsync();
 
-        Point2D<double> _tool1Offset;
-        Point2D<double> _tool2Offset;
-        Point2D<double> _tool1Location;
-        Point2D<double> _tool2Location;
-        Point2D<double> _topCameraLocation;
-        Point2D<double> _bottomCameraLocation;
+            BottomCameraLocation = Machine.Settings.PartInspectionCamera?.AbsolutePosition;
+            StartCapture();
+        }
 
 
         private bool _isDirty = false;
@@ -69,56 +71,101 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
 
         public void SetTopCameraLocation()
         {
-            Machine.SendCommand("M75");
+            if (Machine.Settings.MachineType == FirmwareTypes.LagoVista_PnP)
+            {
+                Machine.SendCommand("M75");
+            }
+
+            TopCameraLocation = new Point2D<double>(Machine.MachinePosition.X, Machine.MachinePosition.Y);
+            SetToolOneLocationCommand.RaiseCanExecuteChanged();
+            SetToolTwoLocationCommand.RaiseCanExecuteChanged();
         }
 
         public void SetBottomCameraLocation()
         {
-            Machine.SendCommand("M71");
+            if (Machine.Settings.MachineType == FirmwareTypes.LagoVista_PnP)
+            {
+                Machine.SendCommand("M71");
+            }
+
+            Machine.Settings.PartInspectionCamera.AbsolutePosition = new Point2D<double>(Machine.MachinePosition.X, Machine.MachinePosition.Y);
+            BottomCameraLocation = Machine.Settings.PartInspectionCamera.AbsolutePosition;
+
+            IsDirty = true;
         }
 
         public void SetTool1MovePosition()
         {
-            Machine.SendCommand("M72");
+            Machine.Settings.ToolSafeMoveHeight = Machine.Tool0;
+
+            if (Machine.Settings.MachineType == FirmwareTypes.LagoVista_PnP)
+            {
+                Machine.SendCommand("M72");
+            }
+
+            IsDirty = true;
         }
 
 
         public void SetTool1PickPosition()
         {
-            Machine.SendCommand("M73");
+            Machine.Settings.ToolPickHeight = Machine.Tool0;
+
+            if (Machine.Settings.MachineType == FirmwareTypes.LagoVista_PnP)
+            {
+                Machine.SendCommand("M73");
+            }
+
+            IsDirty = true;
         }
 
         public void SetTool1PlacePosition()
         {
-            Machine.SendCommand("M74");
+            Machine.Settings.ToolBoardHeight = Machine.Tool0;
+
+            if (Machine.Settings.MachineType == FirmwareTypes.LagoVista_PnP)
+            {
+                Machine.SendCommand("M74");
+            }
+
+            IsDirty = true;
         }
 
         public void SetTool1Location()
         {
-            Machine.SendCommand("M76");
+            if (Machine.Settings.MachineType == FirmwareTypes.LagoVista_PnP)
+            {
+                Machine.SendCommand("M76");
+            }
+
+            Machine.Settings.Tool1Offset = new Point2D<double>()
+            {
+                X = TopCameraLocation.X - Machine.MachinePosition.X,
+                Y = TopCameraLocation.Y - Machine.MachinePosition.Y,
+            };
+
+            IsDirty = true;
         }
 
         public void SetTool2Location()
         {
-            Machine.SendCommand("M77");
+            if (Machine.Settings.MachineType == FirmwareTypes.LagoVista_PnP)
+            {
+                Machine.SendCommand("M77");
+            }
+
+            Machine.Settings.Tool2Offset = new Point2D<double>()
+            {
+                X = TopCameraLocation.X - Machine.MachinePosition.X,
+                Y = TopCameraLocation.Y - Machine.MachinePosition.Y,
+            };
+
+            IsDirty = true;
         }
 
         public async void SaveCalibration()
         {
-            Machine.Settings.PositioningCamera.Tool1Offset = Tool1Offset;
-            Machine.Settings.PositioningCamera.Tool2Offset = Tool2Offset;
-            Machine.Settings.PartInspectionCamera.AbsolutePosition = BottomCameraLocation;
             await Machine.MachineRepo.SaveAsync();
-        }
-
-        public override async Task InitAsync()
-        {
-            await base.InitAsync();
-
-            Tool1Offset = Machine.Settings.PositioningCamera.Tool1Offset;
-            Tool2Offset = Machine.Settings.PositioningCamera.Tool2Offset;
-            BottomCameraLocation = Machine.Settings.PartInspectionCamera?.AbsolutePosition;
-            StartCapture();         
         }
 
         public override void CircleLocated(Point2D<double> point, double diameter, Point2D<double> stdDev)
@@ -142,40 +189,18 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
         public RelayCommand SetToolOnePickPositionCommand { get; private set; }
         public RelayCommand SaveCalibrationCommand { get; private set; }
 
+        Point2D<double> _topCameraLocation;
         public Point2D<double> TopCameraLocation
         {
             get { return _topCameraLocation; }
             set { Set(ref _topCameraLocation, value); }
         }
 
+        Point2D<double> _bottomCameraLocation;
         public Point2D<double> BottomCameraLocation
         {
             get { return _bottomCameraLocation; }
             set { Set(ref _bottomCameraLocation, value); }
-        }
-
-        public Point2D<double> Tool1Location
-        {
-            get { return _tool1Location; }
-            set { Set(ref _tool1Location, value); }
-        }
-
-        public Point2D<double> Tool2Location
-        {
-            get { return _tool2Location; }
-            set { Set(ref _tool2Location, value); }
-        }
-
-        public Point2D<double> Tool1Offset
-        {
-            get { return _tool1Offset; }
-            set { Set(ref _tool1Offset, value); }
-        }
-
-        public Point2D<double> Tool2Offset
-        {
-            get { return _tool2Offset; }
-            set { Set(ref _tool2Offset, value); }
         }
     }
 }

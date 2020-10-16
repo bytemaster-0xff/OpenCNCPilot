@@ -21,18 +21,18 @@ namespace LagoVista.GCode.Sender
         public double ArcToLineSegmentLength { get; set; }
         public double SplitSegmentLength { get; set; }
 
-        private Point2D<double> _tool0Offset = new Point2D<double>();
-        public Point2D<double> Tool0Offset
-        { 
-            get { return _tool0Offset; } 
-            set { Set(ref _tool0Offset, value); }
-        }
-
         private Point2D<double> _tool1Offset = new Point2D<double>();
         public Point2D<double> Tool1Offset
-        {
-            get { return _tool1Offset; }
+        { 
+            get { return _tool1Offset; } 
             set { Set(ref _tool1Offset, value); }
+        }
+
+        private Point2D<double> _tool2Offset = new Point2D<double>();
+        public Point2D<double> Tool2Offset
+        {
+            get { return _tool2Offset; }
+            set { Set(ref _tool2Offset, value); }
         }
 
         private Point3D<double> _defaultWorkspaceHome = new Point3D<double>();
@@ -40,6 +40,13 @@ namespace LagoVista.GCode.Sender
         {
             get { return _defaultWorkspaceHome; }
             set { Set(ref _defaultWorkspaceHome, value); }
+        }
+
+        private int _fastFeedRate = 100000;
+        public int FastFeedRate
+        {
+            get { return _fastFeedRate; }
+            set { Set(ref _fastFeedRate, value); }
         }
 
         SerialPortInfo _currentSerialPort;
@@ -61,6 +68,32 @@ namespace LagoVista.GCode.Sender
         {
             get { return _ipAddress; }
             set { Set(ref _ipAddress, value); }
+        }
+
+        private double _toolSafeMoveHeight;
+        public double ToolSafeMoveHeight 
+        { 
+            get { return _toolSafeMoveHeight; }
+            set { Set(ref _toolSafeMoveHeight, value);  }
+        }
+
+        private double _toolPickHeight;
+        public double ToolPickHeight 
+        { 
+            get { return _toolPickHeight; }
+            set { Set(ref _toolPickHeight, value); }
+        }
+
+        /// <summary>
+        /// Absolute position of the board in the Z axis, the actual place location will be 
+        /// the this location plus the height of the part, we also will likely have different
+        /// heights for the different nozzles.
+        /// </summary>
+        private double _toolboardHeight;
+        public double ToolBoardHeight 
+        {
+            get { return _toolboardHeight; }
+            set { Set(ref _toolboardHeight, value); }
         }
 
         public bool EnableCodePreview { get; set; }
@@ -167,6 +200,8 @@ namespace LagoVista.GCode.Sender
             get { return _partInspectionCamera; }
             set { Set(ref _partInspectionCamera, value); }
         }
+
+        
 
         public FirmwareTypes MachineType { get; set; }
 
