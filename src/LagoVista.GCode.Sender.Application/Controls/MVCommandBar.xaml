@@ -81,5 +81,31 @@
                 <fa:ImageAwesome  Icon="Gear" />
             </Button.Content>
         </Button>
+        <ToggleButton IsChecked="{Binding Machine.TopLightOn, Mode=TwoWay}">
+            <ToggleButton.Content>
+                <Image Source="/imgs/TopLight.png" />
+            </ToggleButton.Content>
+        </ToggleButton>
+        <ToggleButton IsChecked="{Binding Machine.BottomLightOn, Mode=TwoWay}">
+            <ToggleButton.Content>
+                <Image Source="/imgs/BottomLight.png" />
+            </ToggleButton.Content>
+        </ToggleButton>
+        <ToggleButton IsChecked="{Binding Machine.Vacuum1On, Mode=TwoWay}" ToolTip="Vacuum Pump 1">
+            <ToggleButton.Content>
+                <Image Source="/imgs/Vacuum1.png" />
+            </ToggleButton.Content>
+        </ToggleButton>
+        <ToggleButton IsChecked="{Binding Machine.Vacuum2On, Mode=TwoWay}" ToolTip="Vacuum Pump 2">
+            <ToggleButton.Content>
+                <Image Source="/imgs/Vacuum2.png" />
+            </ToggleButton.Content>
+        </ToggleButton>
+        <ToggleButton IsChecked="{Binding Machine.SolendoidOn, Mode=TwoWay}" ToolTip="Exhaust Solenoid">
+            <ToggleButton.Content>
+                <Image Source="/imgs/Solenoid.png" />
+            </ToggleButton.Content>
+        </ToggleButton>
+
     </ToolBar>
 </UserControl>

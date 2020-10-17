@@ -23,6 +23,7 @@ namespace LagoVista.GCode.Sender
 
             if(fullMessageLine.StartsWith("wait"))
             {
+                _pendingWait = false;
                 /* nop */
             }
             else if (fullMessageLine.StartsWith("ok") ||

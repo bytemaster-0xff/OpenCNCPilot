@@ -20,6 +20,8 @@ namespace LagoVista.GCode.Sender
 
         MachinesRepo _machineRepo;
 
+        private bool _pendingWait = false;
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         public Machine(MachinesRepo repo)
@@ -48,7 +50,7 @@ namespace LagoVista.GCode.Sender
             return Task.FromResult(default(object));
         }
 
-        public void RaisePropertyChanged([CallerMemberName]string propertyName = "")
+        public void RaisePropertyChanged([CallerMemberName] string propertyName = "")
         {
             Services.DispatcherServices.Invoke(() =>
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName))
@@ -122,7 +124,17 @@ namespace LagoVista.GCode.Sender
 
         public bool Busy
         {
-            get { return UnacknowledgedBytesSent > 0; }
+            get
+            {
+                if (Settings.MachineType == FirmwareTypes.Repeteir_PnP)
+                {
+                    return _pendingWait || UnacknowledgedBytesSent > 0;
+                }
+                else
+                {
+                    return UnacknowledgedBytesSent > 0;
+                }
+            }
         }
 
         public void GotoPoint(Point2D<double> point, bool rapidMove = true)

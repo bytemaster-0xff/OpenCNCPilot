@@ -147,6 +147,7 @@ namespace LagoVista.GCode.Sender
         {
             if (AssertConnected())
             {
+                _pendingWait = false;
 
                 Mode = OperatingMode.Manual;
 
@@ -156,6 +157,7 @@ namespace LagoVista.GCode.Sender
                     _toSendPriority.Clear();
                     _sentQueue.Clear();
                     _jobToSend.Clear();
+                    PendingQueue.Clear();
                     _toSendPriority.Enqueue(((char)0x18).ToString());
                 }
 
@@ -172,6 +174,7 @@ namespace LagoVista.GCode.Sender
                 {
                     lock (_queueAccessLocker)
                     {
+
                         if (highPriority)
                         {
                             _toSendPriority.Enqueue(cmd);
@@ -182,7 +185,9 @@ namespace LagoVista.GCode.Sender
                             if (Settings.MachineType == FirmwareTypes.LagoVista_PnP ||
                                Settings.MachineType == FirmwareTypes.SimulatedMachine)
                                 PendingQueue.Add(cmd);
+
                             UnacknowledgedBytesSent += cmd.Length + 1;
+                            _pendingWait = true;
                         }
                     }
                 });
@@ -197,8 +202,10 @@ namespace LagoVista.GCode.Sender
                 {
                     lock (_queueAccessLocker)
                     {
+
                         _jobToSend.Enqueue(cmd);
                         UnacknowledgedBytesSent += cmd.Line.Length + 1;
+                        _pendingWait = true;
                     }
                 });
             }

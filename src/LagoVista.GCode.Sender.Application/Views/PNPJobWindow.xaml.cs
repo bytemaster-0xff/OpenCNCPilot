@@ -57,5 +57,10 @@ namespace LagoVista.GCode.Sender.Application.Views
                 }
             }
         }
+
+        private void WebCamImage2_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+
+        }
     }
 }

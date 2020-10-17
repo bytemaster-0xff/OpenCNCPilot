@@ -12,10 +12,14 @@
         Title="Pick and Place Job" Height="800" Width="1600">
     <Grid x:Name="MainView">
         <Grid.RowDefinitions>
+            <RowDefinition Height="64" />
             <RowDefinition Height="*" />
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
-        <TabControl>
+        
+        <Controls:MVCommandBar x:Name="CmdBar" HorizontalAlignment="Left" />
+
+        <TabControl Grid.Row="1">
             <TabItem Header="Job">
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -102,12 +106,12 @@
                         <Controls:MaskingTextBox Text="{Binding Job.BoardFiducial2.Y, Mode=TwoWay}"  UnitType="Size " Grid.Row="4" Grid.Column="1" Margin="0,4,4,4" Width="80" HorizontalAlignment="Left" />
                         <Image x:Name="BoadImage" Source="{Binding PrimaryCapturedImage}"   MouseDown="WebCamImage_MouseDown"  Grid.Column="3" VerticalAlignment="Top"  Stretch="Uniform" Grid.Row="0" Grid.RowSpan="7" />
                         <Controls:MVViewOptions HorizontalAlignment="Right" VerticalAlignment="Top" Grid.Row="1" Grid.Column="3" Grid.RowSpan="7" />
-                        <Controls:ImageAdjustments Grid.Column="4" Grid.RowSpan="7" Visibility="{Binding AreToolSettingsVisible, Converter={StaticResource BoolToVisibilityConverter}}" />
-                        <StackPanel Grid.Row="5">
-                            <Button Command="{Binding PeformBoardAlignmentCommand}" Content="Perform Board Alignment" />
-                            <Button Command="{Binding GoToWorkHomeCommand}" Content="Goto Work Home" />
-                            <Button Command="{Binding GoToFiducial1Command}" Content="GoTo Fiducial 1" />
-                            <Button Command="{Binding GoToFiducial2Command}" Content="GoTo Fiducial 2" />
+                        <Controls:ImageAdjustments Grid.Column="4" Grid.RowSpan="7" />
+                        <StackPanel Grid.Row="5" Grid.ColumnSpan="2">
+                            <Button Command="{Binding PeformBoardAlignmentCommand}" Style="{StaticResource CommandButton}" Content="Board Alignment" />
+                            <Button Command="{Binding GoToWorkHomeCommand}" Style="{StaticResource CommandButton}" Content="Work Home" />
+                            <Button Command="{Binding GoToFiducial1Command}" Style="{StaticResource CommandButton}" Content="Fiducial 1" />
+                            <Button Command="{Binding GoToFiducial2Command}" Style="{StaticResource CommandButton}" Content="Fiducial 2" />
                         </StackPanel>
                     </Grid>
                 </Grid>
@@ -232,13 +236,12 @@
                                 <RowDefinition Height="auto" />
                                 <RowDefinition Height="auto" />
                                 <RowDefinition Height="*" />
-                                
                             </Grid.RowDefinitions>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="20" />
-                                <ColumnDefinition Width="100" />
+                                <ColumnDefinition Width="120" />
+                                <ColumnDefinition Width="120" />
                                 <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="60" />
                                 <ColumnDefinition Width="auto" />
                             </Grid.ColumnDefinitions>
                             <Label Content="{Binding SelectedSlot.Name}" Grid.ColumnSpan="3" FontWeight="Bold" />
@@ -276,7 +279,7 @@
                                 </TextBlock.Text>
                             </TextBlock>
 
-                            <Label Content="Part 1 Location" Grid.Column="1" FontWeight="Bold" Grid.Row="6"/>
+                            <Label Content="Part 1 Location" Grid.Column="1" FontWeight="Bold" Grid.Row="6"  VerticalAlignment="Center" />
                             <TextBlock  Grid.Column="2" Grid.Row="6" VerticalAlignment="Center" >
                                 <TextBlock.Text>
                                     <MultiBinding StringFormat="{} x={0}, y={1}">
@@ -286,22 +289,21 @@
                                 </TextBlock.Text>
                             </TextBlock>
 
-                            
-                            
-                            <Button Grid.Row="1" Grid.Column="3" Command="{Binding GoToSlotCommand}" Content="Go" />
-                            <Button Grid.Row="3" Grid.Column="3" Command="{Binding GoToPin1InFeederCommand}" Content="Go" />
-                            <Button Grid.Row="6" Grid.Column="3" Command="{Binding GoToCurrentPartCommand}" Content="Go" />
+                            <Button Grid.Row="1" Grid.Column="3" HorizontalAlignment="Left" Command="{Binding GoToSlotCommand}" Content="Go" Style="{StaticResource CommandButton}" />
+                            <Button Grid.Row="3" Grid.Column="3" HorizontalAlignment="Left" Command="{Binding GoToPin1InFeederCommand}" Content="Go" Style="{StaticResource CommandButton}" />
+                            <Button Grid.Row="6" Grid.Column="3" HorizontalAlignment="Left" Command="{Binding GoToCurrentPartCommand}" Content="Go" Style="{StaticResource CommandButton}" />
 
                             <Rectangle Grid.ColumnSpan="4" Grid.Row="8" Fill="LightGray" />
 
-                            <Image x:Name="WebCamImage2" Source="{Binding DataContext.PrimaryCapturedImage, ElementName=MainView}"  MouseDown="WebCamImage_MouseDown"  Grid.ColumnSpan="4" VerticalAlignment="Top"  Stretch="Uniform" 
+                            <Image x:Name="WebCamImage2" Source="{Binding DataContext.PrimaryCapturedImage, ElementName=MainView}"  
+                                   MouseDown="WebCamImage2_MouseDown"  Grid.ColumnSpan="4" VerticalAlignment="Top"  Stretch="Uniform" 
                                    Grid.Row="8" Margin="5"  />
                             
-                            <StackPanel HorizontalAlignment="Right" VerticalAlignment="Bottom" Grid.Row="8" Grid.ColumnSpan="4">
+                            <StackPanel HorizontalAlignment="Right" VerticalAlignment="Bottom" Grid.Row="8" Grid.Column="4">
                                 <Controls:MVViewOptions HorizontalAlignment="Stretch" />
                                 <Controls:PnPMachineLocation DataContext="{Binding MachineControls}" />
                                 <Controls:JogControls  DataContext="{Binding MachineControls}"  />
-                            <Controls:PnPButtons DataContext="{Binding MachineControls}"  />
+                                <Controls:PnPButtons DataContext="{Binding MachineControls}"  />
                             </StackPanel>
                         </Grid>
                     </Grid>
@@ -538,65 +540,16 @@
 
             <TabItem Header="Place">
                 <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="48"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="8.167"/>
-                        <ColumnDefinition Width="311.833"/>
                         <ColumnDefinition Width="320"/>
+                        <ColumnDefinition Width="340"/>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="300" />
                     </Grid.ColumnDefinitions>
-
-                    <StackPanel Orientation="Horizontal" Grid.ColumnSpan="5">
-                        <Controls:MVCommandBar x:Name="CmdBar"  HorizontalAlignment="Left" />
-
-                        <Button BorderBrush="Transparent"  Background="Transparent" Command="{Binding GoToWorkHomeCommand}"  ToolTip="Go To Work Home"   >
-                            <Button.Content>
-                                <Image Source="/imgs/GotoFiducialHome.png"/>
-                            </Button.Content>
-                        </Button>
-
-                        <Button BorderBrush="Transparent"  Background="Transparent" Command="{Binding SetWorkHomeCommand}"  ToolTip="Set Work Home"   >
-                            <Button.Content>
-                                <Image Source="/imgs/SetFiducialHome.png"/>
-                            </Button.Content>
-                        </Button>
-
-                        <ToggleButton IsChecked="{Binding Machine.TopLightOn, Mode=TwoWay}">
-                            <ToggleButton.Content>
-                                <Image Source="/imgs/TopLight.png" />
-                            </ToggleButton.Content>
-                        </ToggleButton>
-                        <ToggleButton IsChecked="{Binding Machine.BottomLightOn, Mode=TwoWay}">
-                            <ToggleButton.Content>
-                                <Image Source="/imgs/BottomLight.png" />
-                            </ToggleButton.Content>
-                        </ToggleButton>
-                        <ToggleButton IsChecked="{Binding Machine.Vacuum1On, Mode=TwoWay}" ToolTip="Vacuum Pump 1">
-                            <ToggleButton.Content>
-                                <Image Source="/imgs/Vacuum1.png" />
-                            </ToggleButton.Content>
-                        </ToggleButton>
-                        <ToggleButton IsChecked="{Binding Machine.Vacuum2On, Mode=TwoWay}" ToolTip="Vacuum Pump 2">
-                            <ToggleButton.Content>
-                                <Image Source="/imgs/Vacuum2.png" />
-                            </ToggleButton.Content>
-                        </ToggleButton>
-                        <ToggleButton IsChecked="{Binding Machine.SolendoidOn, Mode=TwoWay}" ToolTip="Exhaust Solenoid">
-                            <ToggleButton.Content>
-                                <Image Source="/imgs/Solenoid.png" />
-                            </ToggleButton.Content>
-                        </ToggleButton>
-
-                    </StackPanel>
-
                     <DataGrid AutoGenerateColumns="False" CanUserAddRows="false" LoadingRow="DataGrid_LoadingRow" 
                               CanUserDeleteRows="False" Grid.Column="0" ItemsSource="{Binding ConfigurationParts}"
                               SelectedItem="{Binding SelectedPart, Mode=TwoWay}"
-                              Grid.Row="1" HorizontalContentAlignment="Stretch" Grid.ColumnSpan="2" >
+                              HorizontalContentAlignment="Stretch" Grid.ColumnSpan="2" >
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Value" Width="120" IsReadOnly="true" Binding="{Binding Value, Mode=TwoWay}"  />
                             <DataGridTextColumn Header="Package" IsReadOnly="true" Width="120" Binding="{Binding Package, Mode=TwoWay}"  />
@@ -604,7 +557,7 @@
                         </DataGrid.Columns>
                     </DataGrid>
 
-                    <Grid Grid.Row="1" Grid.Column="2">
+                    <Grid Grid.Column="1" Background="Azure">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="auto" />
                             <RowDefinition Height="auto" />
@@ -642,27 +595,27 @@
                             <Label Content="Part Count:" Grid.Row="3" />
                             <Controls:MaskingTextBox Text="{Binding SelectedPartRow.PartCount, Mode=TwoWay}"  UnitType="Size" Grid.Row="3" Grid.Column="1"  />
 
-                            <Button Width="24" Height="24"   Margin="2" HorizontalAlignment="Right"  Style="{StaticResource VideoControlButton}" 
+                            <Button  Margin="2" HorizontalAlignment="Right"  Style="{StaticResource JogArrow}" 
                                     ToolTip="Reset to first component"
                                     Grid.Row="4" Grid.Column="2" Command="{Binding ResetCurrentComponentCommand}">
                                 <Button.Content>
-                                    <fa:ImageAwesome  Icon="MailReply" />
+                                    <fa:ImageAwesome  Icon="MailReply" Margin="10" />
                                 </Button.Content>
                             </Button>
 
-                            <Button Width="24" Height="24"   Margin="2" HorizontalAlignment="Right"  Style="{StaticResource VideoControlButton}" 
+                            <Button Margin="2" HorizontalAlignment="Right"  Style="{StaticResource JogArrow}" Padding="6" 
                                     ToolTip="Previous Component"
                                     Grid.Row="4" Grid.Column="3" Command="{Binding MoveToPreviousComponentInTapeCommand}">
                                 <Button.Content>
-                                    <fa:ImageAwesome  Icon="Backward" />
+                                    <fa:ImageAwesome  Icon="Backward" Margin="10" />
                                 </Button.Content>
                             </Button>
 
-                            <Button Width="24" Height="24"   Margin="2" HorizontalAlignment="Right"  Style="{StaticResource VideoControlButton}" 
+                            <Button Margin="2" HorizontalAlignment="Right"  Style="{StaticResource JogArrow}" 
                                     ToolTip="Next Component"
                                     Grid.Row="4" Grid.Column="4" Command="{Binding MoveToNextComponentInTapeCommand}">
                                 <Button.Content>
-                                    <fa:ImageAwesome  Icon="Forward" />
+                                    <fa:ImageAwesome  Icon="Forward"  Margin="10"  />
                                 </Button.Content>
                             </Button>
 
@@ -670,16 +623,17 @@
                             <Label Grid.Row="4" Content="{Binding SelectedPartRow.CurrentPartIndex, FallbackValue=-}" Grid.Column="1" ></Label>
 
 
-                            <Button Width="24" Height="24" Grid.Row="5" Grid.Column="2"  Margin="2" HorizontalAlignment="Right"  Style="{StaticResource VideoControlButton}" 
+                            <Button Grid.Row="5" Grid.Column="2"  Margin="2" HorizontalAlignment="Right"  Style="{StaticResource JogArrow}" 
                                     ToolTip="Go to part in tray"
                                    Command="{Binding GoToPartInTrayCommand}">
                                 <Button.Content>
-                                    <fa:ImageAwesome  Icon="Play" />
+                                    <fa:ImageAwesome  Icon="Play"  Margin="10"  />
                                 </Button.Content>
                             </Button>
 
                             <Label Content="Part in Tray:" Grid.Row="5" />
-                            <StackPanel Grid.Row="5" Grid.ColumnSpan="3" Grid.Column="1" Orientation="Horizontal" Visibility="{Binding XPartInTray, Converter={StaticResource NoTNullToVisibilityConverter}}">
+                            <StackPanel Grid.Row="5" Grid.ColumnSpan="3" Grid.Column="1" Orientation="Horizontal"
+                                        Visibility="{Binding XPartInTray, Converter={StaticResource NoTNullToVisibilityConverter}}">
                                 <Label Content="{Binding XPartInTray, FallbackValue=-}" ></Label>
                                 <Label Content="," />
                                 <Label Content="{Binding YPartInTray, FallbackValue=-}" ></Label>
@@ -710,47 +664,33 @@
                             <TextBlock Grid.Column="1" Grid.Row="3" Text="{Binding SelectedPartToBePlaced.Y, FallbackValue=-}" ></TextBlock>
                             <TextBlock Grid.Column="1" Grid.Row="4" Text="{Binding SelectedPartToBePlaced.Rotate, FallbackValue=-}" ></TextBlock>
 
-                            <Button Grid.Row="5" Grid.ColumnSpan="2" Command="{Binding PlacePartCommand}" Content="Place Part"></Button>
+                            <Button Grid.Row="5" Grid.ColumnSpan="2" Command="{Binding PlaceCurrentPartCommand}" Content="Place Part"></Button>
                         </Grid>
 
-                        <DataGrid Grid.Row="3" ItemsSource="{Binding SelectedPart.Parts}" CanUserSortColumns="False" SelectedItem="{Binding SelectedPartToBePlaced}" AutoGenerateColumns="False" CanUserAddRows="False">
+                        <DataGrid Grid.Row="3" ItemsSource="{Binding SelectedPart.Parts}" CanUserSortColumns="False" SelectedItem="{Binding SelectedPartToBePlaced}"
+                                  AutoGenerateColumns="False" CanUserAddRows="False">
                             <DataGrid.Columns>
-                                <DataGridTextColumn Header="Name" Binding="{Binding Name}" />
-                                <DataGridTextColumn Header="X" Binding="{Binding X}" />
-                                <DataGridTextColumn Header="Y" Binding="{Binding Y}" />
-                                <DataGridTextColumn Header="Rotate" Binding="{Binding Rotate}" />
+                                <DataGridTextColumn Header="Name" Binding="{Binding Name}" IsReadOnly="true" Width="80" />
+                                <DataGridTextColumn Header="X" Binding="{Binding X}"  IsReadOnly="true" Width="80"/>
+                                <DataGridTextColumn Header="Y" Binding="{Binding Y}" IsReadOnly="true" Width="80"  />
+                                <DataGridTextColumn Header="Rotate" Binding="{Binding Rotate}" IsReadOnly="true" Width="80" />
                             </DataGrid.Columns>
                         </DataGrid>
                     </Grid>
 
-                    <Image x:Name="WebCamImage" Source="{Binding PrimaryCapturedImage}"   MouseDown="WebCamImage_MouseDown"  Grid.Column="3" VerticalAlignment="Top"  Stretch="Uniform" Grid.Row="1" />
-                    <Controls:MVViewOptions HorizontalAlignment="Right" VerticalAlignment="Top" Grid.Row="1" Grid.Column="3" />
+                    <Image x:Name="WebCamImage" Source="{Binding PrimaryCapturedImage}"   MouseDown="WebCamImage_MouseDown"  Grid.Column="2" VerticalAlignment="Top"  Stretch="Uniform" />
+                    <Controls:MVViewOptions HorizontalAlignment="Right" VerticalAlignment="Top" Grid.Column="2" />
                     <Controls:ImageAdjustments Grid.Column="4" Grid.RowSpan="2" Visibility="{Binding AreToolSettingsVisible, Converter={StaticResource BoolToVisibilityConverter}}" />
 
-                    <Controls:LoadingMask Grid.ColumnSpan="5" Grid.Row="1"  />
+                    <Controls:LoadingMask Grid.ColumnSpan="5"  />
 
                     <Controls:PnPButtons Grid.Column="3" DataContext="{Binding MachineControls}" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="1,0,0,0" />
-
-                    <Grid VerticalAlignment="Bottom" HorizontalAlignment="Right" Grid.Column="3" Grid.Row="1">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="20" />
-                            <ColumnDefinition Width="50" />
-                            <ColumnDefinition Width="20" />
-                            <ColumnDefinition Width="50" />
-                        </Grid.ColumnDefinitions>
-                        <Frame Background="Black" Opacity="0.25" Grid.ColumnSpan="4" />
-                        <TextBlock Text="X=" Foreground="White" />
-
-                        <TextBlock Text="{Binding Machine.X}" Foreground="White" Grid.Column="1" />
-                        <TextBlock Text="Y=" Foreground="White" Grid.Column="2" />
-                        <TextBlock Text="{Binding Machine.Y}" Foreground="White" Grid.Column="3" />
-                    </Grid>
                 </Grid>
             </TabItem>
         </TabControl>
-        <StackPanel Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Right">
-            <Button Content="Save" Command="{Binding SaveCommand}" Margin="4" Width="120" Height="30" />
-            <Button Content="Close" Command="{Binding ExitCommand}" Margin="4" Width="120" Height="30" />
+        <StackPanel Orientation="Horizontal" Grid.Row="2" HorizontalAlignment="Right">
+            <Button Content="Save" Command="{Binding SaveCommand}"  Style="{StaticResource CommandButton}" />
+            <Button Content="Close" Command="{Binding ExitCommand}"  Style="{StaticResource CommandButton}" />
         </StackPanel>
     </Grid>
 </Window>

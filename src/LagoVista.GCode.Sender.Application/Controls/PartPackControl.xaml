@@ -74,10 +74,10 @@
             <TextBox Text="{Binding Notes, Mode=TwoWay}" Grid.ColumnSpan="2" Grid.Row="9" Grid.Column="1"  />
         </Grid>
 
-        <DataGrid ItemsSource="{Binding Rows, Mode=TwoWay}" SelectedItem="{Binding SelectedRow, Mode=TwoWay}" AutoGenerateColumns="False" CanUserAddRows="False" Grid.Row="1">
+        <DataGrid ItemsSource="{Binding Rows, Mode=TwoWay}" SelectedItem="{Binding SelectedRow, Mode=TwoWay}" AutoGenerateColumns="False" CanUserSortColumns="False"  CanUserAddRows="False" Grid.Row="1">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Package" Binding="{Binding Part.PackageName}" Width="*" />
-                <DataGridTextColumn Header="Value"  Binding="{Binding Part.Value}" Width="*" />
+                <DataGridTextColumn Header="Package" IsReadOnly="true" Binding="{Binding Part.PackageName}" Width="*" />
+                <DataGridTextColumn Header="Value" IsReadOnly="true" Binding="{Binding Part.Value}" Width="*" />
             </DataGrid.Columns>
         </DataGrid>
 
