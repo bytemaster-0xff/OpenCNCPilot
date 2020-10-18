@@ -61,12 +61,6 @@ namespace LagoVista.GCode.Sender.ViewModels
                 case JogDirections.T1Plus:
                     Machine.SendCommand($"{Machine.Settings.JogGCodeCommand} Z{(ZStepSize).ToDim()} F{Machine.Settings.JogFeedRate}");
                     break;
-                case JogDirections.CMinus:
-                    Machine.SendCommand($"{Machine.Settings.JogGCodeCommand} E{(-90.0).ToDim()} F500");
-                    break;
-                case JogDirections.CPlus:
-                    Machine.SendCommand($"{Machine.Settings.JogGCodeCommand} E{(+90.0).ToDim()} F500");
-                    break;
             }
 
             Machine.SendCommand("G90");
@@ -110,17 +104,40 @@ namespace LagoVista.GCode.Sender.ViewModels
                     Machine.SendCommand($"{Machine.Settings.JogGCodeCommand} Z{(Machine.Tool1 + ZStepSize).ToDim()} F{Machine.Settings.JogFeedRate}");
                     break;
                 case JogDirections.CMinus:
-                    Machine.SendCommand($"{Machine.Settings.JogGCodeCommand} E{(-90.0).ToDim()} F500");
+                    {
+                        var newAngle = Machine.Tool2 - 90;
+                        if (newAngle > 360)
+                            newAngle -= 360;
+
+                        if(newAngle < 360)
+                        {
+                            newAngle += 360;
+                        }
+
+                        Machine.SendCommand($"{Machine.Settings.JogGCodeCommand} E{(newAngle).ToDim()} F5000");
+                    }
                     break;
+
                 case JogDirections.CPlus:
-                    Machine.SendCommand($"{Machine.Settings.JogGCodeCommand} E{(90.0).ToDim()} F500");
-                    break;
+                    {
+                        var newAngle = Machine.Tool2 + 90;
+                        if (newAngle > 360)
+                            newAngle -= 360;
+
+                        if (newAngle < 360)
+                        {
+                            newAngle += 360;
+                        }
+
+                        Machine.SendCommand($"{Machine.Settings.JogGCodeCommand} E{(newAngle).ToDim()} F5000"); break;
+                    }
             }
         }
 
         public void Jog(JogDirections direction)
         {
-            if(Machine.Settings.MachineType == FirmwareTypes.Repeteir_PnP)
+            if(Machine.Settings.MachineType == FirmwareTypes.Repeteir_PnP && 
+                direction != JogDirections.CMinus && direction != JogDirections.CPlus)
             {
                 RelativeJog(direction);
             }

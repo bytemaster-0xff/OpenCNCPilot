@@ -98,7 +98,8 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                             {
                                 PrimaryCapturedImage = Emgu.CV.WPF.BitmapSourceConvert.ToBitmapSource(results);
                             }
-                            else if (PictureInPicture)
+                            
+                            if (PictureInPicture)
                             {
                                 SecondaryCapturedImage = Emgu.CV.WPF.BitmapSourceConvert.ToBitmapSource(results);
                             }
@@ -143,7 +144,8 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                             {
                                 PrimaryCapturedImage = Emgu.CV.WPF.BitmapSourceConvert.ToBitmapSource(results);
                             }
-                            else if (PictureInPicture)
+                            
+                            if (PictureInPicture)
                             {
                                 SecondaryCapturedImage = Emgu.CV.WPF.BitmapSourceConvert.ToBitmapSource(results);
                             }

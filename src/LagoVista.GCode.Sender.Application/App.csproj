@@ -181,6 +181,7 @@
     <Compile Include="Controls\XYJog.xaml.cs">
       <DependentUpon>XYJog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Converters\BoolColorConverter.cs" />
     <Compile Include="Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="Converters\ColorConverters.cs" />
     <Compile Include="Converters\GCodeSendStatusTypeConverters.cs" />

@@ -17,7 +17,7 @@ namespace LagoVista.GCode.Sender.ViewModels
             SetCameraCommand = new RelayCommand((param) => SetCamera(), CanSetCamera);
             SetTool1Command = new RelayCommand((param) => SetTool1(), CanSetTool1);
 
-            MoveToBottomCameraCommand = new RelayCommand((obj) => Machine.SendCommand("M52"), CanJog);
+            MoveToBottomCameraCommand = new RelayCommand((obj) => MoveToBottomCamera(), CanJog);
 
             SetToMoveHeightCommand = new RelayCommand((obj) => SetToMoveHeight(), CanJog);
             SetToPickHeightCommand = new RelayCommand((obj) => SetToPickHeight(), CanJog);
@@ -59,6 +59,21 @@ namespace LagoVista.GCode.Sender.ViewModels
             else
             {
                 Machine.SendCommand($"G0 Z{Machine.Settings.ToolBoardHeight} F5000");
+            }
+        }
+
+        void MoveToBottomCamera()
+        {
+            if (Machine.Settings.MachineType == FirmwareTypes.LagoVista_PnP)
+            {
+                Machine.SendCommand("M52");
+            }
+            else
+            {
+                if (Machine.Settings.PartInspectionCamera?.AbsolutePosition != null)
+                {
+                    Machine.SendCommand($"G0 X{Machine.Settings.PartInspectionCamera.AbsolutePosition.X} Y{Machine.Settings.PartInspectionCamera.AbsolutePosition.Y} Z{Machine.Settings.PartInspectionCamera.FocusHeight} F1{Machine.Settings.FastFeedRate}");
+                }
             }
         }
 

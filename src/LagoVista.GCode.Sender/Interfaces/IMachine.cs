@@ -25,6 +25,11 @@ namespace LagoVista.GCode.Sender.Interfaces
         int UnacknowledgedBytesSent { get; }
 
         /// <summary>
+        /// Number of items in the queue, thread safe.
+        /// </summary>
+        int ToSendQueueCount { get; }
+
+        /// <summary>
         /// Perform any additional tasks to initialize the machine, should be called as soon 
         /// as possible
         /// </summary>
@@ -71,6 +76,13 @@ namespace LagoVista.GCode.Sender.Interfaces
         /// Type of view such as camera, tool1, tool2
         /// </summary>
         ViewTypes ViewType { get; set; }
+
+        /// <summary>
+        /// Method to set the view type and wait for it to be completed before continue.
+        /// </summary>
+        /// <param name="viewType"></param>
+        /// <returns></returns>
+        Task SetViewTypeAsync(ViewTypes viewType);
 
         /// <summary>
         /// Mode in which GCode commands should be interpretted.  These are either absolute with repsect to

@@ -199,7 +199,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             }
         }
 
-        bool _pictureInPicture = false;
+        bool _pictureInPicture = true;
         public bool PictureInPicture
         {
             get { return _pictureInPicture; }

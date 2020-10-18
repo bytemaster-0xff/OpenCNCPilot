@@ -31,7 +31,16 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
         {
             await base.InitAsync();
 
-            BottomCameraLocation = Machine.Settings.PartInspectionCamera?.AbsolutePosition;
+            if (Machine.Settings.PartInspectionCamera != null && 
+                Machine.Settings.PartInspectionCamera.AbsolutePosition != null)
+            {
+                BottomCameraLocation = new Point3D<double>()
+                {
+                    X = Machine.Settings.PartInspectionCamera.AbsolutePosition.X,
+                    Y = Machine.Settings.PartInspectionCamera.AbsolutePosition.Y,
+                    Z = Machine.Settings.PartInspectionCamera.FocusHeight
+                };
+            }
             StartCapture();
         }
 
@@ -89,7 +98,13 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             }
 
             Machine.Settings.PartInspectionCamera.AbsolutePosition = new Point2D<double>(Machine.MachinePosition.X, Machine.MachinePosition.Y);
-            BottomCameraLocation = Machine.Settings.PartInspectionCamera.AbsolutePosition;
+            Machine.Settings.PartInspectionCamera.FocusHeight = Machine.Tool0;
+            BottomCameraLocation = new Point3D<double>()
+            {
+                X = Machine.Settings.PartInspectionCamera.AbsolutePosition.X,
+                Y = Machine.Settings.PartInspectionCamera.AbsolutePosition.Y,
+                Z = Machine.Settings.PartInspectionCamera.FocusHeight
+            };
 
             IsDirty = true;
         }
@@ -196,8 +211,8 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             set { Set(ref _topCameraLocation, value); }
         }
 
-        Point2D<double> _bottomCameraLocation;
-        public Point2D<double> BottomCameraLocation
+        Point3D<double> _bottomCameraLocation;
+        public Point3D<double> BottomCameraLocation
         {
             get { return _bottomCameraLocation; }
             set { Set(ref _bottomCameraLocation, value); }

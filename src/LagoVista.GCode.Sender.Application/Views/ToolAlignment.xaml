@@ -9,6 +9,21 @@
         mc:Ignorable="d"
         Title="Tool Alignment View" Height="900" Width="1400">
     <Grid >
+        <Grid.Resources>
+            <Style TargetType="Button" BasedOn="{StaticResource CommandButton}" >
+                <Setter Property="Width" Value="50" />
+                <Setter Property="Height" Value="24" />
+            </Style>
+            <Style TargetType="Label" x:Key="ValueLabel">
+                <Setter Property="FontWeight" Value="Bold" />
+            </Style>
+            <Style TargetType="Label" x:Key="ValueContent">
+                <Setter Property="HorizontalAlignment" Value="Right" />
+                <Setter Property="Margin" Value="0,0,5,0" />
+            </Style>
+
+        </Grid.Resources>
+        
         <Grid.RowDefinitions>
             <RowDefinition Height="48"/>
             <RowDefinition Height="*"/>
@@ -22,6 +37,7 @@
         </StackPanel>
 
         <Image x:Name="WebCamImage" Source="{Binding PrimaryCapturedImage}" MouseDown="WebCamImage_MouseDown" Stretch="Uniform" Grid.Row="1" Grid.RowSpan="2" />
+                
         <Rectangle x:Name="BirdsEye" Fill="Black" MouseDown="BirdsEye_MouseDown" Width="125" Height="200" HorizontalAlignment="Right" VerticalAlignment="Bottom" Grid.Row="1" Grid.RowSpan="2" Grid.Column="0"  ></Rectangle>
         <Controls:ImageAdjustments Grid.Column="1" Grid.RowSpan="2" Visibility="{Binding AreToolSettingsVisible, Converter={StaticResource BoolToVisibilityConverter}}" />
 
@@ -42,8 +58,8 @@
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="80" />
                     </Grid.ColumnDefinitions>
-                    <TextBlock FontWeight="Bold" Text="Top Camera: " Margin="5,0,0,0" />
-                    <TextBlock Text="{Binding TopCameraLocation, Converter={StaticResource Point2TextConverter}}" Grid.Column="1" TextAlignment="Right" />
+                    <Label Style="{StaticResource ValueLabel}" Content="Top Camera:"  />
+                    <Label Style="{StaticResource ValueContent}" Content="{Binding TopCameraLocation, Converter={StaticResource Point2TextConverter}}" Grid.Column="1" />
                     <Button Command="{Binding SetTopCameraLocationCommand}" Content="Set" Margin="0,0,0,0" Grid.Column="3" />
                 </Grid>
 
@@ -56,9 +72,20 @@
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="80" />
                     </Grid.ColumnDefinitions>
-                    <TextBlock Text="Bottom Camera:" Margin="5,0,0,0" FontWeight="Bold" />
-                    <TextBlock Text="{Binding BottomCameraLocation, Converter={StaticResource Point2TextConverter}}" Grid.Column="1" TextAlignment="Right" />
-                    <Button Command="{Binding SetToolOneLocationCommand}" Content="Set" Grid.Column="2"  />
+                    <Label Style="{StaticResource ValueLabel}" Content="Bottom Camera:"/>
+                    <StackPanel Orientation="Horizontal" Grid.Column="1" VerticalAlignment="Center" Margin="0,-10,0,0" HorizontalAlignment="Right">
+                        <TextBlock>
+                            <TextBlock.Text>
+                                <MultiBinding StringFormat="{}({0},{1:0.00},{2:0.00})">
+                                    <Binding Path="BottomCameraLocation.X" />
+                                    <Binding Path="BottomCameraLocation.Y" />
+                                    <Binding Path="BottomCameraLocation.Z" />
+                                </MultiBinding>
+                            </TextBlock.Text>
+                        </TextBlock>
+                    </StackPanel>
+                    
+                    <Button Command="{Binding SetBottomCameraLocationCommand}" Content="Set" Grid.Column="2" />
                 </Grid>
 
 
@@ -71,12 +98,11 @@
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="80" />
                     </Grid.ColumnDefinitions>
-                    <TextBlock Text="Tool 1 Offset" Margin="5,0,0,0" FontWeight="Bold" />
-                    <TextBlock Text="{Binding Machine.Settings.Tool1Offset, Converter={StaticResource Point2TextConverter}}" Grid.Column="1" TextAlignment="Right" />
+                    <Label Style="{StaticResource ValueLabel}" Content="Tool 1 Offset" />
+                    <Label Style="{StaticResource ValueContent}" Content="{Binding Machine.Settings.Tool1Offset, Converter={StaticResource Point2TextConverter}}" Grid.Column="1"  HorizontalAlignment="Right"  />
                     <Button Command="{Binding SetToolOneLocationCommand}" Content="Set" Grid.Column="3" />
                 </Grid>
                 
-
                 <TextBlock Text="Step 4 - Tool 2 Location (optional)"  FontWeight="Bold" FontSize="16" />
                 <TextBlock Text="Move Tool 1 over the center of the bottom facing camera and rotate the C Axis." TextWrapping="Wrap" Margin="0,0,0,5"  />
                 <Grid Margin="0,0,0,5"  >
@@ -85,8 +111,8 @@
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="80" />
                     </Grid.ColumnDefinitions>
-                    <TextBlock Text="Tool 2 Location"  Margin="5,0,0,0" FontWeight="Bold" />
-                    <TextBlock Text="{Binding Machine.Settings.Tool2Offset, Converter={StaticResource Point2TextConverter}}" Grid.Column="1" TextAlignment="Right" />
+                    <Label Style="{StaticResource ValueLabel}" Content="Tool 2 Location" />
+                    <TextBlock Text="{Binding Machine.Settings.Tool2Offset, Converter={StaticResource Point2TextConverter}}" Grid.Column="1" />
                     <Button Command="{Binding SetToolTwoLocationCommand}" Content="Set" Grid.Column="2" />
                 </Grid>
 
@@ -99,8 +125,8 @@
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="80" />
                     </Grid.ColumnDefinitions>
-                    <TextBlock Text="Save Move Height"  Margin="5,0,0,0" FontWeight="Bold" />
-                    <TextBlock Text="{Binding Machine.Settings.ToolSafeMoveHeight}" Grid.Column="1" TextAlignment="Right" />
+                    <Label Style="{StaticResource ValueLabel}" Content="Save Move Height" />
+                    <Label Style="{StaticResource ValueContent}" Content="{Binding Machine.Settings.ToolSafeMoveHeight}" Grid.Column="1" />
                     <Button Command="{Binding SetToolOneMovePositionCommand}" Content="Set" Grid.Column="3"/>
                 </Grid>
 
@@ -112,8 +138,8 @@
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="80" />
                     </Grid.ColumnDefinitions>
-                    <TextBlock Text="Pick Height"  Margin="5,0,0,0" FontWeight="Bold" />
-                    <TextBlock Text="{Binding Machine.Settings.ToolPickHeight}" Grid.Column="1" TextAlignment="Right" />
+                    <Label Style="{StaticResource ValueLabel}" Content="Pick Height" />
+                    <Label Style="{StaticResource ValueContent}" Content="{Binding Machine.Settings.ToolPickHeight}" Grid.Column="1"  />
                     <Button Command="{Binding SetToolOnePickPositionCommand}" Content="Set" Grid.Column="3" />
                 </Grid>
 
@@ -125,17 +151,16 @@
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="80" />
                     </Grid.ColumnDefinitions>
-                    <TextBlock Text="Place Height"  Margin="5,0,0,0" FontWeight="Bold" />
-                    <TextBlock Text="{Binding Machine.Settings.ToolBoardHeight}" Grid.Column="1" TextAlignment="Right" />
+                    <Label Style="{StaticResource ValueLabel}" Content="Place Height" />
+                    <Label Style="{StaticResource ValueContent}" Content="{Binding Machine.Settings.ToolBoardHeight}" Grid.Column="1"  />
                     <Button Command="{Binding SetToolOnePlacePositionCommand}" Content="Set" Grid.Column="2" />
                 </Grid>
                 
-               
-                
-                <Button Command="{Binding SaveCalibrationCommand}" Content="Save" />
+                <Button Command="{Binding SaveCalibrationCommand}" Content="Save" HorizontalAlignment="Right" />
             </StackPanel>
         </Grid>
         <Controls:XYJog DataContext="{Binding MachineControls}" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Bottom" />
+        <Controls:ImageAdjustments Grid.Column="4" Grid.RowSpan="2" Visibility="{Binding AreToolSettingsVisible, Converter={StaticResource BoolToVisibilityConverter}}" />
         <Controls:LoadingMask Grid.ColumnSpan="2" Grid.Row="1"   />
         
     </Grid>

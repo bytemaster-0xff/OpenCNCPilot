@@ -45,6 +45,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                 EntityHeader.Create("brdfiducual", "Board Fiducial"),
                 EntityHeader.Create("tapehole", "Tape Hole"),
                 EntityHeader.Create("squarepart", "Square Part"),
+                EntityHeader.Create("nozzle", "Nozzle"),
             };
 
             CurrentMVProfile = MVProfiles.SingleOrDefault(mv => mv.Id == "default");
@@ -273,7 +274,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                 var deltaY = Math.Abs(avg.Y - center.Y);
                 //Debug.WriteLine($"{deltaX}, {deltaY} - {_stabilizedPointCount} - {_circleRadiusMedianFilter.StandardDeviation.X},{_circleRadiusMedianFilter.StandardDeviation.Y}");
                 /* If within one pixel of center, state we have a match */
-                if (deltaX < 1 && deltaY < 1)
+                if (deltaX < 0.25 && deltaY < 0.25)
                 {
                     Line(output, 0, (int)avg.Y, size.Width, (int)avg.Y, System.Drawing.Color.Green);
                     Line(output, (int)avg.X, 0, (int)avg.X, size.Height, System.Drawing.Color.Green);

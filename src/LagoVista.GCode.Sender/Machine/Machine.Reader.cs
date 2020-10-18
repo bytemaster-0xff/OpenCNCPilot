@@ -15,19 +15,14 @@ namespace LagoVista.GCode.Sender
     public partial class Machine
     {
         private StringBuilder _messageBuffer = new StringBuilder();
-     
+
         private void ParseMessage(string fullMessageLine)
         {
             fullMessageLine = fullMessageLine.ToLower();
             Debug.WriteLine(fullMessageLine);
 
-            if(fullMessageLine.StartsWith("wait"))
-            {
-                _pendingWait = false;
-                /* nop */
-            }
-            else if (fullMessageLine.StartsWith("ok") ||
-                fullMessageLine.StartsWith("<ok:"))
+            if (fullMessageLine.StartsWith("ok") ||
+                            fullMessageLine.StartsWith("<ok:"))
             {
                 if (GCodeFileManager.HasValidFile && Mode == OperatingMode.SendingGCodeFile)
                 {
@@ -128,7 +123,7 @@ namespace LagoVista.GCode.Sender
                 }
                 else if (fullMessageLine.StartsWith("<"))
                 {
-                    if(Settings.MachineType == FirmwareTypes.LagoVista || Settings.MachineType == FirmwareTypes.LagoVista_PnP)
+                    if (Settings.MachineType == FirmwareTypes.LagoVista || Settings.MachineType == FirmwareTypes.LagoVista_PnP)
                     {
                         if (ParseLagoVistaLine(fullMessageLine))
                         {
@@ -203,7 +198,7 @@ namespace LagoVista.GCode.Sender
 
         private void ProcessResponseLine(String line)
         {
-            
+
             if (String.IsNullOrEmpty(line))
             {
                 return;
@@ -211,18 +206,18 @@ namespace LagoVista.GCode.Sender
 
             ParseMessage(line);
 
-/*            foreach (var ch in line.ToCharArray())
-            {
-                if (ch == '\r')
-                {
-                    ParseMessage(_messageBuffer.ToString());
-                    _messageBuffer.Clear();
-                }
-                else
-                {
-                    _messageBuffer.Append(ch);
-                }
-            }*/
+            /*            foreach (var ch in line.ToCharArray())
+                        {
+                            if (ch == '\r')
+                            {
+                                ParseMessage(_messageBuffer.ToString());
+                                _messageBuffer.Clear();
+                            }
+                            else
+                            {
+                                _messageBuffer.Append(ch);
+                            }
+                        }*/
         }
     }
 }

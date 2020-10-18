@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         WindowStartupLocation="CenterOwner"
         WindowStyle="ToolWindow"
-        Title="SettingsWindow" Height="450" Width="500">
+        Title="SettingsWindow" Height="450" Width="600">
     <Window.Resources>
         <Style TargetType="TextBox">
             <Setter Property="Margin" Value="4" />
@@ -93,6 +93,10 @@
                     <ComboBox Grid.Row="8"  
                           SelectedValue="{Binding Path=MessgeOutputLevel, Mode=TwoWay}"
                           ItemsSource="{Binding Path=MessageOutputLevels}" Grid.ColumnSpan="2"  />
+
+                    <Label Grid.Row="9" Content="Fast Feed Rate" />
+                    <TextBox Text="{Binding Settings.FastFeedRate}"  Grid.Row="9" Grid.ColumnSpan="2" />
+                    <Label Content="mm/sec" Grid.Row="9" Grid.Column="3" />
                 </Grid>
             </TabItem>
 
@@ -171,11 +175,13 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="180" />
                         <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="40" />
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="auto" />
                         <RowDefinition Height="auto" />
-                    </Grid.RowDefinitions>
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />                    </Grid.RowDefinitions>
 
                     <Label Content="Top/Positioning Camera" />
                     <ComboBox ItemsSource="{Binding Cameras}" 
@@ -188,6 +194,14 @@
                           DisplayMemberPath="Name"
                           SelectedValuePath="Id"
                           SelectedValue="{Binding InspectionCameraId, Mode=TwoWay}"/>
+
+                    <Label Grid.Row="2" Content="Machine Fiducial Y" />
+                    <TextBox  Text="{Binding Settings.MachineFiducial.X}" Grid.Row="2" />
+                    <Label Content="mm" Grid.Row="2" Grid.Column="3" />
+
+                    <Label Grid.Row="3" Content="Machine Fiducial Y" />
+                    <TextBox Text="{Binding Settings.MachineFiducial.Y}"  Grid.Row="3" />
+                    <Label Content="mm" Grid.Row="3" Grid.Column="3" />
                 </Grid>
             </TabItem>
 
@@ -258,6 +272,29 @@
                     <Label Grid.Row="7" Content="Probe Offset" />
                     <TextBox Grid.Row="7" Grid.Column="1" TextAlignment="Right" ToolTip="Offset of Material Used for Probing" Text="{Binding Settings.ProbeOffset, FallbackValue=1.25, Mode=TwoWay}"/>
                     <Label Content="mm" Grid.Row="7" Grid.Column="2" />
+                </Grid>
+            </TabItem>
+            <TabItem Header="PnP">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="140" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="80" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                    </Grid.RowDefinitions>
+
+                    <Label Grid.Row="0" Content="Tool Offset X" />
+                    <TextBox Text="{Binding Settings.Tool1Offset.X}"  Grid.Row="0" />
+                    <Label Content="mm" Grid.Row="0" Grid.Column="3" />
+
+                    <Label Grid.Row="1" Content="Tool Offset Y" />
+                    <TextBox Text="{Binding Settings.Tool1Offset.Y}"  Grid.Row="1" />
+                    <Label Content="mm" Grid.Row="1" Grid.Column="3" />
+
+
                 </Grid>
             </TabItem>
             <TabItem Header="PCB">

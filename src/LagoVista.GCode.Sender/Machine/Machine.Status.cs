@@ -2,11 +2,14 @@
 using LagoVista.Core.PlatformSupport;
 using System;
 using System.Diagnostics;
+using System.Threading.Tasks;
+using System.Windows.Threading;
 
 namespace LagoVista.GCode.Sender
 {
     public enum ViewTypes
     {
+        Moving,
         Camera,
         Tool1,
         Tool2,
@@ -14,6 +17,18 @@ namespace LagoVista.GCode.Sender
 
     public partial class Machine
     {
+
+        public async Task SetViewTypeAsync(ViewTypes viewType)
+        {
+            if(ViewType == viewType)
+            {
+                return;
+            }
+
+            ViewType = viewType;
+            while (UnacknowledgedBytesSent > 0) await Task.Delay(1);
+        }
+
         private ViewTypes _viewType = ViewTypes.Camera;
         public ViewTypes ViewType
         {
@@ -39,26 +54,63 @@ namespace LagoVista.GCode.Sender
                         // 1. capture current position of machine.
                         var currentLocation = MachinePosition;
 
-                        // 2. set relative move
-                        Enqueue("G91"); // relative move
-
-                        // 3. move the machine to the tool that should be used. 
-                        if (_viewType == ViewTypes.Camera && value == ViewTypes.Tool1)
+                        Task.Run(() =>
                         {
-                            Enqueue($"G0 X{-Settings.Tool1Offset.X} Y{-Settings.Tool1Offset.Y}");
-                        }
-                        else if (_viewType == ViewTypes.Tool1 && value == ViewTypes.Camera)
-                        {
-                            Enqueue($"G0 X{Settings.Tool1Offset.X} Y{Settings.Tool1Offset.Y}");
-                        }
+                            // 2. set relative move
+                            Enqueue("G91"); // relative move
 
-                        // 4. set the machine back to absolute points
-                        Enqueue("G90");
 
-                        // 5. Set the machine location to where it was prior to the move.
-                        Enqueue($"G113 X{currentLocation.X} Y{currentLocation.Y}");
+                            // 3. move the machine to the tool that should be used. 
+                            if (_viewType == ViewTypes.Camera && value == ViewTypes.Tool1)
+                            {
+                                _viewType = ViewTypes.Moving;
+                                RaisePropertyChanged();
 
-                        _viewType = value;
+                                Enqueue($"G0 X{-Settings.Tool1Offset.X} Y{-Settings.Tool1Offset.Y} F{Settings.FastFeedRate}");
+                                Enqueue("M400"); // Wait for previous command to finish before executing next one.
+                                Enqueue("G4 P1"); // just pause for 1ms
+
+                                // Wait for the all the messages to get sent out (but won't get an OK for G4 until G0 finishes)
+                                System.Threading.SpinWait.SpinUntil(() => ToSendQueueCount > 0, 5000);
+
+                                // wait until G4 gets marked at sent
+                                System.Threading.SpinWait.SpinUntil(() => UnacknowledgedBytesSent == 0, 5000);
+
+                                _viewType = ViewTypes.Tool1;
+                                RaisePropertyChanged();
+                                Services.DispatcherServices.Invoke(() =>
+                                {
+                                    RaisePropertyChanged(nameof(ViewType));
+                                });
+                            }
+                            else if (_viewType == ViewTypes.Tool1 && value == ViewTypes.Camera)
+                            {
+                                _viewType = ViewTypes.Moving;
+                                Enqueue($"G0 X{Settings.Tool1Offset.X} Y{Settings.Tool1Offset.Y} F{Settings.FastFeedRate}");
+                                Enqueue("M400"); // Wait for previous command to finish before executing next one.
+                                Enqueue("G4 P1"); // just pause for 1ms
+
+                                // Wait for the all the messages to get sent out (but won't get an OK for G4 until G0 finishes)
+                                System.Threading.SpinWait.SpinUntil(() => ToSendQueueCount > 0, 5000);
+
+                                // wait until G4 gets marked at sent
+                                System.Threading.SpinWait.SpinUntil(() => UnacknowledgedBytesSent == 0, 5000);
+
+                                _viewType = ViewTypes.Camera;
+                                Services.DispatcherServices.Invoke(() =>
+                                {
+                                    RaisePropertyChanged(nameof(ViewType));
+                                });
+                            }
+
+                            // 4. set the machine back to absolute points
+                            Enqueue("G90");
+
+                            // 5. Set the machine location to where it was prior to the move.
+                            Enqueue($"G92 X{currentLocation.X} Y{currentLocation.Y}");
+                        });
+
+
                         RaisePropertyChanged();
                     }
                 }
@@ -72,7 +124,7 @@ namespace LagoVista.GCode.Sender
                 _viewType = viewType;
                 RaisePropertyChanged();
             }
-        } 
+        }
 
         private Vector3 _machinePosition = new Vector3();
         /// <summary>
@@ -253,16 +305,18 @@ namespace LagoVista.GCode.Sender
             }
         }
 
-        private int _bufferState;
+        private int _unacknowledgedBytesSent;
         public int UnacknowledgedBytesSent
         {
-            get { return _bufferState; }
+            get { return _unacknowledgedBytesSent; }
             set
             {
-                if (_bufferState == value)
+                if (_unacknowledgedBytesSent == value)
                     return;
 
-                _bufferState = value;
+                _unacknowledgedBytesSent = value;
+
+                Busy = _unacknowledgedBytesSent > 0;
 
                 RaisePropertyChanged();
             }

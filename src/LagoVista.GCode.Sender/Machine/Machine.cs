@@ -20,8 +20,6 @@ namespace LagoVista.GCode.Sender
 
         MachinesRepo _machineRepo;
 
-        private bool _pendingWait = false;
-
         public event PropertyChangedEventHandler PropertyChanged;
 
         public Machine(MachinesRepo repo)
@@ -122,19 +120,15 @@ namespace LagoVista.GCode.Sender
             return true;
         }
 
+        private bool _busy;
         public bool Busy
         {
-            get
+            set
             {
-                if (Settings.MachineType == FirmwareTypes.Repeteir_PnP)
-                {
-                    return _pendingWait || UnacknowledgedBytesSent > 0;
-                }
-                else
-                {
-                    return UnacknowledgedBytesSent > 0;
-                }
+                _busy = value;
+                RaisePropertyChanged(nameof(Busy));
             }
+            get => _busy;
         }
 
         public void GotoPoint(Point2D<double> point, bool rapidMove = true)

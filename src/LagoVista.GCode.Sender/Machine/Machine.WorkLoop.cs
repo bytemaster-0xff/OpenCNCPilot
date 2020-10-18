@@ -46,15 +46,17 @@ namespace LagoVista.GCode.Sender
 
             _writer.Write(send_line);
             _writer.Write('\n');
-            _writer.Flush();
+            _writer.Flush();            
 
             if (send_line != "M114")
             {
+                Debug.WriteLine("SENDING LINE => " + send_line);
+
                 UpdateStatus(send_line.ToString());
                 AddStatusMessage(StatusMessageTypes.SentLine, send_line.ToString());
+                _sentQueue.Enqueue(send_line);
             }
 
-            _sentQueue.Enqueue(send_line);
             _toSend.Dequeue();
         }
 

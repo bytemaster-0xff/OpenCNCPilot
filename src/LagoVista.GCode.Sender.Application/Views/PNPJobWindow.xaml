@@ -28,54 +28,7 @@
                         <ColumnDefinition Width="11*"/>
                         <ColumnDefinition Width="1100*"/>
                     </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="50" />
-                        <RowDefinition Height="*" />
-                    </Grid.RowDefinitions>
-                    <StackPanel Orientation="Horizontal" Grid.ColumnSpan="4">
-                        <Controls:MVCommandBar  HorizontalAlignment="Left" />
-
-                        <Button BorderBrush="Transparent"  Background="Transparent" Command="{Binding GoToWorkHomeCommand}"  ToolTip="Go To Work Home"  >
-                            <Button.Content>
-                                <Image Source="/imgs/GotoFiducialHome.png"/>
-                            </Button.Content>
-                        </Button>
-
-                        <Button BorderBrush="Transparent"  Background="Transparent" Command="{Binding SetWorkHomeCommand}"  ToolTip="Set Work Home"  >
-                            <Button.Content>
-                                <Image Source="/imgs/SetFiducialHome.png"/>
-                            </Button.Content>
-                        </Button>
-
-                        <ToggleButton IsChecked="{Binding Machine.TopLightOn, Mode=TwoWay}">
-                            <ToggleButton.Content>
-                                <Image Source="/imgs/TopLight.png" />
-                            </ToggleButton.Content>
-                        </ToggleButton>
-                        <ToggleButton IsChecked="{Binding Machine.BottomLightOn, Mode=TwoWay}">
-                            <ToggleButton.Content>
-                                <Image Source="/imgs/BottomLight.png" />
-                            </ToggleButton.Content>
-                        </ToggleButton>
-                        <ToggleButton IsChecked="{Binding Machine.Vacuum1On, Mode=TwoWay}" ToolTip="Vacuum Pump 1">
-                            <ToggleButton.Content>
-                                <Image Source="/imgs/Vacuum1.png" />
-                            </ToggleButton.Content>
-                        </ToggleButton>
-                        <ToggleButton IsChecked="{Binding Machine.Vacuum2On, Mode=TwoWay}" ToolTip="Vacuum Pump 2">
-                            <ToggleButton.Content>
-                                <Image Source="/imgs/Vacuum2.png" />
-                            </ToggleButton.Content>
-                        </ToggleButton>
-                        <ToggleButton IsChecked="{Binding Machine.SolendoidOn, Mode=TwoWay}" ToolTip="Exhaust Solenoid">
-                            <ToggleButton.Content>
-                                <Image Source="/imgs/Solenoid.png" />
-                            </ToggleButton.Content>
-                        </ToggleButton>
-
-                    </StackPanel>
-
-                    <Grid  Grid.Row="1" Grid.ColumnSpan="4">
+                    <Grid Grid.ColumnSpan="4">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="auto" />
                             <RowDefinition Height="auto" />
@@ -105,13 +58,18 @@
                         <Label Content="Fiducual 2 - Y" Grid.Row="4" />
                         <Controls:MaskingTextBox Text="{Binding Job.BoardFiducial2.Y, Mode=TwoWay}"  UnitType="Size " Grid.Row="4" Grid.Column="1" Margin="0,4,4,4" Width="80" HorizontalAlignment="Left" />
                         <Image x:Name="BoadImage" Source="{Binding PrimaryCapturedImage}"   MouseDown="WebCamImage_MouseDown"  Grid.Column="3" VerticalAlignment="Top"  Stretch="Uniform" Grid.Row="0" Grid.RowSpan="7" />
+                        <Image x:Name="SecondaryImage" Source="{Binding SecondaryCapturedImage}" Width="320" Height="240" Grid.Row="1" Stretch="Uniform" Grid.RowSpan="7" Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Bottom" />
+
                         <Controls:MVViewOptions HorizontalAlignment="Right" VerticalAlignment="Top" Grid.Row="1" Grid.Column="3" Grid.RowSpan="7" />
                         <Controls:ImageAdjustments Grid.Column="4" Grid.RowSpan="7" />
                         <StackPanel Grid.Row="5" Grid.ColumnSpan="2">
-                            <Button Command="{Binding PeformBoardAlignmentCommand}" Style="{StaticResource CommandButton}" Content="Board Alignment" />
-                            <Button Command="{Binding GoToWorkHomeCommand}" Style="{StaticResource CommandButton}" Content="Work Home" />
-                            <Button Command="{Binding GoToFiducial1Command}" Style="{StaticResource CommandButton}" Content="Fiducial 1" />
-                            <Button Command="{Binding GoToFiducial2Command}" Style="{StaticResource CommandButton}" Content="Fiducial 2" />
+                            <Button Command="{Binding HomingCycleCommand}" Style="{StaticResource CommandButton}" Content="1) HomingCycle" />
+                            <Button Command="{Binding PeformMachineAlignmentCommand}" Style="{StaticResource CommandButton}" Content="2) Machine Fiducial" />
+                            <Button Command="{Binding GoToWorkHomeCommand}" Style="{StaticResource CommandButton}" Content="3) Work Home" />
+                            <Button Command="{Binding GoToFiducial1Command}" Style="{StaticResource CommandButton}" Content="4) Board Fiducial 1" />
+                            <Button Command="{Binding GoToFiducial2Command}" Style="{StaticResource CommandButton}" Content="5) Board Fiducial 2" />
+                            <Button Command="{Binding AlignBottomCameraCommand}" Style="{StaticResource CommandButton}" Content="6) Bottom Camera" />
+                            <Button Command="{Binding GoToWorkHomeCommand}" Style="{StaticResource CommandButton}" Content="3) Work Home" />
                         </StackPanel>
                     </Grid>
                 </Grid>

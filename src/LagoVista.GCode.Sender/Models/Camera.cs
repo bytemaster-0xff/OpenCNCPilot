@@ -16,6 +16,8 @@ namespace LagoVista.GCode.Sender.Models
 
         public Point2D<double> AbsolutePosition { get; set; }
 
+        public double FocusHeight { get; set; }
+
         private Point2D<double> _tool1Offset;
         public Point2D<double> Tool1Offset
         {

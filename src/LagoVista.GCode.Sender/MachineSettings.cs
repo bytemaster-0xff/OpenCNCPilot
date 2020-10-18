@@ -42,7 +42,14 @@ namespace LagoVista.GCode.Sender
             set { Set(ref _defaultWorkspaceHome, value); }
         }
 
-        private int _fastFeedRate = 100000;
+        private Point2D<double> _machineFiducial = new Point2D<double>();
+        public Point2D<double> MachineFiducial
+        {
+            get { return _machineFiducial; }
+            set { Set(ref _machineFiducial, value); }
+        }
+
+        private int _fastFeedRate = 10000;
         public int FastFeedRate
         {
             get { return _fastFeedRate; }

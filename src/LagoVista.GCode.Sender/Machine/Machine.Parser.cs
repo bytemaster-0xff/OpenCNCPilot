@@ -1,6 +1,7 @@
 ﻿using LagoVista.Core.Models.Drawing;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.Windows.Media;
 
@@ -13,7 +14,7 @@ namespace LagoVista.GCode.Sender
         //private static Regex StatusEx = new Regex(@"<(?'State'Idle|Run|Hold|Home|Alarm|Check|Door)(:[0-9])?(?:.MPos:(?'MX'-?[0-9\.]*),(?'MY'-?[0-9\.]*),(?'MZ'-?[0-9\.]*))?(?:,WPos:(?'WX'-?[0-9\.]*),(?'WY'-?[0-9\.]*),(?'WZ'-?[0-9\.]*))?(?:,Buf:(?'Buf'[0-9]*))?(?:,RX:(?'RX'[0-9]*))?(?:,Ln:(?'L'[0-9]*))?(?:,F:(?'F'[0-9\.]*))?(?:,Lim:(?'Lim'[0-1]*))?(?:,Ctl:(?'Ctl'[0-1]*))?(?:.FS:(?'FSX'-?[0-9\.]*),(?'FSY'-?[0-9\.]*))?(?:.Pn.P)?(?:.WCO:(?'WCOX'-?[0-9\.]*),(?'WCOY'-?[0-9\.]*),(?'WCOZ'-?[0-9\.]*))?(?:.Ov:(?'OVX'-?[0-9\.]*),(?'OVY'-?[0-9\.]*),(?'OVZ'-?[0-9\.]*))?>");
         private static Regex StatusEx = new Regex(@"<(?'State'idle|run|hold|home|alarm|check|door)(:[0-9])?(?:.mpos:(?'MX'-?[0-9\.]*),(?'MY'-?[0-9\.]*),(?'MZ'-?[0-9\.]*))?(?:,wpos:(?'WX'-?[0-9\.]*),(?'WY'-?[0-9\.]*),(?'WZ'-?[0-9\.]*))?(?:,buf:(?'Buf'[0-9]*))?(?:,rx:(?'RX'[0-9]*))?(?:,ln:(?'L'[0-9]*))?(?:,f:(?'F'[0-9\.]*))?(?:,lim:(?'Lim'[0-1]*))?(?:,ctl:(?'Ctl'[0-1]*))?(?:.fs:(?'FSX'-?[0-9\.]*),(?'FSY'-?[0-9\.]*))?(?:.pn.p)?(?:.pn:.)?(?:.wco:(?'WCOX'-?[0-9\.]*),(?'WCOY'-?[0-9\.]*),(?'WCOZ'-?[0-9\.]*))?(?:.ov:(?'OVX'-?[0-9\.]*),(?'OVY'-?[0-9\.]*),(?'OVZ'-?[0-9\.]*))?>");
 
-        
+
 
         private static Regex LagoVistaStatusRegEx1 = new Regex(@"<(?'State'idle|run|hold|home|alarm|check|door)(:[0-9])?(?:.m:(?'MX'-?[0-9\.]*),(?'MY'-?[0-9\.]*),(?'MT0'-?[0-9\.]*),(?'MT1'-?[0-9\.]*),(?'MT2'-?[0-9\.]*),w:(?'WX'-?[0-9\.]*),(?'WY'-?[0-9\.]*),(?'WT0'-?[0-9\.]*),(?'WT1'-?[0-9\.]*),(?'WT2'-?[0-9\.]*),(?'QUEUE'-?[0-9]*)),(?'VT'camera|tool1|tool2)>");
         private static Regex LagoVistaStatusRegEx2 = new Regex(@"<(?:w:(?'WX'-?[0-9\.]*),(?'WY'-?[0-9\.]*),(?'WT0'-?[0-9\.]*),(?'WT1'-?[0-9\.]*),(?'WT2'-?[0-9\.]*))>");
@@ -27,6 +28,8 @@ namespace LagoVista.GCode.Sender
         private static Regex LagoVistaEndStop = new Regex(@"<endstops:(?'XMIN'[01]?),(?'XMAX'[01]?),(?'YMIN'[01]?),(?'YMAX'[01]?),(?'ZMIN1'[01]?),(?'ZMAX1'[01]?),(?'ZMIN2'[01]?),(?'ZMAX2'[01]?)>");
 
         private static Regex LagoVistaErrorRegEx = new Regex(@"<(?'State'alarm|message|endstop)?:(?'Msg'[\w]*)>");
+
+        private static Regex PinState = new Regex(@"^get input: (?'pin'-?[0-9\.]*) is (?'state'-?[0-9\.]*)$");
 
         private static Regex LagoVistaAccStatus = new Regex(@"<tl:(?'topLight'[01]),bl:(?'bottomLight'[01]),v1:(?'vacuum1'[01]),v2:(?'vacuum2'[01]),s1:(?'solenoid'[01]),t:(?'tool'[01])>");
 
@@ -161,7 +164,7 @@ namespace LagoVista.GCode.Sender
                 RaisePropertyChanged(nameof(Vacuum2On));
                 RaisePropertyChanged(nameof(BottomLightOn));
                 RaisePropertyChanged(nameof(TopLightOn));
-                
+
                 return true;
             }
             else if (lgvMovementMode.Success)
@@ -179,7 +182,7 @@ namespace LagoVista.GCode.Sender
                  wt1 = lgvStatusMatch2.Groups["WT1"],
                  wt2 = lgvStatusMatch2.Groups["WT2"];
 
-              
+
                 var newWorkPosition = new Vector3(double.Parse(wx.Value, Constants.DecimalParseFormat), double.Parse(wy.Value, Constants.DecimalParseFormat), double.Parse(_currentTool == 0 ? wt0.Value : wt1.Value, Constants.DecimalParseFormat));
 
                 if (WorkspacePosition != newWorkPosition)
@@ -261,9 +264,12 @@ namespace LagoVista.GCode.Sender
         public bool ParseLine(String line)
         {
             var repeteirPosition = RepeteirPosition.Match(line);
-            if(repeteirPosition.Success)
+            var m114PositionMatch = CurrentPositionRegEx.Match(line);
+            var pinState = PinState.Match(line);
+
+            if (repeteirPosition.Success)
             {
-                Group xpos = repeteirPosition.Groups["xpos"], ypos = repeteirPosition.Groups["ypos"], zpos = repeteirPosition.Groups["zpos"], epos = repeteirPosition.Groups["epos"];                
+                Group xpos = repeteirPosition.Groups["xpos"], ypos = repeteirPosition.Groups["ypos"], zpos = repeteirPosition.Groups["zpos"], epos = repeteirPosition.Groups["epos"];
 
                 var newMachinePosition = new Vector3(double.Parse(xpos.Value, Constants.DecimalParseFormat), double.Parse(ypos.Value, Constants.DecimalParseFormat), 0);
 
@@ -277,39 +283,68 @@ namespace LagoVista.GCode.Sender
 
                 return true;
             }
-
-            var m114PositionMatch = CurrentPositionRegEx.Match(line);
-            if (!m114PositionMatch.Success)
+            else if (pinState.Success)
             {
-                return false;
-            }
+                var pin = Convert.ToInt32(pinState.Groups["pin"].Value);
+                var state = Convert.ToInt32(pinState.Groups["state"].Value);
 
-            Group mx = m114PositionMatch.Groups["MX"], my = m114PositionMatch.Groups["MY"], mz = m114PositionMatch.Groups["MZ"];
-            Group wx = m114PositionMatch.Groups["WX"], wy = m114PositionMatch.Groups["WY"], wz = m114PositionMatch.Groups["WZ"];
+                Debug.WriteLine($"Read pin {pin} state of {state}");
 
-            if (mx.Success)
-            {
-                var newMachinePosition = new Vector3(double.Parse(mx.Value, Constants.DecimalParseFormat), double.Parse(my.Value, Constants.DecimalParseFormat), double.Parse(mz.Value, Constants.DecimalParseFormat));
-
-                if (MachinePosition != newMachinePosition)
+                switch (pin)
                 {
-                    MachinePosition = newMachinePosition;
+                    case 25:
+                        _vacuum1On = state > 0;
+                        RaisePropertyChanged(nameof(Vacuum1On));
+                        break;
+                    case 27:
+                        _vacuum2On = state > 0;
+                        RaisePropertyChanged(nameof(Vacuum2On));
+                        break;
+                    case 29:
+                        _solendoidOn = state > 0;
+                        RaisePropertyChanged(nameof(SolendoidOn));
+                        break;
+                    case 31:
+                        _topLightOn = state > 0;
+                        RaisePropertyChanged(nameof(TopLightOn));
+                        break;
+                    case 33:
+                        _bottomLightOn = state > 0;
+                        RaisePropertyChanged(nameof(BottomLightOn));
+                        break;
                 }
-            }
 
-            if (wx.Success)
+                return true;
+            }
+            else if (m114PositionMatch.Success)
             {
-                var newWorkPosition = new Vector3(double.Parse(wx.Value, Constants.DecimalParseFormat), double.Parse(wy.Value, Constants.DecimalParseFormat), double.Parse(wz.Value, Constants.DecimalParseFormat));
+                Group mx = m114PositionMatch.Groups["MX"], my = m114PositionMatch.Groups["MY"], mz = m114PositionMatch.Groups["MZ"];
+                Group wx = m114PositionMatch.Groups["WX"], wy = m114PositionMatch.Groups["WY"], wz = m114PositionMatch.Groups["WZ"];
 
-                if (WorkspacePosition != newWorkPosition)
+                if (mx.Success)
                 {
-                    //WorkPositionOffset = newWorkPosition;
+                    var newMachinePosition = new Vector3(double.Parse(mx.Value, Constants.DecimalParseFormat), double.Parse(my.Value, Constants.DecimalParseFormat), double.Parse(mz.Value, Constants.DecimalParseFormat));
+
+                    if (MachinePosition != newMachinePosition)
+                    {
+                        MachinePosition = newMachinePosition;
+                    }
                 }
+
+                if (wx.Success)
+                {
+                    var newWorkPosition = new Vector3(double.Parse(wx.Value, Constants.DecimalParseFormat), double.Parse(wy.Value, Constants.DecimalParseFormat), double.Parse(wz.Value, Constants.DecimalParseFormat));
+
+                    if (WorkspacePosition != newWorkPosition)
+                    {
+                        //WorkPositionOffset = newWorkPosition;
+                    }
+                }
+
+                return true;
             }
 
-            return true;
+            return false;
         }
-
-
     }
 }

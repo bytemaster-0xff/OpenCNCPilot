@@ -4,6 +4,8 @@ using LagoVista.Core.Models.Drawing;
 using LagoVista.Core.PlatformSupport;
 using LagoVista.GCode.Sender.Interfaces;
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -12,7 +14,7 @@ namespace LagoVista.GCode.Sender
     public partial class Machine
     {
         ISerialPort _port;
-        
+
         public async Task ConnectAsync(ISerialPort port)
         {
             if (Connected)
@@ -40,6 +42,15 @@ namespace LagoVista.GCode.Sender
                 }
 
                 Mode = OperatingMode.Manual;
+
+                if (Settings.MachineType == FirmwareTypes.Repeteir_PnP)
+                {
+                    Enqueue("M43 P25");
+                    Enqueue("M43 P27");
+                    Enqueue("M43 P29");
+                    Enqueue("M43 P31");
+                    Enqueue("M43 P33");
+                }
 
                 _cancelToken = new CancellationToken();
                 _port = port;
@@ -140,6 +151,17 @@ namespace LagoVista.GCode.Sender
             return true;
         }
 
+        public int ToSendQueueCount
+        {
+            get
+            {
+                lock (_queueAccessLocker)
+                {
+                    return _toSend.Count;
+                }
+            }
+        }
+
         /// <summary>
         /// Send CTRL-X to the machine
         /// </summary>
@@ -147,8 +169,6 @@ namespace LagoVista.GCode.Sender
         {
             if (AssertConnected())
             {
-                _pendingWait = false;
-
                 Mode = OperatingMode.Manual;
 
                 lock (_queueAccessLocker)
@@ -170,11 +190,11 @@ namespace LagoVista.GCode.Sender
         {
             if (AssertConnected())
             {
+
                 Services.DispatcherServices.Invoke(() =>
                 {
                     lock (_queueAccessLocker)
                     {
-
                         if (highPriority)
                         {
                             _toSendPriority.Enqueue(cmd);
@@ -186,8 +206,10 @@ namespace LagoVista.GCode.Sender
                                Settings.MachineType == FirmwareTypes.SimulatedMachine)
                                 PendingQueue.Add(cmd);
 
-                            UnacknowledgedBytesSent += cmd.Length + 1;
-                            _pendingWait = true;
+                            if (cmd != "M114" && cmd != "?")
+                            {
+                                UnacknowledgedBytesSent += cmd.Length + 1;
+                            }
                         }
                     }
                 });
@@ -204,8 +226,11 @@ namespace LagoVista.GCode.Sender
                     {
 
                         _jobToSend.Enqueue(cmd);
-                        UnacknowledgedBytesSent += cmd.Line.Length + 1;
-                        _pendingWait = true;
+                        if (cmd.Line != "M114" && cmd.Line != "?")
+                        {
+                            UnacknowledgedBytesSent += cmd.Line.Length + 1;
+                            Busy = true;
+                        }
                     }
                 });
             }
@@ -219,13 +244,17 @@ namespace LagoVista.GCode.Sender
 
         public void GotoWorkspaceHome()
         {
+            Enqueue($"G0 Z{Settings.ToolSafeMoveHeight} F{Settings.FastFeedRate}");
+
             if (Settings.MachineType == FirmwareTypes.LagoVista_PnP)
             {
                 Enqueue("M57");
             }
             else if (Settings.MachineType == FirmwareTypes.Repeteir_PnP)
             {
-                GotoPoint(0,0);
+                
+                ViewType = ViewTypes.Camera;
+                GotoPoint(0, 0);
             }
             else
             {
@@ -283,6 +312,9 @@ namespace LagoVista.GCode.Sender
 
         public void HomingCycle()
         {
+            _viewType = ViewTypes.Camera;
+            RaisePropertyChanged(nameof(ViewType));
+
             if (Settings.MachineType == FirmwareTypes.GRBL1_1)
             {
                 Enqueue("$H\n", true);
