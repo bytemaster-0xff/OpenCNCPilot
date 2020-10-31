@@ -77,6 +77,13 @@ namespace LagoVista.PickAndPlace.Models
             set => Set(ref _height, value);
         }
 
+        private double _correctionAngle;
+        public double CorrectionAngle
+        {
+            get => _correctionAngle;
+            set => Set(ref _correctionAngle, value);
+        }
+
         public ObservableCollection<Row> Rows { get; set; } = new ObservableCollection<Row>();
         
         private double _rowHeight;

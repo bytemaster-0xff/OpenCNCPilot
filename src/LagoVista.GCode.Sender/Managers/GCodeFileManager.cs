@@ -89,7 +89,7 @@ namespace LagoVista.GCode.Sender.Managers
 
         public GCodeCommand CurrentCommand
         {
-            get { return _file == null ? null : _file.Commands[Tail]; }
+            get { return _file == null || Tail < _file.Commands.Count ? null : _file.Commands[Tail]; }
         }
 
         public int CommandAcknowledged()

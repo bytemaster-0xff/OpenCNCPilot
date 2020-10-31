@@ -28,6 +28,7 @@
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="120" />
@@ -58,20 +59,24 @@
             <Label Content="(mm)" Grid.Row="5" Grid.Column="3" />
             <Button Content="Set" Grid.Row="5" Grid.Column="3" Margin="48,0,0,0" HorizontalAlignment="Left" Width="24" Height="20" Command="{Binding DataContext.SetPartPackYCommand, ElementName=Host}" />
 
-            <Label Content="Pick Z Height" Grid.Row="6" />
-            <ctls:MaskingTextBox Text="{Binding PickZHeight, Mode=TwoWay}"  UnitType="Size"  Grid.Row="6" Grid.Column="1" />
-            <Label Content="(mm)" Grid.Row="6" Grid.Column="3" />
+            <Label Content="Angle Correction" Grid.Row="6" />
+            <ctls:MaskingTextBox Text="{Binding CorrectionAngle, Mode=TwoWay}"  UnitType="Size"  Grid.Row="6" Grid.Column="1" />
+            <Label Content="M in y = Mx + 0" Grid.Row="6"  Grid.Column="2"/>
 
-            <Label Content="Width" Grid.Row="7" />
-            <ctls:MaskingTextBox Text="{Binding Width, Mode=TwoWay}"  UnitType="Size"  Grid.Row="7" Grid.Column="1" />
+            <Label Content="Pick Z Height" Grid.Row="7" />
+            <ctls:MaskingTextBox Text="{Binding PickZHeight, Mode=TwoWay}"  UnitType="Size"  Grid.Row="7" Grid.Column="1" />
             <Label Content="(mm)" Grid.Row="7" Grid.Column="3" />
 
-            <Label Content="Height" Grid.Row="8" />
-            <ctls:MaskingTextBox Text="{Binding Height, Mode=TwoWay}"  UnitType="Size"  Grid.Row="8" Grid.Column="1" />
+            <Label Content="Width" Grid.Row="8" />
+            <ctls:MaskingTextBox Text="{Binding Width, Mode=TwoWay}"  UnitType="Size"  Grid.Row="8" Grid.Column="1" />
             <Label Content="(mm)" Grid.Row="8" Grid.Column="3" />
 
-            <Label Content="Note" Grid.Row="9" />
-            <TextBox Text="{Binding Notes, Mode=TwoWay}" Grid.ColumnSpan="2" Grid.Row="9" Grid.Column="1"  />
+            <Label Content="Height" Grid.Row="9" />
+            <ctls:MaskingTextBox Text="{Binding Height, Mode=TwoWay}"  UnitType="Size"  Grid.Row="9" Grid.Column="1" />
+            <Label Content="(mm)" Grid.Row="9" Grid.Column="3" />
+
+            <Label Content="Note" Grid.Row="10" />
+            <TextBox Text="{Binding Notes, Mode=TwoWay}" Grid.ColumnSpan="2" Grid.Row="10" Grid.Column="1"  />
         </Grid>
 
         <DataGrid ItemsSource="{Binding Rows, Mode=TwoWay}" SelectedItem="{Binding SelectedRow, Mode=TwoWay}" AutoGenerateColumns="False" CanUserSortColumns="False"  CanUserAddRows="False" Grid.Row="1">

@@ -351,6 +351,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
         {
             SelectedPartRow.CurrentPartIndex = 0;
             RaisePropertyChanged(nameof(XPartInTray));
+            RaisePropertyChanged(nameof(RotationInTape));
             RaisePropertyChanged(nameof(YPartInTray));
             RaisePropertyChanged(nameof(SelectedPartRow));
             GoToPartPositionInTray();
@@ -366,6 +367,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                 MoveToPreviousComponentInTapeCommand.RaiseCanExecuteChanged();
                 ResetCurrentComponentCommand.RaiseCanExecuteChanged();
                 RaisePropertyChanged(nameof(XPartInTray));
+                RaisePropertyChanged(nameof(RotationInTape));
                 RaisePropertyChanged(nameof(YPartInTray));
                 RaisePropertyChanged(nameof(SelectedPartRow));
                 await SaveJob();
@@ -382,6 +384,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                 MoveToPreviousComponentInTapeCommand.RaiseCanExecuteChanged();
                 ResetCurrentComponentCommand.RaiseCanExecuteChanged();
                 RaisePropertyChanged(nameof(XPartInTray));
+                RaisePropertyChanged(nameof(RotationInTape));
                 RaisePropertyChanged(nameof(YPartInTray));
                 RaisePropertyChanged(nameof(SelectedPartRow));
                 await SaveJob();
@@ -389,11 +392,12 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             }
         }
 
-        void SendInstructionSequenceAsync(List<string> cmds)
+        async Task SendInstructionSequenceAsync(List<string> cmds)
         {
             var file = GCodeFile.FromList(cmds, Logger);
             Machine.SetFile(file);
             Machine.GCodeFileManager.StartJob();
+            while (Machine.Mode == OperatingMode.SendingGCodeFile) await Task.Delay(1);
         }
 
         public string SafeHeightGCodeGCode()
@@ -454,11 +458,13 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             await Task.Delay(1000);
             while (SelectedPart != null)
             {
-                await PlacePartAsync();
+                await PlacePartAsync(true);
             }
 
             Machine.LocationUpdateEnabled = true;
 
+            Machine.Vacuum1On = false;
+            Machine.Vacuum2On = false;
         }
 
         public async void PlacePart()
@@ -471,13 +477,11 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             Machine.LocationUpdateEnabled = true;
         }
 
-        public async Task PlacePartAsync()
+        public async Task PlacePartAsync(bool multiple = false)
         {
             if (_partIndex < SelectedPart.Parts.Count)
             {
                 _isPlacingParts = true;
-
-        
                 PlaceCurrentPartCommand.RaiseCanExecuteChanged();
                 PlaceAllPartsCommand.RaiseCanExecuteChanged();
 
@@ -485,7 +489,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                 {
                     Machine.Vacuum1On = true;
                     Machine.Vacuum2On = true;
-                    await Task.Delay(500);
+                    await Task.Delay(1000);
                 }
 
                 await Machine.SetViewTypeAsync(ViewTypes.Tool1);
@@ -494,6 +498,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                 {
                     _partIndex = 0;
                     _selectPartToBePlaced = SelectedPart.Parts[_partIndex];
+                    RaisePropertyChanged(nameof(SelectedPartToBePlaced));
                 }
 
                 var cmds = new List<string>();
@@ -521,7 +526,13 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                 cmds.Add(RotationGCode(0)); // Ensure we are at zero position before picking up part.
                 cmds.Add(WaitForComplete());
 
-                SendInstructionSequenceAsync(cmds);
+                await SendInstructionSequenceAsync(cmds);
+
+                if(!multiple)
+                {
+                    Machine.Vacuum1On = false;
+                    Machine.Vacuum2On = false;
+                }
 
                 SelectedPartRow.CurrentPartIndex++;
                 _partIndex++;
@@ -555,6 +566,22 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             return _isDirty;
         }
 
+
+        public double? RotationInTape
+        {
+            get
+            {
+                if (SelectedPart != null && SelectedPartRow != null && SelectedPartPackage != null)
+                {
+                    return SelectedPartPackage.RotationInTape;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+
         public double? XPartInTray
         {
             get
@@ -576,7 +603,8 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             {
                 if (SelectedPart != null && SelectedPartRow != null && SelectedPartPackage != null)
                 {
-                    return SelectedPart.PartPack.Pin1YOffset + SelectedPart.Slot.Y + ((SelectedPartRow.RowNumber - 1) * SelectedPart.PartPack.RowHeight) + SelectedPartPackage.CenterYFromHole;
+                    var yCorrection = SelectedPart.PartPack.CorrectionAngle * ((SelectedPartRow.CurrentPartIndex * SelectedPartPackage.SpacingX) + SelectedPartPackage.CenterXFromHole);
+                    return SelectedPart.PartPack.Pin1YOffset + SelectedPart.Slot.Y + ((SelectedPartRow.RowNumber - 1) * SelectedPart.PartPack.RowHeight) + SelectedPartPackage.CenterYFromHole + yCorrection;
                 }
                 else
                 {
@@ -722,6 +750,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
 
                 RaisePropertyChanged(nameof(SelectedPartRow));
                 RaisePropertyChanged(nameof(XPartInTray));
+                RaisePropertyChanged(nameof(RotationInTape));
                 RaisePropertyChanged(nameof(YPartInTray));
 
                 MoveToNextComponentInTapeCommand.RaiseCanExecuteChanged();
@@ -762,6 +791,19 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                 SaveCommand.RaiseCanExecuteChanged();
                 Set(ref _job, value);
                 RaisePropertyChanged(nameof(HasJob));
+            }
+        }
+
+        public String ProgressOnPart
+        {
+            get
+            {
+                if(SelectedPart == null)
+                {
+                    return "-";
+                }
+
+                return $"Placing part {_partIndex} of {SelectedPart.Count}";
             }
         }
 

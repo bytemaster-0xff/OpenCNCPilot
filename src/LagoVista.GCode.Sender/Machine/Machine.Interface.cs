@@ -178,6 +178,12 @@ namespace LagoVista.GCode.Sender
                     PendingQueue.Clear();
                     if (Settings.MachineType == FirmwareTypes.GRBL1_1)
                         _toSendPriority.Enqueue(((char)0x18).ToString());
+                    else if(Settings.MachineType == FirmwareTypes.Repeteir_PnP)
+                        _toSendPriority.Enqueue("M112");
+
+                    Vacuum1On = false;
+                    Vacuum2On = false;
+                    SolendoidOn = false;
                 }
 
                 UnacknowledgedBytesSent = 0;
@@ -188,7 +194,6 @@ namespace LagoVista.GCode.Sender
         {
             if (AssertConnected())
             {
-
                 Services.DispatcherServices.Invoke(() =>
                 {
                     lock (_queueAccessLocker)
@@ -294,9 +299,13 @@ namespace LagoVista.GCode.Sender
             }
             else
             {
+                Vacuum1On = false;
+                Vacuum2On = false;
+                SolendoidOn = false;
                 Enqueue("G28");
                 if (Settings.MachineType == FirmwareTypes.Repeteir_PnP)
                 {
+                    
                     Enqueue($"G0 X{Settings.DefaultWorkspaceHome.X} Y{Settings.DefaultWorkspaceHome.Y} F{Settings.FastFeedRate}");
                     GotoPoint(Settings.DefaultWorkspaceHome.X, Settings.DefaultWorkspaceHome.Y);
                     SetWorkspaceHome();

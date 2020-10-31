@@ -554,51 +554,53 @@
                             <Label Grid.Row="2" Grid.Column="1" Content="{Binding SelectedPartRow, FallbackValue=-}"  Grid.ColumnSpan="4"></Label>
 
                             <Label Content="Part Count:" Grid.Row="3" />
-                            <Controls:MaskingTextBox Text="{Binding SelectedPartRow.PartCount, Mode=TwoWay}"  UnitType="Size" Grid.Row="3" Grid.Column="1"  />
+                            <Label Grid.Row="3"  Content="{Binding SelectedPartRow.CurrentPartIndex, FallbackValue=-}" Grid.Column="1" ></Label>
 
-                            <Button  Margin="2" HorizontalAlignment="Right"  Style="{StaticResource JogArrow}" 
+                            <Controls:MaskingTextBox Text="{Binding SelectedPartRow.PartCount, Mode=TwoWay}"  UnitType="Size" Grid.Row="3" Grid.Column="1" Width="30" Height="20" />
+                            <Label Content="Part in Tray:" Grid.Row="4" />
+                            <TextBlock Grid.Row="4" Grid.ColumnSpan="3" Grid.Column="1" Margin="0,5,0,0">
+                                <TextBlock.Text>
+                                    <MultiBinding StringFormat="x={0}, y={1} r={2}">
+                                        <Binding Path="XPartInTray" />
+                                        <Binding Path="YPartInTray" />
+                                        <Binding Path="RotationInTape" />
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
+                            
+
+                            <StackPanel Orientation="Horizontal" Grid.ColumnSpan="5" Grid.Row="5" HorizontalAlignment="Center">
+                                <Button  Margin="2" HorizontalAlignment="Right"  Style="{StaticResource JogArrow}" 
                                     ToolTip="Reset to first component"
-                                    Grid.Row="4" Grid.Column="2" Command="{Binding ResetCurrentComponentCommand}">
-                                <Button.Content>
-                                    <fa:ImageAwesome  Icon="MailReply" Margin="10" />
-                                </Button.Content>
-                            </Button>
+                                    Grid.Row="4" Grid.Column="0" Command="{Binding ResetCurrentComponentCommand}">
+                                    <Button.Content>
+                                        <fa:ImageAwesome  Icon="MailReply" Margin="10" />
+                                    </Button.Content>
+                                </Button>
 
-                            <Button Margin="2" HorizontalAlignment="Right"  Style="{StaticResource JogArrow}" Padding="6" 
+                                <Button Margin="2" HorizontalAlignment="Right"  Style="{StaticResource JogArrow}" Padding="6" 
                                     ToolTip="Previous Component"
-                                    Grid.Row="4" Grid.Column="3" Command="{Binding MoveToPreviousComponentInTapeCommand}">
-                                <Button.Content>
-                                    <fa:ImageAwesome  Icon="Backward" Margin="10" />
-                                </Button.Content>
-                            </Button>
-
-                            <Button Margin="2" HorizontalAlignment="Right"  Style="{StaticResource JogArrow}" 
-                                    ToolTip="Next Component"
-                                    Grid.Row="4" Grid.Column="4" Command="{Binding MoveToNextComponentInTapeCommand}">
-                                <Button.Content>
-                                    <fa:ImageAwesome  Icon="Forward"  Margin="10"  />
-                                </Button.Content>
-                            </Button>
-
-                            <Label Content="Index:" Grid.Row="4" />
-                            <Label Grid.Row="4" Content="{Binding SelectedPartRow.CurrentPartIndex, FallbackValue=-}" Grid.Column="1" ></Label>
-
-
-                            <Button Grid.Row="5" Grid.Column="2"  Margin="2" HorizontalAlignment="Right"  Style="{StaticResource JogArrow}" 
+                                    Grid.Row="4" Grid.Column="0" Command="{Binding MoveToPreviousComponentInTapeCommand}">
+                                    <Button.Content>
+                                        <fa:ImageAwesome  Icon="Backward" Margin="10" />
+                                    </Button.Content>
+                                </Button>
+                                <Button Grid.Row="4" Grid.Column="0"  Margin="2" HorizontalAlignment="Right"  Style="{StaticResource JogArrow}" 
                                     ToolTip="Go to part in tray"
                                    Command="{Binding GoToPartInTrayCommand}">
-                                <Button.Content>
-                                    <fa:ImageAwesome  Icon="Play"  Margin="10"  />
-                                </Button.Content>
-                            </Button>
-
-                            <Label Content="Part in Tray:" Grid.Row="5" />
-                            <StackPanel Grid.Row="5" Grid.ColumnSpan="3" Grid.Column="1" Orientation="Horizontal"
-                                        Visibility="{Binding XPartInTray, Converter={StaticResource NoTNullToVisibilityConverter}}">
-                                <Label Content="{Binding XPartInTray, FallbackValue=-}" ></Label>
-                                <Label Content="," />
-                                <Label Content="{Binding YPartInTray, FallbackValue=-}" ></Label>
+                                    <Button.Content>
+                                        <fa:ImageAwesome  Icon="Play"  Margin="10"  />
+                                    </Button.Content>
+                                </Button>
+                                <Button Margin="2" HorizontalAlignment="Right"  Style="{StaticResource JogArrow}" 
+                                    ToolTip="Next Component"
+                                    Grid.Row="4" Grid.Column="0" Command="{Binding MoveToNextComponentInTapeCommand}">
+                                    <Button.Content>
+                                        <fa:ImageAwesome  Icon="Forward"  Margin="10"  />
+                                    </Button.Content>
+                                </Button>
                             </StackPanel>
+
                         </Grid>
 
                         <Grid Grid.Row="2">
@@ -617,13 +619,18 @@
                             </Grid.RowDefinitions>
                             <Label Content="Part to be placed" FontWeight="Bold" Grid.ColumnSpan="2" />
                             <Label Content="Part:" Grid.Row="1" />
-                            <Label Content="X:" Grid.Row="2" />
-                            <Label Grid.Row="3" Content="Y:" />
-                            <Label  Grid.Row="4" Content="Rotate:" />
                             <TextBlock Grid.Column="1" Grid.Row="1" Text="{Binding SelectedPartToBePlaced.Name, FallbackValue=-}" ></TextBlock>
-                            <TextBlock Grid.Column="1" Grid.Row="2" Text="{Binding SelectedPartToBePlaced.X, FallbackValue=-}" ></TextBlock>
-                            <TextBlock Grid.Column="1" Grid.Row="3" Text="{Binding SelectedPartToBePlaced.Y, FallbackValue=-}" ></TextBlock>
-                            <TextBlock Grid.Column="1" Grid.Row="4" Text="{Binding SelectedPartToBePlaced.Rotate, FallbackValue=-}" ></TextBlock>
+
+                            <TextBlock  Grid.Column="2" Grid.Row="2" VerticalAlignment="Center" >
+                                <TextBlock.Text>
+                                    <MultiBinding StringFormat="{} x={0}, y={1} r={2}">
+                                        <Binding Path="SelectedPartToBePlaced.X" />
+                                        <Binding Path="SelectedPartToBePlaced.Y" />
+                                        <Binding Path="SelectedPartToBePlaced.Rotate" />
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
+
 
                             <StackPanel Grid.Row="5" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center">
                                 <Button Command="{Binding PlaceCurrentPartCommand}" Content="Place Part" Style="{StaticResource CommandButton}"></Button>

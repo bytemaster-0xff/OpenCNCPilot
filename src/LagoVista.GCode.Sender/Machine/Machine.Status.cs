@@ -56,7 +56,7 @@ namespace LagoVista.GCode.Sender
                         Enqueue($"G0 X{-Settings.Tool1Offset.X} Y{-Settings.Tool1Offset.Y} F{Settings.FastFeedRate}");
                         Enqueue("M400"); // Wait for previous command to finish before executing next one.
                         Enqueue("G4 P1"); // just pause for 1ms
-                        Enqueue($"M42 P31 ${(viewType == ViewTypes.Camera ? 0 : 255)}");
+                        Enqueue($"M42 P32 S255");
 
                         // Wait for the all the messages to get sent out (but won't get an OK for G4 until G0 finishes)
                         System.Threading.SpinWait.SpinUntil(() => ToSendQueueCount > 0, 5000);
@@ -77,6 +77,7 @@ namespace LagoVista.GCode.Sender
                         Enqueue($"G0 X{Settings.Tool1Offset.X} Y{Settings.Tool1Offset.Y} F{Settings.FastFeedRate}");
                         Enqueue("M400"); // Wait for previous command to finish before executing next one.
                         Enqueue("G4 P1"); // just pause for 1ms
+                        Enqueue($"M42 P32 S0");
 
                         // Wait for the all the messages to get sent out (but won't get an OK for G4 until G0 finishes)
                         System.Threading.SpinWait.SpinUntil(() => ToSendQueueCount > 0, 5000);

@@ -43,6 +43,11 @@ namespace LagoVista.GCode.Sender
             var send_line = _toSend.Peek();
             UnacknowledgedBytesSent += send_line.Length + 1;
 
+            if (send_line == "M400" || send_line == "G28")
+            {
+                _isOnHold = true;
+            }
+
             _writer.Write(send_line);
             _writer.Write('\n');
             _writer.Flush();
@@ -65,12 +70,11 @@ namespace LagoVista.GCode.Sender
         }
 
         private void TransmitJobItem(GCodeCommand cmd)
-        {          
+        {
             var trimmedLine = cmd.Line.Trim('\r', '\n');
 
-            if (trimmedLine == "M400")
+            if (trimmedLine == "M400" || trimmedLine == "G28")
             {
-                Debug.WriteLine("HOLDING!!!!!!!");
                 _isOnHold = true;
             }
 
@@ -107,7 +111,7 @@ namespace LagoVista.GCode.Sender
                     }
                     else
                     {
-                        //      Enqueue("M114");
+                        Enqueue("M114");
                     }
 
                     _lastPollTime = Now;
@@ -127,7 +131,7 @@ namespace LagoVista.GCode.Sender
                         }
                         else
                         {
-                            //Enqueue("M114");
+                            Enqueue("M114");
                         }
 
                     }
@@ -145,7 +149,7 @@ namespace LagoVista.GCode.Sender
                     }
                     else
                     {
-                        //        Enqueue("M114");
+                        Enqueue("M114");
                     }
 
                     _lastPollTime = Now;
@@ -157,26 +161,29 @@ namespace LagoVista.GCode.Sender
 
         private bool ShouldSendNormalPriorityItems()
         {
-            return !_isOnHold && _toSend.Count > 0 && ((_toSend.Peek().ToString()).Length + 1) < (Settings.ControllerBufferSize - Math.Max(0, UnacknowledgedBytesSent));
+            return _toSend.Count > 0 && ((_toSend.Peek().ToString()).Length + 1) < (Settings.ControllerBufferSize - Math.Max(0, UnacknowledgedBytesSent));
         }
 
         private async Task Send()
         {
             SendHighPriorityItems();
 
-            if (!_isOnHold && Mode == OperatingMode.SendingGCodeFile)
+            if (!_isOnHold)
             {
-                var nextCommand = GCodeFileManager.GetNextJobItem();
-                if (nextCommand != null)
-                    TransmitJobItem(nextCommand);
-            }
-            else if (ShouldSendNormalPriorityItems())
-            {
-                SendNormalPriorityItems();
-            }
-            else
-            {
-                await QueryStatus();
+                if (Mode == OperatingMode.SendingGCodeFile && _toSend.Count == 0)
+                {
+                    var nextCommand = GCodeFileManager.GetNextJobItem();
+                    if (nextCommand != null)
+                        TransmitJobItem(nextCommand);
+                }
+                else if (ShouldSendNormalPriorityItems())
+                {
+                    SendNormalPriorityItems();
+                }
+                else
+                {
+                    await QueryStatus();
+                }
             }
         }
 

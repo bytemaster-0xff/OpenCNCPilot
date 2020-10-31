@@ -40,9 +40,12 @@ namespace LagoVista.GCode.Sender
 
         public bool IsPnPMachine
         {
-            get { return Settings.MachineType == FirmwareTypes.LagoVista_PnP ||
-                         Settings.MachineType == FirmwareTypes.Repeteir_PnP ||
-                         Settings.MachineType == FirmwareTypes.SimulatedMachine; }
+            get
+            {
+                return Settings.MachineType == FirmwareTypes.LagoVista_PnP ||
+                       Settings.MachineType == FirmwareTypes.Repeteir_PnP ||
+                       Settings.MachineType == FirmwareTypes.SimulatedMachine;
+            }
         }
 
         IPCBManager _pcbManager;
@@ -188,9 +191,19 @@ namespace LagoVista.GCode.Sender
             }
         }
 
-        public bool IsOnHold  => _isOnHold; 
+        public bool IsOnHold => _isOnHold;
 
-        public bool LocationUpdateEnabled { get; set; } = true;
+
+        private bool _locationUpdateEnabled = true;
+        public bool LocationUpdateEnabled
+        {
+            get { return _locationUpdateEnabled; }
+            set
+            {
+                _locationUpdateEnabled = value;
+                RaisePropertyChanged();
+            }
+        }
 
         public MachinesRepo MachineRepo
         {
