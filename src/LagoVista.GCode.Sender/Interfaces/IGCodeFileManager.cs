@@ -38,7 +38,7 @@ namespace LagoVista.GCode.Sender.Interfaces
         /// <summary>
         /// Called from the Machine as part of the work loop to see if there are any additional lines to send and if so send them.
         /// </summary>
-        void ProcessNextLines();
+        GCodeCommand GetNextJobItem();
 
         /// <summary>
         /// This method should be called when the machien receives an "OK" stating that a command sent has been acknowledged.

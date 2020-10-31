@@ -7,10 +7,11 @@ namespace LagoVista.Core.GCode.Commands
 	{
         public enum StatusTypes
         {
-            Ready,
-            Queued,
-            Sent,
-            Acknowledged,
+            Ready, // After loaded before being sent.
+            Pending, // When we start a job all items are pending.
+            Queued, // Job manager says we should send, but it's not sent.
+            Sent,   // work loop sent it to the machine
+            Acknowledged, // Machine Acknowledged it
             Internal,
         }
 

@@ -45,7 +45,7 @@ namespace LagoVista.GCode.Sender.Managers
             _pendingToolChangeLine = null;
         }
 
-        public void ProcessNextLines()
+        public GCodeCommand GetNextJobItem()
         {
             if (_started == null)
                 _started = DateTime.Now;
@@ -53,29 +53,31 @@ namespace LagoVista.GCode.Sender.Managers
             /* If we have queued up a pending tool change, don't send any more lines until tool change completed */
             if (_pendingToolChangeLine != null)
             {
-                return;
+                return null;
             }
 
-            while (Head < _file.Commands.Count &&
-                _machine.HasBufferSpaceAvailableForByteCount(_file.Commands[Head].MessageLength))
+            if (Head < _file.Commands.Count)
             {
+                var cmd = _file.Commands[Head++];
+             
                 /* If Next Command up is a Tool Change, set the nullable property to that line and bail. */
-                if (Head < _file.Commands.Count && _file.Commands[Head] is ToolChangeCommand)
+                if (cmd is ToolChangeCommand)
                 {
+                    cmd.Status = GCodeCommand.StatusTypes.Sent;
+                
                     if (_machine.Settings.PauseOnToolChange)
                     {
-                        _pendingToolChangeLine = Head;                        
+                        _pendingToolChangeLine = Head;
                     }
 
-                    _file.Commands[Head].Status = GCodeCommand.StatusTypes.Sent;
-
-                    Head++;
-                    return;
+                    return null;
                 }
 
-                _machine.SendCommand(_file.Commands[Head]);
-                _file.Commands[Head++].Status = GCodeCommand.StatusTypes.Sent;
+                cmd.Status = GCodeCommand.StatusTypes.Queued;
+                return cmd;
             }
+
+            return null;
         }
 
         public void SetGCode(string gcode)

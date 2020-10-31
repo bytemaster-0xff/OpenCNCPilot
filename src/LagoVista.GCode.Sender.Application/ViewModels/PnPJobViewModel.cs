@@ -501,6 +501,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                 cmds.Add(SafeHeightGCodeGCode()); // Move to move height
                 cmds.Add(GetGoToPartInTrayGCode());
                 cmds.Add(RotationGCode(0)); // Ensure we are at zero position before picking up part.
+                cmds.Add(WaitForComplete());            
                 cmds.Add(ProduceVacuumGCode(true)); // Turn on solenoid 
                 cmds.Add(DwellGCode(250)); // Wait 500ms to pickup part.
                 cmds.Add(PickHeightGCode()); // Move to pick height                

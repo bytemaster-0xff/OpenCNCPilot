@@ -16,7 +16,6 @@ namespace LagoVista.GCode.Sender
 
         Queue<string> _sentQueue = new Queue<string>();
         Queue<string> _toSend = new Queue<string>();
-        Queue<GCodeCommand> _jobToSend = new Queue<GCodeCommand>();
         Queue<string> _toSendPriority = new Queue<string>();
 
         StreamReader _reader;
@@ -65,12 +64,9 @@ namespace LagoVista.GCode.Sender
             _toSend.Dequeue();
         }
 
-        private void SendJobItem()
-        {
-            var sendCommand = _jobToSend.Peek();
-
-            var trimmedLine = sendCommand.Line.Trim('\r', '\n');
-
+        private void TransmitJobItem(GCodeCommand cmd)
+        {          
+            var trimmedLine = cmd.Line.Trim('\r', '\n');
 
             if (trimmedLine == "M400")
             {
@@ -85,13 +81,14 @@ namespace LagoVista.GCode.Sender
             _writer.Write('\n');
             _writer.Flush();
 
-            Debug.WriteLine(">>> " + sendCommand.Line);
+            Debug.WriteLine(">>> " + trimmedLine);
 
-            UpdateStatus(sendCommand.Line.ToString());
-            AddStatusMessage(StatusMessageTypes.SentLine, sendCommand.Line.ToString());
+            cmd.Status = GCodeCommand.StatusTypes.Sent;
 
-            _sentQueue.Enqueue(sendCommand.Line);
-            _jobToSend.Dequeue();
+            UpdateStatus(cmd.Line.ToString());
+            AddStatusMessage(StatusMessageTypes.SentLine, cmd.Line.ToString());
+
+            _sentQueue.Enqueue(cmd.Line);
         }
 
         private async Task QueryStatus()
@@ -163,28 +160,15 @@ namespace LagoVista.GCode.Sender
             return !_isOnHold && _toSend.Count > 0 && ((_toSend.Peek().ToString()).Length + 1) < (Settings.ControllerBufferSize - Math.Max(0, UnacknowledgedBytesSent));
         }
 
-        private bool ShouldSendJobItems()
-        {
-            if (_isOnHold)
-            {
-                return false;
-            }
-
-            return _jobToSend.Count > 0 && ((_jobToSend.Peek().ToString()).Length + 1) < (_settings.ControllerBufferSize - Math.Max(0, UnacknowledgedBytesSent));
-        }
-
         private async Task Send()
         {
             SendHighPriorityItems();
 
-            if (Mode == OperatingMode.SendingGCodeFile)
+            if (!_isOnHold && Mode == OperatingMode.SendingGCodeFile)
             {
-  //              GCodeFileManager.ProcessNextLines();
-            }
-
-            if (ShouldSendJobItems() && Mode == OperatingMode.SendingGCodeFile)
-            {
-                SendJobItem();
+                var nextCommand = GCodeFileManager.GetNextJobItem();
+                if (nextCommand != null)
+                    TransmitJobItem(nextCommand);
             }
             else if (ShouldSendNormalPriorityItems())
             {

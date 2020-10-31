@@ -35,9 +35,9 @@ namespace LagoVista.GCodeSupport.Tests.GCode
 
             _machine.Setup(mac => mac.HasBufferSpaceAvailableForByteCount(It.IsAny<int>())).Returns(true);
 
-            mgr.ProcessNextLines();
+            mgr.GetNextJobItem();
 
-            _machine.Verify(mac => mac.SendCommand(It.IsAny<GCodeCommand>()));
+            _machine.Verify(mac => mac.SendJobCommand(It.IsAny<GCodeCommand>()));
         }
 
         [TestMethod]
@@ -48,9 +48,9 @@ namespace LagoVista.GCodeSupport.Tests.GCode
 
             _machine.Setup(mac => mac.HasBufferSpaceAvailableForByteCount(It.IsAny<int>())).Returns(false);
 
-            mgr.ProcessNextLines();
+            mgr.GetNextJobItem();
 
-            _machine.Verify(mac => mac.SendCommand(It.IsAny<GCodeCommand>()), Times.Never);
+            _machine.Verify(mac => mac.SendJobCommand(It.IsAny<GCodeCommand>()), Times.Never);
         }
     }
 }

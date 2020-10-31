@@ -36,7 +36,6 @@ namespace LagoVista.GCode.Sender
                 lock (_queueAccessLocker)
                 {
                     _toSend.Clear();
-                    _jobToSend.Clear();
                     _sentQueue.Clear();
                     _toSendPriority.Clear();
                 }
@@ -113,8 +112,6 @@ namespace LagoVista.GCode.Sender
 
                 lock (_queueAccessLocker)
                 {
-                    _jobToSend.Clear();
-
                     _toSend.Clear();
                     _toSendPriority.Clear();
                     _sentQueue.Clear();
@@ -178,7 +175,6 @@ namespace LagoVista.GCode.Sender
                     _toSend.Clear();
                     _toSendPriority.Clear();
                     _sentQueue.Clear();
-                    _jobToSend.Clear();
                     PendingQueue.Clear();
                     if (Settings.MachineType == FirmwareTypes.GRBL1_1)
                         _toSendPriority.Enqueue(((char)0x18).ToString());
@@ -208,25 +204,6 @@ namespace LagoVista.GCode.Sender
                                 Settings.MachineType == FirmwareTypes.SimulatedMachine ||
                                 Settings.MachineType == FirmwareTypes.Repeteir_PnP)
                                 PendingQueue.Add(cmd);
-                        }
-                    }
-                });
-            }
-        }
-
-        private void Enqueue(GCodeCommand cmd)
-        {
-            if (AssertConnected())
-            {
-                Services.DispatcherServices.Invoke(() =>
-                {
-                    lock (_queueAccessLocker)
-                    {
-
-                        _jobToSend.Enqueue(cmd);
-                        if (cmd.Line != "M114" && cmd.Line != "?")
-                        {
-                            Busy = true;
                         }
                     }
                 });

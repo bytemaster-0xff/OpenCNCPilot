@@ -1,4 +1,5 @@
 ﻿using LagoVista.Core.GCode.Commands;
+using LagoVista.Core.PlatformSupport;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -10,14 +11,6 @@ namespace LagoVista.GCode.Sender
 {
     public partial class Machine
     {
-        public void SendCommand(GCodeCommand cmd)
-        {
-            if (AssertConnected())
-            {
-                Enqueue(cmd);
-            }
-        }
-
         public void SendCommand(String cmd)
         {
             if (AssertConnected())

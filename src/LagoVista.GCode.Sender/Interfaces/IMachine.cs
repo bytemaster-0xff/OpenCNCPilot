@@ -232,12 +232,6 @@ namespace LagoVista.GCode.Sender.Interfaces
         bool HasBufferSpaceAvailableForByteCount(int bytes);
 
         /// <summary>
-        /// Send a GCode Command to the machine
-        /// </summary>
-        /// <param name="cmd">A paresed GCode line from a file to be sent to the machine</param>
-        void SendCommand(GCodeCommand cmd);
-
-        /// <summary>
         /// Set a file to be processed.
         /// </summary>
         /// <param name="file"></param>
