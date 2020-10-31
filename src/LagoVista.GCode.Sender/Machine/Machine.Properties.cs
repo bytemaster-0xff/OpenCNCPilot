@@ -188,6 +188,8 @@ namespace LagoVista.GCode.Sender
             }
         }
 
+        public bool IsOnHold  => _isOnHold; 
+
         public bool LocationUpdateEnabled { get; set; } = true;
 
         public MachinesRepo MachineRepo

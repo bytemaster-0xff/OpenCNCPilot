@@ -1,4 +1,5 @@
 ﻿using LagoVista.Core.Commanding;
+using LagoVista.Core.GCode;
 using LagoVista.Core.Models.Drawing;
 using LagoVista.EaglePCB.Models;
 using LagoVista.GCode.Sender.Interfaces;
@@ -390,37 +391,9 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
 
         void SendInstructionSequenceAsync(List<string> cmds)
         {
-            Debug.WriteLine("Here 3:");
-
-            System.Threading.SpinWait.SpinUntil(() => Machine.UnacknowledgedBytesSent == 0 && Machine.ToSendQueueCount == 0, 10000);
-
-            var idx = 0;
-
-            foreach (var cmd in cmds)
-            {
-                Debug.WriteLine("Here 3:=> " + idx);
-
-                Machine.SendCommand(cmd);
-
-                if (cmd == "M400")
-                {
-                    Debug.WriteLine("Here 4:=> " + idx);
-
-                    Machine.SendCommand("G4 P1"); // just pause for 1ms
-                    Debug.WriteLine("Here 5:=> " + idx);
-
-                    // Wait for the all the messages to get sent out (but won't get an OK for G4 until G0 finishes)
-                    System.Threading.SpinWait.SpinUntil(() => Machine.ToSendQueueCount > 0, 5000);
-                    Debug.WriteLine("Here 6:=> " + idx);
-
-                    // wait until G4 gets marked at sent
-                    System.Threading.SpinWait.SpinUntil(() => Machine.UnacknowledgedBytesSent == 0, 5000);
-
-                    Debug.WriteLine("Here 7:=> " + idx);
-                }
-
-                idx++;
-            }
+            var file = GCodeFile.FromList(cmds, Logger);
+            Machine.SetFile(file);
+            Machine.GCodeFileManager.StartJob();
         }
 
         public string SafeHeightGCodeGCode()
@@ -490,7 +463,6 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
 
         public async void PlacePart()
         {
-            Debug.WriteLine("Calling Place Part:");
             Machine.LocationUpdateEnabled = false;
 
             // Make sure any pending location requests have completed.
@@ -505,8 +477,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             {
                 _isPlacingParts = true;
 
-                Debug.WriteLine("Here 1:");
-
+        
                 PlaceCurrentPartCommand.RaiseCanExecuteChanged();
                 PlaceAllPartsCommand.RaiseCanExecuteChanged();
 
@@ -547,6 +518,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                 cmds.Add(SafeHeightGCodeGCode()); // Return to move height.
 
                 cmds.Add(RotationGCode(0)); // Ensure we are at zero position before picking up part.
+                cmds.Add(WaitForComplete());
 
                 SendInstructionSequenceAsync(cmds);
 
@@ -738,7 +710,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             {
                 Set(ref _selectedPart, value);
 
-                if (value != null)
+                if (value != null && _pnpMachine != null)
                 {
                     SelectedPartPackage = _pnpMachine.Packages.Where(pck => pck.Name == _selectedPart.Package).FirstOrDefault();
                 }

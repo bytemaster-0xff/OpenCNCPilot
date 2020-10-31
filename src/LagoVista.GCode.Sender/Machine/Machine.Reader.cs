@@ -1,14 +1,10 @@
 ﻿using LagoVista.Core.PlatformSupport;
 using LagoVista.GCode.Sender.Util;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using System.Windows.Threading;
 
 namespace LagoVista.GCode.Sender
 {
@@ -16,8 +12,8 @@ namespace LagoVista.GCode.Sender
     {
         private StringBuilder _messageBuffer = new StringBuilder();
 
-        private bool _isPaused = false;
-
+        private bool _isOnHold = false;
+        
         private void ParseMessage(string fullMessageLine)
         {
             fullMessageLine = fullMessageLine.ToLower();
@@ -26,12 +22,6 @@ namespace LagoVista.GCode.Sender
             if (fullMessageLine.StartsWith("ok") ||
                             fullMessageLine.StartsWith("<ok:"))
             {
-                if (_isPaused)
-                {
-                    _isPaused = false;
-                    Debug.WriteLine(" NO LONGER PAUSED!");
-                }
-
                 if (GCodeFileManager.HasValidFile && Mode == OperatingMode.SendingGCodeFile)
                 {
                     lock (this)
@@ -59,24 +49,34 @@ namespace LagoVista.GCode.Sender
                     {
                         if (PendingQueue.Count > 0)
                         {
-                            var responseRegEx = new Regex("<ok:(?'CODE'[A-Za-z0-9]+).*>");
-                            var responseGCode = responseRegEx.Match(fullMessageLine);
-                            if (responseGCode.Success)
+                            if (Settings.MachineType == FirmwareTypes.Repeteir_PnP)
                             {
-                                var code = responseGCode.Groups["CODE"].Value;
-
-                                if (PendingQueue[0].StartsWith(code.ToUpper()))
+                                Services.DispatcherServices.Invoke(() =>
                                 {
-                                    Debug.WriteLine($"MATCH =D -> TOP ITEM {PendingQueue[0]} - {code} ");
+                                    PendingQueue.RemoveAt(0);
+                                });
+                            }
+                            else
+                            {
+                                var responseRegEx = new Regex("<ok:(?'CODE'[A-Za-z0-9]+).*>");
+                                var responseGCode = responseRegEx.Match(fullMessageLine);
+                                if (responseGCode.Success)
+                                {
+                                    var code = responseGCode.Groups["CODE"].Value;
 
-                                    Services.DispatcherServices.Invoke(() =>
+                                    if (PendingQueue[0].StartsWith(code.ToUpper()))
                                     {
-                                        PendingQueue.RemoveAt(0);
-                                    });
-                                }
-                                else
-                                {
-                                    Debug.WriteLine($"MISMATCH :( -> TOP ITEM {PendingQueue[0]} - {code} ");
+                                        Debug.WriteLine($"MATCH =D -> TOP ITEM {PendingQueue[0]} - {code} ");
+
+                                        Services.DispatcherServices.Invoke(() =>
+                                        {
+                                            PendingQueue.RemoveAt(0);
+                                        });
+                                    }
+                                    else
+                                    {
+                                        Debug.WriteLine($"MISMATCH :( -> TOP ITEM {PendingQueue[0]} - {code} ");
+                                    }
                                 }
                             }
                         }
@@ -97,10 +97,12 @@ namespace LagoVista.GCode.Sender
             {
                 if (fullMessageLine == "wait")
                 {
-                    _isPaused = true;
+                    if(_isOnHold)
+                    {
+                        Debug.WriteLine("RECOVERREDDD!");
+                    }
 
-                    Debug.WriteLine("WAIT WAIT WAIT - PAUSE");
-                    /* nop */
+                    _isOnHold = false;
                 }
                 else if (fullMessageLine.StartsWith("error:"))
                 {

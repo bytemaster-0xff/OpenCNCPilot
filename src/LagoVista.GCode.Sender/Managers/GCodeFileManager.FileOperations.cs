@@ -100,6 +100,11 @@ namespace LagoVista.GCode.Sender.Managers
             IsDirty = false;
         }
 
+        public void SetFile(GCodeFile file)
+        {
+            File = file;
+        }
+
         public Task CloseFileAsync()
         {
             File = null;

@@ -50,7 +50,7 @@ namespace LagoVista.GCode.Sender
                     Enqueue("M43 P29");
                     Enqueue("M43 P31");
                     Enqueue("M43 P32");
-                    Enqueue("M43 P33");                    
+                    Enqueue("M43 P33");
                     Enqueue("G90");
                 }
 
@@ -180,13 +180,13 @@ namespace LagoVista.GCode.Sender
                     _sentQueue.Clear();
                     _jobToSend.Clear();
                     PendingQueue.Clear();
-                    _toSendPriority.Enqueue(((char)0x18).ToString());
+                    if (Settings.MachineType == FirmwareTypes.GRBL1_1)
+                        _toSendPriority.Enqueue(((char)0x18).ToString());
                 }
 
                 UnacknowledgedBytesSent = 0;
             }
         }
-
 
         public void Enqueue(String cmd, bool highPriority = false)
         {
@@ -205,13 +205,9 @@ namespace LagoVista.GCode.Sender
                         {
                             _toSend.Enqueue(cmd);
                             if (Settings.MachineType == FirmwareTypes.LagoVista_PnP ||
-                               Settings.MachineType == FirmwareTypes.SimulatedMachine)
+                                Settings.MachineType == FirmwareTypes.SimulatedMachine ||
+                                Settings.MachineType == FirmwareTypes.Repeteir_PnP)
                                 PendingQueue.Add(cmd);
-
-                            if (cmd != "M114" && cmd != "?")
-                            {
-                                UnacknowledgedBytesSent += cmd.Length + 1;
-                            }
                         }
                     }
                 });
@@ -230,7 +226,6 @@ namespace LagoVista.GCode.Sender
                         _jobToSend.Enqueue(cmd);
                         if (cmd.Line != "M114" && cmd.Line != "?")
                         {
-                            UnacknowledgedBytesSent += cmd.Line.Length + 1;
                             Busy = true;
                         }
                     }

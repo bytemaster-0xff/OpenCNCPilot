@@ -25,7 +25,6 @@ namespace LagoVista.GCode.Sender
         DateTime _lastPollTime;
         TimeSpan _waitTime;
 
-
         private void SendHighPriorityItems()
         {
             while (_toSendPriority.Count > 0)
@@ -43,6 +42,7 @@ namespace LagoVista.GCode.Sender
         private void SendNormalPriorityItems()
         {
             var send_line = _toSend.Peek();
+            UnacknowledgedBytesSent += send_line.Length + 1;
 
             _writer.Write(send_line);
             _writer.Write('\n');
@@ -54,18 +54,34 @@ namespace LagoVista.GCode.Sender
 
                 UpdateStatus(send_line.ToString());
                 AddStatusMessage(StatusMessageTypes.SentLine, send_line.ToString());
-                _sentQueue.Enqueue(send_line);
             }
 
+            if (send_line == "M400")
+            {
+                _isOnHold = true;
+            }
+
+            _sentQueue.Enqueue(send_line);
             _toSend.Dequeue();
         }
 
-        private void SendJobItems()
+        private void SendJobItem()
         {
             var sendCommand = _jobToSend.Peek();
 
+            var trimmedLine = sendCommand.Line.Trim('\r', '\n');
+
+
+            if (trimmedLine == "M400")
+            {
+                Debug.WriteLine("HOLDING!!!!!!!");
+                _isOnHold = true;
+            }
+
+            UnacknowledgedBytesSent += trimmedLine.Length + 1;
+
             /* Make sure we normalize the line ending so it's only \n */
-            _writer.Write(sendCommand.Line.Trim('\r', '\n'));
+            _writer.Write(trimmedLine);
             _writer.Write('\n');
             _writer.Flush();
 
@@ -94,7 +110,7 @@ namespace LagoVista.GCode.Sender
                     }
                     else
                     {
-                        Enqueue("M114");
+                        //      Enqueue("M114");
                     }
 
                     _lastPollTime = Now;
@@ -132,7 +148,7 @@ namespace LagoVista.GCode.Sender
                     }
                     else
                     {
-                        Enqueue("M114");
+                        //        Enqueue("M114");
                     }
 
                     _lastPollTime = Now;
@@ -144,15 +160,17 @@ namespace LagoVista.GCode.Sender
 
         private bool ShouldSendNormalPriorityItems()
         {
-            return !_isPaused && _toSend.Count > 0 && ((_toSend.Peek().ToString()).Length + 1) < (Settings.ControllerBufferSize - Math.Max(0, UnacknowledgedBytesSent));
+            return !_isOnHold && _toSend.Count > 0 && ((_toSend.Peek().ToString()).Length + 1) < (Settings.ControllerBufferSize - Math.Max(0, UnacknowledgedBytesSent));
         }
 
         private bool ShouldSendJobItems()
         {
-            if (Settings.MachineType == FirmwareTypes.GRBL1_1)
-                return _jobToSend.Count > 0 && ((_jobToSend.Peek().ToString()).Length + 1) < (_settings.ControllerBufferSize - Math.Max(0, UnacknowledgedBytesSent));
-            else
-                return _jobToSend.Count > 0;
+            if (_isOnHold)
+            {
+                return false;
+            }
+
+            return _jobToSend.Count > 0 && ((_jobToSend.Peek().ToString()).Length + 1) < (_settings.ControllerBufferSize - Math.Max(0, UnacknowledgedBytesSent));
         }
 
         private async Task Send()
@@ -161,12 +179,12 @@ namespace LagoVista.GCode.Sender
 
             if (Mode == OperatingMode.SendingGCodeFile)
             {
-                GCodeFileManager.ProcessNextLines();
+  //              GCodeFileManager.ProcessNextLines();
             }
 
             if (ShouldSendJobItems() && Mode == OperatingMode.SendingGCodeFile)
             {
-                SendJobItems();
+                SendJobItem();
             }
             else if (ShouldSendNormalPriorityItems())
             {

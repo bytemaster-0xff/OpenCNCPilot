@@ -29,7 +29,7 @@ namespace LagoVista.GCode.Sender
             Messages = new System.Collections.ObjectModel.ObservableCollection<Models.StatusMessage>();
             AddStatusMessage(StatusMessageTypes.Info, "Startup.");
 
-            ToolChangeManager = new Managers.ToolChangeManager(this, Core.PlatformSupport.Services.Logger);
+            ToolChangeManager = new Managers.ToolChangeManager(this, Services.Logger);
             GCodeFileManager = new Managers.GCodeFileManager(this, Core.PlatformSupport.Services.Logger, ToolChangeManager);
             PCBManager = new Managers.PCBManager(this, Core.PlatformSupport.Services.Logger);
             HeightMapManager = new Managers.HeightMapManager(this, Core.PlatformSupport.Services.Logger, PCBManager);
@@ -107,6 +107,11 @@ namespace LagoVista.GCode.Sender
                 if (code == 91)
                     DistanceMode = ParseDistanceMode.Relative;
             }
+        }
+
+        public void SetFile(GCodeFile file)
+        {
+            GCodeFileManager.SetFile(file);
         }
 
         public bool CanSetMode(OperatingMode mode)

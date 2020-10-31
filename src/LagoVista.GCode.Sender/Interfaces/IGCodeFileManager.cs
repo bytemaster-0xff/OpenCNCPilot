@@ -1,4 +1,5 @@
-﻿using LagoVista.Core.GCode.Commands;
+﻿using LagoVista.Core.GCode;
+using LagoVista.Core.GCode.Commands;
 using LagoVista.EaglePCB.Models;
 using LagoVista.GCode.Sender.Models;
 using System;
@@ -16,6 +17,12 @@ namespace LagoVista.GCode.Sender.Interfaces
         /// <param name="path"></param>
         /// <returns></returns>
         Task<bool> OpenFileAsync(string path);
+
+        /// <summary>
+        /// Set a GCode File.
+        /// </summary>
+        /// <param name="file"></param>
+        void SetFile(GCodeFile file);
 
         /// <summary>
         /// Close the current file.

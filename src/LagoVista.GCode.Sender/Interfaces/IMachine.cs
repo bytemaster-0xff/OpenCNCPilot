@@ -238,6 +238,12 @@ namespace LagoVista.GCode.Sender.Interfaces
         void SendCommand(GCodeCommand cmd);
 
         /// <summary>
+        /// Set a file to be processed.
+        /// </summary>
+        /// <param name="file"></param>
+        void SetFile(GCodeFile file);
+
+        /// <summary>
         /// Send a free form comamdn to the machine.
         /// </summary>
         /// <param name="cmd">Text that represents the command</param>

@@ -20,7 +20,7 @@ namespace LagoVista.PickAndPlace.ViewModels
 
         private string _fileName;
 
-        private PnPMachine _machine;
+        private PnPMachine _pnpMachine;
 
         MachineVisionViewModelBase _parent;
 
@@ -28,8 +28,8 @@ namespace LagoVista.PickAndPlace.ViewModels
         {
             _parent = parent;
 
-            SaveMachineCommand = new RelayCommand(SaveMachine, () => _machine != null);
-            AddPartPackCommand = new RelayCommand(AddPartPack, () => _machine != null);
+            SaveMachineCommand = new RelayCommand(SaveMachine, () => _pnpMachine != null);
+            AddPartPackCommand = new RelayCommand(AddPartPack, () => _pnpMachine != null);
             OpenMachineCommand = new RelayCommand(OpenMachine);
             NewMachineCommand = new RelayCommand(NewMachine);
             DoneEditingRowCommand = new RelayCommand(DoneEditingRow, () => SelectedPartPack != null && SelectedPartPack.SelectedRow != null);
@@ -77,7 +77,7 @@ namespace LagoVista.PickAndPlace.ViewModels
                     _parent.ShowCircles = true;
                 }
 
-                var slot = _machine.Carrier.PartPackSlots.Where(pps => pps.PartPack.Id == SelectedPartPack.Id).FirstOrDefault();
+                var slot = _pnpMachine.Carrier.PartPackSlots.Where(pps => pps.PartPack.Id == SelectedPartPack.Id).FirstOrDefault();
                 var x = slot.X + SelectedPartPack.Pin1XOffset + 4;
                 var y = slot.Y + SelectedPartPack.Pin1YOffset;
                 Machine.GotoPoint(x, y);
@@ -90,7 +90,7 @@ namespace LagoVista.PickAndPlace.ViewModels
             Debug.WriteLine(point + " " + diameter);
             IsLocating = false;
 
-            var slot = _machine.Carrier.PartPackSlots.Where(pps => pps.PartPack.Id == SelectedPartPack.Id).FirstOrDefault();
+            var slot = _pnpMachine.Carrier.PartPackSlots.Where(pps => pps.PartPack.Id == SelectedPartPack.Id).FirstOrDefault();
 
             SelectedPartPack.Pin1XOffset = (Machine.MachinePosition.X - 4) - slot.X;
             SelectedPartPack.Pin1YOffset = Machine.MachinePosition.Y - slot.Y;
@@ -113,7 +113,7 @@ namespace LagoVista.PickAndPlace.ViewModels
 
         public void SetMachine(PnPMachine machine)
         {
-            _machine = machine;
+            _pnpMachine = machine;
             SaveMachineCommand.RaiseCanExecuteChanged();
             AddPartPackCommand.RaiseCanExecuteChanged();
 
@@ -132,7 +132,7 @@ namespace LagoVista.PickAndPlace.ViewModels
             }
 
             _fileName = null;
-            _machine = new PnPMachine();
+            _pnpMachine = new PnPMachine();
 
             SaveMachineCommand.RaiseCanExecuteChanged();
             AddPartPackCommand.RaiseCanExecuteChanged();
@@ -176,15 +176,15 @@ namespace LagoVista.PickAndPlace.ViewModels
 
         public void AddPartPack()
         {
-            if (_machine != null)
+            if (_pnpMachine != null)
             {
                 var newPartPack = new PartPackFeeder()
                 {
-                    Name = $"Pack {_machine.Carrier.AvailablePartPacks.Count + 1}",
-                    Id = $"pack{_machine.Carrier.AvailablePartPacks.Count + 1}",
+                    Name = $"Pack {_pnpMachine.Carrier.AvailablePartPacks.Count + 1}",
+                    Id = $"pack{_pnpMachine.Carrier.AvailablePartPacks.Count + 1}",
                 };
 
-                _machine.Carrier.AvailablePartPacks.Add(newPartPack);
+                _pnpMachine.Carrier.AvailablePartPacks.Add(newPartPack);
 
                 SelectedPartPack = newPartPack;
                 _isDirty = true;
@@ -193,7 +193,7 @@ namespace LagoVista.PickAndPlace.ViewModels
 
         public void AddSlot()
         {
-            if (_machine != null)
+            if (_pnpMachine != null)
             {
                 var slot = new PartPackSlot()
                 {
@@ -201,14 +201,14 @@ namespace LagoVista.PickAndPlace.ViewModels
                     Height = 70
                 };
 
-                _machine.Carrier.PartPackSlots.Add(slot);
+                _pnpMachine.Carrier.PartPackSlots.Add(slot);
                 SelectedSlot = slot;
             }
         }
 
         public async void SaveMachine()
         {
-            var json = JsonConvert.SerializeObject(_machine);
+            var json = JsonConvert.SerializeObject(_pnpMachine);
             if (String.IsNullOrEmpty(_fileName))
             {
                 _fileName = await Popups.ShowSaveFileAsync("PnP Machine (*.pnp)|*.pnp");
@@ -224,12 +224,18 @@ namespace LagoVista.PickAndPlace.ViewModels
 
         public ObservableCollection<PartPackSlot> Slots
         {
-            get => new ObservableCollection<PartPackSlot>(_machine?.Carrier.PartPackSlots.OrderBy(slt => slt.Row).ThenBy(slt => slt.Column));
+            get
+            {
+                if (_pnpMachine == null)
+                    return null;
+
+                return new ObservableCollection<PartPackSlot>(_pnpMachine?.Carrier.PartPackSlots.OrderBy(slt => slt.Row).ThenBy(slt => slt.Column));
+            }
         }
 
         public ObservableCollection<PartPackFeeder> PartPacks
         {
-            get => _machine?.Carrier.AvailablePartPacks;
+            get => _pnpMachine?.Carrier.AvailablePartPacks;
         }
 
         private PartPackFeeder _selectedPartPack = null;
@@ -246,7 +252,7 @@ namespace LagoVista.PickAndPlace.ViewModels
                 Set(ref _selectedPartPack, value);
                 if (value != null)
                 {
-                    SelectedSlot = _machine.Carrier.PartPackSlots.SingleOrDefault(slt => slt.PartPack != null && slt.PartPack.Id == value.Id);
+                    SelectedSlot = _pnpMachine.Carrier.PartPackSlots.SingleOrDefault(slt => slt.PartPack != null && slt.PartPack.Id == value.Id);
                     _selectedPartPack.PropertyChanged += _selectedPartPack_PropertyChanged;
                 }
                 else
@@ -345,7 +351,7 @@ namespace LagoVista.PickAndPlace.ViewModels
             }
         }
 
-        public IEnumerable<Package> Packages { get => _machine?.Packages; }
+        public IEnumerable<Package> Packages { get => _pnpMachine?.Packages; }
 
         public RelayCommand SaveMachineCommand { get; }
         public RelayCommand OpenMachineCommand { get; }
