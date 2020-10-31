@@ -50,9 +50,9 @@
             <TextBlock Text="{Binding Machine.MachinePosition.Y, StringFormat=0.000, FallbackValue=12.731}" Style="{StaticResource Position}" Grid.Row="2" Grid.Column="1" />
             <TextBlock Text="{Binding Machine.MachinePosition.Z, StringFormat=0.000, FallbackValue=8.423}" Style="{StaticResource Position}" Grid.Row="3" Grid.Column="1" />
 
-            <TextBlock Text="{Binding Machine.NormalizedPosition.X, StringFormat=0.000, FallbackValue=42.533}" Style="{StaticResource Position}" Grid.Row="1" Grid.Column="2" />
-            <TextBlock Text="{Binding Machine.NormalizedPosition.Y, StringFormat=0.000, FallbackValue=18.287}" Style="{StaticResource Position}" Grid.Row="2" Grid.Column="2" />
-            <TextBlock Text="{Binding Machine.NormalizedPosition.Z, StringFormat=0.000, FallbackValue=8.042}" Style="{StaticResource Position}" Grid.Row="3" Grid.Column="2" />
+            <TextBlock Text="{Binding Machine.NormalizedPosition.X, StringFormat=0.000, FallbackValue=-1}" Style="{StaticResource Position}" Grid.Row="1" Grid.Column="2" />
+            <TextBlock Text="{Binding Machine.NormalizedPosition.Y, StringFormat=0.000, FallbackValue=-1}" Style="{StaticResource Position}" Grid.Row="2" Grid.Column="2" />
+            <TextBlock Text="{Binding Machine.NormalizedPosition.Z, StringFormat=0.000, FallbackValue=-1}" Style="{StaticResource Position}" Grid.Row="3" Grid.Column="2" />
 
             <Button Content="X" Grid.Column="4" Grid.Row="1" Command="{Binding ResetCommand}" CommandParameter="{x:Static sndr:ResetAxis.X}" />
             <Button Content="Y" Grid.Column="4" Grid.Row="2" Command="{Binding ResetCommand}" CommandParameter="{x:Static sndr:ResetAxis.Y}" />

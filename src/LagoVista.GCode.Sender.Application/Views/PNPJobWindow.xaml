@@ -60,6 +60,9 @@
                         <Image x:Name="BoadImage" Source="{Binding PrimaryCapturedImage}"   MouseDown="WebCamImage_MouseDown"  Grid.Column="3" VerticalAlignment="Top"  Stretch="Uniform" Grid.Row="0" Grid.RowSpan="7" />
                         <Image x:Name="SecondaryImage" Source="{Binding SecondaryCapturedImage}" Width="320" Height="240" Grid.Row="1" Stretch="Uniform" Grid.RowSpan="7" Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Bottom" />
 
+                        <Button Grid.Row="1" Grid.Column="1" Grid.RowSpan="2" Width="60" Style="{StaticResource CommandButton}" Content="Set" Margin="40,0,0,0" Command="{Binding SetFiducialCalibrationCommand}" CommandParameter="1"></Button>
+                        <Button Grid.Row="3" Grid.Column="1" Grid.RowSpan="2" Width="60" Style="{StaticResource CommandButton}" Content="Set" Margin="40,0,0,0" Command="{Binding SetFiducialCalibrationCommand}" CommandParameter="2"></Button>
+                        
                         <Controls:MVViewOptions HorizontalAlignment="Right" VerticalAlignment="Top" Grid.Row="1" Grid.Column="3" Grid.RowSpan="7" />
                         <Controls:ImageAdjustments Grid.Column="4" Grid.RowSpan="7" />
                         <StackPanel Grid.Row="5" Grid.ColumnSpan="2">
@@ -622,7 +625,10 @@
                             <TextBlock Grid.Column="1" Grid.Row="3" Text="{Binding SelectedPartToBePlaced.Y, FallbackValue=-}" ></TextBlock>
                             <TextBlock Grid.Column="1" Grid.Row="4" Text="{Binding SelectedPartToBePlaced.Rotate, FallbackValue=-}" ></TextBlock>
 
-                            <Button Grid.Row="5" Grid.ColumnSpan="2" Command="{Binding PlaceCurrentPartCommand}" Content="Place Part"></Button>
+                            <StackPanel Grid.Row="5" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center">
+                                <Button Command="{Binding PlaceCurrentPartCommand}" Content="Place Part" Style="{StaticResource CommandButton}"></Button>
+                                <Button Command="{Binding PlaceAllPartsCommand}" Content="Place All Parts" Style="{StaticResource CommandButton}"></Button>
+                            </StackPanel>
                         </Grid>
 
                         <DataGrid Grid.Row="3" ItemsSource="{Binding SelectedPart.Parts}" CanUserSortColumns="False" SelectedItem="{Binding SelectedPartToBePlaced}"

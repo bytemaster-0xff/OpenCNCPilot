@@ -16,8 +16,7 @@ namespace LagoVista.GCode.Sender
     }
 
     public partial class Machine
-    {
-
+    {     
         public async Task SetViewTypeAsync(ViewTypes viewType)
         {
             if(ViewType == viewType)
@@ -25,7 +24,81 @@ namespace LagoVista.GCode.Sender
                 return;
             }
 
-            ViewType = viewType;
+            if (Settings.MachineType == FirmwareTypes.LagoVista_PnP)
+            {
+                _viewType = viewType;
+                RaisePropertyChanged();
+
+                switch (viewType)
+                {
+                    case ViewTypes.Camera: Enqueue("M50"); break;
+                    case ViewTypes.Tool1: Enqueue("M51"); break;
+                    case ViewTypes.Tool2: Enqueue("M51"); break;
+                }
+            }
+            else if (Settings.MachineType == FirmwareTypes.Repeteir_PnP)
+            {
+                // 1. capture current position of machine.
+                var currentLocation = MachinePosition;
+
+                await Task.Run(() =>
+                {
+                    // 2. set relative move
+                    Enqueue("G91"); // relative move
+
+
+                    // 3. move the machine to the tool that should be used. 
+                    if (_viewType == ViewTypes.Camera && viewType == ViewTypes.Tool1)
+                    {
+                        _viewType = ViewTypes.Moving;
+                        RaisePropertyChanged();
+
+                        Enqueue($"G0 X{-Settings.Tool1Offset.X} Y{-Settings.Tool1Offset.Y} F{Settings.FastFeedRate}");
+                        Enqueue("M400"); // Wait for previous command to finish before executing next one.
+                        Enqueue("G4 P1"); // just pause for 1ms
+                        Enqueue($"M42 P31 ${(viewType == ViewTypes.Camera ? 0 : 255)}");
+
+                        // Wait for the all the messages to get sent out (but won't get an OK for G4 until G0 finishes)
+                        System.Threading.SpinWait.SpinUntil(() => ToSendQueueCount > 0, 5000);
+
+                        // wait until G4 gets marked at sent
+                        System.Threading.SpinWait.SpinUntil(() => UnacknowledgedBytesSent == 0, 5000);
+
+                        _viewType = ViewTypes.Tool1;
+                        RaisePropertyChanged();
+                        Services.DispatcherServices.Invoke(() =>
+                        {
+                            RaisePropertyChanged(nameof(ViewType));
+                        });
+                    }
+                    else if (_viewType == ViewTypes.Tool1 && viewType == ViewTypes.Camera)
+                    {
+                        _viewType = ViewTypes.Moving;
+                        Enqueue($"G0 X{Settings.Tool1Offset.X} Y{Settings.Tool1Offset.Y} F{Settings.FastFeedRate}");
+                        Enqueue("M400"); // Wait for previous command to finish before executing next one.
+                        Enqueue("G4 P1"); // just pause for 1ms
+
+                        // Wait for the all the messages to get sent out (but won't get an OK for G4 until G0 finishes)
+                        System.Threading.SpinWait.SpinUntil(() => ToSendQueueCount > 0, 5000);
+
+                        // wait until G4 gets marked at sent
+                        System.Threading.SpinWait.SpinUntil(() => UnacknowledgedBytesSent == 0, 5000);
+
+                        _viewType = ViewTypes.Camera;
+                        Services.DispatcherServices.Invoke(() =>
+                        {
+                            RaisePropertyChanged(nameof(ViewType));
+                        });
+                    }
+
+                    // 4. set the machine back to absolute points
+                    Enqueue("G90");
+
+                    // 5. Set the machine location to where it was prior to the move.
+                    Enqueue($"G92 X{currentLocation.X} Y{currentLocation.Y}");
+                });
+            }
+
             while (UnacknowledgedBytesSent > 0) await Task.Delay(1);
         }
 
@@ -37,82 +110,8 @@ namespace LagoVista.GCode.Sender
             {
                 if (_viewType != value)
                 {
-                    if (Settings.MachineType == FirmwareTypes.LagoVista_PnP)
-                    {
-                        _viewType = value;
-                        RaisePropertyChanged();
-
-                        switch (value)
-                        {
-                            case ViewTypes.Camera: Enqueue("M50"); break;
-                            case ViewTypes.Tool1: Enqueue("M51"); break;
-                            case ViewTypes.Tool2: Enqueue("M51"); break;
-                        }
-                    }
-                    else if (Settings.MachineType == FirmwareTypes.Repeteir_PnP)
-                    {
-                        // 1. capture current position of machine.
-                        var currentLocation = MachinePosition;
-
-                        Task.Run(() =>
-                        {
-                            // 2. set relative move
-                            Enqueue("G91"); // relative move
-
-
-                            // 3. move the machine to the tool that should be used. 
-                            if (_viewType == ViewTypes.Camera && value == ViewTypes.Tool1)
-                            {
-                                _viewType = ViewTypes.Moving;
-                                RaisePropertyChanged();
-
-                                Enqueue($"G0 X{-Settings.Tool1Offset.X} Y{-Settings.Tool1Offset.Y} F{Settings.FastFeedRate}");
-                                Enqueue("M400"); // Wait for previous command to finish before executing next one.
-                                Enqueue("G4 P1"); // just pause for 1ms
-
-                                // Wait for the all the messages to get sent out (but won't get an OK for G4 until G0 finishes)
-                                System.Threading.SpinWait.SpinUntil(() => ToSendQueueCount > 0, 5000);
-
-                                // wait until G4 gets marked at sent
-                                System.Threading.SpinWait.SpinUntil(() => UnacknowledgedBytesSent == 0, 5000);
-
-                                _viewType = ViewTypes.Tool1;
-                                RaisePropertyChanged();
-                                Services.DispatcherServices.Invoke(() =>
-                                {
-                                    RaisePropertyChanged(nameof(ViewType));
-                                });
-                            }
-                            else if (_viewType == ViewTypes.Tool1 && value == ViewTypes.Camera)
-                            {
-                                _viewType = ViewTypes.Moving;
-                                Enqueue($"G0 X{Settings.Tool1Offset.X} Y{Settings.Tool1Offset.Y} F{Settings.FastFeedRate}");
-                                Enqueue("M400"); // Wait for previous command to finish before executing next one.
-                                Enqueue("G4 P1"); // just pause for 1ms
-
-                                // Wait for the all the messages to get sent out (but won't get an OK for G4 until G0 finishes)
-                                System.Threading.SpinWait.SpinUntil(() => ToSendQueueCount > 0, 5000);
-
-                                // wait until G4 gets marked at sent
-                                System.Threading.SpinWait.SpinUntil(() => UnacknowledgedBytesSent == 0, 5000);
-
-                                _viewType = ViewTypes.Camera;
-                                Services.DispatcherServices.Invoke(() =>
-                                {
-                                    RaisePropertyChanged(nameof(ViewType));
-                                });
-                            }
-
-                            // 4. set the machine back to absolute points
-                            Enqueue("G90");
-
-                            // 5. Set the machine location to where it was prior to the move.
-                            Enqueue($"G92 X{currentLocation.X} Y{currentLocation.Y}");
-                        });
-
-
-                        RaisePropertyChanged();
-                    }
+                    SetViewTypeAsync(value);
+                    RaisePropertyChanged();
                 }
             }
         }
@@ -138,6 +137,7 @@ namespace LagoVista.GCode.Sender
                 _machinePosition = value;
                 RaisePropertyChanged();
                 RaisePropertyChanged(nameof(WorkspacePosition));
+                RaisePropertyChanged(nameof(NormalizedPosition));
             }
         }
 
@@ -152,10 +152,26 @@ namespace LagoVista.GCode.Sender
             set
             {
                 _workspacePosition = value;
+                RaisePropertyChanged();
+                RaisePropertyChanged(nameof(NormalizedPosition));
             }
 
         }
 
+        private Vector3 _workPositionOffset = new Vector3();
+        /// <summary>
+        ///  X, Y Machine of the origin of the material
+        /// </summary>
+        public Vector3 WorkPositionOffset
+        {
+            get { return _workPositionOffset; }
+            set
+            {
+                _workPositionOffset = value;
+                RaisePropertyChanged();
+                RaisePropertyChanged(nameof(NormalizedPosition));
+            }
+        }
 
         bool? _endStopXMin = null;
         public bool? EndStopXMin

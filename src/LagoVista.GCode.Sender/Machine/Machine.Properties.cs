@@ -67,6 +67,12 @@ namespace LagoVista.GCode.Sender
             }
         }
 
+        public Core.Models.Drawing.Vector3 NormalizedPosition
+        {
+            get { return MachinePosition - WorkPositionOffset; }
+        }
+
+
         private double _tool0;
         public double Tool0
         {
@@ -181,6 +187,8 @@ namespace LagoVista.GCode.Sender
                 return Messages.Count - 1;
             }
         }
+
+        public bool LocationUpdateEnabled { get; set; } = true;
 
         public MachinesRepo MachineRepo
         {

@@ -47,6 +47,11 @@ namespace LagoVista.GCode.Sender.Interfaces
         Vector3 MachinePosition { get; }
 
         /// <summary>
+        /// Machine Position - Work Space Offset
+        /// </summary>
+        Vector3 NormalizedPosition { get; }
+
+        /// <summary>
         /// Current position with respect to the set offset (either managed by firmware or application)
         /// </summary>
         Vector3 WorkspacePosition {get;}
@@ -237,6 +242,8 @@ namespace LagoVista.GCode.Sender.Interfaces
         /// </summary>
         /// <param name="cmd">Text that represents the command</param>
         void SendCommand(String cmd);
+
+        bool LocationUpdateEnabled { get; set; }
 
         /// <summary>
         /// Add a message to be displayed to the user.

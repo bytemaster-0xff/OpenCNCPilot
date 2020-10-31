@@ -1,9 +1,6 @@
 ﻿using LagoVista.Core.Commanding;
-using LagoVista.Core.Models;
 using LagoVista.Core.Models.Drawing;
-using LagoVista.Core.ViewModels;
 using LagoVista.EaglePCB.Models;
-using LagoVista.GCode.Sender;
 using LagoVista.GCode.Sender.Interfaces;
 using LagoVista.PickAndPlace.Managers;
 using LagoVista.PickAndPlace.Models;
@@ -12,9 +9,8 @@ using LagoVista.PickAndPlace.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace LagoVista.GCode.Sender.Application.ViewModels
@@ -62,7 +58,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
 
             ResetCurrentComponentCommand = new RelayCommand(ResetCurrentComponent, () => SelectedPartRow != null);
 
-            GoToWorkHomeCommand = new RelayCommand(() => Machine.GotoWorkspaceHome());
+            GoToWorkHomeCommand = new RelayCommand(() => GotoWorkspaceHome());
             SetWorkHomeCommand = new RelayCommand(() => Machine.SetWorkspaceHome());
 
             MoveToPreviousComponentInTapeCommand = new RelayCommand(MoveToPreviousComponent, () => SelectedPartRow != null && SelectedPartRow.CurrentPartIndex > 0);
@@ -70,7 +66,11 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             RefreshConfigurationPartsCommand = new RelayCommand(PopulateConfigurationParts);
             GoToPartInTrayCommand = new RelayCommand(GoToPartPositionInTray);
 
-            PlaceCurrentPartCommand = new RelayCommand(PlacePart, () => SelectedPart != null);
+            PlaceCurrentPartCommand = new RelayCommand(PlacePart, CanPlacePart);
+            PlaceAllPartsCommand = new RelayCommand(PlaceAllParts, CanPlacePart);
+
+            SetFiducialCalibrationCommand = new RelayCommand((prm) => SetFiducialCalibration(prm));
+
             _feederLibrary = new FeederLibrary();
 
             BuildFlavors = job.BuildFlavors;
@@ -125,11 +125,34 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             }
         }
 
-        private void GoToFiducial(int idx)
+        private void SetFiducialCalibration(object obj)
+        {
+            var idx = Convert.ToInt32(obj);
+            switch (idx)
+            {
+                case 1:
+                    {
+                        var gcode = $"G92 X{Job.BoardFiducial1.X} Y{Job.BoardFiducial1.Y}";
+                        Machine.SendCommand(gcode);
+                    }
+                    break;
+                case 2:
+                    {
+                        var gcode = $"G92 X{Job.BoardFiducial2.X} Y{Job.BoardFiducial2.Y}";
+                        Machine.SendCommand(gcode);
+                    }
+                    break;
+            }
+        }
+
+        private async void GoToFiducial(int idx)
         {
             Machine.SendCommand(SafeHeightGCodeGCode());
 
-            Machine.ViewType = ViewTypes.Camera;
+            await Machine.SetViewTypeAsync(ViewTypes.Camera);
+
+            ShowTopCamera = true;
+
             switch (idx)
             {
                 case 0:
@@ -153,8 +176,28 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             }
         }
 
+        public bool CanPlacePart()
+        {
+            if (_selectedPart == null)
+                return false;
+
+            if (_isPlacingParts)
+                return false;
+
+            return true;
+        }
+
+        public void GotoWorkspaceHome()
+        {
+            Machine.SendCommand(SafeHeightGCodeGCode());
+            Machine.GotoWorkspaceHome();
+            ShowBottomCamera = false;
+            ShowTopCamera = true;
+        }
+
         public void PerformMachineAlignment()
         {
+            Machine.SendCommand(SafeHeightGCodeGCode());
             _mvLocatorState = MVLocatorState.Idle;
 
             Machine.ViewType = ViewTypes.Camera;
@@ -258,17 +301,20 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
 
         public async void AlignBottomCamera()
         {
-            await Machine.SetViewTypeAsync(ViewTypes.Tool1);
-
-            Machine.TopLightOn = false;
-            Machine.BottomLightOn = true;
-
-            ShowCircles = true;
-
-            //ShowBottomCamera = true;
-
             if (Machine.Settings.PartInspectionCamera?.AbsolutePosition != null)
             {
+                Machine.SendCommand(SafeHeightGCodeGCode());
+
+                await Machine.SetViewTypeAsync(ViewTypes.Tool1);
+
+                Machine.TopLightOn = false;
+                Machine.BottomLightOn = true;
+
+                SelectMVProfile("nozzle");
+                ShowCircles = true;
+
+                ShowBottomCamera = true;
+
                 Machine.SendCommand($"G0 X{Machine.Settings.PartInspectionCamera.AbsolutePosition.X} Y{Machine.Settings.PartInspectionCamera.AbsolutePosition.Y} Z{Machine.Settings.PartInspectionCamera.FocusHeight} F1{Machine.Settings.FastFeedRate}");
             }
         }
@@ -342,25 +388,39 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             }
         }
 
-        async Task SendInstructionSequenceAsync(List<string> cmds)
+        void SendInstructionSequenceAsync(List<string> cmds)
         {
+            Debug.WriteLine("Here 3:");
+
+            System.Threading.SpinWait.SpinUntil(() => Machine.UnacknowledgedBytesSent == 0 && Machine.ToSendQueueCount == 0, 10000);
+
+            var idx = 0;
+
             foreach (var cmd in cmds)
             {
+                Debug.WriteLine("Here 3:=> " + idx);
+
                 Machine.SendCommand(cmd);
 
                 if (cmd == "M400")
                 {
+                    Debug.WriteLine("Here 4:=> " + idx);
+
                     Machine.SendCommand("G4 P1"); // just pause for 1ms
+                    Debug.WriteLine("Here 5:=> " + idx);
 
                     // Wait for the all the messages to get sent out (but won't get an OK for G4 until G0 finishes)
                     System.Threading.SpinWait.SpinUntil(() => Machine.ToSendQueueCount > 0, 5000);
+                    Debug.WriteLine("Here 6:=> " + idx);
 
                     // wait until G4 gets marked at sent
                     System.Threading.SpinWait.SpinUntil(() => Machine.UnacknowledgedBytesSent == 0, 5000);
-                }
-            }
 
-            Machine.ViewType = ViewTypes.Camera;
+                    Debug.WriteLine("Here 7:=> " + idx);
+                }
+
+                idx++;
+            }
         }
 
         public string SafeHeightGCodeGCode()
@@ -385,10 +445,11 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
 
         public string RotationGCode(double cRotation)
         {
-            if (cRotation > 360)
+            if (cRotation == 360)
+                cRotation = 0;
+            else if (cRotation > 360)
                 cRotation -= 360;
-
-            if (cRotation == 270)
+            else if (cRotation == 270)
                 cRotation = -90;
 
             var scaledAngle = cRotation;
@@ -411,10 +472,44 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             return "M400";
         }
 
+        public async void PlaceAllParts()
+        {
+            _partIndex = 0;
+            Machine.LocationUpdateEnabled = false;
+
+            // Make sure any pending location requests have completed.
+            await Task.Delay(1000);
+            while (SelectedPart != null)
+            {
+                await PlacePartAsync();
+            }
+
+            Machine.LocationUpdateEnabled = true;
+
+        }
+
         public async void PlacePart()
+        {
+            Debug.WriteLine("Calling Place Part:");
+            Machine.LocationUpdateEnabled = false;
+
+            // Make sure any pending location requests have completed.
+            await Task.Delay(1000);
+            await PlacePartAsync();
+            Machine.LocationUpdateEnabled = true;
+        }
+
+        public async Task PlacePartAsync()
         {
             if (_partIndex < SelectedPart.Parts.Count)
             {
+                _isPlacingParts = true;
+
+                Debug.WriteLine("Here 1:");
+
+                PlaceCurrentPartCommand.RaiseCanExecuteChanged();
+                PlaceAllPartsCommand.RaiseCanExecuteChanged();
+
                 if (!Machine.Vacuum1On || !Machine.Vacuum2On)
                 {
                     Machine.Vacuum1On = true;
@@ -422,11 +517,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                     await Task.Delay(500);
                 }
 
-                if (Machine.ViewType != ViewTypes.Tool1)
-                {
-                    Machine.ViewType = ViewTypes.Tool1;
-                    while (Machine.Busy) await Task.Delay(1);
-                }
+                await Machine.SetViewTypeAsync(ViewTypes.Tool1);
 
                 if (_selectPartToBePlaced == null)
                 {
@@ -457,12 +548,13 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
 
                 cmds.Add(RotationGCode(0)); // Ensure we are at zero position before picking up part.
 
+                SendInstructionSequenceAsync(cmds);
+
                 SelectedPartRow.CurrentPartIndex++;
                 _partIndex++;
-                if (_partIndex < SelectedPart.Parts.Count)
+                if (_partIndex >= SelectedPart.Parts.Count)
                 {
-                    _partIndex = 0;
-                    SelectedPartToBePlaced = null;
+                    SelectedPart = null;
                 }
                 else
                 {
@@ -473,10 +565,10 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
 
                 await SaveJob();
 
-                Task.Run(async () =>
-                {
-                    await SendInstructionSequenceAsync(cmds);
-                });
+                _isPlacingParts = false;
+
+                PlaceCurrentPartCommand.RaiseCanExecuteChanged();
+                PlaceAllPartsCommand.RaiseCanExecuteChanged();
             }
         }
 
@@ -663,6 +755,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                 MoveToPreviousComponentInTapeCommand.RaiseCanExecuteChanged();
                 ResetCurrentComponentCommand.RaiseCanExecuteChanged();
                 PlaceCurrentPartCommand.RaiseCanExecuteChanged();
+                PlaceAllPartsCommand.RaiseCanExecuteChanged();
             }
         }
 
@@ -764,6 +857,8 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             await base.IsClosingAsync();
         }
 
+        private bool _isPlacingParts = false;
+
         public RelayCommand HomingCycleCommand { get; }
         public RelayCommand GoToCurrentPartCommand { get; }
         public RelayCommand AddFeederCommand { get; private set; }
@@ -780,10 +875,13 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
         public RelayCommand SetWorkHomeCommand { get; set; }
         public RelayCommand CloseCommand { get; set; }
         public RelayCommand PlaceCurrentPartCommand { get; set; }
+        public RelayCommand PlaceAllPartsCommand { get; set; }
         public RelayCommand GoToPartInTrayCommand { get; }
         public RelayCommand PeformMachineAlignmentCommand { get; }
         public RelayCommand GoToFiducial1Command { get; }
         public RelayCommand GoToFiducial2Command { get; }
         public RelayCommand AlignBottomCameraCommand { get; }
+
+        public RelayCommand SetFiducialCalibrationCommand { get; }
     }
 }

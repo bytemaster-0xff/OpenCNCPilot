@@ -173,6 +173,8 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                 {
                     Profile = _topCameraProfile;
                     ShowBottomCamera = false;
+                    Machine.BottomLightOn = false;
+                    Machine.TopLightOn = true;
                 }
 
                 Set(ref _showTopCamera, value);
@@ -191,11 +193,13 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                 {
                     Profile = _bottomCameraProfile;
                     ShowTopCamera = false;
+                    Machine.BottomLightOn = true;
+                    Machine.TopLightOn = false;
                 }
 
                 Set(ref _showBottomCamera, value);
                 UseBottomCamera = true;
-                UseTopCamera = false;
+                UseTopCamera = false;                
             }
         }
 

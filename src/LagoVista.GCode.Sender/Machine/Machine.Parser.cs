@@ -71,18 +71,18 @@ namespace LagoVista.GCode.Sender
             {
                 var newWorkPosition = new Vector3(double.Parse(wx.Value, Constants.DecimalParseFormat), double.Parse(wy.Value, Constants.DecimalParseFormat), double.Parse(wz.Value, Constants.DecimalParseFormat));
 
-                if (WorkspacePosition != newWorkPosition)
+                if (WorkPositionOffset != newWorkPosition)
                 {
-                    WorkspacePosition = newWorkPosition;
+                    WorkPositionOffset = newWorkPosition;
                 }
             }
             else if (wcox.Success)
             {
                 var newWorkPosition = new Vector3(double.Parse(wcox.Value, Constants.DecimalParseFormat), double.Parse(wcoy.Value, Constants.DecimalParseFormat), double.Parse(wcoz.Value, Constants.DecimalParseFormat));
 
-                if (WorkspacePosition != newWorkPosition)
+                if (WorkPositionOffset != newWorkPosition)
                 {
-                    WorkspacePosition = newWorkPosition;
+                    WorkPositionOffset = newWorkPosition;
                 }
             }
 
@@ -292,6 +292,10 @@ namespace LagoVista.GCode.Sender
 
                 switch (pin)
                 {
+                    case 26:
+
+                        break;
+
                     case 25:
                         _vacuum1On = state > 0;
                         RaisePropertyChanged(nameof(Vacuum1On));
@@ -307,6 +311,10 @@ namespace LagoVista.GCode.Sender
                     case 31:
                         _topLightOn = state > 0;
                         RaisePropertyChanged(nameof(TopLightOn));
+                        break;
+                    case 32:
+                        _viewType = state == 0 ? ViewTypes.Camera : ViewTypes.Tool1;
+                        RaisePropertyChanged(nameof(ViewType));
                         break;
                     case 33:
                         _bottomLightOn = state > 0;

@@ -49,7 +49,9 @@ namespace LagoVista.GCode.Sender
                     Enqueue("M43 P27");
                     Enqueue("M43 P29");
                     Enqueue("M43 P31");
-                    Enqueue("M43 P33");
+                    Enqueue("M43 P32");
+                    Enqueue("M43 P33");                    
+                    Enqueue("G90");
                 }
 
                 _cancelToken = new CancellationToken();
@@ -242,7 +244,7 @@ namespace LagoVista.GCode.Sender
             SoftReset();
         }
 
-        public void GotoWorkspaceHome()
+        public async void GotoWorkspaceHome()
         {
             Enqueue($"G0 Z{Settings.ToolSafeMoveHeight} F{Settings.FastFeedRate}");
 
@@ -252,8 +254,7 @@ namespace LagoVista.GCode.Sender
             }
             else if (Settings.MachineType == FirmwareTypes.Repeteir_PnP)
             {
-                
-                ViewType = ViewTypes.Camera;
+                await SetViewTypeAsync(ViewTypes.Camera);
                 GotoPoint(0, 0);
             }
             else
