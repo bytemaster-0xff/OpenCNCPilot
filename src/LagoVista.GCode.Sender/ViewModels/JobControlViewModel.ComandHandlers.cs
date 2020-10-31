@@ -144,7 +144,7 @@ namespace LagoVista.GCode.Sender.ViewModels
                     {
                         var client = SLWIOC.Create<ISocketClient>();
 
-                        await client.ConnectAsync(Machine.Settings.IPAddress, 9001);
+                        await client.ConnectAsync(Machine.Settings.IPAddress, 6969);
                         await Machine.ConnectAsync(client);
                     }
                     catch(Exception)

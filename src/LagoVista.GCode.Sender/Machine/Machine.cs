@@ -126,10 +126,14 @@ namespace LagoVista.GCode.Sender
             set
             {
                 _busy = value;
-                RaisePropertyChanged(nameof(Busy));
+                BusyStatus = value ? "Busy" : "Idle";
+                RaisePropertyChanged();
+                RaisePropertyChanged(nameof(BusyStatus));
             }
             get => _busy;
         }
+
+        public string BusyStatus { get; set; } = "-";
 
         public void GotoPoint(Point2D<double> point, bool rapidMove = true)
         {

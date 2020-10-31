@@ -46,7 +46,7 @@ namespace LagoVista.GCode.Sender
 
             _writer.Write(send_line);
             _writer.Write('\n');
-            _writer.Flush();            
+            _writer.Flush();
 
             if (send_line != "M114")
             {
@@ -84,7 +84,7 @@ namespace LagoVista.GCode.Sender
 
             if (Mode == OperatingMode.Manual)
             {
-                if ((Now - _lastPollTime).TotalMilliseconds > Settings.StatusPollIntervalIdle)
+                if ((Now - _lastPollTime).TotalMilliseconds > Settings.StatusPollIntervalIdle && LocationUpdateEnabled)
                 {
                     if (Settings.MachineType == FirmwareTypes.GRBL1_1 ||
                         Settings.MachineType == FirmwareTypes.LagoVista ||
@@ -108,7 +108,7 @@ namespace LagoVista.GCode.Sender
                         MachinePosition = GCodeFileManager.CurrentCommand.CurrentPosition;
                     else
                     {
-                        if (Settings.MachineType == FirmwareTypes.GRBL1_1)
+                        if (Settings.MachineType == FirmwareTypes.GRBL1_1 && LocationUpdateEnabled)
                         {
                             Enqueue("?", true);
                         }
@@ -144,13 +144,15 @@ namespace LagoVista.GCode.Sender
 
         private bool ShouldSendNormalPriorityItems()
         {
-            return _toSend.Count > 0 && ((_toSend.Peek().ToString()).Length + 1) < (Settings.ControllerBufferSize - Math.Max(0,UnacknowledgedBytesSent));
+            return !_isPaused && _toSend.Count > 0 && ((_toSend.Peek().ToString()).Length + 1) < (Settings.ControllerBufferSize - Math.Max(0, UnacknowledgedBytesSent));
         }
 
         private bool ShouldSendJobItems()
         {
-            //return _jobToSend.Count > 0 && ((_jobToSend.Peek().ToString()).Length + 1) < (_settings.ControllerBufferSize - Math.Max(0,UnacknowledgedBytesSent));
-            return _jobToSend.Count > 0;
+            if (Settings.MachineType == FirmwareTypes.GRBL1_1)
+                return _jobToSend.Count > 0 && ((_jobToSend.Peek().ToString()).Length + 1) < (_settings.ControllerBufferSize - Math.Max(0, UnacknowledgedBytesSent));
+            else
+                return _jobToSend.Count > 0;
         }
 
         private async Task Send()

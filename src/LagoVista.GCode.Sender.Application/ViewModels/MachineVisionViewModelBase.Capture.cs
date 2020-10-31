@@ -54,7 +54,12 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
 
             while (_running)
             {
-                if (_topCameraCapture != null)
+                if (!UseTopCamera && !UseBottomCamera)
+                {
+                    PrimaryCapturedImage = new BitmapImage(new Uri("/Imgs/TestPattern.jpg", UriKind.Relative));
+                    SecondaryCapturedImage = new BitmapImage(new Uri("/Imgs/TestPattern.jpg", UriKind.Relative));
+                }
+                else if (UseTopCamera && _topCameraCapture != null)
                 {
                     _topCameraCapture.SetCaptureProperty(Emgu.CV.CvEnum.CapProp.AutoExposure, 0);
 
@@ -94,20 +99,23 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                         using (var originalFrame = _topCameraCapture.QueryFrame())
                         using (var results = PerformShapeDetection(originalFrame))
                         {
-                            if (ShowTopCamera)
+                            PrimaryCapturedImage = Emgu.CV.WPF.BitmapSourceConvert.ToBitmapSource(results);
+                        }
+
+                        if (PictureInPicture && _bottomCameraCapture != null)
+                        {
+                            using (var originalFrame = _bottomCameraCapture.QueryFrame())
                             {
-                                PrimaryCapturedImage = Emgu.CV.WPF.BitmapSourceConvert.ToBitmapSource(results);
+                                SecondaryCapturedImage = Emgu.CV.WPF.BitmapSourceConvert.ToBitmapSource(originalFrame);
                             }
-                            
-                            if (PictureInPicture)
-                            {
-                                SecondaryCapturedImage = Emgu.CV.WPF.BitmapSourceConvert.ToBitmapSource(results);
-                            }
+                        }
+                        else
+                        {
+                            SecondaryCapturedImage = null;
                         }
                     }
                 }
-
-                if (_bottomCameraCapture != null)
+                else if (UseBottomCamera && _bottomCameraCapture != null)
                 {
                     _bottomCameraCapture.SetCaptureProperty(Emgu.CV.CvEnum.CapProp.AutoExposure, 0);
 
@@ -140,15 +148,19 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                         using (var originalFrame = _bottomCameraCapture.QueryFrame())
                         using (var results = PerformShapeDetection(originalFrame))
                         {
-                            if (ShowBottomCamera)
+                            PrimaryCapturedImage = Emgu.CV.WPF.BitmapSourceConvert.ToBitmapSource(results);
+                        }
+
+                        if (PictureInPicture && _topCameraCapture != null)
+                        {
+                            using (var originalFrame = _topCameraCapture.QueryFrame())
                             {
-                                PrimaryCapturedImage = Emgu.CV.WPF.BitmapSourceConvert.ToBitmapSource(results);
+                                SecondaryCapturedImage = Emgu.CV.WPF.BitmapSourceConvert.ToBitmapSource(originalFrame);
                             }
-                            
-                            if (PictureInPicture)
-                            {
-                                SecondaryCapturedImage = Emgu.CV.WPF.BitmapSourceConvert.ToBitmapSource(results);
-                            }
+                        }
+                        else
+                        {
+                            SecondaryCapturedImage = null;
                         }
                     }
 
@@ -158,15 +170,9 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                     {
                         LoadingMask = false;
                     }
-
-                    if (!ShowTopCamera && !ShowBottomCamera)
-                    {
-                        PrimaryCapturedImage = new BitmapImage(new Uri("/Imgs/TestPattern.jpg", UriKind.Relative));
-                        SecondaryCapturedImage = new BitmapImage(new Uri("/Imgs/TestPattern.jpg", UriKind.Relative));
-                    }
                 }
 
-                await Task.Delay(100);
+                await Task.Delay(50);
             }
 
 
@@ -194,21 +200,21 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                 var positionCameraIndex = Machine.Settings.PositioningCamera == null ? null : (int?)Machine.Settings.PositioningCamera.CameraIndex;
                 var inspectionCameraIndex = Machine.Settings.PartInspectionCamera == null ? null : (int?)Machine.Settings.PartInspectionCamera.CameraIndex;
 
-                if(positionCameraIndex.HasValue && inspectionCameraIndex.HasValue)
+                if (positionCameraIndex.HasValue && inspectionCameraIndex.HasValue)
                 {
-                    if(positionCameraIndex.Value < inspectionCameraIndex.Value)
+                    if (positionCameraIndex.Value < inspectionCameraIndex.Value)
                     {
                         _topCameraCapture = InitCapture(Machine.Settings.PositioningCamera.CameraIndex);
                         _bottomCameraCapture = InitCapture(Machine.Settings.PartInspectionCamera.CameraIndex);
                     }
                     else
-                    {                        
+                    {
                         _topCameraCapture = InitCapture(Machine.Settings.PositioningCamera.CameraIndex);
                         _bottomCameraCapture = InitCapture(Machine.Settings.PartInspectionCamera.CameraIndex);
                     }
                     StartImageRecognization();
                 }
-                else if(positionCameraIndex.HasValue)
+                else if (positionCameraIndex.HasValue)
                 {
                     _topCameraCapture = InitCapture(Machine.Settings.PositioningCamera.CameraIndex);
                     StartImageRecognization();
@@ -241,7 +247,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                         _topCameraCapture = null;
                     }
 
-                    if(_bottomCameraCapture != null)
+                    if (_bottomCameraCapture != null)
                     {
                         _bottomCameraCapture.Stop();
                         _bottomCameraCapture.Dispose();

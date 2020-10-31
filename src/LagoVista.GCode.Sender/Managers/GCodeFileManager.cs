@@ -64,8 +64,10 @@ namespace LagoVista.GCode.Sender.Managers
                 {
                     if (_machine.Settings.PauseOnToolChange)
                     {
-                        _pendingToolChangeLine = Head;
+                        _pendingToolChangeLine = Head;                        
                     }
+
+                    _file.Commands[Head].Status = GCodeCommand.StatusTypes.Sent;
 
                     Head++;
                     return;

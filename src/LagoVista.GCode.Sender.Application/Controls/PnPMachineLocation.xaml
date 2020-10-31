@@ -47,7 +47,7 @@
                     <ColumnDefinition Width="50*" />
                     <ColumnDefinition Width="50*" />
                 </Grid.ColumnDefinitions>
-                <Label Content="Busy" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="32" />
+                <Label Content="{Binding Machine.BusyStatus}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="32" />
                 <Ellipse Grid.Column="1" Width="48" Height="48" Fill="{Binding Machine.Busy, Converter={StaticResource BoolColorConverter}, FallbackValue=Green}" Margin="4"/>
             </Grid>
 

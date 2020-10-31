@@ -16,6 +16,8 @@ namespace LagoVista.GCode.Sender
     {
         private StringBuilder _messageBuffer = new StringBuilder();
 
+        private bool _isPaused = false;
+
         private void ParseMessage(string fullMessageLine)
         {
             fullMessageLine = fullMessageLine.ToLower();
@@ -24,6 +26,12 @@ namespace LagoVista.GCode.Sender
             if (fullMessageLine.StartsWith("ok") ||
                             fullMessageLine.StartsWith("<ok:"))
             {
+                if (_isPaused)
+                {
+                    _isPaused = false;
+                    Debug.WriteLine(" NO LONGER PAUSED!");
+                }
+
                 if (GCodeFileManager.HasValidFile && Mode == OperatingMode.SendingGCodeFile)
                 {
                     lock (this)
@@ -44,7 +52,7 @@ namespace LagoVista.GCode.Sender
                             Mode = OperatingMode.Manual;
                         }
                     }
-                }
+                }                
                 else
                 {
                     lock (_queueAccessLocker)
@@ -87,7 +95,14 @@ namespace LagoVista.GCode.Sender
             }
             else if (fullMessageLine != null)
             {
-                if (fullMessageLine.StartsWith("error:"))
+                if (fullMessageLine == "wait")
+                {
+                    _isPaused = true;
+
+                    Debug.WriteLine("WAIT WAIT WAIT - PAUSE");
+                    /* nop */
+                }
+                else if (fullMessageLine.StartsWith("error:"))
                 {
                     var errorline = _sentQueue.Any() ? _sentQueue.Dequeue() : "?????";
 

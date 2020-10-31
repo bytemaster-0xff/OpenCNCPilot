@@ -109,7 +109,7 @@ namespace LagoVista.GCode.Sender.ViewModels
                         if (newAngle > 360)
                             newAngle -= 360;
 
-                        if(newAngle < 360)
+                        if(newAngle < 0)
                         {
                             newAngle += 360;
                         }
@@ -121,10 +121,11 @@ namespace LagoVista.GCode.Sender.ViewModels
                 case JogDirections.CPlus:
                     {
                         var newAngle = Machine.Tool2 + 90;
+
                         if (newAngle > 360)
                             newAngle -= 360;
 
-                        if (newAngle < 360)
+                        if (newAngle < 0)
                         {
                             newAngle += 360;
                         }
@@ -136,8 +137,9 @@ namespace LagoVista.GCode.Sender.ViewModels
 
         public void Jog(JogDirections direction)
         {
-            if(Machine.Settings.MachineType == FirmwareTypes.Repeteir_PnP && 
-                direction != JogDirections.CMinus && direction != JogDirections.CPlus)
+            if((Machine.Settings.MachineType == FirmwareTypes.Repeteir_PnP && 
+                direction != JogDirections.CMinus && direction != JogDirections.CPlus) ||
+                Machine.Settings.MachineType == FirmwareTypes.GRBL1_1)
             {
                 RelativeJog(direction);
             }
