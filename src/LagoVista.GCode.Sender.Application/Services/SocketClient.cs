@@ -13,7 +13,7 @@ namespace LagoVista.GCode.Sender.Application.Services
         public async Task ConnectAsync(string ipAddress, int port)
         {
             _client = new TcpClient();
-            await _client.ConnectAsync(ipAddress, 9001);
+            await _client.ConnectAsync(ipAddress, port);
             InputStream = _client.GetStream();
             OutputStream = _client.GetStream();
         }
