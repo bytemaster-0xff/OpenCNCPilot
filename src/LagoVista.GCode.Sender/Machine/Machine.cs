@@ -16,8 +16,6 @@ namespace LagoVista.GCode.Sender
 {
     public partial class Machine : IMachine
     {
-        CancellationToken _cancelToken;
-
         MachinesRepo _machineRepo;
 
         public event PropertyChangedEventHandler PropertyChanged;

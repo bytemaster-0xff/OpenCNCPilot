@@ -1,11 +1,8 @@
 ﻿using LagoVista.Core.GCode;
-using LagoVista.Core.GCode.Commands;
 using LagoVista.Core.Models.Drawing;
 using LagoVista.Core.PlatformSupport;
 using LagoVista.GCode.Sender.Interfaces;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -14,6 +11,7 @@ namespace LagoVista.GCode.Sender
     public partial class Machine
     {
         ISerialPort _port;
+        ISocketClient _socketClient;
 
         public async Task ConnectAsync(ISerialPort port)
         {
@@ -53,7 +51,7 @@ namespace LagoVista.GCode.Sender
                     Enqueue("G90");
                 }
 
-                _cancelToken = new CancellationToken();
+                _cancelSource = new CancellationTokenSource();
                 _port = port;
 
                 AddStatusMessage(StatusMessageTypes.Info, $"Opened Serial Port");
@@ -61,7 +59,7 @@ namespace LagoVista.GCode.Sender
                 await Task.Run(() =>
                 {
                     Work(port.InputStream, port.OutputStream);
-                }, _cancelToken);
+                }, _cancelSource.Token);
             }
             catch (Exception ex)
             {
@@ -71,9 +69,12 @@ namespace LagoVista.GCode.Sender
             }
         }
 
+        CancellationTokenSource _cancelSource;
+
         public async Task ConnectAsync(ISocketClient socketClient)
         {
-            _cancelToken = new CancellationToken();
+            _socketClient = socketClient;
+            _cancelSource = new CancellationTokenSource();
 
             Connected = true;
             Mode = OperatingMode.Manual;
@@ -83,7 +84,7 @@ namespace LagoVista.GCode.Sender
             await Task.Run(() =>
             {
                 Work(socketClient.InputStream, socketClient.OutputStream);
-            }, _cancelToken);
+            }, _cancelSource.Token);
         }
 
         private object _queueAccessLocker = new object();
@@ -123,6 +124,19 @@ namespace LagoVista.GCode.Sender
                 await _port.CloseAsync();
                 AddStatusMessage(StatusMessageTypes.Info, "Closed Serial Port");
                 _port = null;
+            }
+
+            if (_socketClient != null)
+            {
+                await _socketClient.CloseAsync();
+                _socketClient.Dispose();
+                _socketClient = null;
+            }
+
+            if (this._cancelSource != null)
+            {
+                _cancelSource.Cancel();
+                _cancelSource = null;
             }
 
             AddStatusMessage(StatusMessageTypes.Info, "Disconnected");
@@ -178,7 +192,7 @@ namespace LagoVista.GCode.Sender
                     PendingQueue.Clear();
                     if (Settings.MachineType == FirmwareTypes.GRBL1_1)
                         _toSendPriority.Enqueue(((char)0x18).ToString());
-                    else if(Settings.MachineType == FirmwareTypes.Repeteir_PnP)
+                    else if (Settings.MachineType == FirmwareTypes.Repeteir_PnP)
                         _toSendPriority.Enqueue("M112");
 
                     Vacuum1On = false;
@@ -305,7 +319,7 @@ namespace LagoVista.GCode.Sender
                 Enqueue("G28");
                 if (Settings.MachineType == FirmwareTypes.Repeteir_PnP)
                 {
-                    
+
                     Enqueue($"G0 X{Settings.DefaultWorkspaceHome.X} Y{Settings.DefaultWorkspaceHome.Y} F{Settings.FastFeedRate}");
                     GotoPoint(Settings.DefaultWorkspaceHome.X, Settings.DefaultWorkspaceHome.Y);
                     SetWorkspaceHome();

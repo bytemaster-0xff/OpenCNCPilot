@@ -18,6 +18,23 @@ namespace LagoVista.GCode.Sender.Application.Services
             OutputStream = _client.GetStream();
         }
 
+        public Task CloseAsync()
+        {
+            _client.Close();
+            return Task.CompletedTask;
+        }
+
+        public void Dispose()
+        {
+            lock (this)
+            {
+                if (_client != null)
+                {
+                    _client.Dispose();
+                }
+            }
+        }
+
         public Stream InputStream { get; private set; }
         public Stream OutputStream { get; private set; }
     }

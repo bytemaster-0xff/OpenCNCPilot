@@ -58,22 +58,23 @@ namespace LagoVista.GCode.Sender.Managers
 
             if (Head < _file.Commands.Count)
             {
-                var cmd = _file.Commands[Head++];
+                var cmd = _file.Commands[Head];
              
                 /* If Next Command up is a Tool Change, set the nullable property to that line and bail. */
                 if (cmd is ToolChangeCommand)
                 {
-                    cmd.Status = GCodeCommand.StatusTypes.Sent;
-                
                     if (_machine.Settings.PauseOnToolChange)
                     {
                         _pendingToolChangeLine = Head;
                     }
-
+                    
                     return null;
                 }
 
+                Head++;
+
                 cmd.Status = GCodeCommand.StatusTypes.Queued;
+
                 return cmd;
             }
 
@@ -104,6 +105,7 @@ namespace LagoVista.GCode.Sender.Managers
                 {
                     _file.Commands[Tail].Status = GCodeCommand.StatusTypes.Internal;
                     HandleToolChange(_file.Commands[Tail] as ToolChangeCommand);
+                    Head++;
                     Tail++;
                 }
 

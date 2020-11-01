@@ -170,7 +170,9 @@ namespace LagoVista.GCode.Sender
 
             if (!_isOnHold)
             {
-                if (Mode == OperatingMode.SendingGCodeFile && _toSend.Count == 0)
+                if (Mode == OperatingMode.SendingGCodeFile && 
+                    _toSend.Count == 0 &&
+                    Settings.ControllerBufferSize - Math.Max(0, UnacknowledgedBytesSent) > 24)
                 {
                     var nextCommand = GCodeFileManager.GetNextJobItem();
                     if (nextCommand != null)

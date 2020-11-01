@@ -7,10 +7,12 @@ using System.Threading.Tasks;
 
 namespace LagoVista.GCode.Sender.Interfaces
 {
-    public interface ISocketClient
+    public interface ISocketClient : IDisposable
     {
         Task ConnectAsync(String ipAddress, int port);
         Stream InputStream { get; }
         Stream OutputStream { get; }
+        Task CloseAsync();
+
     }
 }
