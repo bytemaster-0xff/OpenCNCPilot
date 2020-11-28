@@ -23,7 +23,7 @@ namespace LagoVista.Core.GCode.Parser
         //TODO: Removed compiled options
         private Regex GCodeSplitter = new Regex(@"([A-Z])\s*(\-?\d+\.?\d*)");
         private double[] MotionCommands = new double[] { 0, 1, 2, 3, 4, 38.2, 38.3, 38.4, 38.5, 20, 21, 90, 91 };
-        private string ValidWords = "GMXYZSTPIJKFR";
+        private string ValidWords = "GMXYZSTPIJKFER";
         public List<GCodeCommand> Commands;
 
         public void Reset()
@@ -294,6 +294,12 @@ namespace LagoVista.Core.GCode.Parser
 
             var EndPos = FindEndPosition(words, UnitMultiplier);
 
+            var rotateCommand = words.Where(wrd => wrd.Command == 'E').FirstOrDefault();
+            if (rotateCommand != null)
+            {
+                words.Remove(rotateCommand);
+            }
+
             var feedRateCommand = words.Where(wrd => wrd.Command == 'F').FirstOrDefault();
             if (feedRateCommand != null)
             {
@@ -327,6 +333,7 @@ namespace LagoVista.Core.GCode.Parser
                         motion.Command = $"G{motionMode}";
                         motion.OriginalLine = line;
                         motion.PreviousFeed = State.Feed;
+                        motion.PreviousRotateAngle = State.RotateAngle;
                         motion.PreviousSpindleRPM = State.SpindleRPM;
                         if (feedRateCommand != null)
                         {
@@ -336,6 +343,16 @@ namespace LagoVista.Core.GCode.Parser
                         else
                         {
                             motion.Feed = motion.PreviousFeed;
+                        }
+
+                        if(rotateCommand != null)
+                        {
+                            State.RotateAngle = rotateCommand.Parameter;
+                            motion.RotateAngle = State.RotateAngle;
+                        }
+                        else
+                        {                            
+                            motion.RotateAngle = motion.PreviousRotateAngle;                            
                         }
 
                         if (spindleRPM != null)

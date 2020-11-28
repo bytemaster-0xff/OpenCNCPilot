@@ -19,6 +19,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
     public class PnPJobViewModel : MachineVisionViewModelBase
     {
         private bool _isEditing;
+        private bool _isPaused;
         private bool _isDirty = false;
         private BOM _billOfMaterials;
         private FeederLibrary _feederLibrary;
@@ -69,6 +70,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
 
             PlaceCurrentPartCommand = new RelayCommand(PlacePart, CanPlacePart);
             PlaceAllPartsCommand = new RelayCommand(PlaceAllParts, CanPlacePart);
+            PausePlacmentCommand = new RelayCommand(PausePlacement, CanPausePlacement);
 
             SetFiducialCalibrationCommand = new RelayCommand((prm) => SetFiducialCalibration(prm));
 
@@ -188,6 +190,17 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             return true;
         }
 
+        public void PausePlacement(Object obj)
+        {
+            _isPlacingParts = false;
+            _isPaused = true;
+        }
+
+        public bool CanPausePlacement(Object obj)
+        {
+            return _isPlacingParts;
+        }
+
         public void GotoWorkspaceHome()
         {
             Machine.SendCommand(SafeHeightGCodeGCode());
@@ -230,13 +243,26 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
 
             foreach (var entry in commonParts)
             {
-                ConfigurationParts.Add(new PlaceableParts()
+                var part = new PlaceableParts()
                 {
                     Count = entry.Count(),
                     Value = entry.First().Value.ToUpper(),
                     Package = entry.First().PackageName.ToUpper(),
-                    Parts = new ObservableCollection<Component>(SelectedBuildFlavor.Components.Where(cmp => cmp.Key == entry.Key))
-                });
+                    
+                };
+
+                part.Parts = new ObservableCollection<Component>();
+
+                foreach (var specificPart in entry)
+                {
+                    var placedPart = SelectedBuildFlavor.Components.Where(cmp => cmp.Name == specificPart.Name && cmp.Key == specificPart.Key).FirstOrDefault();
+                    if (placedPart != null)
+                    {
+                        part.Parts.Add(placedPart);
+                    }
+                }
+
+                ConfigurationParts.Add(part);
             }
 
             if (_pnpMachine != null)
@@ -451,12 +477,12 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
 
         public async void PlaceAllParts()
         {
-            _partIndex = 0;
+            //_partIndex = 0;
             Machine.LocationUpdateEnabled = false;
 
             // Make sure any pending location requests have completed.
             await Task.Delay(1000);
-            while (SelectedPart != null)
+            while (SelectedPart != null && !_isPaused)
             {
                 await PlacePartAsync(true);
             }
@@ -484,6 +510,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                 _isPlacingParts = true;
                 PlaceCurrentPartCommand.RaiseCanExecuteChanged();
                 PlaceAllPartsCommand.RaiseCanExecuteChanged();
+                PausePlacmentCommand.RaiseCanExecuteChanged();
 
                 if (!Machine.Vacuum1On || !Machine.Vacuum2On)
                 {
@@ -506,6 +533,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                 cmds.Add(SafeHeightGCodeGCode()); // Move to move height
                 cmds.Add(GetGoToPartInTrayGCode());
                 cmds.Add(RotationGCode(0)); // Ensure we are at zero position before picking up part.
+                cmds.Add(WaitForComplete());
                 cmds.Add(WaitForComplete());            
                 cmds.Add(ProduceVacuumGCode(true)); // Turn on solenoid 
                 cmds.Add(DwellGCode(250)); // Wait 500ms to pickup part.
@@ -514,7 +542,11 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                 cmds.Add(SafeHeightGCodeGCode()); // Go to move height
 
                 var cRotation = SelectedPartToBePlaced.RotateAngle + SelectedPartPackage.RotationInTape;
-                cmds.Add(RotationGCode(cRotation));
+                if (cRotation > 0)
+                {
+                    cmds.Add(RotationGCode(cRotation));
+                    cmds.Add(WaitForComplete());
+                }
 
                 cmds.Add(GetGoToPartOnBoardGCode());
                 cmds.Add(PlaceHeightGCode(SelectedPartPackage));
@@ -553,6 +585,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
 
                 PlaceCurrentPartCommand.RaiseCanExecuteChanged();
                 PlaceAllPartsCommand.RaiseCanExecuteChanged();
+                PausePlacmentCommand.RaiseCanExecuteChanged();
             }
         }
 
@@ -588,7 +621,8 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             {
                 if (SelectedPart != null && SelectedPartRow != null && SelectedPartPackage != null)
                 {
-                    return SelectedPart.PartPack.Pin1XOffset + SelectedPart.Slot.X + (SelectedPartRow.CurrentPartIndex * SelectedPartPackage.SpacingX) + SelectedPartPackage.CenterXFromHole;
+                    var xCorrection = SelectedPart.PartPack.CorrectionAngleX * ((SelectedPartRow.RowNumber - 1) * SelectedPart.PartPack.RowCount);
+                    return SelectedPart.PartPack.Pin1XOffset + SelectedPart.Slot.X + (SelectedPartRow.CurrentPartIndex * SelectedPartPackage.SpacingX) + SelectedPartPackage.CenterXFromHole + xCorrection;
                 }
                 else
                 {
@@ -603,7 +637,9 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             {
                 if (SelectedPart != null && SelectedPartRow != null && SelectedPartPackage != null)
                 {
-                    var yCorrection = SelectedPart.PartPack.CorrectionAngle * ((SelectedPartRow.CurrentPartIndex * SelectedPartPackage.SpacingX) + SelectedPartPackage.CenterXFromHole);
+                    var yCorrection = SelectedPart.PartPack.CorrectionAngleY * ((SelectedPartRow.CurrentPartIndex * SelectedPartPackage.SpacingX) + SelectedPartPackage.CenterXFromHole);
+                    
+
                     return SelectedPart.PartPack.Pin1YOffset + SelectedPart.Slot.Y + ((SelectedPartRow.RowNumber - 1) * SelectedPart.PartPack.RowHeight) + SelectedPartPackage.CenterYFromHole + yCorrection;
                 }
                 else
@@ -885,6 +921,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
         public RelayCommand SelectMachineFileCommand { get; private set; }
         public RelayCommand ResetCurrentComponentCommand { get; set; }
         public RelayCommand MoveToPreviousComponentInTapeCommand { get; set; }
+        public RelayCommand PausePlacmentCommand { get; set; }
         public RelayCommand MoveToNextComponentInTapeCommand { get; set; }
         public RelayCommand GoToWorkHomeCommand { get; set; }
         public RelayCommand SetWorkHomeCommand { get; set; }

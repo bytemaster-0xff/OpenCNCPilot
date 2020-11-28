@@ -109,7 +109,7 @@ namespace LagoVista.GCode.Sender.ViewModels
                         if (newAngle > 360)
                             newAngle -= 360;
 
-                        if(newAngle < 0)
+                        if (newAngle < 0)
                         {
                             newAngle += 360;
                         }
@@ -137,9 +137,12 @@ namespace LagoVista.GCode.Sender.ViewModels
 
         public void Jog(JogDirections direction)
         {
-            if((Machine.Settings.MachineType == FirmwareTypes.Repeteir_PnP && 
-                direction != JogDirections.CMinus && direction != JogDirections.CPlus) ||
-                Machine.Settings.MachineType == FirmwareTypes.GRBL1_1)
+            if ((Machine.Settings.MachineType == FirmwareTypes.Repeteir_PnP ||
+                Machine.Settings.MachineType == FirmwareTypes.Marlin_Laser ||
+                Machine.Settings.MachineType == FirmwareTypes.Marlin ||
+                Machine.Settings.MachineType == FirmwareTypes.GRBL1_1) && 
+                (direction != JogDirections.CMinus && direction != JogDirections.CPlus)
+                )
             {
                 RelativeJog(direction);
             }

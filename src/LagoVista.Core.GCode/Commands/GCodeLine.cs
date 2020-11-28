@@ -19,8 +19,6 @@ namespace LagoVista.Core.GCode.Commands
         {
             Start = new Vector3(Start.X + x, Start.Y + y, Start.Z + z);
             End = new Vector3(End.X + x, End.Y + y, End.Z + z);
-
-            
         }
 
         public override void Rotate(double degrees, Point2D<double> origin = null, Axis axis = Axis.ZAxis, RotateDirection direction = RotateDirection.CounterClockwise)
@@ -48,7 +46,7 @@ namespace LagoVista.Core.GCode.Commands
             get
             {
                 var bldr = new StringBuilder();
-                bldr.Append(Command);
+                bldr.Append(Command);                
 
                 if (End.X != Start.X)
                 {
@@ -63,6 +61,12 @@ namespace LagoVista.Core.GCode.Commands
                 if (End.Z != Start.Z)
                 {
                     bldr.Append($" Z{End.Z.ToDim()}");
+                }
+
+                if((RotateAngle.HasValue && PreviousRotateAngle.HasValue && RotateAngle != PreviousRotateAngle) ||
+                    RotateAngle.HasValue && !PreviousRotateAngle.HasValue)
+                {
+                    bldr.Append($" E{RotateAngle}");
                 }
 
                 if ((Feed.HasValue && PreviousFeed.HasValue && Feed.Value != PreviousFeed.Value) ||

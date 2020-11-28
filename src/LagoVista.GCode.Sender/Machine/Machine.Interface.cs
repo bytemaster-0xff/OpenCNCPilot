@@ -237,14 +237,13 @@ namespace LagoVista.GCode.Sender
 
         public async void GotoWorkspaceHome()
         {
-            Enqueue($"G0 Z{Settings.ToolSafeMoveHeight} F{Settings.FastFeedRate}");
-
             if (Settings.MachineType == FirmwareTypes.LagoVista_PnP)
             {
                 Enqueue("M57");
             }
             else if (Settings.MachineType == FirmwareTypes.Repeteir_PnP)
             {
+                Enqueue($"G0 Z{Settings.ToolSafeMoveHeight} F{Settings.FastFeedRate}");
                 await SetViewTypeAsync(ViewTypes.Camera);
                 GotoPoint(0, 0);
             }
@@ -252,7 +251,7 @@ namespace LagoVista.GCode.Sender
             {
                 if (Settings.MachineType == FirmwareTypes.GRBL1_1)
                 {
-                    Enqueue("G0 Z20");
+                    Enqueue("G0 Z40");
                 }
 
                 Enqueue("G0 X0 Y0");

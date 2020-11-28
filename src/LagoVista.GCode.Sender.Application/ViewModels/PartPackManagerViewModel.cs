@@ -39,8 +39,12 @@ namespace LagoVista.PickAndPlace.ViewModels
 
             SetSlotXCommand = new RelayCommand(SetSlotX);
             SetSlotYCommand = new RelayCommand(SetSlotY);
+            SetPartPackXCommand = new RelayCommand(() => SelectedPartPack.Pin1XOffset = Machine.MachinePosition.X);
+            SetPartPackXCommand = new RelayCommand(() => SelectedPartPack.Pin1YOffset = Machine.MachinePosition.Y);
             GoToSlotCommand = new RelayCommand(GoToSlot);
+            SetPin1InFeederCommand = new RelayCommand(SetPin1InFeeder);
             GoToPin1InFeederCommand = new RelayCommand(GoToPin1InFeeder);
+            FindPin1InFeederCommand = new RelayCommand(FindPin1InFeeder);
             GoToCurrentPartCommand = new RelayCommand(GoToCurrentPart);
         }
 
@@ -68,6 +72,27 @@ namespace LagoVista.PickAndPlace.ViewModels
         }
 
         public void GoToPin1InFeeder()
+        {
+            if (SelectedPartPack != null)
+            {
+                var slot = _pnpMachine.Carrier.PartPackSlots.Where(pps => pps.PartPack.Id == SelectedPartPack.Id).FirstOrDefault();
+
+                Machine.GotoPoint(SelectedPartPack.Pin1XOffset + slot.X, SelectedPartPack.Pin1YOffset + slot.Y);
+            }
+        }
+
+        public void SetPin1InFeeder()
+        {
+            if (SelectedPartPack != null)
+            {
+                var slot = _pnpMachine.Carrier.PartPackSlots.Where(pps => pps.PartPack.Id == SelectedPartPack.Id).FirstOrDefault();
+
+                SelectedPartPack.Pin1XOffset = Machine.MachinePosition.X - slot.X;
+                SelectedPartPack.Pin1YOffset = Machine.MachinePosition.Y - slot.Y;
+            }
+        }
+
+        public void FindPin1InFeeder()
         {
             if (SelectedPartPack != null)
             {
@@ -360,16 +385,22 @@ namespace LagoVista.PickAndPlace.ViewModels
         public RelayCommand DoneEditingRowCommand { get; }
 
 
+        public RelayCommand SetPartPackXCommand { get; }
+        public RelayCommand SetPartPackYCommand { get; }
+
         public RelayCommand DoneEditSlotCommand { get; }
         public RelayCommand AddSlotCommand { get; }
 
         public RelayCommand SetSlotXCommand { get; }
         public RelayCommand SetSlotYCommand { get; }
+
         public RelayCommand GoToCurrentPartCommand { get; }
 
         public RelayCommand GoToSlotCommand { get; }
 
-        public RelayCommand GoToPin1InFeederCommand { get; }
+        public RelayCommand GoToPin1InFeederCommand { get; }       
+        public RelayCommand SetPin1InFeederCommand { get; }
+        public RelayCommand FindPin1InFeederCommand { get; }
 
         public bool IsLocating { get; private set; }
     }

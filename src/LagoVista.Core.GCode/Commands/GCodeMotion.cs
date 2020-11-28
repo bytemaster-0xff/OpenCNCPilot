@@ -7,7 +7,12 @@ namespace LagoVista.Core.GCode.Commands
     public abstract class GCodeMotion : GCodeCommand
     {
         public Vector3 Start { get; set; }
-        public Vector3 End { get; set; }
+        public Vector3 End { get; set; } 
+        
+        public double? PreviousRotateAngle { get; set; }
+        public double? RotateAngle { get; set; }
+
+
         public Vector3 Delta
         {
             get

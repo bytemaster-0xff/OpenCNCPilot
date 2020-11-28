@@ -14,8 +14,6 @@ namespace LagoVista.GCode.Sender
         //private static Regex StatusEx = new Regex(@"<(?'State'Idle|Run|Hold|Home|Alarm|Check|Door)(:[0-9])?(?:.MPos:(?'MX'-?[0-9\.]*),(?'MY'-?[0-9\.]*),(?'MZ'-?[0-9\.]*))?(?:,WPos:(?'WX'-?[0-9\.]*),(?'WY'-?[0-9\.]*),(?'WZ'-?[0-9\.]*))?(?:,Buf:(?'Buf'[0-9]*))?(?:,RX:(?'RX'[0-9]*))?(?:,Ln:(?'L'[0-9]*))?(?:,F:(?'F'[0-9\.]*))?(?:,Lim:(?'Lim'[0-1]*))?(?:,Ctl:(?'Ctl'[0-1]*))?(?:.FS:(?'FSX'-?[0-9\.]*),(?'FSY'-?[0-9\.]*))?(?:.Pn.P)?(?:.WCO:(?'WCOX'-?[0-9\.]*),(?'WCOY'-?[0-9\.]*),(?'WCOZ'-?[0-9\.]*))?(?:.Ov:(?'OVX'-?[0-9\.]*),(?'OVY'-?[0-9\.]*),(?'OVZ'-?[0-9\.]*))?>");
         private static Regex StatusEx = new Regex(@"<(?'State'idle|run|hold|home|alarm|check|door)(:[0-9])?(?:.mpos:(?'MX'-?[0-9\.]*),(?'MY'-?[0-9\.]*),(?'MZ'-?[0-9\.]*))?(?:,wpos:(?'WX'-?[0-9\.]*),(?'WY'-?[0-9\.]*),(?'WZ'-?[0-9\.]*))?(?:,buf:(?'Buf'[0-9]*))?(?:,rx:(?'RX'[0-9]*))?(?:,ln:(?'L'[0-9]*))?(?:,f:(?'F'[0-9\.]*))?(?:,lim:(?'Lim'[0-1]*))?(?:,ctl:(?'Ctl'[0-1]*))?(?:.fs:(?'FSX'-?[0-9\.]*),(?'FSY'-?[0-9\.]*))?(?:.pn.p)?(?:.pn:.)?(?:.wco:(?'WCOX'-?[0-9\.]*),(?'WCOY'-?[0-9\.]*),(?'WCOZ'-?[0-9\.]*))?(?:.ov:(?'OVX'-?[0-9\.]*),(?'OVY'-?[0-9\.]*),(?'OVZ'-?[0-9\.]*))?>");
 
-
-
         private static Regex LagoVistaStatusRegEx1 = new Regex(@"<(?'State'idle|run|hold|home|alarm|check|door)(:[0-9])?(?:.m:(?'MX'-?[0-9\.]*),(?'MY'-?[0-9\.]*),(?'MT0'-?[0-9\.]*),(?'MT1'-?[0-9\.]*),(?'MT2'-?[0-9\.]*),w:(?'WX'-?[0-9\.]*),(?'WY'-?[0-9\.]*),(?'WT0'-?[0-9\.]*),(?'WT1'-?[0-9\.]*),(?'WT2'-?[0-9\.]*),(?'QUEUE'-?[0-9]*)),(?'VT'camera|tool1|tool2)>");
         private static Regex LagoVistaStatusRegEx2 = new Regex(@"<(?:w:(?'WX'-?[0-9\.]*),(?'WY'-?[0-9\.]*),(?'WT0'-?[0-9\.]*),(?'WT1'-?[0-9\.]*),(?'WT2'-?[0-9\.]*))>");
         private static Regex LagoVistaStatusRegEx3 = new Regex(@"<(?:TL:(?'TL'-?[01]*)),(?:BL:(?'BL'-?[01]*)),(?:VA:(?'VA'-?[01]*)),(?:SU:(?'SU'-?[01]*)),(?:EX:(?'EX'-?[01]*)),(?:TO:(?'TO'-?[0-9]*)),(?:PA:(?'PA'-?[01]*))>");
@@ -32,6 +30,8 @@ namespace LagoVista.GCode.Sender
         private static Regex PinState = new Regex(@"^get input: (?'pin'-?[0-9\.]*) is (?'state'-?[0-9\.]*)$");
 
         private static Regex LagoVistaAccStatus = new Regex(@"<tl:(?'topLight'[01]),bl:(?'bottomLight'[01]),v1:(?'vacuum1'[01]),v2:(?'vacuum2'[01]),s1:(?'solenoid'[01]),t:(?'tool'[01])>");
+
+        private static Regex MarlinLaser = new Regex(@"^x:(?'xpos'-?[0-9\.]*)y:(?'ypos'-?[0-9\.]*)z:(?'zpos'-?[0-9\.]*)e:(?'epos'-?[0-9\.]*)");
 
         /// <summary>
         /// Parses a recevied status report (answer to '?')
@@ -99,7 +99,7 @@ namespace LagoVista.GCode.Sender
             var lgvErrorMatch = LagoVistaErrorRegEx.Match(line);
             var endStopMessage = LagoVistaEndStop.Match(line);
             var accMessage = LagoVistaAccStatus.Match(line);
-            var lgvMovementMode = LagoVistaMovementMode.Match(line);
+            var lgvMovementMode = LagoVistaMovementMode.Match(line);            
 
             if (lgvStatusMatch1.Success)
             {
@@ -264,6 +264,7 @@ namespace LagoVista.GCode.Sender
         public bool ParseLine(String line)
         {
             var repeteirPosition = RepeteirPosition.Match(line);
+            var marlinePositionMatch = MarlinLaser.Match(line);
             var m114PositionMatch = CurrentPositionRegEx.Match(line);
             var pinState = PinState.Match(line);
 
@@ -280,6 +281,18 @@ namespace LagoVista.GCode.Sender
 
                 Tool0 = double.Parse(zpos.Value, Constants.DecimalParseFormat);
                 Tool2 = double.Parse(epos.Value, Constants.DecimalParseFormat);
+
+                return true;
+            }
+            else if (marlinePositionMatch.Success)
+            {
+                Group xpos = marlinePositionMatch.Groups["xpos"], ypos = marlinePositionMatch.Groups["ypos"], zpos = marlinePositionMatch.Groups["zpos"], epos = marlinePositionMatch.Groups["epos"];
+                var newMachinePosition = new Vector3(double.Parse(xpos.Value, Constants.DecimalParseFormat), double.Parse(ypos.Value, Constants.DecimalParseFormat), double.Parse(zpos.Value, Constants.DecimalParseFormat));
+
+                if (MachinePosition != newMachinePosition)
+                {
+                    MachinePosition = newMachinePosition;
+                }
 
                 return true;
             }

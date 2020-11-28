@@ -8,6 +8,7 @@ namespace LagoVista.Core.GCode.Parser
         public ArcPlane Plane;
         public double? Feed;
         public double? SpindleRPM;
+        public double? RotateAngle;
         public ParseDistanceMode DistanceMode;
         public ParseDistanceMode ArcDistanceMode;
         public ParseUnit Unit;

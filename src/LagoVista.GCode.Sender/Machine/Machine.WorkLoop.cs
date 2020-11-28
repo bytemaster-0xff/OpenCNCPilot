@@ -43,7 +43,8 @@ namespace LagoVista.GCode.Sender
             var send_line = _toSend.Peek();
             UnacknowledgedBytesSent += send_line.Length + 1;
 
-            if (send_line == "M400" || send_line == "G28")
+            if (Settings.MachineType == FirmwareTypes.Repeteir_PnP &&
+                (send_line == "M400" || send_line == "G28"))
             {
                 _isOnHold = true;
             }
@@ -60,11 +61,6 @@ namespace LagoVista.GCode.Sender
                 AddStatusMessage(StatusMessageTypes.SentLine, send_line.ToString());
             }
 
-            if (send_line == "M400")
-            {
-                _isOnHold = true;
-            }
-
             _sentQueue.Enqueue(send_line);
             _toSend.Dequeue();
         }
@@ -73,7 +69,8 @@ namespace LagoVista.GCode.Sender
         {
             var trimmedLine = cmd.Line.Trim('\r', '\n');
 
-            if (trimmedLine == "M400" || trimmedLine == "G28")
+            if (Settings.MachineType == FirmwareTypes.Repeteir_PnP &&
+                (trimmedLine == "M400" || trimmedLine == "G28"))
             {
                 _isOnHold = true;
             }
@@ -170,7 +167,7 @@ namespace LagoVista.GCode.Sender
 
             if (!_isOnHold)
             {
-                if (Mode == OperatingMode.SendingGCodeFile && 
+                if (Mode == OperatingMode.SendingGCodeFile &&
                     _toSend.Count == 0 &&
                     Settings.ControllerBufferSize - Math.Max(0, UnacknowledgedBytesSent) > 24)
                 {
