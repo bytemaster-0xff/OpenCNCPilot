@@ -160,21 +160,23 @@ namespace LagoVista.GCode.Sender
                         AddStatusMessage(StatusMessageTypes.ReceivedLine, fullMessageLine);
                     }
                 }
-                else if (fullMessageLine.StartsWith("[PRB:"))
+                else if (fullMessageLine.StartsWith("[prb:"))
                 {
                     var probeResult = ProbingManager.ParseProbeLine(fullMessageLine);
-
-                    switch (Mode)
+                    if (probeResult != null)
                     {
-                        case OperatingMode.ProbingHeight:
-                            ProbingManager.ProbeCompleted(probeResult.Value);
-                            break;
-                        case OperatingMode.ProbingHeightMap:
-                            HeightMapManager.ProbeCompleted(probeResult.Value);
-                            break;
-                        default:
-                            AddStatusMessage(StatusMessageTypes.Warning, "Unexpected PRB return message.");
-                            break;
+                        switch (Mode)
+                        {
+                            case OperatingMode.ProbingHeight:
+                                ProbingManager.ProbeCompleted(probeResult.Value);
+                                break;
+                            case OperatingMode.ProbingHeightMap:
+                                HeightMapManager.ProbeCompleted(probeResult.Value);
+                                break;
+                            default:
+                                AddStatusMessage(StatusMessageTypes.Warning, "Unexpected PRB return message.");
+                                break;
+                        }
                     }
                 }
                 else if (fullMessageLine.StartsWith("["))

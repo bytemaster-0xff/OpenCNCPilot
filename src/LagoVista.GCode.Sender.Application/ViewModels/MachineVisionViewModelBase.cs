@@ -46,6 +46,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                 EntityHeader.Create("tapehole", "Tape Hole"),
                 EntityHeader.Create("squarepart", "Square Part"),
                 EntityHeader.Create("nozzle", "Nozzle"),
+                EntityHeader.Create("nozzlecalibration", "Nozzle Calibration"),
             };
 
             CurrentMVProfile = MVProfiles.SingleOrDefault(mv => mv.Id == "default");

@@ -30,7 +30,7 @@ namespace LagoVista.GCode.Sender.Managers
 
         public ProbeStatus Status { get { return _status; } }
 
-        private static Regex ProbeEx = new Regex(@"\[PRB:(?'MX'-?[0-9]+\.?[0-9]*),(?'MY'-?[0-9]+\.?[0-9]*),(?'MZ'-?[0-9]+\.?[0-9]*):(?'Success'0|1)\]");
+        private static Regex ProbeEx = new Regex(@"\[prb:(?'mx'-?[0-9]+\.?[0-9]*),(?'my'-?[0-9]+\.?[0-9]*),(?'mz'-?[0-9]+\.?[0-9]*):(?'success'0|1)\]");
 
         /// <summary>
         /// Parses a recevied probe report
@@ -38,10 +38,10 @@ namespace LagoVista.GCode.Sender.Managers
         public Vector3? ParseProbeLine(string line)
         {
             Match probeMatch = ProbeEx.Match(line);
-            Group mx = probeMatch.Groups["MX"];
-            Group my = probeMatch.Groups["MY"];
-            Group mz = probeMatch.Groups["MZ"];
-            Group success = probeMatch.Groups["Success"];
+            Group mx = probeMatch.Groups["mx"];
+            Group my = probeMatch.Groups["my"];
+            Group mz = probeMatch.Groups["mz"];
+            Group success = probeMatch.Groups["success"];
 
             if (!probeMatch.Success || !(mx.Success & my.Success & mz.Success & success.Success))
             {

@@ -33,6 +33,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             BoardFidicual1,
             BoardFidicual2,
             Default,
+            NozzleCalibration,
         }
 
         MVLocatorState _mvLocatorState = MVLocatorState.Default;
@@ -73,6 +74,8 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             PausePlacmentCommand = new RelayCommand(PausePlacement, CanPausePlacement);
 
             SetFiducialCalibrationCommand = new RelayCommand((prm) => SetFiducialCalibration(prm));
+
+            CalibrateBottomCameraCommand = new RelayCommand(() => CalibrateBottomCamera());
 
             _feederLibrary = new FeederLibrary();
 
@@ -179,6 +182,17 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             }
         }
 
+        public void CalibrateBottomCamera()
+        {
+            AlignBottomCamera();
+            _targetAngle = 0;
+            _mvLocatorState = MVLocatorState.NozzleCalibration;
+            SelectMVProfile("nozzlecalibration");
+            Machine.SendCommand($"G0 E0");
+            _averagePoints = new List<Point2D<double>>();
+
+        }
+
         public bool CanPlacePart()
         {
             if (_selectedPart == null)
@@ -248,7 +262,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                     Count = entry.Count(),
                     Value = entry.First().Value.ToUpper(),
                     Package = entry.First().PackageName.ToUpper(),
-                    
+
                 };
 
                 part.Parts = new ObservableCollection<Component>();
@@ -274,6 +288,12 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
             }
         }
 
+        private Dictionary<int, Point2D<double>> _nozzleCalibration;
+        int samplesAtPoint = 0;
+        int _targetAngle = 0;
+
+        private List<Point2D<double>> _averagePoints;
+
         public override void CircleLocated(Point2D<double> point, double diameter, Point2D<double> stdDeviation)
         {
             switch (_mvLocatorState)
@@ -287,6 +307,62 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                     break;
                 case MVLocatorState.BoardFidicual2:
                     JogToLocation(point);
+                    break;
+                case MVLocatorState.NozzleCalibration:
+                    Debug.WriteLine($"Found Circle: {Machine.MachinePosition.X},{Machine.MachinePosition.Y} - {stdDeviation.X},{stdDeviation.Y}");
+
+                    if (_targetAngle == Convert.ToInt32(Machine.Tool2))
+                    {
+                        samplesAtPoint++;
+
+                        if (samplesAtPoint > 50)
+                        {
+                            var avgX = _averagePoints.Average(pt => pt.X);
+                            var avgY = _averagePoints.Average(pt => pt.Y);
+                            _nozzleCalibration.Add(Convert.ToInt32(Machine.Tool2), new Point2D<double>(avgX, avgY));
+                            _targetAngle = Convert.ToInt32(Machine.Tool2 + 15.0);
+                            Machine.SendCommand($"G0 E{_targetAngle}");
+                            _averagePoints.Clear();
+                            samplesAtPoint = 0;
+                        }
+                        else
+                        {
+                            _averagePoints.Add(new Point2D<double>(point.X, point.Y));
+                        }
+
+                        if (Machine.Tool2 >= 360)
+                        {
+                            _mvLocatorState = MVLocatorState.Idle;
+                            foreach (var key in _nozzleCalibration.Keys)
+                            {
+                                Debug.WriteLine($"{key},{_nozzleCalibration[key].X},{_nozzleCalibration[key].Y}");
+                            }
+
+                            var maxX = _nozzleCalibration.Values.Max(ca => ca.X);
+                            var maxY = _nozzleCalibration.Values.Max(ca => ca.Y);
+
+                            var minX = _nozzleCalibration.Values.Min(ca => ca.X);
+                            var minY = _nozzleCalibration.Values.Min(ca => ca.Y);
+
+                            var preCalX = Machine.MachinePosition.X;
+                            var preCalY = Machine.MachinePosition.Y;
+
+
+                            var offsetX = ((maxX - minX) / 20.0);
+                            var offsetY = ((maxY - minY) / 20.0);
+                            Machine.SendCommand("G91");
+                            Machine.SendCommand($"G0 X{-offsetX} Y{offsetY}");
+                            Machine.SendCommand("G90");
+
+                            var topAngle = _nozzleCalibration.First(pt=>pt.Value.Y == maxY).Key;
+
+                            Debug.WriteLine($"MIN: {minX},{maxY} MAX: {maxX},{maxY} - {topAngle}");
+
+                            Machine.SendCommand($"G0 E{topAngle}");
+                            Machine.SendCommand($"G92 E0 X{preCalX} Y{preCalY}");
+                        }
+                    }
+
                     break;
                 default:
                     if (PartPackManagerVM.IsLocating)
@@ -311,7 +387,6 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
 
         public override void CircleCentered(Point2D<double> point, double diameter)
         {
-
             switch (_mvLocatorState)
             {
                 case MVLocatorState.MachineFidicual:
@@ -330,13 +405,13 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
         {
             if (Machine.Settings.PartInspectionCamera?.AbsolutePosition != null)
             {
+                _nozzleCalibration = new Dictionary<int, Point2D<double>>();
                 Machine.SendCommand(SafeHeightGCodeGCode());
 
                 await Machine.SetViewTypeAsync(ViewTypes.Tool1);
 
                 Machine.TopLightOn = false;
                 Machine.BottomLightOn = true;
-
                 SelectMVProfile("nozzle");
                 ShowCircles = true;
 
@@ -534,7 +609,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                 cmds.Add(GetGoToPartInTrayGCode());
                 cmds.Add(RotationGCode(0)); // Ensure we are at zero position before picking up part.
                 cmds.Add(WaitForComplete());
-                cmds.Add(WaitForComplete());            
+                cmds.Add(WaitForComplete());
                 cmds.Add(ProduceVacuumGCode(true)); // Turn on solenoid 
                 cmds.Add(DwellGCode(250)); // Wait 500ms to pickup part.
                 cmds.Add(PickHeightGCode()); // Move to pick height                
@@ -560,7 +635,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
 
                 await SendInstructionSequenceAsync(cmds);
 
-                if(!multiple)
+                if (!multiple)
                 {
                     Machine.Vacuum1On = false;
                     Machine.Vacuum2On = false;
@@ -638,7 +713,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                 if (SelectedPart != null && SelectedPartRow != null && SelectedPartPackage != null)
                 {
                     var yCorrection = SelectedPart.PartPack.CorrectionAngleY * ((SelectedPartRow.CurrentPartIndex * SelectedPartPackage.SpacingX) + SelectedPartPackage.CenterXFromHole);
-                    
+
 
                     return SelectedPart.PartPack.Pin1YOffset + SelectedPart.Slot.Y + ((SelectedPartRow.RowNumber - 1) * SelectedPart.PartPack.RowHeight) + SelectedPartPackage.CenterYFromHole + yCorrection;
                 }
@@ -834,7 +909,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
         {
             get
             {
-                if(SelectedPart == null)
+                if (SelectedPart == null)
                 {
                     return "-";
                 }
@@ -933,7 +1008,7 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
         public RelayCommand GoToFiducial1Command { get; }
         public RelayCommand GoToFiducial2Command { get; }
         public RelayCommand AlignBottomCameraCommand { get; }
-
+        public RelayCommand CalibrateBottomCameraCommand { get; }
         public RelayCommand SetFiducialCalibrationCommand { get; }
     }
 }

@@ -72,7 +72,7 @@
                             <Button Command="{Binding GoToFiducial1Command}" Style="{StaticResource CommandButton}" Content="4) Board Fiducial 1" />
                             <Button Command="{Binding GoToFiducial2Command}" Style="{StaticResource CommandButton}" Content="5) Board Fiducial 2" />
                             <Button Command="{Binding AlignBottomCameraCommand}" Style="{StaticResource CommandButton}" Content="6) Bottom Camera" />
-                            <Button Command="{Binding GoToWorkHomeCommand}" Style="{StaticResource CommandButton}" Content="3) Work Home" />
+                            <Button Command="{Binding CalibrateBottomCameraCommand }" Style="{StaticResource CommandButton}" Content="7) Calibrate Bottom Camera" />
                         </StackPanel>
                     </Grid>
                 </Grid>

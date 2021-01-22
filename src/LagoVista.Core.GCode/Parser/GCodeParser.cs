@@ -312,6 +312,13 @@ namespace LagoVista.Core.GCode.Parser
                 words.Remove(spindleRPM);
             }
 
+            /* Don't really know what this is, but it has to do with drill, not too worred about it. */
+            var positionRPlaneParameter = words.Where(wrd => wrd.Command == 'R').FirstOrDefault();
+            if(positionRPlaneParameter != null)
+            {
+                words.Remove(positionRPlaneParameter);
+            }
+
             TimeSpan pauseTime = TimeSpan.Zero;
 
             var pauseParameter = words.Where(wrd => wrd.Command == 'P').FirstOrDefault();

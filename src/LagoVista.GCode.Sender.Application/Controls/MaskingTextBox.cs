@@ -128,7 +128,7 @@ namespace LagoVista.GCode.Sender.Application.Controls
                         _regEx = new System.Text.RegularExpressions.Regex(@"^\d+$");
                         break;
                     case UnitTypes.Size:
-                        _regEx = new System.Text.RegularExpressions.Regex(@"^\d+(\.)?(\.\d{1,4})?$");
+                        _regEx = new System.Text.RegularExpressions.Regex(@"^-?\d+(\.)?(\.\d{1,4})?$");
                         break;
                 }
             }

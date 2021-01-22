@@ -1,5 +1,7 @@
 ﻿using LagoVista.Core;
 using LagoVista.Core.GCode.Commands;
+using System;
+using System.Diagnostics;
 
 namespace LagoVista.GCode.Sender.ViewModels
 {
@@ -64,8 +66,9 @@ namespace LagoVista.GCode.Sender.ViewModels
             }
 
             Machine.SendCommand("G90");
-
         }
+
+        private const double ShaftOffsetCorrection = 0.5;
 
         private void AbsoluteJog(JogDirections direction)
         {
@@ -105,33 +108,49 @@ namespace LagoVista.GCode.Sender.ViewModels
                     break;
                 case JogDirections.CMinus:
                     {
-                        var newAngle = Machine.Tool2 - 90;
-                        if (newAngle > 360)
-                            newAngle -= 360;
-
-                        if (newAngle < 0)
+                        var newAngle = Math.Round(Machine.Tool2 - 90);
+                        var normalizedAngle = newAngle % 360;
+                        if (normalizedAngle < 0)
                         {
-                            newAngle += 360;
+                            normalizedAngle += 360;
                         }
 
+                        var xOffset = -(Math.Sin(normalizedAngle.ToRadians()) * ShaftOffsetCorrection);
+                        var yOffset = -(Math.Cos(normalizedAngle.ToRadians()) * ShaftOffsetCorrection);
+
                         Machine.SendCommand($"{Machine.Settings.JogGCodeCommand} E{(newAngle).ToDim()} F5000");
+                        Machine.SendCommand("G90");
+
+                        Machine.SendCommand($"{Machine.Settings.JogGCodeCommand} E{(newAngle).ToDim()} F5000");
+                        Machine.SendCommand("G91");
+                        Machine.SendCommand($"G0 X{xOffset.ToDim()}  Y{yOffset.ToDim()}");
+                        Machine.SendCommand("G90");
+
+                        Debug.WriteLine($"New Angle {newAngle}°, Normalized {normalizedAngle}° Correction: ({xOffset.ToDim()} - {yOffset.ToDim()})");
                     }
                     break;
 
                 case JogDirections.CPlus:
                     {
-                        var newAngle = Machine.Tool2 + 90;
-
-                        if (newAngle > 360)
-                            newAngle -= 360;
-
-                        if (newAngle < 0)
+                        var newAngle = Math.Round(Machine.Tool2 + 90);
+                        var normalizedAngle = newAngle % 360;
+                        if (normalizedAngle < 0)
                         {
-                            newAngle += 360;
+                            normalizedAngle += 360;
                         }
 
-                        Machine.SendCommand($"{Machine.Settings.JogGCodeCommand} E{(newAngle).ToDim()} F5000"); break;
+                        var xOffset = -(Math.Sin(normalizedAngle.ToRadians()) * ShaftOffsetCorrection);
+                        var yOffset = -(Math.Cos(normalizedAngle.ToRadians()) * ShaftOffsetCorrection);
+
+                        Machine.SendCommand($"{Machine.Settings.JogGCodeCommand} E{(newAngle).ToDim()} F5000"); 
+                        Machine.SendCommand("G91");
+                        Machine.SendCommand($"G0 X{xOffset.ToDim()}  Y{yOffset.ToDim()}");
+                        Machine.SendCommand("G90");
+
+                        Debug.WriteLine($"New Angle {newAngle}°, Normalized {normalizedAngle}° Correction: ({xOffset.ToDim()} - {yOffset.ToDim()})");
+
                     }
+                    break;
             }
         }
 
