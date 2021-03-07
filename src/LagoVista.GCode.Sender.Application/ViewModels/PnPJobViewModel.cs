@@ -348,15 +348,21 @@ namespace LagoVista.GCode.Sender.Application.ViewModels
                             var preCalY = Machine.MachinePosition.Y;
 
 
-                            var offsetX = ((maxX - minX) / 20.0);
-                            var offsetY = ((maxY - minY) / 20.0);
+                            var top = _nozzleCalibration.First(pt => pt.Value.Y == maxY);
+                            
+                            var topAngle = top.Key;
+                            var offsetX = top.Value.X / 20.0;
+                            var offsetY = top.Value.Y / 20.0;
+
+                            //var offsetX = ((maxX - minX) / 60.0);
+                            //var offsetY = ((maxY - minY) / 60.0);
+
                             Machine.SendCommand("G91");
-                            Machine.SendCommand($"G0 X{-offsetX} Y{offsetY}");
+                            Machine.SendCommand($"G0 X-{offsetX} Y{+offsetY}");
                             Machine.SendCommand("G90");
+                            
 
-                            var topAngle = _nozzleCalibration.First(pt=>pt.Value.Y == maxY).Key;
-
-                            Debug.WriteLine($"MIN: {minX},{maxY} MAX: {maxX},{maxY} - {topAngle}");
+                            Debug.WriteLine($"MIN: {minX},{minY} MAX: {maxX},{maxY}, Adjusting to offset: {offsetX},{offsetY} - Top Angle: {topAngle}");
 
                             Machine.SendCommand($"G0 E{topAngle}");
                             Machine.SendCommand($"G92 E0 X{preCalX} Y{preCalY}");
